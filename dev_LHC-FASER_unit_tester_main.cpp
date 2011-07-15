@@ -1,8 +1,8 @@
 /*
- * LHC-FASER_unit_tester_main.cpp
+ * dev_LHC-FASER_unit_tester_main.cpp
  *
  *  Created on: 21 Jan 2011
- *      Author: bol
+ *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
  */
 
 /* this program is to test various bits of LHC-FASER in isolation (or as much
