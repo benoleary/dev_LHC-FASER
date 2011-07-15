@@ -1,0 +1,8 @@
+dev_LHC-FASER_unit_tester_main.cpp: In function ‘int main(int, char**)’:
+dev_LHC-FASER_unit_tester_main.cpp:393: error: expected type-specifier
+dev_LHC-FASER_unit_tester_main.cpp:393: error: cannot convert ‘int*’ to ‘LHC_FASER::leptonEnergyDistribution*’ in assignment
+dev_LHC-FASER_unit_tester_main.cpp:393: error: expected `;'
+dev_LHC-FASER_unit_tester_main.cpp:403: error: expected type-specifier
+dev_LHC-FASER_unit_tester_main.cpp:403: error: cannot convert ‘int*’ to ‘LHC_FASER::leptonEnergyDistribution*’ in assignment
+dev_LHC-FASER_unit_tester_main.cpp:403: error: expected `;'
+dev_LHC-FASER_unit_tester_main.cpp:556: error: ‘class LHC_FASER::leptonEnergyDistribution’ has no member named ‘value_at’

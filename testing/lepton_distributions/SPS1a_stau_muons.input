@@ -1,0 +1,12 @@
+set term postscript enhanced color solid
+set output "SPS1a_stau_muons.eps"
+set style line 1 lt rgb "red" lw 2
+set style line 2 lt rgb "orange" lw 2
+set style line 3 lt rgb "gold" lw 2
+set style line 4 lt rgb "yellow" lw 2
+set style line 5 lt rgb "green" lw 2
+set style line 6 lt rgb "cyan" lw 2
+set style line 7 lt rgb "blue" lw 2
+set style line 8 lt rgb "purple" lw 2
+plot 'opp_near_tRm.dat' index 0 with lines ls 1, 'opp_near_tLm.dat' index 0 with lines ls 2, 'same_far_tRm.dat' index 0 with lines ls 3, 'opp_far_tRm.dat' index 0 with lines ls 4, 'same_near_tRm.dat' index 0 with lines ls 5, 'same_far_tLm.dat' index 0 with lines ls 6, 'opp_far_tLm.dat' index 0 with lines ls 7, 'same_near_tLm.dat' index 0 with lines ls 8
+

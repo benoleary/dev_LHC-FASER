@@ -1,0 +1,122 @@
+
+CppSLHA::read_file() (using "SPS1a_spectrum.out") has been called
+
+constructing test_UI took 0.00056 seconds.
+
+adding Atlas4jMET0l7TeV took 1.57524 seconds.
+
+adding Atlas3jMET1l7TeV took 0.000101 seconds.
+
+count = 1
+copying SPS1a_spectrum.out took 0.002954 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.002828 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 869.281; took 0.359008 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 198.517; took 0.366824 seconds.
+
+copying SPS1b_spectrum.out took 0.003292 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.003147 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 40.0761; took 0.277926 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 7.76196; took 0.265124 seconds.
+
+copying SPS2_spectrum.out took 0.00329 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.004723 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 16.2911; took 0.070318 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 3.30749; took 0.063204 seconds.
+
+copying SPS3_spectrum.out took 0.003363 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.004859 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 30.3773; took 0.312398 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 6.17104; took 0.307125 seconds.
+
+copying SPS5_spectrum.out took 0.003376 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.003783 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 238.675; took 0.138714 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 70.8521; took 0.130552 seconds.
+
+copying SPS6_spectrum.out took 0.003351 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.004848 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 328.2; took 0.328792 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 87.5647; took 0.313632 seconds.
+
+copying SPS7_spectrum.out took 0.00308 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.003897 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 21.8054; took 0.276484 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 4.31514; took 0.297119 seconds.
+
+copying SPS8_spectrum.out took 0.003935 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.004011 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 28.2672; took 0.33532 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 6.24931; took 0.322795 seconds.
+
+copying SPS9_spectrum.out took 0.003299 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.003975 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 0.148935; took 0.007567 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 0.130258; took 0.00301 seconds.
+
+copying LM1_spectrum.out took 0.003015 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.005497 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 713.411; took 0.375104 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 50.1852; took 0.383081 seconds.
+
+copying SU4_spectrum.out took 0.003387 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.003125 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 3683.92; took 0.092741 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 644.735; took 0.086725 seconds.
+
+
+ended successfully, I hope

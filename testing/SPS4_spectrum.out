@@ -1,0 +1,31 @@
+# SUSY Les Houches Accord 2.beta - MSSM spectrum + Decays
+# SPheno v3beta44
+# W. Porod, Comput. Phys. Commun. 153 (2003) 275-315, hep-ph/0301101
+# in case of problems send email to porod@physik.uni-wuerzburg.de
+# Created: 27.01.2010,  13:12
+Block SPINFO         # Program information
+     1   SPheno      # spectrum calculator
+     2   v3beta44    # version number
+     4               # internal problem, see Messages.out for infos
+#
+Block SPhenoINFO     # SPheno specific information
+    1      2         # using 2-loop RGEs
+    2      2         # using pole masses for boundary conditions at mZ
+
+Messages.out here:
+ Error in Subroutine ChimToChimNuNu                          
+ Gamma(Chi^-_2 -> Chi^-_1 nu nu) < 0 :           1           1
+  -1.03295506763269     
+ The different contributions are :
+ Sf^2_1 f_1 f_1        1.627823579778245E-009
+ tt Sf_1 Sf_2 f_1 f_1  -1.03295506926052     
+ Error in Subroutine ChimToChimNuNu                          
+ Gamma(Chi^-_2 -> Chi^-_1 nu nu) < 0 :           2           2
+  -44161.7608299427     
+ The different contributions are :
+ tt Sf_3 Sf_4 f_2 f_2  -44161.7608299427     
+ Error in Subroutine ChimToChimNuNu                          
+ Gamma(Chi^-_2 -> Chi^-_1 nu nu) < 0 :           3           3
+  -12490997.9832080     
+ The different contributions are :
+ tt Sf_5 Sf_6 f_3 f_3  -12490997.9832080    
