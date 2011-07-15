@@ -58,6 +58,8 @@
 namespace LHC_FASER
 {
 
+  // this is here just for reference! it will be deleted later, when I am sure
+  // that I have covered all the decays it covers.
   EW_decayer_values::EW_decayer_values( bool const given_should_sum_charges,
                                         double const given_primary_cut,
                                         double const given_secondary_cut,
@@ -1519,257 +1521,19 @@ namespace LHC_FASER
 
   }
 
-  EW_decayer_values::~EW_decayer_values()
-  {
 
-    for( std::vector< channel_calculator* >::iterator
-         deletion_iterator = EW_decay_channels.begin();
-         EW_decay_channels.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
 
-        delete *deletion_iterator;
 
-      }
-
-  }
-
-
-
-  full_cascade::full_cascade(
-            CppSLHA::particle_property_set const* const given_initial_scolored,
-                  CppSLHA::particle_property_set const* const given_EW_decayer,
-                              kinematics_handler* const given_kinematics,
-                              input_handler const* const given_shortcuts ) :
-    readied_for_new_point( given_shortcuts->get_readier() ),
-    initial_scolored( given_initial_scolored ),
-    decaying_scolored( NULL ),
-    EW_decayer( given_EW_decayer ),
-    leptonKinematics( given_kinematics ),
-    sQCD_BR( CppSLHA::CppSLHA_global::really_wrong_value ),
-    shortcut( given_shortcuts )
-  {
-
-    // just an initialization list.
-
-  }
-
-  full_cascade::~full_cascade()
-  {
-
-    // does nothing.
-
-  }
-
-
-  EW_decayer_values*
-  full_cascade::get_EW_decay( double const given_primary_cut,
-                              double const given_secondary_cut,
-                              double const given_jet_cut,
-                              lepton_acceptance_value* const given_kinematics )
-  /* this checks to see if it already has a EW_decayer_values instance
-   * matching the arguments, & if it does, it returns a pointer to it,
-   * otherwise, it makes a new one, stores it, & returns a pointer to it.
-   */
-  {
-
-    EW_decayer_values* return_pointer = NULL;
-    // this starts as NULL so that we know if it wasn't found among the
-    // existing instances.
-
-    for( std::vector< EW_decayer_values* >::iterator
-         set_iterator = EW_decays.begin();
-         EW_decays.end() > set_iterator;
-         ++set_iterator )
-      {
-
-        if( (*set_iterator)->is_requested( given_primary_cut,
-                                           given_secondary_cut,
-                                           given_jet_cut,
-                                           given_kinematics ) )
-          {
-
-            return_pointer = *set_iterator;
-            set_iterator = EW_decays.end();
-            // stop looking.
-
-          }
-
-      }
-
-    if( NULL == return_pointer )
-      // if we didn't find an existing match, we make a new instance, store
-      // it & return a pointer to it:
-      {
-
-        return_pointer = new EW_decayer_values( given_primary_cut,
-                                                given_secondary_cut,
-                                                given_jet_cut,
-                                                given_kinematics,
-                                                decaying_scolored,
-                                                decaying_EWino,
-                                                shortcut );
-        EW_decays.push_back( return_pointer );
-
-      }
-
-    return return_pointer;
-
-  }
-
-
-  squark_directly_to_EWino_cascade::squark_directly_to_EWino_cascade(
-            CppSLHA::particle_property_set const* const given_initial_scolored,
-                  CppSLHA::particle_property_set const* const given_EW_decayer,
-                                    kinematics_handler* const given_kinematics,
-                                  std::list< int > const* const given_excluded,
-                                 input_handler const* const given_shortcuts ) :
-    full_cascade( given_initial_scolored,
-                  given_EW_decayer,
-                  given_kinematics,
-                  given_shortcuts )
-  {
-
-    cascade_type = sx;
-    decaying_scolored = given_initial_scolored;
-
-    bool decay_to_EWino_not_antiEWino = true;
-    // assume that we have either a squark-to-neutralino or a
-    // sup-type-to-chargino decay.
-
-    bool decay_to_neutralino;
-
-    if( given_shortcuts->is_in( given_EW_decayer,
-                                given_shortcuts->get_charginos() ) )
-      // if given_EW_decayer is a chargino...
-      {
-
-        decay_to_neutralino = false;
-
-        if( given_shortcuts->is_in( given_initial_scolored->get_PDG_code(),
-                                    given_shortcuts->get_sdown_types() ) )
-          // if given_initial_scolored is sdown-type...
-          {
-
-            decay_to_EWino_not_antiEWino = false;
-            // then we need to look for decays with a negative PDG code for
-            // given_EW_decayer amongst given_initial_scolored's decays.
-
-          }
-
-      }
-    /*else if( CppSLHA::PDG_code::W_plus == given_EW_decayer->get_PDG_code() )
-      // if given_EW_decayer is a W boson...
-      {
-
-        cascade_type = sw;
-
-        decay_to_neutralino = false;
-
-        if( given_shortcuts->is_in( given_initial_scolored->get_PDG_code(),
-                                    given_shortcuts->get_sdown_types() ) )
-          // if given_initial_scolored is sdown-type...
-          {
-
-            decay_to_EWino_not_antiEWino = false;
-            // then we need to look for decays with a negative PDG code for
-            // given_EW_decayer amongst given_initial_scolored's decays.
-
-          }
-
-      }*/
-    else
-      // otherwise, we should have a neutralino...
-      {
-
-        decay_to_neutralino = true;
-
-      }
-
-    squark_to_EWino_BR
-    = given_shortcuts->get_exclusive_BR_calculator( given_initial_scolored,
-                                                    given_EW_decayer,
-                                                  decay_to_EWino_not_antiEWino,
-                                                    given_excluded );
-
-    lepton_acceptance
-    = given_kinematics->get_lepton_acceptance( given_initial_scolored,
-                                               given_initial_scolored,
-                                               given_EW_decayer,
-                                               cascade_type );
-
-  }
-
-  squark_directly_to_EWino_cascade::~squark_directly_to_EWino_cascade()
-  {
-
-    // does nothing.
-
-  }
-
-
-  void
-  squark_directly_to_EWino_cascade::update_self()
-  // this overrides the base full_cascade::update_self() appropriately.
-  {
-
-    sQCD_BR = squark_to_EWino_BR->get_BR();
-
-  }
-
-
-  gluino_directly_to_EWino_cascade::gluino_directly_to_EWino_cascade(
-            CppSLHA::particle_property_set const* const given_initial_scolored,
-                  CppSLHA::particle_property_set const* const given_EW_decayer,
-                                    kinematics_handler* const given_kinematics,
-                                  std::list< int > const* const given_excluded,
-                                 input_handler const* const given_shortcuts ) :
-    full_cascade( given_initial_scolored,
-                  given_EW_decayer,
-                  given_kinematics,
-                  given_shortcuts )
-  {
-
-    cascade_type = gx;
-    decaying_scolored = given_initial_scolored;
-
-    gluino_to_EWino_BR
-    = given_shortcuts->get_exclusive_BR_calculator( given_initial_scolored,
-                                                    given_EW_decayer,
-                                                    true,
-                                                    given_excluded );
-
-    lepton_acceptance
-    = given_kinematics->get_lepton_acceptance( given_initial_scolored,
-                                               given_initial_scolored,
-                                               given_EW_decayer,
-                                               cascade_type );
-
-  }
-
-  gluino_directly_to_EWino_cascade::~gluino_directly_to_EWino_cascade()
-  {
-
-    // does nothing.
-
-  }
-
-
-  void
-  gluino_directly_to_EWino_cascade::update_self()
-  // this overrides the base full_cascade::update_self() appropriately.
-  {
-
-    sQCD_BR = gluino_to_EWino_BR->get_BR();
-
-  }
-
-
-  fullCascade::fullCascade( colorfulCascadeType const typeOfColorfulCascade ) :
+  fullCascade::fullCascade( colorfulCascadeType const typeOfColorfulCascade,
+                            int const firstDecayBodyNumber,
+                            double const chargeConjugateSumFactor ) :
     shortcut( NULL ),
     initialScolored( NULL ),
     beamEnergy( CppSLHA::CppSLHA_global::really_wrong_value ),
     typeOfColorfulCascade( typeOfColorfulCascade ),
+    firstDecayBodyNumber( firstDecayBodyNumber ),
+    chargeConjugateSumFactor( chargeConjugateSumFactor ),
+    subcascade( NULL ),
     cascadeDefiner(),
     ewinoCascade( NULL ),
     vectorCascade( NULL ),
@@ -2119,7 +1883,9 @@ namespace LHC_FASER
 
 
   sxFullCascade::sxFullCascade() :
-    fullCascade( sx )
+    fullCascade( sx,
+                 2,
+                 1.0 )
   {
     // just an initialization list.
   }
@@ -2129,46 +1895,12 @@ namespace LHC_FASER
     // does nothing.
   }
 
-  double
-  sxFullCascade::getAcceptance( bool const scoloredIsNotAntiparticle,
-                                acceptanceCutSet* const cuts,
-                                int const numberOfAdditionalJets,
-                                int const numberOfNegativeElectrons,
-                                int const numberOfPositiveElectrons,
-                                int const numberOfNegativeMuons,
-                                int const numberOfPositiveMuons )
-  /* this calls the appropriate functions on ewinoCascade &, if not NULL,
-   * vectorCascade, to build the required acceptance, taking into account
-   * whether the charges should be swapped if scoloredIsNotAntiparticle is
-   * false.
-   */
-  {
-    if( scoloredIsNotAntiparticle )
-      // if we have a particle, we return the acceptance for the particle.
-    {
-      return ewinoCascade->getAcceptance( cuts,
-                                          numberOfAdditionalJets,
-                                          numberOfNegativeElectrons,
-                                          numberOfPositiveElectrons,
-                                          numberOfNegativeMuons,
-                                          numberOfPositiveMuons );
-    }
-    else
-      // if we have an antiparticle, we swap the charges.
-    {
-      return ewinoCascade->getAcceptance( cuts,
-                                          numberOfAdditionalJets,
-                                          numberOfPositiveElectrons,
-                                          numberOfNegativeElectrons,
-                                          numberOfPositiveMuons,
-                                          numberOfNegativeMuons );
-    }
-  }
-
 
 
   gxFullCascade::gxFullCascade() :
-    fullCascade( gx )
+    fullCascade( gx,
+                 3,
+                 2.0 )
   {
     // just an initialization list.
   }
@@ -2226,7 +1958,10 @@ namespace LHC_FASER
 
 
   sjgxFullCascade::sjgxFullCascade() :
-    fullCascade( sjgx )
+    fullCascade( sjgx,
+                 2,
+                 1.0 )
+  // sjgx also means that the initial decay is 2-body.
   {
     // just an initialization list.
   }
@@ -2237,8 +1972,12 @@ namespace LHC_FASER
   }
 
 
+
   gjsxFullCascade::gjsxFullCascade() :
-    fullCascade( gjsx )
+    fullCascade( gjsx,
+                 2,
+                 2.0 )
+  // gjsx also means that the initial decay is 2-body.
   {
     // just an initialization list.
   }
@@ -2248,78 +1987,13 @@ namespace LHC_FASER
     // does nothing.
   }
 
-  inline void
-  gjsxFullCascade::setProperties( sxFullCascade* const sxCascade )
-  {
-    this->sxCascade = sxCascade;
-    this->shortcut = sxCascade->shortcut;
-    this->initialScolored = shortcut->get_gluino();
-    this->beamEnergy = sxCascade->beamEnergy;
-    this->ewinoCascade = sxCascade->ewinoCascade;
-    soughtDecayProductList.front()
-    = sxCascade->getInitialScolored()->get_PDG_code();
-    copyCascadeDefiner( sxCascade->getCascadeDefiner() );
-    // reset cascadeDefiner & fill it with a copy of sxCascade's version.
-    cascadeSegment = cascadeDefiner.addNewAtEnd();
-    cascadeSegment->first = sxCascade->getInitialScolored();
-    // sjgx means 1 more decay to be recorded on top of those of the given
-    // cascade.
-    cascadeSegment->second = 2;
-    // sjgx also means that the initial decay is 2-body.
-  }
 
-  inline double
-  gjsxFullCascade::getBrToEwino( std::list< int > const* excludedSmParticles )
-  /* this works out the branching ratio for the decays of colored sparticles
-   * down to the 1st electroweakino in the cascade (including any decays to
-   * vector bosons + squarks), using the given list of excluded SM particles
-   * to exclude unwanted parts of the BR.
-   */
-  {
-    // we return the BR to a neutralino, or, if the electroweakino is a
-    // chargino, we return the sum of BRs to both charges of chargino.
-    return ( initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles )
-             * 2.0 * sxCascade->getBrToEwino( excludedSmParticles ) );
-  }
-
-  double
-  gjsxFullCascade::getAcceptance( bool const scoloredIsNotAntiparticle,
-                                  acceptanceCutSet* const cuts,
-                                  int const numberOfAdditionalJets,
-                                  int const numberOfNegativeElectrons,
-                                  int const numberOfPositiveElectrons,
-                                  int const numberOfNegativeMuons,
-                                  int const numberOfPositiveMuons )
-  /* the assumptions made by this code mean that the branching ratios to
-   * electroweakinos multiplied by acceptances through squark & antisquark
-   * factorize. if the electroweakino is a chargino, it is assumed that only
-   * either the squark or the antisquark has a non-zero BR to the chargino,
-   * hence the compound BR from the gluino to the positively-charged chargino
-   * is given by getBrToEwino, which will be the BR through the appropriate
-   * charge of squark.
-   */
-  {
-    return ( 0.5 * ( sxCascade->getAcceptance( true,
-                                               cuts,
-                                               numberOfAdditionalJets,
-                                               numberOfNegativeElectrons,
-                                               numberOfPositiveElectrons,
-                                               numberOfNegativeMuons,
-                                               numberOfPositiveMuons )
-                     + sxCascade->getAcceptance( false,
-                                                 cuts,
-                                                 numberOfAdditionalJets,
-                                                 numberOfNegativeElectrons,
-                                                 numberOfPositiveElectrons,
-                                                 numberOfNegativeMuons,
-                                                 numberOfPositiveMuons ) ) );
-    // return the weighted acceptances of the squark & the antisquark versions.
-  }
 
   sjgjsxFullCascade::sjgjsxFullCascade() :
-    fullCascade( sjgjsx )
+    fullCascade( sjgjsx,
+                 2,
+                 1.0 )
+  // sjgjsx also means that the initial decay is 2-body.
   {
     // just an initialization list.
   }
@@ -2329,63 +2003,13 @@ namespace LHC_FASER
     // does nothing.
   }
 
-  inline void
-  sjgjsxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
-                                    gjsxFullCascade* const gjsxCascade )
-  {
-    this->gjsxCascade = gjsxCascade;
-    this->shortcut = gjsxCascade->shortcut;
-    this->initialScolored = initialSquark;
-    this->beamEnergy = gjsxCascade->beamEnergy;
-    this->ewinoCascade = gjsxCascade->ewinoCascade;
-    soughtDecayProductList.front() = CppSLHA::PDG_code::gluino;
-    copyCascadeDefiner( gjsxCascade->getCascadeDefiner() );
-    // reset cascadeDefiner & fill it with a copy of gjsxCascade's version.
-    cascadeSegment = cascadeDefiner.addNewAtEnd();
-    cascadeSegment->first = gjsxCascade->getInitialScolored();
-    // sjgjsx means 1 more decay to be recorded on top of those of the given
-    // cascade.
-    cascadeSegment->second = 2;
-    // sjgjsx also means that the initial decay is 2-body.
-  }
 
-  inline double
-  sjgjsxFullCascade::getBrToEwino(
-                                  std::list< int > const* excludedSmParticles )
-  /* this works out the branching ratio for the decays of colored sparticles
-   * down to the 1st electroweakino in the cascade (including any decays to
-   * vector bosons + squarks), using the given list of excluded SM particles
-   * to exclude unwanted parts of the BR.
-   */
-  {
-    return ( initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles )
-             * gjsxCascade->getBrToEwino( excludedSmParticles ) );
-  }
-
-  inline double
-  sjgjsxFullCascade::getAcceptance( bool const scoloredIsNotAntiparticle,
-                                    acceptanceCutSet* const cuts,
-                                    int const numberOfAdditionalJets,
-                                    int const numberOfNegativeElectrons,
-                                    int const numberOfPositiveElectrons,
-                                    int const numberOfNegativeMuons,
-                                    int const numberOfPositiveMuons )
-  {
-    return gjsxCascade->getAcceptance( scoloredIsNotAntiparticle,
-                                       cuts,
-                                       numberOfAdditionalJets,
-                                       numberOfNegativeElectrons,
-                                       numberOfPositiveElectrons,
-                                       numberOfNegativeMuons,
-                                       numberOfPositiveMuons );
-    // gjsxCascade takes care of counting over different charginos if needed.
-  }
 
   svsxFullCascade::svsxFullCascade() :
-    fullCascade( svsx )
+    fullCascade( svsx,
+                 2,
+                 1.0 )
+  // svsx also means that the initial decay is 2-body.
   {
     soughtDecayProductList.push_back(
                                  CppSLHA::CppSLHA_global::really_wrong_value );
@@ -2397,87 +2021,13 @@ namespace LHC_FASER
     // does nothing.
   }
 
-  void
-  svsxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
-                                  electroweakCascade* const vectorCascade,
-                                  sxFullCascade* const sxCascade )
-  {
-    this->sxCascade = sxCascade;
-    this->shortcut = sxCascade->shortcut;
-    this->initialScolored = initialSquark;
-    this->beamEnergy = sxCascade->beamEnergy;
-    this->ewinoCascade = sxCascade->ewinoCascade;
-    this->vectorCascade = vectorCascade;
-    soughtDecayProductList.front()
-    = sxCascade->getInitialScolored()->get_PDG_code();
-    if( ( CppSLHA::PDG_code::W_plus
-          == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
-        &&
-        ( shortcut->is_in( initialSquark->get_PDG_code(),
-                           shortcut->get_sdown_types() ) ) )
-      // if we have to worry about which sign of PDG code to use...
-    {
-      soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
-    }
-    else
-    {
-    soughtDecayProductList.back()
-    = vectorCascade->getElectroweakDecayer()->get_PDG_code();
-    }
-    copyCascadeDefiner( sxCascade->getCascadeDefiner() );
-    // reset cascadeDefiner & fill it with a copy of gjsxCascade's version.
-    cascadeSegment = cascadeDefiner.addNewAtEnd();
-    cascadeSegment->first = sxCascade->getInitialScolored();
-    // svsx means 1 more decay to be recorded on top of those of the given
-    // cascade.
-    cascadeSegment->second = 2;
-    // svsx also means that the initial decay is 2-body.
-  }
-
-  double
-  svsxFullCascade::getBrToEwino( std::list< int > const* excludedSmParticles )
-  /* this works out the branching ratio for the decays of colored sparticles
-   * down to the 1st electroweakino in the cascade (including any decays to
-   * vector bosons + squarks), using the given list of excluded SM particles
-   * to exclude unwanted parts of the BR.
-   */
-  {
-    return ( initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles )
-             * sxCascade->getBrToEwino( excludedSmParticles ) );
-  }
-
-  inline double
-  svsxFullCascade::getAcceptance( bool const scoloredIsNotAntiparticle,
-                                  acceptanceCutSet* const cuts,
-                                  int const numberOfAdditionalJets,
-                                  int const numberOfNegativeElectrons,
-                                  int const numberOfPositiveElectrons,
-                                  int const numberOfNegativeMuons,
-                                  int const numberOfPositiveMuons )
-  /* this calls the appropriate functions on ewinoCascade &, if not NULL,
-   * vectorCascade, to build the required acceptance, taking into account
-   * whether the charges should be swapped if scoloredIsNotAntiparticle is
-   * false.
-   */
-  {
-    return getCombinedAcceptance( scoloredIsNotAntiparticle,
-                                  scoloredIsNotAntiparticle,
-                                  cuts,
-                                  numberOfAdditionalJets,
-                                  numberOfNegativeElectrons,
-                                  numberOfPositiveElectrons,
-                                  numberOfNegativeMuons,
-                                  numberOfPositiveMuons );
-    // in the used conventions, an incoming squark decays to a vector boson
-    // plus a squark, hence the same bool is used for both.
-  }
 
 
   gvsxFullCascade::gvsxFullCascade() :
-    fullCascade( svsx )
+    fullCascade( gvsx,
+                 3,
+                 2.0 )
+  // gvsx also means that the initial decay is 3-body.
   {
     soughtDecayProductList.push_back(
                                  CppSLHA::CppSLHA_global::really_wrong_value );
@@ -2489,94 +2039,13 @@ namespace LHC_FASER
     // does nothing.
   }
 
-  void
-  gvsxFullCascade::setProperties( electroweakCascade* const vectorCascade,
-                                  sxFullCascade* const sxCascade )
-  {
-    this->sxCascade = sxCascade;
-    this->shortcut = sxCascade->shortcut;
-    this->initialScolored = shortcut->get_gluino();
-    this->beamEnergy = sxCascade->beamEnergy;
-    this->ewinoCascade = sxCascade->ewinoCascade;
-    this->vectorCascade = vectorCascade;
-    soughtDecayProductList.front()
-    = sxCascade->getInitialScolored()->get_PDG_code();
-    if( ( CppSLHA::PDG_code::W_plus
-          == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
-        &&
-        ( shortcut->is_in( soughtDecayProductList.front(),
-                           shortcut->get_sup_types() ) ) )
-      // if we have to worry about which sign of PDG code to use...
-    {
-      soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
-    }
-    else
-    {
-    soughtDecayProductList.back()
-    = vectorCascade->getElectroweakDecayer()->get_PDG_code();
-    }
-    copyCascadeDefiner( sxCascade->getCascadeDefiner() );
-    // reset cascadeDefiner & fill it with a copy of gjsxCascade's version.
-    cascadeSegment = cascadeDefiner.addNewAtEnd();
-    cascadeSegment->first = sxCascade->getInitialScolored();
-    // gvsx means 1 more decay to be recorded on top of those of the given
-    // cascade.
-    cascadeSegment->second = 3;
-    // gvsx also means that the initial decay is 3-body.
-  }
-
-  double
-  gvsxFullCascade::getBrToEwino( std::list< int > const* excludedSmParticles )
-  /* this works out the branching ratio for the decays of colored sparticles
-   * down to the 1st electroweakino in the cascade (including any decays to
-   * vector bosons + squarks), using the given list of excluded SM particles
-   * to exclude unwanted parts of the BR.
-   */
-  {
-    return ( initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles )
-             * 2.0 * sxCascade->getBrToEwino( excludedSmParticles ) );
-    // we sum over squark and antisquark.
-  }
-
-  inline double
-  gvsxFullCascade::getAcceptance( bool const scoloredIsNotAntiparticle,
-                                  acceptanceCutSet* const cuts,
-                                  int const numberOfAdditionalJets,
-                                  int const numberOfNegativeElectrons,
-                                  int const numberOfPositiveElectrons,
-                                  int const numberOfNegativeMuons,
-                                  int const numberOfPositiveMuons )
-  /* this calls the appropriate functions on ewinoCascade &, if not NULL,
-   * vectorCascade, to build the required acceptance, taking into account
-   * whether the charges should be swapped if scoloredIsNotAntiparticle is
-   * false.
-   */
-  {
-    return ( 0.5 * ( getCombinedAcceptance( true,
-                                            true,
-                                            cuts,
-                                            numberOfAdditionalJets,
-                                            numberOfNegativeElectrons,
-                                            numberOfPositiveElectrons,
-                                            numberOfNegativeMuons,
-                                            numberOfPositiveMuons )
-                     + getCombinedAcceptance( false,
-                                              false,
-                                              cuts,
-                                              numberOfAdditionalJets,
-                                              numberOfNegativeElectrons,
-                                              numberOfPositiveElectrons,
-                                              numberOfNegativeMuons,
-                                              numberOfPositiveMuons ) ) );
-    // getBrToEwino gives the sum of the decays via squark & antisquark, so the
-    // acceptances factorize this way.
-  }
 
 
   gjsvsxFullCascade::gjsvsxFullCascade() :
-    fullCascade( gjsvsx )
+    fullCascade( gjsvsx,
+                 2,
+                 2.0 )
+  // gjsvsx also means that the initial decay is 2-body.
   {
     // just an initialization list.
   }
@@ -2586,76 +2055,99 @@ namespace LHC_FASER
     // does nothing.
   }
 
-  void
-  gjsvsxFullCascade::setProperties( svsxFullCascade* const svsxCascade )
+
+
+  svgxFullCascade::svgxFullCascade() :
+    fullCascade( svgx,
+                 3,
+                 1.0 )
+  // svgx also means that the initial decay is 3-body.
   {
-    this->svsxCascade = svsxCascade;
-    this->shortcut = svsxCascade->shortcut;
-    this->initialScolored = shortcut->get_gluino();
-    this->beamEnergy = svsxCascade->beamEnergy;
-    this->ewinoCascade = svsxCascade->ewinoCascade;
-    soughtDecayProductList.front()
-    = svsxCascade->getInitialScolored()->get_PDG_code();
-    copyCascadeDefiner( svsxCascade->getCascadeDefiner() );
-    // reset cascadeDefiner & fill it with a copy of sxCascade's version.
-    cascadeSegment = cascadeDefiner.addNewAtEnd();
-    cascadeSegment->first = svsxCascade->getInitialScolored();
-    // gjsvsx means 1 more decay to be recorded on top of those of the given
-    // cascade.
-    cascadeSegment->second = 2;
-    // gjsvsx also means that the initial decay is 2-body.
+    // just an initialization list.
   }
 
-  double
-  gjsvsxFullCascade::getBrToEwino(
-                                  std::list< int > const* excludedSmParticles )
-  /* this works out the branching ratio for the decays of colored sparticles
-   * down to the 1st electroweakino in the cascade (including any decays to
-   * vector bosons + squarks), using the given list of excluded SM particles
-   * to exclude unwanted parts of the BR.
-   */
+  svgxFullCascade::~svgxFullCascade()
   {
-    return ( initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles )
-             * 2.0 * svsxCascade->getBrToEwino( excludedSmParticles ) );
-    // we sum over squark and antisquark.
-  }
-
-  virtual double
-  gjsvsxFullCascade::getAcceptance( bool const scoloredIsNotAntiparticle,
-                                    acceptanceCutSet* const cuts,
-                                    int const numberOfAdditionalJets,
-                                    int const numberOfNegativeElectrons,
-                                    int const numberOfPositiveElectrons,
-                                    int const numberOfNegativeMuons,
-                                    int const numberOfPositiveMuons )
-  /* the assumptions made by this code mean that the branching ratios to
-   * electroweakinos multiplied by acceptances through squark & antisquark
-   * factorize. if the electroweakino is a chargino, it is assumed that only
-   * either the squark or the antisquark has a non-zero BR to the chargino,
-   * hence the compound BR from the gluino to the positively-charged chargino
-   * is given by getBrToEwino, which will be the BR through the appropriate
-   * charge of squark.
-   */
-  {
-    return ( 0.5 * ( svsxCascade->getAcceptance( true,
-                                                 cuts,
-                                                 numberOfAdditionalJets,
-                                                 numberOfNegativeElectrons,
-                                                 numberOfPositiveElectrons,
-                                                 numberOfNegativeMuons,
-                                                 numberOfPositiveMuons )
-                     + svsxCascade->getAcceptance( false,
-                                                   cuts,
-                                                   numberOfAdditionalJets,
-                                                   numberOfNegativeElectrons,
-                                                   numberOfPositiveElectrons,
-                                                   numberOfNegativeMuons,
-                                                   numberOfPositiveMuons ) ) );
-    // return the weighted acceptances of the squark & the antisquark versions.
+    // does nothing.
   }
 
 
 
+  svsjgxFullCascade::svsjgxFullCascade() :
+    fullCascade( svsjgx,
+                 2,
+                 1.0 )
+  // svsjgx also means that the initial decay is 2-body.
+  {
+    // just an initialization list.
+  }
+
+  svsjgxFullCascade::~svsjgxFullCascade()
+  {
+    // does nothing.
+  }
+
+
+
+  svsjgjsxFullCascade::svsjgjsxFullCascade() :
+    fullCascade( svsjgjsx,
+                 2,
+                 1.0 )
+  // svsjgjsx also means that the initial decay is 2-body.
+  {
+    // just an initialization list.
+  }
+
+  svsjgjsxFullCascade::~svsjgjsxFullCascade()
+  {
+    // does nothing.
+  }
+
+
+
+  svgjsxFullCascade::svgjsxFullCascade() :
+    fullCascade( svgjsx,
+                 3,
+                 1.0 )
+  // svgjsx also means that the initial decay is 3-body.
+  {
+    // just an initialization list.
+  }
+
+  svgjsxFullCascade::~svgjsxFullCascade()
+  {
+    // does nothing.
+  }
+
+
+
+  sjgvsxFullCascade::sjgvsxFullCascade() :
+    fullCascade( sjgvsx,
+                 2,
+                 1.0 )
+  // sjgvsx also means that the initial decay is 2-body.
+  {
+    // just an initialization list.
+  }
+
+  sjgvsxFullCascade::~sjgvsxFullCascade()
+  {
+    // does nothing.
+  }
+
+
+
+  sjgjsvsxFullCascade::sjgjsvsxFullCascade() :
+    fullCascade( sjgjsvsx,
+                 2,
+                 1.0 )
+  // sjgjsvsx also means that the initial decay is 2-body.
+  {
+    // just an initialization list.
+  }
+
+  sjgjsvsxFullCascade::~sjgjsvsxFullCascade()
+  {
+    // does nothing.
+  }
 }  // end of LHC_FASER namespace.

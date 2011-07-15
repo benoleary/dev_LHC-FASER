@@ -17,15 +17,24 @@
  * the current ordering for testing is:
  *
  * (0: CppSLHA - done.)
- * 1: lepton distributions - done, but for current placeholders (framework
- *                           works though, being the point!)
- * 2: readied_for_new_point + readier_for_new_point - done
- * 3: cross_section_table - done
- * 4: kinematics_table - done
- * 5: lepton acceptance for given cascade - done
- * 6: an entire signal - done
+ * 1: lepton distributions - sorta redone, but for just a subset of cases
+ *                           (framework works though, being the point!).
+ *                         - @Carsten: please check that the new W & Z
+ *                           distributions work.
+ * 2: readied_for_new_point + readier_for_new_point - not yet redone, but
+ *                                                    should not be a problem,
+ *                                                    since I don't *think*
+ *                                                    that I changed anything
+ *                                                    here since 0.1 (which
+ *                                                    works)...
+ * 3: cross_section_table - again, not yet redone, but I don't recall changing
+ *                          anything here since the working 0.1 version.
+ * 4: kinematics_table - not yet redone, & it'll be quite different in 0.2,
+ *                       unfortunately.
+ * 5: lepton acceptance for given cascade - not yet redone
+ * 6: an entire signal - not yet redone
  *
- * after that, I think that I'll be ready to test the whole thing put together.
+ * after that, I think that we'll be ready to test the whole thing.
  */
 
 
