@@ -900,126 +900,101 @@ namespace LHC_FASER
     ~fullCascadeSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    std::vector< fullCascade* >* getOpenCascades()
-        /* code after the classes in this .hpp file, or in the .cpp file. */;
+    std::vector< fullCascade* >*
+    getOpenCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual minimalAllocationVector< sxFullCascade >*
     getSxCascades()
-    {
-      return &sxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< gxFullCascade >*
     getGxCascades()
-    {
-      return &gxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< sjgxFullCascade >*
     getSjgxCascades()
-    {
-      return &sjgxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< gjsxFullCascade >*
     getGjsxCascades()
-    {
-      return &gjsxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< sjgjsxFullCascade >*
     getSjgjsxCascades()
-    {
-      return &sjgjsxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< svsxFullCascade >*
     getSvsxCascades()
-    {
-      return &svsxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< gvsxFullCascade >*
     getGvsxCascades()
-    {
-      return &gvsxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< gjsvsxFullCascade >*
     getGjsvsxCascades()
-    {
-      return &gjsvsxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< svgxFullCascade >*
     getSvgxCascades()
-    {
-      return &svgxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< svsjgxFullCascade >*
     getSvsjgxCascades()
-    {
-      return &svsjgxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< svsjgjsxFullCascade >*
     getSvsjgjsxCascades()
-    {
-      return &svsjgjsxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< svgjsxFullCascade >*
     getSvgjsxCascades()
-    {
-      return &svgjsxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< sjgvsxFullCascade >*
     getSjgvsxCascades()
-    {
-      return &sjgvsxCascades;
-    }
-
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual minimalAllocationVector< sjgjsvsxFullCascade >*
     getSjgjsvsxCascades()
-    {
-      return &sjgjsvsxCascades;
-    }
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-      std::vector<fullCascade*> openCascades;
-      minimalAllocationVector<sxFullCascade> sxCascades;
-      minimalAllocationVector<gxFullCascade> gxCascades;
-      minimalAllocationVector<sjgxFullCascade> sjgxCascades;
-      bool sjgxNotYetCalculated;
-      minimalAllocationVector<gjsxFullCascade> gjsxCascades;
-      bool gjsxNotYetCalculated;
-      minimalAllocationVector<sjgjsxFullCascade> sjgjsxCascades;
-      bool sjgjsxNotYetCalculated;
-      minimalAllocationVector<svsxFullCascade> svsxCascades;
-      bool svsxNotYetCalculated;
-      minimalAllocationVector<gvsxFullCascade> gvsxCascades;
-      bool gvsxNotYetCalculated;
-      minimalAllocationVector<gjsvsxFullCascade> gjsvsxCascades;
-      bool gjsvsxNotYetCalculated;
-      minimalAllocationVector<svgxFullCascade> svgxCascades;
-      bool svgxNotYetCalculated;
-      minimalAllocationVector<svsjgxFullCascade> svsjgxCascades;
-      bool svsjgxNotYetCalculated;
-      minimalAllocationVector<svsjgjsxFullCascade> svsjgjsxCascades;
-      bool svsjgjsxNotYetCalculated;
-      minimalAllocationVector<svgjsxFullCascade> svgjsxCascades;
-      bool svgjsxNotYetCalculated;
-      minimalAllocationVector<sjgvsxFullCascade> sjgvsxCascades;
-      bool sjgvsxNotYetCalculated;
-      minimalAllocationVector<sjgjsvsxFullCascade> sjgjsvsxCascades;
-      bool sjgjsvsxNotYetCalculated;
-      const input_handler *const shortcut;
-      std::list<fullCascadeSet*> *const cascadeSetList;
-      bool cascadeSetListNotYetOrdered;
-      const double beamEnergy;
-      void setUpCascades();
+    std::vector< fullCascade* > openCascades;
+    // this holds pointers to all the open cascades.
+
+    // 1 of the sxCascades & gxCascades will be empty, the other has all the
+    // direct decays of initialScolored to electroweakinos:
+    minimalAllocationVector< sxFullCascade > sxCascades;
+    minimalAllocationVector< gxFullCascade > gxCascades;
+
+    /* all of these minimalAllocationVectors hold the cascades built upon
+     * cascades from the other fullCascadeSets, & the bools note if they have
+     * been worked out for this point or not:
+     */
+    minimalAllocationVector< sjgxFullCascade > sjgxCascades;
+    bool sjgxNotYetCalculated;
+    minimalAllocationVector< gjsxFullCascade > gjsxCascades;
+    bool gjsxNotYetCalculated;
+    minimalAllocationVector< sjgjsxFullCascade > sjgjsxCascades;
+    bool sjgjsxNotYetCalculated;
+    minimalAllocationVector< svsxFullCascade > svsxCascades;
+    bool svsxNotYetCalculated;
+    minimalAllocationVector< gvsxFullCascade > gvsxCascades;
+    bool gvsxNotYetCalculated;
+    minimalAllocationVector< gjsvsxFullCascade > gjsvsxCascades;
+    bool gjsvsxNotYetCalculated;
+    minimalAllocationVector< svgxFullCascade > svgxCascades;
+    bool svgxNotYetCalculated;
+    minimalAllocationVector< svsjgxFullCascade > svsjgxCascades;
+    bool svsjgxNotYetCalculated;
+    minimalAllocationVector< svsjgjsxFullCascade > svsjgjsxCascades;
+    bool svsjgjsxNotYetCalculated;
+    minimalAllocationVector< svgjsxFullCascade > svgjsxCascades;
+    bool svgjsxNotYetCalculated;
+    minimalAllocationVector< sjgvsxFullCascade > sjgvsxCascades;
+    bool sjgvsxNotYetCalculated;
+    minimalAllocationVector< sjgjsvsxFullCascade > sjgjsvsxCascades;
+    bool sjgjsvsxNotYetCalculated;
+
+    input_handler const* const shortcut;
+    std::list< fullCascadeSet* >* const cascadeSetList;
+    bool cascadeSetListNotYetOrdered;
+    double const beamEnergy;
+
+    virtual void
+    setUpCascades()
+    // this should clear openCascades, then sets it to be filled with all open
+    // fullCascades that initialScolored has for this point.
+    = 0;
   };
 
 
