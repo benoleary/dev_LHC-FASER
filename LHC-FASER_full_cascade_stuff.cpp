@@ -1535,8 +1535,8 @@ namespace LHC_FASER
     chargeConjugateSumFactor( chargeConjugateSumFactor ),
     subcascade( NULL ),
     cascadeDefiner(),
-    ewinoCascade( NULL ),
-    vectorCascade( NULL ),
+    ewinoCascades( NULL ),
+    vectorCascades( NULL ),
     soughtDecayProductList( 1,
                             CppSLHA::CppSLHA_global::really_wrong_value )
   {
@@ -1561,7 +1561,7 @@ namespace LHC_FASER
   {
     // we should really check that ewinoCascade is not NULL, but this function
     // should never be called on a fullCascade which has a NULL ewinoCascade.
-    if( NULL == vectorCascade )
+    if( NULL == vectorCascades )
     {
       /* if there is no possibility of extra jets from a vector decay, we can
        * only get a single OSSF-OSDF pair from an electroweakino decay, which
@@ -1569,7 +1569,7 @@ namespace LHC_FASER
        */
       if( 0 == numberOfAdditionalJets )
       {
-        return ewinoCascade->getOssfMinusOsdf( cuts );
+        return ewinoCascades->getOssfMinusOsdf( cuts );
       }
       else
       {
@@ -1578,8 +1578,8 @@ namespace LHC_FASER
     }
     else
     {
-      return ( ewinoCascade->getOssfMinusOsdf( cuts )
-               * vectorCascade->getAcceptance( true
+      return ( ewinoCascades->getOssfMinusOsdf( cuts )
+               * vectorCascades->getAcceptance( true
                                              /* doesn't matter for 0 leptons*/,
                                                cuts,
                                                numberOfAdditionalJets,
@@ -1587,8 +1587,8 @@ namespace LHC_FASER
                                                0,
                                                0,
                                                0 )
-               + vectorCascade->getOssfMinusOsdf( cuts )
-                 * ewinoCascade->getAcceptance( true
+               + vectorCascades->getOssfMinusOsdf( cuts )
+                 * ewinoCascades->getAcceptance( true
                                               /* doesn't matter for 0 leptons*/,
                                                 cuts,
                                                 numberOfAdditionalJets,
@@ -1615,7 +1615,7 @@ namespace LHC_FASER
     {
       // we should check that ewinoCascade is not NULL, but this function
       // should never be called on a fullCascade which has a NULL ewinoCascade.
-      if( NULL == vectorCascade )
+      if( NULL == vectorCascades )
       {
         /* if there is no possibility of extra jets from a vector decay, we can
          * only get a single OSSF-OSDF pair from an electroweakino decay, which
@@ -1623,7 +1623,7 @@ namespace LHC_FASER
          */
         if( 1 == numberOfLeptonPairs )
         {
-          return ewinoCascade->getOssfMinusOsdf( cuts );
+          return ewinoCascades->getOssfMinusOsdf( cuts );
         }
         else
           // if there's no vector cascade, the only possibilities for non-zero
@@ -1636,13 +1636,13 @@ namespace LHC_FASER
       {
         if( 2 == numberOfLeptonPairs )
         {
-          return ( ewinoCascade->getOssfMinusOsdf( cuts )
-                   * vectorCascade->getOssfMinusOsdf( cuts ) );
+          return ( ewinoCascades->getOssfMinusOsdf( cuts )
+                   * vectorCascades->getOssfMinusOsdf( cuts ) );
         }
         else if( 1 == numberOfLeptonPairs )
         {
-        return ( ewinoCascade->getOssfMinusOsdf( cuts )
-                 * ( vectorCascade->getAcceptance( true
+        return ( ewinoCascades->getOssfMinusOsdf( cuts )
+                 * ( vectorCascades->getAcceptance( true
                                             /* doesn't matter for 0 leptons */,
                                                  cuts,
                                                  0,
@@ -1650,7 +1650,7 @@ namespace LHC_FASER
                                                  0,
                                                  0,
                                                  0 )
-                     + vectorCascade->getAcceptance( true
+                     + vectorCascades->getAcceptance( true
                                             /* doesn't matter for 0 leptons */,
                                                      cuts,
                                                      1,
@@ -1658,7 +1658,7 @@ namespace LHC_FASER
                                                      0,
                                                      0,
                                                      0 )
-                     + vectorCascade->getAcceptance( true
+                     + vectorCascades->getAcceptance( true
                                             /* doesn't matter for 0 leptons */,
                                                      cuts,
                                                      2,
@@ -1666,8 +1666,8 @@ namespace LHC_FASER
                                                      0,
                                                      0,
                                                      0 ) )
-                 + vectorCascade->getOssfMinusOsdf( cuts )
-                   * ( ewinoCascade->getAcceptance( true
+                 + vectorCascades->getOssfMinusOsdf( cuts )
+                   * ( ewinoCascades->getAcceptance( true
                                             /* doesn't matter for 0 leptons */,
                                                     cuts,
                                                     0,
@@ -1675,7 +1675,7 @@ namespace LHC_FASER
                                                     0,
                                                     0,
                                                     0 )
-                       + ewinoCascade->getAcceptance( true
+                       + ewinoCascades->getAcceptance( true
                                             /* doesn't matter for 0 leptons */,
                                                       cuts,
                                                       1,
@@ -1683,7 +1683,7 @@ namespace LHC_FASER
                                                       0,
                                                       0,
                                                       0 )
-                       + ewinoCascade->getAcceptance( true
+                       + ewinoCascades->getAcceptance( true
                                             /* doesn't matter for 0 leptons */,
                                                       cuts,
                                                       2,
@@ -1836,7 +1836,7 @@ namespace LHC_FASER
               {
                 if( ewinoScoloredIsNotAntiparticle )
                 {
-                  ewinoAcceptance = ewinoCascade->getAcceptance( cuts,
+                  ewinoAcceptance = ewinoCascades->getAcceptance( cuts,
                                                                  ewinoJets,
                                                         ewinoNegativeElectrons,
                                                         ewinoPositiveElectrons,
@@ -1845,7 +1845,7 @@ namespace LHC_FASER
                 }
                 else
                 {
-                  ewinoAcceptance = ewinoCascade->getAcceptance( cuts,
+                  ewinoAcceptance = ewinoCascades->getAcceptance( cuts,
                                                                  ewinoJets,
                                                         ewinoPositiveElectrons,
                                                         ewinoNegativeElectrons,
@@ -1854,7 +1854,7 @@ namespace LHC_FASER
                 }
                 if( vectorScoloredIsNotAntiparticle )
                 {
-                  vectorAcceptance = vectorCascade->getAcceptance( cuts,
+                  vectorAcceptance = vectorCascades->getAcceptance( cuts,
                                         ( numberOfAdditionalJets - ewinoJets ),
                         ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
                         ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
@@ -1863,7 +1863,7 @@ namespace LHC_FASER
                 }
                 else
                 {
-                  vectorAcceptance = vectorCascade->getAcceptance( cuts,
+                  vectorAcceptance = vectorCascades->getAcceptance( cuts,
                                         ( numberOfAdditionalJets - ewinoJets ),
                         ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
                         ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
@@ -1923,10 +1923,10 @@ namespace LHC_FASER
    * of scoloredIsNotAntiparticle.
    */
   {
-    if( ewinoCascade->getElectroweakDecayer()->counts_as_self_conjugate() )
+    if( ewinoCascades->getElectroweakDecayer()->counts_as_self_conjugate() )
       // if the gluino has only 1 charge version of this decay...
     {
-      return ewinoCascade->getAcceptance( cuts,
+      return ewinoCascades->getAcceptance( cuts,
                                           numberOfAdditionalJets,
                                           numberOfNegativeElectrons,
                                           numberOfPositiveElectrons,
@@ -1938,13 +1938,13 @@ namespace LHC_FASER
     else
       // otherwise if the gluino has 2 charge versions of this decay...
     {
-      return ( 0.5 * ( ewinoCascade->getAcceptance( cuts,
+      return ( 0.5 * ( ewinoCascades->getAcceptance( cuts,
                                                     numberOfAdditionalJets,
                                                     numberOfNegativeElectrons,
                                                     numberOfPositiveElectrons,
                                                     numberOfNegativeMuons,
                                                     numberOfPositiveMuons )
-                       + ewinoCascade->getAcceptance( cuts,
+                       + ewinoCascades->getAcceptance( cuts,
                                                       numberOfAdditionalJets,
                                                      numberOfPositiveElectrons,
                                                      numberOfNegativeElectrons,
@@ -2152,66 +2152,313 @@ namespace LHC_FASER
   }
 
 
+
   fullCascadeSet::fullCascadeSet( input_handler const* const shortcut,
                    CppSLHA::particle_property_set const* const initialScolored,
-                            std::list< fullCascadeSet* >* const cascadeSetList,
+                      std::list< fullCascadeSet* >* const squarkCascadeSetList,
                                   double const beamEnergy ) :
     readied_for_new_point( shortcut->get_readier() ),
+    initialScolored( initialScolored ),
     sxCascades( &fullCascade::getNewFullCascade() ),
     gxCascades( &fullCascade::getNewFullCascade() ),
     sjgxCascades( &fullCascade::getNewFullCascade() ),
-    sjgxNotYetCalculated( true ),
     gjsxCascades( &fullCascade::getNewFullCascade() ),
-    gjsxNotYetCalculated( true ),
     sjgjsxCascades( &fullCascade::getNewFullCascade() ),
-    sjgjsxNotYetCalculated( true ),
     svsxCascades( &fullCascade::getNewFullCascade() ),
-    svsxNotYetCalculated( true ),
     gvsxCascades( &fullCascade::getNewFullCascade() ),
-    gvsxNotYetCalculated( true ),
     gjsvsxCascades( &fullCascade::getNewFullCascade() ),
-    gjsvsxNotYetCalculated( true ),
     svgxCascades( &fullCascade::getNewFullCascade() ),
-    svgxNotYetCalculated( true ),
     svsjgxCascades( &fullCascade::getNewFullCascade() ),
-    svsjgxNotYetCalculated( true ),
     svsjgjsxCascades( &fullCascade::getNewFullCascade() ),
-    svsjgjsxNotYetCalculated( true ),
     svgjsxCascades( &fullCascade::getNewFullCascade() ),
-    svgjsxNotYetCalculated( true ),
     sjgvsxCascades( &fullCascade::getNewFullCascade() ),
-    sjgvsxNotYetCalculated( true ),
     sjgjsvsxCascades( &fullCascade::getNewFullCascade() ),
-    sjgjsvsxNotYetCalculated( true ),
     shortcut( shortcut ),
-    cascadeSetList( cascadeSetList ),
-    cascadeSetListNotYetOrdered( true ),
+    squarkCascadeSetList( squarkCascadeSetList ),
+    squarkCascadeSetListNotYetOrdered( true ),
     beamEnergy( beamEnergy )
   {
     // just an initialization list.
   }
-
 
   fullCascadeSet::~fullCascadeSet()
   {
     // does nothing.
   }
 
-  inline std::vector< fullCascade* >*
-  fullCascadeSet::getOpenCascades()
-  // this should call setUpCascades() if it needs to be readied for this
-  // point.
+  void
+  fullCascadeSet::setUpCascades()
+  // this clears openCascades, then sets it to be filled with all open
+  // fullCascades that initialScolored has for this point.
   {
-    if( needs_to_prepare_for_this_point() )
+    openCascades.clear();
+    for( std::vector< sxFullCascade* >::iterator
+         sxIterator = sxCascades->getVector()->begin();
+         sxCascades->getVector()->end() > sxIterator;
+         ++sxIterator )
     {
-      setUpCascades();
-      finish_preparing_for_this_point();
+      if( (*sxIterator)->isOpen() )
+      {
+        openCascades.push_back( *sxIterator );
+      }
     }
-    return &openCascades;
+    for( std::vector< gxFullCascade* >::iterator
+         gxIterator = gxCascades->getVector()->begin();
+         gxCascades->getVector()->end() > gxIterator;
+         ++gxIterator )
+    {
+      if( (*sxIterator)->isOpen() )
+      {
+        openCascades.push_back( *gxIterator );
+      }
+    }
+    buildLongerCascades();
   }
 
+  squarkFullCascadeSet::squarkFullCascadeSet(
+                                           input_handler const* const shortcut,
+                   electroweakCascadeHandler* const electroweakCascadeHandling,
+                   CppSLHA::particle_property_set const* const initialScolored,
+                      std::list< fullCascadeSet* >* const squarkCascadeSetList,
+                                        fullCascadeSet* const gluinoCascadeSet,
+                                              double const beamEnergy ) :
+    fullCascadeSet( shortcut,
+                    initialScolored,
+                    electroweakCascadeHandling,
+                    squarkCascadeSetList,
+                    beamEnergy ),
+    gluinoCascadeSet( gluinoCascadeSet )
+  {
+    // we have to set up sxCascades now:
+    for( std::vector< CppSLHA::particle_property_set const* >::iterator
+         ewinoIterator = shortcut->get_electroweakinos()->begin();
+         shortcut->get_unstable_electroweakinos()->end() > ewinoIterator;
+         ++ewinoIterator )
+    {
+      sxCascades.addNewAtEnd()->setProperties( shortcut,
+                                               initialScolored,
+                                               beamEnergy,
+                                     electroweakCascadeHandling->getCascadeSet(
+                                                               initialScolored,
+                                                             ewinoIterator ) );
+    }
+  }
 
+  squarkFullCascadeSet::~squarkFullCascadeSet()
+  {
+    // does nothing.
+  }
 
+  void
+  squarkFullCascadeSet::buildLongerCascades()
+  {
+    if( squarkCascadeSetListNotYetOrdered )
+    {
+      squarkCascadeSetListNotYetOrdered = false;
+      squarkCascadeSetList->sort( &massOrdered );
+      for( std::list< fullCascadeSet* >::iterator
+           cascadeIterator = squarkCascadeSetList->begin();
+           squarkCascadeSetList->end() != cascadeIterator;
+           ++cascadeIterator )
+      {
+        (*cascadeIterator)->squarkCascadeSetListNotYetOrdered = false;
+      }
+    }
+    // now squarkCascadeSetList has been ordered such that the cascades of the
+    // lighter squarks come before those of the heavier squarks.
+
+    sjgxCascades.clear();
+    sjgjsxCascades.clear();
+    sjgvsxCascades.clear();
+    sjgjsvsxCascades.clear();
+    svgxCascades.clear();
+    svgjsxCascades.clear();
+    if( initialScolored->get_absolute_mass()
+        > shortcut->get_gluino()->get_absolute_mass() )
+    {
+      for( std::vector< gxFullCascade* >::iterator
+           gxIterator
+           = gluinoCascadeSet->getGxCascades()->getVector()->begin();
+           gluinoCascadeSet->getGxCascades()->getVector()->end() > gxIterator;
+           ++gxIterator )
+      {
+        sjgxCascades.addNewAtEnd()->setProperties( initialScolored,
+                                                   *gxIterator );
+        openCascades.push_back( sjgxCascades.getBack() );
+      }
+      for( std::vector< gjsxFullCascade* >::iterator
+           gjsxIterator
+           = gluinoCascadeSet->getGjsxCascades()->getVector()->begin();
+           gluinoCascadeSet->getGjsxCascades()->getVector()->end()
+           > gjsxIterator;
+           ++gjsxIterator )
+      {
+        sjgjsxCascades.addNewAtEnd()->setProperties( initialScolored,
+                                                     *gjsxIterator );
+        openCascades.push_back( sjgjsxCascades.getBack() );
+      }
+      for( std::vector< gvsxFullCascade* >::iterator
+           gvsxIterator
+           = gluinoCascadeSet->getGvsxCascades()->getVector()->begin();
+           gluinoCascadeSet->getGvsxCascades()->getVector()->end()
+           > gvsxIterator;
+           ++gvsxIterator )
+      {
+        sjgvsxCascades.addNewAtEnd()->setProperties( initialScolored,
+                                                     *gvsxIterator );
+        openCascades.push_back( sjgvsxCascades.getBack() );
+      }
+      for( std::vector< gjsvsxFullCascade* >::iterator
+           gjsvsxIterator
+           = gluinoCascadeSet->getGjsvsxCascades()->getVector()->begin();
+           gluinoCascadeSet->getGjsvsxCascades()->getVector()->end()
+           > gjsvsxIterator;
+           ++gjsvsxIterator )
+      {
+        sjgjsvsxCascades.addNewAtEnd()->setProperties( initialScolored,
+                                                       *gjsvsxIterator );
+        openCascades.push_back( sjgjsvsxCascades.getBack() );
+      }
+      for( std::vector< CppSLHA::particle_property_set const* >::iterator
+           ewIterator = shortcut->get_EW_veved_and_vector_bosons()->begin();
+           shortcut->get_EW_veved_and_vector_bosons()->end() > ewIterator;
+           ++ewIterator )
+      {
+        soughtPositivePdgCodeList.clear();
+        soughtPositivePdgCodeList.push_back( (*ewIterator)->get_PDG_code() );
+        soughtNegativePdgCodeList.clear();
+        soughtNegativePdgCodeList.push_back(
+                                            -((*ewIterator)->get_PDG_code()) );
+        if( ( initialScolored->get_absolute_mass()
+              > ( shortcut->get_gluino()->get_absolute_mass()
+                  + (*ewIterator)->get_absolute_mass() ) )
+            &&
+            ( ( LHC_FASER_global::negligible_BR
+                < initialScolored->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                 &soughtPositivePdgCodeList ) )
+              || ( LHC_FASER_global::negligible_BR
+                               < initialScolored->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                             &soughtNegativePdgCodeList ) ) ) )
+        {
+          for( std::vector< gxFullCascade* >::iterator
+               gxIterator
+               = gluinoCascadeSet->getGxCascades()->getVector()->begin();
+               gluinoCascadeSet->getGxCascades()->getVector()->end()
+               > gxIterator;
+               ++gxIterator )
+          {
+            svgxCascades.addNewAtEnd()->setProperties( initialScolored,
+                                     electroweakCascadeHandling->getCascadeSet(
+                                                               initialScolored,
+                                                                  *ewIterator),
+                                                       *gxIterator );
+            openCascades.push_back( svgxCascades.getBack() );
+          }
+          for( std::vector< gxFullCascade* >::iterator
+               gjsxIterator
+               = gluinoCascadeSet->getGjsxCascades()->getVector()->begin();
+               gluinoCascadeSet->getGjsxCascades()->getVector()->end()
+               > gjsxIterator;
+               ++gjsxIterator )
+          {
+            svgjsxCascades.addNewAtEnd()->setProperties( initialScolored,
+                                     electroweakCascadeHandling->getCascadeSet(
+                                                               initialScolored,
+                                                                  *ewIterator),
+                                                         *gjsxIterator );
+            openCascades.push_back( svgjsxCascades.getBack() );
+          }
+        }
+      }  // end of loop over if svg is open
+    }  // end of if squark mass is greater than gluino mass
+
+    // now we look for decays into lighter squarks:
+    svsxCascades.clear();
+    svsjgxCascades.clear();
+    svsjgjsxCascades.clear();
+    for( std::list< fullCascadeSet* >::iterator
+         cascadeIterator = squarkCascadeSetList->begin();
+         ( ( squarkCascadeSetList->end() != cascadeIterator )
+           &&
+           (*cascadeIterator)->initialScolored->get_absolute_mass()
+           < initialScolored->get_absolute_mass() );
+         ++cascadeIterator )
+    {
+      for( std::vector< CppSLHA::particle_property_set const* >::iterator
+           ewIterator = shortcut->get_EW_veved_and_vector_bosons()->begin();
+           shortcut->get_EW_veved_and_vector_bosons()->end() > ewIterator;
+           ++ewIterator )
+      {
+        soughtPositivePdgCodeList.clear();
+        soughtPositivePdgCodeList.push_back(
+                         (*cascadeIterator)->initialScolored->get_PDG_code() );
+        soughtPositivePdgCodeList.push_back( (*ewIterator)->get_PDG_code() );
+        soughtNegativePdgCodeList.clear();
+        soughtNegativePdgCodeList.push_back(
+                         (*cascadeIterator)->initialScolored->get_PDG_code() );
+        soughtNegativePdgCodeList.push_back(
+                                            -((*ewIterator)->get_PDG_code()) );
+        if( ( initialScolored->get_absolute_mass()
+              > ( (*cascadeIterator)->initialScolored->get_absolute_mass()
+                  + (*ewIterator)->get_absolute_mass() ) )
+            &&
+            ( ( LHC_FASER_global::negligible_BR
+                < initialScolored->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                 &soughtPositivePdgCodeList ) )
+              || ( LHC_FASER_global::negligible_BR
+                               < initialScolored->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                             &soughtNegativePdgCodeList ) ) ) )
+        {
+          for( std::vector< sxFullCascade* >::iterator
+               sxIterator
+               = (*cascadeIterator)->getSxCascades()->getVector()->begin();
+              (*cascadeIterator)->getSxCascades()->getVector()->end()
+               > sxIterator;
+               ++sxIterator )
+          {
+            svsxCascades.addNewAtEnd()->setProperties( initialScolored,
+                                     electroweakCascadeHandling->getCascadeSet(
+                                                               initialScolored,
+                                                                  *ewIterator),
+                                                       *sxIterator );
+            openCascades.push_back( svsxCascades.getBack() );
+          }
+          for( std::vector< sjgxFullCascade* >::iterator
+               sjgxIterator
+               = (*cascadeIterator)->getSjgxCascades()->getVector()->begin();
+              (*cascadeIterator)->getSjgxCascades()->getVector()->end()
+               > sjgxIterator;
+               ++sjgxIterator )
+          {
+            svsjgxCascades.addNewAtEnd()->setProperties( initialScolored,
+                                     electroweakCascadeHandling->getCascadeSet(
+                                                               initialScolored,
+                                                                  *ewIterator),
+                                                         *sjgxIterator );
+            openCascades.push_back( svsjgxCascades.getBack() );
+          }
+          for( std::vector< sjgxFullCascade* >::iterator
+               sjgjsxIterator
+               = (*cascadeIterator)->getSjgjsxCascades()->getVector()->begin();
+              (*cascadeIterator)->getSjgjsxCascades()->getVector()->end()
+               > sjgjsxIterator;
+               ++sjgjsxIterator )
+          {
+            svsjgjsxCascades.addNewAtEnd()->setProperties( initialScolored,
+                                     electroweakCascadeHandling->getCascadeSet(
+                                                               initialScolored,
+                                                                  *ewIterator),
+                                                           *sjgjsxIterator );
+            openCascades.push_back( svsjgjsxCascades.getBack() );
+          }
+        }
+      }  // end of loop over if svs is open
+    }
+  }
 
 
 }  // end of LHC_FASER namespace.

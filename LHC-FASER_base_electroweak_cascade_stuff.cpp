@@ -60,17 +60,16 @@ namespace LHC_FASER
   electroweakCascade::electroweakCascade(
                                          leptonAcceptanceCut* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
-                                    bool const coloredDecayerIsNotAntiparticle,
+                                  //bool const coloredDecayerIsNotAntiparticle,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
-                                bool const electroweakDecayerIsNotAntiparticle,
+                              //bool const electroweakDecayerIsNotAntiparticle,
                CppSLHA::particle_property_set const* const intermediateDecayer,
                                           bool const canDoOssfMinusOsdf,
                                         input_handler const* const shortcut ) :
     kinematics( kinematics ),
     coloredDecayer( coloredDecayer ),
-    coloredDecayerIsNotAntiparticle( coloredDecayerIsNotAntiparticle ),
+    //coloredDecayerIsNotAntiparticle( coloredDecayerIsNotAntiparticle ),
     electroweakDecayer( electroweakDecayer ),
-    electroweakDecayerIsNotAntiparticle( electroweakDecayerIsNotAntiparticle ),
     intermediateDecayer( intermediateDecayer ),
     firstBr( NULL ),
     secondBr( NULL ),
@@ -109,7 +108,7 @@ namespace LHC_FASER
    * coloredDecayer to electroweakDecayer - this is dealt with by the
    * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
    * are being considered for the signal).
-   * this function returns NULL if the cascade never results in the requested
+   * this function returns 0.0 if the cascade never results in the requested
    * set of jets + leptons.
    * the number of jets is the number produced from the decay of the
    * decaying *electroweak* particle (neutralino, chargino or vector boson),
@@ -233,18 +232,15 @@ namespace LHC_FASER
   }
 
 
+
   electroweakCascadeSet::electroweakCascadeSet(
                                          leptonAcceptanceCut* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
-                                    bool const coloredDecayerIsNotAntiparticle,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
-                                bool const electroweakDecayerIsNotAntiparticle,
                                         input_handler const* const shortcut ) :
     kinematics( kinematics ),
     coloredDecayer( coloredDecayer ),
-    coloredDecayerIsNotAntiparticle( coloredDecayerIsNotAntiparticle ),
     electroweakDecayer( electroweakDecayer ),
-    electroweakDecayerIsNotAntiparticle( electroweakDecayerIsNotAntiparticle ),
     shortcut( shortcut )
   {
     if( CppSLHA::PDG_code::neutralino_one
@@ -258,57 +254,43 @@ namespace LHC_FASER
     {
       currentCascade = new neutralinoToSemuCascade( kinematics,
                                                     coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                     electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                    shortcut->get_selectron_L(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToSemuCascade( kinematics,
                                                     coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                     electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                    shortcut->get_selectron_R(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToSemuCascade( kinematics,
                                                     coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                     electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                     shortcut->get_smuon_L(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToSemuCascade( kinematics,
                                                     coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                     electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                     shortcut->get_smuon_R(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
                                                     coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                     electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                     shortcut->get_stau_one(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
                                                     coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                     electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                     shortcut->get_stau_two(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToZCascade( kinematics,
                                                  coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                  electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                  shortcut );
       cascades.push_back( currentCascade );
       for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
@@ -320,25 +302,19 @@ namespace LHC_FASER
       {
         currentCascade = new neutralinoToHiggsCascade( kinematics,
                                                        coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                        electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                        *vevedBosonIterator,
                                                        shortcut );
         cascades.push_back( currentCascade );
       }
       currentCascade = new neutralinoThreeBodyDecayCascade( kinematics,
                                                             coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                             electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                             shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoThreeBodyToTausCascade( kinematics,
                                                              coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                             electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                              shortcut );
       cascades.push_back( currentCascade );
     }
@@ -355,42 +331,32 @@ namespace LHC_FASER
       cascades.push_back( currentCascade );
       currentCascade = new charginoToSemuCascade( kinematics,
                                                   coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                   electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                   shortcut->get_selectron_R(),
                                                   shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToEmuSneutrinoCascade( kinematics,
                                                           coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                           electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                           shortcut->get_electron_sneutrino_L(),
                                                           shortcut );
       cascades.push_back( currentCascade );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
                                                     coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                     electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                     shortcut->get_stau_one(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
                                                     coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                     electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                     shortcut->get_stau_two(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToZCascade( kinematics,
                                                  coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                  electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                  shortcut );
       cascades.push_back( currentCascade );
       for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
@@ -402,25 +368,19 @@ namespace LHC_FASER
       {
         currentCascade = new neutralinoToHiggsCascade( kinematics,
                                                        coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                        electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                        *vevedBosonIterator,
                                                        shortcut );
         cascades.push_back( currentCascade );
       }
       currentCascade = new neutralinoThreeBodyDecayCascade( kinematics,
                                                             coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                             electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                             shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoThreeBodyToTausCascade( kinematics,
                                                              coloredDecayer,
-                                               coloredDecayerIsNotAntiparticle,
                                                             electroweakDecayer,
-                                           electroweakDecayerIsNotAntiparticle,
                                                              shortcut );
       cascades.push_back( currentCascade );
     }
@@ -449,9 +409,76 @@ namespace LHC_FASER
   }
 
 
+
+  electroweakCascadeHandler::electroweakCascadeHandler(
+                                          kinematics_handler* const kinematics,
+                                                        int const beamEnergy,
+                                        input_handler const* const shortcut ) :
+    kinematicsTable( kinematics->get_lepton_acceptance_table( beamEnergy ) ),
+    beamEnergy( beamEnergy ),
+    shortcut( shortcut )
+  {
+    // just an initialization list.
+  }
+
+  electroweakCascadeHandler::~electroweakCascadeHandler()
+  {
+    for( std::vector< electroweakCascadeSet* >::iterator
+         deletionIterator = cascadeSets.begin();
+         cascadeSets.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+  }
+
+  electroweakCascadeSet*
+  electroweakCascadeHandler::getCascadeSet(
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+               CppSLHA::particle_property_set const* const electroweakDecayer )
+  /* this looks to see if it already has an electroweakCascadeSet
+   * corresponding to the requested pairing, & if it does, it returns a
+   * pointer to it, & if it doesn't, it constructs a new
+   * electroweakCascadeSet & returns a pointer to that.
+   */
+  {
+    electroweakCascadeSet* returnPointer( NULL );
+    for( std::vector< electroweakCascadeSet* >::iterator
+         cascadeIterator = cascadeSets.begin();
+         cascadeSets.end() > cascadeIterator;
+         ++cascadeIterator )
+    {
+      if( (*cascadeIterator)->isEquivalent( coloredDecayer,
+                                            electroweakDecayer ) )
+      {
+        returnPointer = *cascadeIterator;
+        cascadeIterator = cascadeSets.end();
+      }
+    }
+    if( NULL == returnPointer )
+    {
+      returnPointer
+      = new electroweakCascadeSet( kinematicsTable->getAcceptanceValues(
+                                                                coloredDecayer,
+                                                          electroweakDecayer ),
+                                   coloredDecayer,
+                                   electroweakDecayer,
+                                   shortcut );
+      cascadeSets.push_back( returnPointer );
+    }
+    return returnPointer;
+  }
+
+
+
+
+
+
+
+
   double
   channel_calculator::integrate_acceptance( double const given_cut,
-                  leptonEnergyDistribution const* const lepton_distribution )
+                   leptonEnergyDistribution const* const lepton_distribution )
   {
 
     if( given_cut > 0.0 )

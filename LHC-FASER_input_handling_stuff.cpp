@@ -377,6 +377,13 @@ namespace LHC_FASER
     neutral_EWSB_scalars_and_pseudoscalars.push_back(
                                            neutral_EWSB_pseudoscalar_pointer );
 
+    EW_veved_and_vector_bosons.push_back( W_plus_pointer );
+    EW_veved_and_vector_bosons.push_back( Z_pointer );
+    EW_veved_and_vector_bosons.push_back( light_neutral_EWSB_scalar_pointer );
+    EW_veved_and_vector_bosons.push_back( heavy_neutral_EWSB_scalar_pointer );
+    EW_veved_and_vector_bosons.push_back( neutral_EWSB_pseudoscalar_pointer );
+    EW_veved_and_vector_bosons.push_back( charged_EWSB_scalar_pointer );
+
     // make the jet particle code lists:
 
     for( std::vector< CppSLHA::particle_property_set* >::const_iterator

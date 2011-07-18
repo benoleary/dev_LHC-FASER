@@ -235,10 +235,8 @@ namespace LHC_FASER
   public:
     electroweakCascade( leptonAcceptanceCut* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
-                        bool const coloredDecayerIsNotAntiparticle,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
-                        bool const electroweakDecayerIsNotAntiparticle,
-              CppSLHA::particle_property_set const* const intermediateDecayer,
+               CppSLHA::particle_property_set const* const intermediateDecayer,
                         bool const canDoOssfMinusOsdf,
                         input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -313,9 +311,9 @@ namespace LHC_FASER
   protected:
     leptonAcceptanceCut* const kinematics;
     CppSLHA::particle_property_set const* const coloredDecayer;
-    bool const coloredDecayerIsNotAntiparticle;
+    //bool const coloredDecayerIsNotAntiparticle;
     CppSLHA::particle_property_set const* const electroweakDecayer;
-    bool const electroweakDecayerIsNotAntiparticle;
+    //bool const electroweakDecayerIsNotAntiparticle;
     CppSLHA::particle_property_set const* const intermediateDecayer;
     bool const canDoOssfMinusOsdf;
     exclusive_BR_calculator* firstBr;
@@ -373,9 +371,7 @@ namespace LHC_FASER
   public:
     electroweakCascadeSet( leptonAcceptanceCut* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
-                           bool const coloredDecayerIsNotAntiparticle,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
-                           bool const electroweakDecayerIsNotAntiparticle,
                            input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -383,11 +379,11 @@ namespace LHC_FASER
     ~electroweakCascadeSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    input_handler const*
-    getShortcut()
-    {
-      return shortcut;
-    }
+    bool
+    isEquivalent( CppSLHA::particle_property_set const* const coloredDecayer,
+               CppSLHA::particle_property_set const* const electroweakDecayer )
+    // this returns true if the coloredDecayers & electroweakDecayers match.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     double
     getAcceptance( acceptanceCutSet const* const cuts,
@@ -428,14 +424,47 @@ namespace LHC_FASER
 
   protected:
     leptonAcceptanceCut* const kinematics;
-    CppSLHA::particle_property_set const* const coloredDecayer;
-    bool const coloredDecayerIsNotAntiparticle;
-    CppSLHA::particle_property_set const* const electroweakDecayer;
-    bool const electroweakDecayerIsNotAntiparticle;
     input_handler const* const shortcut;
+    CppSLHA::particle_property_set const* const coloredDecayer;
+    CppSLHA::particle_property_set const* const electroweakDecayer;
     std::vector< electroweakCascade* > cascades;
     electroweakCascade* currentCascade; // this is used for filling cascades.
   };
+
+  // this gives out pointers to electroweakCascadeSets at a fixed beam energy
+  // based on the requested colored sparticle & electroweakino or vector boson.
+  class electroweakCascadeHandler
+  {
+  public:
+    electroweakCascadeHandler( kinematics_handler* const kinematics,
+                               int const beamEnergy,
+                               input_handler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual
+    ~electroweakCascadeHandler()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    electroweakCascadeSet*
+    getCascadeSet( CppSLHA::particle_property_set const* const coloredDecayer,
+               CppSLHA::particle_property_set const* const electroweakDecayer )
+    /* this looks to see if it already has an electroweakCascadeSet
+     * corresponding to the requested pairing, & if it does, it returns a
+     * pointer to it, & if it doesn't, it constructs a new
+     * electroweakCascadeSet & returns a pointer to that.
+     */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    lepton_acceptance_table* const kinematicsTable;
+    int const beamEnergy;
+    input_handler const* const shortcut;
+    std::vector< electroweakCascadeSet* > cascadeSets;
+    electroweakCascadeSet* currentCascadeSet;
+    // this is used for filling cascadeSets.
+  };
+
+
 
 
   /* this is an abstract base class for objects that calculate a set of
@@ -784,6 +813,55 @@ namespace LHC_FASER
   {
     return NULL;
   }
+
+
+
+  inline bool
+  electroweakCascadeSet::isEquivalent(
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+               CppSLHA::particle_property_set const* const electroweakDecayer )
+  // this returns true if the coloredDecayers & electroweakDecayers match.
+  {
+    if( ( coloredDecayer == this->coloredDecayer )
+        &&
+        ( electroweakDecayer == this->electroweakDecayer ) )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  inline double
+  electroweakCascadeSet::getAcceptance( acceptanceCutSet const* const cuts,
+                                        int const numberOfAdditionalJets,
+                                        int const numberOfNegativeElectrons,
+                                        int const numberOfPositiveElectrons,
+                                        int const numberOfNegativeMuons,
+                                        int const numberOfPositiveMuons )
+  // this adds up the acceptances from the stored electroweakCascades.
+  {
+    double returnValue( 0.0 );
+    for( std::vector< electroweakCascade* >::iterator
+         cascadeIterator = cascades.begin();
+         cascades.end() > cascadeIterator;
+         ++cascadeIterator )
+    {
+      returnValue
+      += (*cascadeIterator)->getAcceptance( cuts,
+                                            numberOfAdditionalJets,
+                                            numberOfNegativeElectrons,
+                                            numberOfPositiveElectrons,
+                                            numberOfNegativeMuons,
+                                            numberOfPositiveMuons );
+    }
+    return returnValue;
+  }
+
+
+
 
 
 

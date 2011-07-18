@@ -1152,6 +1152,15 @@ namespace LHC_FASER
 
     }
 
+    inline std::vector< CppSLHA::particle_property_set const* > const*
+    get_EW_veved_and_vector_bosons()
+    const
+    {
+
+      return &EW_veved_and_vector_bosons;
+
+    }
+
 
     hard_muon_from_tau const*
     get_hard_muon_from_tau()
@@ -1356,6 +1365,8 @@ namespace LHC_FASER
 
     std::vector< CppSLHA::particle_property_set const* >
     neutral_EWSB_scalars_and_pseudoscalars;
+    std::vector< CppSLHA::particle_property_set const* >
+    EW_veved_and_vector_bosons;
 
     decay_checker_handler* decay_checkers;
     exclusive_BR_handler* exclusive_BRs;

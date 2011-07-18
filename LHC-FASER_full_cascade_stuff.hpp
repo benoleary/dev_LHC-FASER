@@ -309,8 +309,8 @@ namespace LHC_FASER
     std::pair< CppSLHA::particle_property_set const*,
                int >* cascadeSegment;
     // this is just used for setting up cascadeDefiner properly.
-    electroweakCascade* ewinoCascade;
-    electroweakCascade* vectorCascade;
+    electroweakCascadeSet* ewinoCascades;
+    electroweakCascadeSet* vectorCascades;
     std::list< int > soughtDecayProductList;
     /* by default, there is only 1 particle to be sought in initialScolored's
      * decays. the constructor sets up soughtDecayProductList to have just a
@@ -367,7 +367,7 @@ namespace LHC_FASER
     setProperties( input_handler const* const shortcut,
                    CppSLHA::particle_property_set const* const initialSquark,
                    double const beamEnergy,
-                   electroweakCascade* const ewinoCascade )
+                   electroweakCascadeSet* const ewinoCascades )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -412,7 +412,7 @@ namespace LHC_FASER
     virtual void
     setProperties( input_handler const* const shortcut,
                    double const beamEnergy,
-                   electroweakCascade* const ewinoCascade )
+                   electroweakCascadeSet* const ewinoCascades )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -561,7 +561,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
-                   electroweakCascade* const vectorCascade,
+                   electroweakCascadeSet* const vectorCascades,
                    fullCascade* const sxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -597,7 +597,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( electroweakCascade* const vectorCascade,
+    setProperties( electroweakCascadeSet* const vectorCascades,
                    fullCascade* const sxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -672,7 +672,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
-                   electroweakCascade* const vectorCascade,
+                   electroweakCascadeSet* const vectorCascades,
                    fullCascade* const gxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -709,7 +709,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
-                   electroweakCascade* const vectorCascade,
+                   electroweakCascadeSet* const vectorCascades,
                    fullCascade* const sjgxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -748,7 +748,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
-                   electroweakCascade* const vectorCascade,
+                   electroweakCascadeSet* const vectorCascades,
                    fullCascade* const sjgjsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -785,7 +785,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
-                   electroweakCascade* const vectorCascade,
+                   electroweakCascadeSet* const vectorCascades,
                    fullCascade* const gjsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -891,9 +891,16 @@ namespace LHC_FASER
   class fullCascadeSet : public readied_for_new_point
   {
   public:
+    static bool
+    massOrdered( fullCascadeSet* firstSet,
+                 fullCascadeSet* secondSet )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+
     fullCascadeSet( input_handler const* const shortcut,
                    CppSLHA::particle_property_set const* const initialScolored,
-                    std::list<fullCascadeSet*>* const cascadeSetList,
+                   electroweakCascadeHandler* const electroweakCascadeHandling,
+                    std::list< fullCascadeSet* >* const squarkCascadeSetList,
                     double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -903,52 +910,56 @@ namespace LHC_FASER
 
     std::vector< fullCascade* >*
     getOpenCascades()
+    // this calls setUpCascades() if it needs to be readied for this point.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    virtual minimalAllocationVector< sxFullCascade >*
+    minimalAllocationVector< sxFullCascade >*
     getSxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< gxFullCascade >*
+    minimalAllocationVector< gxFullCascade >*
     getGxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< sjgxFullCascade >*
+    minimalAllocationVector< sjgxFullCascade >*
     getSjgxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< gjsxFullCascade >*
+    minimalAllocationVector< gjsxFullCascade >*
     getGjsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< sjgjsxFullCascade >*
+    minimalAllocationVector< sjgjsxFullCascade >*
     getSjgjsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svsxFullCascade >*
+    minimalAllocationVector< svsxFullCascade >*
     getSvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< gvsxFullCascade >*
+    minimalAllocationVector< gvsxFullCascade >*
     getGvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< gjsvsxFullCascade >*
+    minimalAllocationVector< gjsvsxFullCascade >*
     getGjsvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svgxFullCascade >*
+    minimalAllocationVector< svgxFullCascade >*
     getSvgxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svsjgxFullCascade >*
+    minimalAllocationVector< svsjgxFullCascade >*
     getSvsjgxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svsjgjsxFullCascade >*
+    minimalAllocationVector< svsjgjsxFullCascade >*
     getSvsjgjsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svgjsxFullCascade >*
+    minimalAllocationVector< svgjsxFullCascade >*
     getSvgjsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< sjgvsxFullCascade >*
+    minimalAllocationVector< sjgvsxFullCascade >*
     getSjgvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< sjgjsvsxFullCascade >*
+    minimalAllocationVector< sjgjsvsxFullCascade >*
     getSjgjsvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
+    CppSLHA::particle_property_set const* const initialScolored;
+    electroweakCascadeHandler* const electroweakCascadeHandling;
+
     std::vector< fullCascade* > openCascades;
     // this holds pointers to all the open cascades.
 
@@ -975,14 +986,22 @@ namespace LHC_FASER
     minimalAllocationVector< sjgjsvsxFullCascade > sjgjsvsxCascades;
 
     input_handler const* const shortcut;
-    std::list< fullCascadeSet* >* const cascadeSetList;
-    bool cascadeSetListNotYetOrdered;
+    std::list< fullCascadeSet* >* const squarkCascadeSetList;
+    bool squarkCascadeSetListNotYetOrdered;
     double const beamEnergy;
+    std::list< int > soughtPositivePdgCodeList;
+    std::list< int > soughtNegativePdgCodeList;
+
+    void
+    setUpCascades()
+    // this clears openCascades, then sets it to be filled with all open
+    // fullCascades that initialScolored has for this point.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setUpCascades()
-    // this should clear openCascades, then sets it to be filled with all open
-    // fullCascades that initialScolored has for this point.
+    buildLongerCascades()
+    // this should set up all the cascades that involve taking subcascades from
+    // the other fullCascadeSets.
     = 0;
   };
 
@@ -992,62 +1011,24 @@ namespace LHC_FASER
   {
   public:
     squarkFullCascadeSet( input_handler const* const shortcut,
+                          electroweakCascadeHandler* const ewCascadeHandler,
                    CppSLHA::particle_property_set const* const initialScolored,
-                    std::list<fullCascadeSet*>* const cascadeSetList,
-                    double const beamEnergy )
+                      std::list< fullCascadeSet* >* const squarkCascadeSetList,
+                          fullCascadeSet* const gluinoCascadeSet,
+                          double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual
     ~squarkFullCascadeSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    virtual minimalAllocationVector< sxFullCascade >*
-    getSxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< sjgxFullCascade >*
-    getSjgxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< sjgjsxFullCascade >*
-    getSjgjsxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svsxFullCascade >*
-    getSvsxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svgxFullCascade >*
-    getSvgxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svsjgxFullCascade >*
-    getSvsjgxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svsjgjsxFullCascade >*
-    getSvsjgjsxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< svgjsxFullCascade >*
-    getSvgjsxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< sjgvsxFullCascade >*
-    getSjgvsxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< sjgjsvsxFullCascade >*
-    getSjgjsvsxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   protected:
-    // the bools note if the relevant cascades have been worked out or not:
-    bool sjgxNotYetCalculated;
-    bool sjgjsxNotYetCalculated;
-    bool svsxNotYetCalculated;
-    bool svgxNotYetCalculated;
-    bool svsjgxNotYetCalculated;
-    bool svsjgjsxNotYetCalculated;
-    bool svgjsxNotYetCalculated;
-    bool sjgvsxNotYetCalculated;
-    bool sjgjsvsxNotYetCalculated;
+    fullCascadeSet* const gluinoCascadeSet;
 
     virtual void
-    setUpCascades()
-    // this should clear openCascades, then sets it to be filled with all open
-    // fullCascades that initialScolored has for this point.
+    buildLongerCascades()
+    // this should set up all the cascades that involve taking subcascades from
+    // the other fullCascadeSets.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
@@ -1058,37 +1039,20 @@ namespace LHC_FASER
   public:
     gluinoFullCascadeSet( input_handler const* const shortcut,
                    CppSLHA::particle_property_set const* const initialScolored,
-                    std::list<fullCascadeSet*>* const cascadeSetList,
-                    double const beamEnergy )
+                          electroweakCascadeHandler* const ewCascadeHandler,
+                      std::list< fullCascadeSet* >* const squarkCascadeSetList,
+                          double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual
     ~gluinoFullCascadeSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    virtual minimalAllocationVector< gxFullCascade >*
-    getGxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< gjsxFullCascade >*
-    getGjsxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< gvsxFullCascade >*
-    getGvsxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual minimalAllocationVector< gjsvsxFullCascade >*
-    getGjsvsxCascades()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   protected:
-    // the bools note if the relevant cascades have been worked out or not:
-    bool gjsxNotYetCalculated;
-    bool gvsxNotYetCalculated;
-    bool gjsvsxNotYetCalculated;
-
     virtual void
-    setUpCascades()
-    // this should clear openCascades, then sets it to be filled with all open
-    // fullCascades that initialScolored has for this point.
+    buildLongerCascades()
+    // this should set up all the cascades that involve taking subcascades from
+    // the other fullCascadeSets.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
@@ -1208,7 +1172,7 @@ namespace LHC_FASER
    * electroweakino is a neutralino.)
    */
   {
-    if( ewinoCascade->getElectroweakDecayer()->counts_as_self_conjugate()
+    if( ewinoCascades->getElectroweakDecayer()->counts_as_self_conjugate()
         ||
         ( ( numberOfNegativeElectrons == numberOfPositiveElectrons )
           &&
@@ -1234,8 +1198,8 @@ namespace LHC_FASER
   {
     shortcut = copySource->shortcut;
     beamEnergy = copySource->beamEnergy;
-    ewinoCascade = copySource->ewinoCascade;
-    vectorCascade = copySource->vectorCascade;
+    ewinoCascades = copySource->ewinoCascades;
+    vectorCascades = copySource->vectorCascades;
     subcascade = copySource;
     soughtDecayProductList.front()
     = copySource->getInitialScolored()->get_PDG_code();
@@ -1256,7 +1220,7 @@ namespace LHC_FASER
   }
 
   inline double
-  getBrToEwino( std::list< int > const* excludedSmParticles )
+  fullCascade::getBrToEwino( std::list< int > const* excludedSmParticles )
   const
   /* this works out the branching ratio for the decays of colored sparticles
    * down to the 1st electroweakino in the cascade (including any decays to
@@ -1287,7 +1251,7 @@ namespace LHC_FASER
     this->shortcut = shortcut;
     this->initialScolored = initialSquark;
     this->beamEnergy = beamEnergy;
-    this->ewinoCascade = ewinoCascade;
+    this->ewinoCascades = ewinoCascade;
     soughtDecayProductList.front() =
                          ewinoCascade->getElectroweakDecayer()->get_PDG_code();
     cascadeDefiner.clear();
@@ -1329,7 +1293,7 @@ namespace LHC_FASER
     if( scoloredIsNotAntiparticle )
       // if we have a particle, we return the acceptance for the particle.
     {
-      return ewinoCascade->getAcceptance( cuts,
+      return ewinoCascades->getAcceptance( cuts,
                                           numberOfAdditionalJets,
                                           numberOfNegativeElectrons,
                                           numberOfPositiveElectrons,
@@ -1339,7 +1303,7 @@ namespace LHC_FASER
     else
       // if we have an antiparticle, we swap the charges.
     {
-      return ewinoCascade->getAcceptance( cuts,
+      return ewinoCascades->getAcceptance( cuts,
                                           numberOfAdditionalJets,
                                           numberOfPositiveElectrons,
                                           numberOfNegativeElectrons,
@@ -1357,7 +1321,7 @@ namespace LHC_FASER
     this->shortcut = shortcut;
     this->initialScolored = shortcut->get_gluino();
     this->beamEnergy = beamEnergy;
-    this->ewinoCascade = ewinoCascade;
+    this->ewinoCascades = ewinoCascade;
     soughtDecayProductList.front() =
                          ewinoCascade->getElectroweakDecayer()->get_PDG_code();
     cascadeDefiner.clear();
@@ -1377,7 +1341,7 @@ namespace LHC_FASER
    * to exclude unwanted parts of the BR.
    */
   {
-    if( ewinoCascade->getElectroweakDecayer()->counts_as_self_conjugate() )
+    if( ewinoCascades->getElectroweakDecayer()->counts_as_self_conjugate() )
       // if the gluino has only 1 charge version of this decay...
     {
       return initialScolored->inspect_direct_decay_handler(
@@ -1503,7 +1467,7 @@ namespace LHC_FASER
   {
     initialScolored = initialSquark;
     buildOn( sxCascade );
-    this->vectorCascade = vectorCascade;
+    this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
@@ -1552,7 +1516,7 @@ namespace LHC_FASER
   {
     buildOn( sxCascade );
     initialScolored = shortcut->get_gluino();
-    this->vectorCascade = vectorCascade;
+    this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
@@ -1653,7 +1617,7 @@ namespace LHC_FASER
     initialScolored = initialSquark;
     buildOn( gxCascade,
              3 );
-    this->vectorCascade = vectorCascade;
+    this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
@@ -1702,7 +1666,7 @@ namespace LHC_FASER
   {
     initialScolored = initialSquark;
     buildOn( sjgxCascade );
-    this->vectorCascade = vectorCascade;
+    this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
@@ -1753,7 +1717,7 @@ namespace LHC_FASER
   {
     initialScolored = initialSquark;
     buildOn( sjgjsxCascade );
-    this->vectorCascade = vectorCascade;
+    this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
@@ -1805,7 +1769,7 @@ namespace LHC_FASER
   {
     initialScolored = initialSquark;
     buildOn( gjsxCascade );
-    this->vectorCascade = vectorCascade;
+    this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
@@ -1913,99 +1877,186 @@ namespace LHC_FASER
 
 
 
+  bool
+  fullCascadeSet::massOrdered( fullCascadeSet* firstSet,
+                               fullCascadeSet* secondSet )
+  // this returns true if firstSet's initialScolored has equal or lighter mass
+  // than secondSet, false otherwise.
+  {
+    if( firstSet->initialScolored->get_absolute_mass()
+        <= secondSet->initialScolored->get_absolute_mass() )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   inline std::vector< fullCascade* >*
   fullCascadeSet::getOpenCascades()
-  // this should call setUpCascades() if it needs to be readied for this
-  // point.
+  // this calls setUpCascades() if it needs to be readied for this point.
   {
     if( needs_to_prepare_for_this_point() )
     {
       setUpCascades();
+      finish_preparing_for_this_point();
     }
-    return cascadeSet.getOpenCascades();
+    return &openCascades;
   }
 
   inline minimalAllocationVector< sxFullCascade >*
   fullCascadeSet::getSxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &sxCascades;
   }
 
   inline minimalAllocationVector< gxFullCascade >*
   fullCascadeSet::getGxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &gxCascades;
   }
 
   inline minimalAllocationVector< sjgxFullCascade >*
   fullCascadeSet::getSjgxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &sjgxCascades;
   }
 
   inline minimalAllocationVector< gjsxFullCascade >*
   fullCascadeSet::getGjsxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &gjsxCascades;
   }
 
   inline minimalAllocationVector< sjgjsxFullCascade >*
   fullCascadeSet::getSjgjsxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &sjgjsxCascades;
   }
 
   inline minimalAllocationVector< svsxFullCascade >*
   fullCascadeSet::getSvsxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &svsxCascades;
   }
 
   inline minimalAllocationVector< gvsxFullCascade >*
   fullCascadeSet::getGvsxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &gvsxCascades;
   }
 
   inline minimalAllocationVector< gjsvsxFullCascade >*
   fullCascadeSet::getGjsvsxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &gjsvsxCascades;
   }
 
   inline minimalAllocationVector< svgxFullCascade >*
   fullCascadeSet::getSvgxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &svgxCascades;
   }
 
   inline minimalAllocationVector< svsjgxFullCascade >*
   fullCascadeSet::getSvsjgxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &svsjgxCascades;
   }
 
   inline minimalAllocationVector< svsjgjsxFullCascade >*
   fullCascadeSet::getSvsjgjsxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &svsjgjsxCascades;
   }
 
   inline minimalAllocationVector< svgjsxFullCascade >*
   fullCascadeSet::getSvgjsxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &svgjsxCascades;
   }
 
   inline minimalAllocationVector< sjgvsxFullCascade >*
   fullCascadeSet::getSjgvsxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &sjgvsxCascades;
   }
 
   inline minimalAllocationVector< sjgjsvsxFullCascade >*
   fullCascadeSet::getSjgjsvsxCascades()
   {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
     return &sjgjsvsxCascades;
   }
 
