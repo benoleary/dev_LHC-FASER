@@ -2150,4 +2150,152 @@ namespace LHC_FASER
   {
     // does nothing.
   }
+
+
+  fullCascadeSet::fullCascadeSet( input_handler const* const shortcut,
+                   CppSLHA::particle_property_set const* const initialScolored,
+                            std::list< fullCascadeSet* >* const cascadeSetList,
+                                  double const beamEnergy ) :
+    readied_for_new_point( shortcut->get_readier() ),
+    sjgxNotYetCalculated( true ),
+    gjsxNotYetCalculated( true ),
+    sjgjsxNotYetCalculated( true ),
+    svsxNotYetCalculated( true ),
+    gvsxNotYetCalculated( true ),
+    gjsvsxNotYetCalculated( true ),
+    svgxNotYetCalculated( true ),
+    svsjgxNotYetCalculated( true ),
+    svsjgjsxNotYetCalculated( true ),
+    svgjsxNotYetCalculated( true ),
+    sjgvsxNotYetCalculated( true ),
+    sjgjsvsxNotYetCalculated( true ),
+    shortcut( shortcut ),
+    cascadeSetList( cascadeSetList ),
+    cascadeSetListNotYetOrdered( true ),
+    beamEnergy( beamEnergy )
+  {
+    // just an initialization list.
+  }
+
+
+  fullCascadeSet::~fullCascadeSet()
+  {
+    // does nothing.
+  }
+
+  inline std::vector< fullCascade* >*
+  fullCascadeSet::getOpenCascades()
+  // this should call setUpCascades() if it needs to be readied for this
+  // point.
+  {
+    if( needs_to_prepare_for_this_point() )
+    {
+      setUpCascades();
+      finish_preparing_for_this_point();
+    }
+    return &openCascades;
+  }
+
+
+  void
+  fullCascadeSet::setUpCascades()
+  // this clears openCascades, then sets it to be filled with all open
+  // fullCascades that initialScolored has for this point.
+  {
+    openCascades.clear();
+    setUpCx();
+    if( sjgxNotYetCalculated )
+    {
+
+    }
+  }
+
+
+
+
+
+  virtual minimalAllocationVector< sxFullCascade >*
+  getSxCascades()
+  {
+    return &sxCascades;
+  }
+
+  virtual minimalAllocationVector< gxFullCascade >*
+  getGxCascades()
+  {
+    return &gxCascades;
+  }
+
+  virtual minimalAllocationVector< sjgxFullCascade >*
+  getSjgxCascades()
+  {
+    return &sjgxCascades;
+  }
+
+  virtual minimalAllocationVector< gjsxFullCascade >*
+  getGjsxCascades()
+  {
+    return &gjsxCascades;
+  }
+
+  virtual minimalAllocationVector< sjgjsxFullCascade >*
+  getSjgjsxCascades()
+  {
+    return &sjgjsxCascades;
+  }
+
+  virtual minimalAllocationVector< svsxFullCascade >*
+  getSvsxCascades()
+  {
+    return &svsxCascades;
+  }
+
+  virtual minimalAllocationVector< gvsxFullCascade >*
+  getGvsxCascades()
+  {
+    return &gvsxCascades;
+  }
+
+  virtual minimalAllocationVector< gjsvsxFullCascade >*
+  getGjsvsxCascades()
+  {
+    return &gjsvsxCascades;
+  }
+
+  virtual minimalAllocationVector< svgxFullCascade >*
+  getSvgxCascades()
+  {
+    return &svgxCascades;
+  }
+
+  virtual minimalAllocationVector< svsjgxFullCascade >*
+  getSvsjgxCascades()
+  {
+    return &svsjgxCascades;
+  }
+
+  virtual minimalAllocationVector< svsjgjsxFullCascade >*
+  getSvsjgjsxCascades()
+  {
+    return &svsjgjsxCascades;
+  }
+
+  virtual minimalAllocationVector< svgjsxFullCascade >*
+  getSvgjsxCascades()
+  {
+    return &svgjsxCascades;
+  }
+
+  virtual minimalAllocationVector< sjgvsxFullCascade >*
+  getSjgvsxCascades()
+  {
+    return &sjgvsxCascades;
+  }
+
+  virtual minimalAllocationVector< sjgjsvsxFullCascade >*
+  getSjgjsvsxCascades()
+  {
+    return &sjgjsvsxCascades;
+  }
+
 }  // end of LHC_FASER namespace.

@@ -455,7 +455,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
-                   gxFullCascade* const gxCascade )
+                   fullCascade* const gxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -489,7 +489,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( sxFullCascade* const sxCascade )
+    setProperties( fullCascade* const sxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -525,7 +525,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
-                   gjsxFullCascade* const gjsxCascade )
+                   fullCascade* const gjsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -562,7 +562,7 @@ namespace LHC_FASER
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
                    electroweakCascade* const vectorCascade,
-                   sxFullCascade* const sxCascade )
+                   fullCascade* const sxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -598,7 +598,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( electroweakCascade* const vectorCascade,
-                   sxFullCascade* const sxCascade )
+                   fullCascade* const sxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -633,7 +633,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( svsxFullCascade* const svsxCascade )
+    setProperties( fullCascade* const svsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -673,7 +673,7 @@ namespace LHC_FASER
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
                    electroweakCascade* const vectorCascade,
-                   gxFullCascade* const gxCascade )
+                   fullCascade* const gxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -710,7 +710,7 @@ namespace LHC_FASER
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
                    electroweakCascade* const vectorCascade,
-                   sjgxFullCascade* const sjgxCascade )
+                   fullCascade* const sjgxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -749,7 +749,7 @@ namespace LHC_FASER
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
                    electroweakCascade* const vectorCascade,
-                   sjgjsxFullCascade* const sjgjsxCascade )
+                   fullCascade* const sjgjsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -786,7 +786,7 @@ namespace LHC_FASER
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
                    electroweakCascade* const vectorCascade,
-                   gjsxFullCascade* const gjsxCascade )
+                   fullCascade* const gjsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -822,7 +822,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
-                   gvsxFullCascade* const gvsxCascade )
+                   fullCascade* const gvsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -860,7 +860,7 @@ namespace LHC_FASER
 
     virtual void
     setProperties( CppSLHA::particle_property_set const* const initialSquark,
-                        gjsvsxFullCascade* const gjsvsxCascade )
+                   fullCascade* const gjsvsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -893,44 +893,133 @@ namespace LHC_FASER
   public:
     fullCascadeSet( input_handler const* const shortcut,
                    CppSLHA::particle_property_set const* const initialScolored,
-                    std::list< fullCascadeSet* >* const cascadeSetList,
+                    std::list<fullCascadeSet*>* const cascadeSetList,
                     double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~fullCascadeSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    std::vector< fullCascade* >*
-    getOpenCascades()
-    // this should call setUpCascades() if it needs to be readied for this
-    // point.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    std::vector< fullCascade* >* getOpenCascades()
+        /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual minimalAllocationVector< sxFullCascade >*
+    getSxCascades()
+    {
+      return &sxCascades;
+    }
+
+    virtual minimalAllocationVector< gxFullCascade >*
+    getGxCascades()
+    {
+      return &gxCascades;
+    }
+
+    virtual minimalAllocationVector< sjgxFullCascade >*
+    getSjgxCascades()
+    {
+      return &sjgxCascades;
+    }
+
+    virtual minimalAllocationVector< gjsxFullCascade >*
+    getGjsxCascades()
+    {
+      return &gjsxCascades;
+    }
+
+    virtual minimalAllocationVector< sjgjsxFullCascade >*
+    getSjgjsxCascades()
+    {
+      return &sjgjsxCascades;
+    }
+
+    virtual minimalAllocationVector< svsxFullCascade >*
+    getSvsxCascades()
+    {
+      return &svsxCascades;
+    }
+
+    virtual minimalAllocationVector< gvsxFullCascade >*
+    getGvsxCascades()
+    {
+      return &gvsxCascades;
+    }
+
+    virtual minimalAllocationVector< gjsvsxFullCascade >*
+    getGjsvsxCascades()
+    {
+      return &gjsvsxCascades;
+    }
+
+    virtual minimalAllocationVector< svgxFullCascade >*
+    getSvgxCascades()
+    {
+      return &svgxCascades;
+    }
+
+    virtual minimalAllocationVector< svsjgxFullCascade >*
+    getSvsjgxCascades()
+    {
+      return &svsjgxCascades;
+    }
+
+    virtual minimalAllocationVector< svsjgjsxFullCascade >*
+    getSvsjgjsxCascades()
+    {
+      return &svsjgjsxCascades;
+    }
+
+    virtual minimalAllocationVector< svgjsxFullCascade >*
+    getSvgjsxCascades()
+    {
+      return &svgjsxCascades;
+    }
+
+    virtual minimalAllocationVector< sjgvsxFullCascade >*
+    getSjgvsxCascades()
+    {
+      return &sjgvsxCascades;
+    }
+
+    virtual minimalAllocationVector< sjgjsvsxFullCascade >*
+    getSjgjsvsxCascades()
+    {
+      return &sjgjsvsxCascades;
+    }
 
   protected:
-    minimalAllocationVector< fullCascade > openCascades;
-    minimalAllocationVector< sxFullCascade > sxCascades;
-    minimalAllocationVector< gxFullCascade > gxCascades;
-    minimalAllocationVector< sjgxFullCascade > sjgxCascades;
-    minimalAllocationVector< gjsxFullCascade > gjsxCascades;
-    minimalAllocationVector< sjgjsxFullCascade > sjgjsxCascades;
-    minimalAllocationVector< svsxFullCascade > svsxCascades;
-    minimalAllocationVector< gvsxFullCascade > gvsxCascades;
-    minimalAllocationVector< gjsvsxFullCascade > gjsvsxCascades;
-    minimalAllocationVector< svgxFullCascade > svgxCascades;
-    minimalAllocationVector< svsjgxFullCascade > svsjgxCascades;
-    minimalAllocationVector< svsjgjsxFullCascade > svsjgjsxCascades;
-    minimalAllocationVector< svgjsxFullCascade > svgjsxCascades;
-    minimalAllocationVector< sjgvsxFullCascade > sjgvsxCascades;
-    minimalAllocationVector< sjgjsvsxFullCascade > sjgjsvsxCascades;
-    input_handler const* const shortcut;
-    std::list< fullCascadeSet* >* const cascadeSetList;
-    double const beamEnergy;
-
-    void
-    setUpCascades()
-    // this clears openCascades, then sets it to be filled with all open
-    // fullCascades that initialScolored has for this point.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+      std::vector<fullCascade*> openCascades;
+      minimalAllocationVector<sxFullCascade> sxCascades;
+      minimalAllocationVector<gxFullCascade> gxCascades;
+      minimalAllocationVector<sjgxFullCascade> sjgxCascades;
+      bool sjgxNotYetCalculated;
+      minimalAllocationVector<gjsxFullCascade> gjsxCascades;
+      bool gjsxNotYetCalculated;
+      minimalAllocationVector<sjgjsxFullCascade> sjgjsxCascades;
+      bool sjgjsxNotYetCalculated;
+      minimalAllocationVector<svsxFullCascade> svsxCascades;
+      bool svsxNotYetCalculated;
+      minimalAllocationVector<gvsxFullCascade> gvsxCascades;
+      bool gvsxNotYetCalculated;
+      minimalAllocationVector<gjsvsxFullCascade> gjsvsxCascades;
+      bool gjsvsxNotYetCalculated;
+      minimalAllocationVector<svgxFullCascade> svgxCascades;
+      bool svgxNotYetCalculated;
+      minimalAllocationVector<svsjgxFullCascade> svsjgxCascades;
+      bool svsjgxNotYetCalculated;
+      minimalAllocationVector<svsjgjsxFullCascade> svsjgjsxCascades;
+      bool svsjgjsxNotYetCalculated;
+      minimalAllocationVector<svgjsxFullCascade> svgjsxCascades;
+      bool svgjsxNotYetCalculated;
+      minimalAllocationVector<sjgvsxFullCascade> sjgvsxCascades;
+      bool sjgvsxNotYetCalculated;
+      minimalAllocationVector<sjgjsvsxFullCascade> sjgjsvsxCascades;
+      bool sjgjsvsxNotYetCalculated;
+      const input_handler *const shortcut;
+      std::list<fullCascadeSet*> *const cascadeSetList;
+      bool cascadeSetListNotYetOrdered;
+      const double beamEnergy;
+      void setUpCascades();
   };
 
 
@@ -1239,7 +1328,7 @@ namespace LHC_FASER
   inline void
   sjgxFullCascade::setProperties(
                      CppSLHA::particle_property_set const* const initialSquark,
-                                  gxFullCascade* const gxCascade )
+                                  fullCascade* const gxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gxCascade );
@@ -1269,7 +1358,7 @@ namespace LHC_FASER
   }
 
   inline void
-  gjsxFullCascade::setProperties( sxFullCascade* const sxCascade )
+  gjsxFullCascade::setProperties( fullCascade* const sxCascade )
   {
     buildOn( sxCascade );
     initialScolored = shortcut->get_gluino();
@@ -1312,7 +1401,7 @@ namespace LHC_FASER
   inline void
   sjgjsxFullCascade::setProperties(
                      CppSLHA::particle_property_set const* const initialSquark,
-                                    gjsxFullCascade* const gjsxCascade )
+                                    fullCascade* const gjsxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gjsxCascade );
@@ -1341,7 +1430,7 @@ namespace LHC_FASER
   svsxFullCascade::setProperties(
                      CppSLHA::particle_property_set const* const initialSquark,
                                   electroweakCascade* const vectorCascade,
-                                  sxFullCascade* const sxCascade )
+                                  fullCascade* const sxCascade )
   {
     initialScolored = initialSquark;
     buildOn( sxCascade );
@@ -1390,7 +1479,7 @@ namespace LHC_FASER
 
   inline void
   gvsxFullCascade::setProperties( electroweakCascade* const vectorCascade,
-                                  sxFullCascade* const sxCascade )
+                                  fullCascade* const sxCascade )
   {
     buildOn( sxCascade );
     initialScolored = shortcut->get_gluino();
@@ -1446,7 +1535,7 @@ namespace LHC_FASER
   }
 
   inline void
-  gjsvsxFullCascade::setProperties( svsxFullCascade* const svsxCascade )
+  gjsvsxFullCascade::setProperties( fullCascade* const svsxCascade )
   {
     buildOn( svsxCascade );
     initialScolored = shortcut->get_gluino();
@@ -1490,7 +1579,7 @@ namespace LHC_FASER
   svgxFullCascade::setProperties(
                     CppSLHA::particle_property_set const* const initialSquark,
                                   electroweakCascade* const vectorCascade,
-                                  gxFullCascade* const gxCascade )
+                                  fullCascade* const gxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gxCascade,
@@ -1540,7 +1629,7 @@ namespace LHC_FASER
   svsjgxFullCascade::setProperties(
                      CppSLHA::particle_property_set const* const initialSquark,
                                     electroweakCascade* const vectorCascade,
-                                    sjgxFullCascade* const sjgxCascade )
+                                    fullCascade* const sjgxCascade )
   {
     initialScolored = initialSquark;
     buildOn( sjgxCascade );
@@ -1591,7 +1680,7 @@ namespace LHC_FASER
   svsjgjsxFullCascade::setProperties(
                      CppSLHA::particle_property_set const* const initialSquark,
                                       electroweakCascade* const vectorCascade,
-                                      sjgjsxFullCascade* const sjgjsxCascade )
+                                      fullCascade* const sjgjsxCascade )
   {
     initialScolored = initialSquark;
     buildOn( sjgjsxCascade );
@@ -1643,7 +1732,7 @@ namespace LHC_FASER
   svgjsxFullCascade::setProperties(
                      CppSLHA::particle_property_set const* const initialSquark,
                                     electroweakCascade* const vectorCascade,
-                                    gjsxFullCascade* const gjsxCascade )
+                                    fullCascade* const gjsxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gjsxCascade );
@@ -1690,7 +1779,7 @@ namespace LHC_FASER
   inline void
   sjgvsxFullCascade::setProperties(
                      CppSLHA::particle_property_set const* const initialSquark,
-                                    gvsxFullCascade* const gvsxCascade )
+                                    fullCascade* const gvsxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gvsxCascade );
@@ -1723,7 +1812,7 @@ namespace LHC_FASER
   inline void
   sjgjsvsxFullCascade::setProperties(
                      CppSLHA::particle_property_set const* const initialSquark,
-                                      gjsvsxFullCascade* const gjsvsxCascade )
+                                      fullCascade* const gjsvsxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gvsxCascade );
@@ -1755,10 +1844,6 @@ namespace LHC_FASER
 
 
 
-
-
-
-
   inline std::vector< fullCascade* >*
   fullCascadeSet::getOpenCascades()
   // this should call setUpCascades() if it needs to be readied for this
@@ -1770,6 +1855,93 @@ namespace LHC_FASER
     }
     return cascadeSet.getOpenCascades();
   }
+
+  inline minimalAllocationVector< sxFullCascade >*
+  fullCascadeSet::getSxCascades()
+  {
+    return &sxCascades;
+  }
+
+  inline minimalAllocationVector< gxFullCascade >*
+  fullCascadeSet::getGxCascades()
+  {
+    return &gxCascades;
+  }
+
+  inline minimalAllocationVector< sjgxFullCascade >*
+  fullCascadeSet::getSjgxCascades()
+  {
+    return &sjgxCascades;
+  }
+
+  inline minimalAllocationVector< gjsxFullCascade >*
+  fullCascadeSet::getGjsxCascades()
+  {
+    return &gjsxCascades;
+  }
+
+  inline minimalAllocationVector< sjgjsxFullCascade >*
+  fullCascadeSet::getSjgjsxCascades()
+  {
+    return &sjgjsxCascades;
+  }
+
+  inline minimalAllocationVector< svsxFullCascade >*
+  fullCascadeSet::getSvsxCascades()
+  {
+    return &svsxCascades;
+  }
+
+  inline minimalAllocationVector< gvsxFullCascade >*
+  fullCascadeSet::getGvsxCascades()
+  {
+    return &gvsxCascades;
+  }
+
+  inline minimalAllocationVector< gjsvsxFullCascade >*
+  fullCascadeSet::getGjsvsxCascades()
+  {
+    return &gjsvsxCascades;
+  }
+
+  inline minimalAllocationVector< svgxFullCascade >*
+  fullCascadeSet::getSvgxCascades()
+  {
+    return &svgxCascades;
+  }
+
+  inline minimalAllocationVector< svsjgxFullCascade >*
+  fullCascadeSet::getSvsjgxCascades()
+  {
+    return &svsjgxCascades;
+  }
+
+  inline minimalAllocationVector< svsjgjsxFullCascade >*
+  fullCascadeSet::getSvsjgjsxCascades()
+  {
+    return &svsjgjsxCascades;
+  }
+
+  inline minimalAllocationVector< svgjsxFullCascade >*
+  fullCascadeSet::getSvgjsxCascades()
+  {
+    return &svgjsxCascades;
+  }
+
+  inline minimalAllocationVector< sjgvsxFullCascade >*
+  fullCascadeSet::getSjgvsxCascades()
+  {
+    return &sjgvsxCascades;
+  }
+
+  inline minimalAllocationVector< sjgjsvsxFullCascade >*
+  fullCascadeSet::getSjgjsvsxCascades()
+  {
+    return &sjgjsvsxCascades;
+  }
+
+
+
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_FULL_CASCADE_STUFF_HPP_ */
