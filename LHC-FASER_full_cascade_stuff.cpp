@@ -2157,17 +2157,31 @@ namespace LHC_FASER
                             std::list< fullCascadeSet* >* const cascadeSetList,
                                   double const beamEnergy ) :
     readied_for_new_point( shortcut->get_readier() ),
+    sxCascades( &fullCascade::getNewFullCascade() ),
+    gxCascades( &fullCascade::getNewFullCascade() ),
+    sjgxCascades( &fullCascade::getNewFullCascade() ),
     sjgxNotYetCalculated( true ),
+    gjsxCascades( &fullCascade::getNewFullCascade() ),
     gjsxNotYetCalculated( true ),
+    sjgjsxCascades( &fullCascade::getNewFullCascade() ),
     sjgjsxNotYetCalculated( true ),
+    svsxCascades( &fullCascade::getNewFullCascade() ),
     svsxNotYetCalculated( true ),
+    gvsxCascades( &fullCascade::getNewFullCascade() ),
     gvsxNotYetCalculated( true ),
+    gjsvsxCascades( &fullCascade::getNewFullCascade() ),
     gjsvsxNotYetCalculated( true ),
+    svgxCascades( &fullCascade::getNewFullCascade() ),
     svgxNotYetCalculated( true ),
+    svsjgxCascades( &fullCascade::getNewFullCascade() ),
     svsjgxNotYetCalculated( true ),
+    svsjgjsxCascades( &fullCascade::getNewFullCascade() ),
     svsjgjsxNotYetCalculated( true ),
+    svgjsxCascades( &fullCascade::getNewFullCascade() ),
     svgjsxNotYetCalculated( true ),
+    sjgvsxCascades( &fullCascade::getNewFullCascade() ),
     sjgvsxNotYetCalculated( true ),
+    sjgjsvsxCascades( &fullCascade::getNewFullCascade() ),
     sjgjsvsxNotYetCalculated( true ),
     shortcut( shortcut ),
     cascadeSetList( cascadeSetList ),
@@ -2195,21 +2209,6 @@ namespace LHC_FASER
     }
     return &openCascades;
   }
-
-
-  void
-  fullCascadeSet::setUpCascades()
-  // this clears openCascades, then sets it to be filled with all open
-  // fullCascades that initialScolored has for this point.
-  {
-    openCascades.clear();
-    setUpCx();
-    if( sjgxNotYetCalculated )
-    {
-
-    }
-  }
-
 
 
 

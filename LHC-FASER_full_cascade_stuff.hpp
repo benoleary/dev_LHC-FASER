@@ -897,6 +897,7 @@ namespace LHC_FASER
                     double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+    virtual
     ~fullCascadeSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -961,29 +962,17 @@ namespace LHC_FASER
      * been worked out for this point or not:
      */
     minimalAllocationVector< sjgxFullCascade > sjgxCascades;
-    bool sjgxNotYetCalculated;
     minimalAllocationVector< gjsxFullCascade > gjsxCascades;
-    bool gjsxNotYetCalculated;
     minimalAllocationVector< sjgjsxFullCascade > sjgjsxCascades;
-    bool sjgjsxNotYetCalculated;
     minimalAllocationVector< svsxFullCascade > svsxCascades;
-    bool svsxNotYetCalculated;
     minimalAllocationVector< gvsxFullCascade > gvsxCascades;
-    bool gvsxNotYetCalculated;
     minimalAllocationVector< gjsvsxFullCascade > gjsvsxCascades;
-    bool gjsvsxNotYetCalculated;
     minimalAllocationVector< svgxFullCascade > svgxCascades;
-    bool svgxNotYetCalculated;
     minimalAllocationVector< svsjgxFullCascade > svsjgxCascades;
-    bool svsjgxNotYetCalculated;
     minimalAllocationVector< svsjgjsxFullCascade > svsjgjsxCascades;
-    bool svsjgjsxNotYetCalculated;
     minimalAllocationVector< svgjsxFullCascade > svgjsxCascades;
-    bool svgjsxNotYetCalculated;
     minimalAllocationVector< sjgvsxFullCascade > sjgvsxCascades;
-    bool sjgvsxNotYetCalculated;
     minimalAllocationVector< sjgjsvsxFullCascade > sjgjsvsxCascades;
-    bool sjgjsvsxNotYetCalculated;
 
     input_handler const* const shortcut;
     std::list< fullCascadeSet* >* const cascadeSetList;
@@ -997,6 +986,111 @@ namespace LHC_FASER
     = 0;
   };
 
+  // this class specializes fullCascade for the case of cascades beginning with
+  // a squark.
+  class squarkFullCascadeSet : public fullCascadeSet
+  {
+  public:
+    squarkFullCascadeSet( input_handler const* const shortcut,
+                   CppSLHA::particle_property_set const* const initialScolored,
+                    std::list<fullCascadeSet*>* const cascadeSetList,
+                    double const beamEnergy )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual
+    ~squarkFullCascadeSet()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual minimalAllocationVector< sxFullCascade >*
+    getSxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< sjgxFullCascade >*
+    getSjgxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< sjgjsxFullCascade >*
+    getSjgjsxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< svsxFullCascade >*
+    getSvsxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< svgxFullCascade >*
+    getSvgxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< svsjgxFullCascade >*
+    getSvsjgxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< svsjgjsxFullCascade >*
+    getSvsjgjsxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< svgjsxFullCascade >*
+    getSvgjsxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< sjgvsxFullCascade >*
+    getSjgvsxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< sjgjsvsxFullCascade >*
+    getSjgjsvsxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    // the bools note if the relevant cascades have been worked out or not:
+    bool sjgxNotYetCalculated;
+    bool sjgjsxNotYetCalculated;
+    bool svsxNotYetCalculated;
+    bool svgxNotYetCalculated;
+    bool svsjgxNotYetCalculated;
+    bool svsjgjsxNotYetCalculated;
+    bool svgjsxNotYetCalculated;
+    bool sjgvsxNotYetCalculated;
+    bool sjgjsvsxNotYetCalculated;
+
+    virtual void
+    setUpCascades()
+    // this should clear openCascades, then sets it to be filled with all open
+    // fullCascades that initialScolored has for this point.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+  };
+
+  // this class specializes fullCascade for the case of cascades beginning with
+  // a gluino.
+  class gluinoFullCascadeSet : public fullCascadeSet
+  {
+  public:
+    gluinoFullCascadeSet( input_handler const* const shortcut,
+                   CppSLHA::particle_property_set const* const initialScolored,
+                    std::list<fullCascadeSet*>* const cascadeSetList,
+                    double const beamEnergy )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual
+    ~gluinoFullCascadeSet()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual minimalAllocationVector< gxFullCascade >*
+    getGxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< gjsxFullCascade >*
+    getGjsxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< gvsxFullCascade >*
+    getGvsxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual minimalAllocationVector< gjsvsxFullCascade >*
+    getGjsvsxCascades()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    // the bools note if the relevant cascades have been worked out or not:
+    bool gjsxNotYetCalculated;
+    bool gvsxNotYetCalculated;
+    bool gjsvsxNotYetCalculated;
+
+    virtual void
+    setUpCascades()
+    // this should clear openCascades, then sets it to be filled with all open
+    // fullCascades that initialScolored has for this point.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+  };
 
 
   // this class holds all the full_cascades & gives out pointers to a vector of
