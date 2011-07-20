@@ -987,7 +987,7 @@ namespace LHC_FASER
 
     input_handler const* const shortcut;
     std::list< fullCascadeSet* >* const squarkCascadeSetList;
-    bool squarkCascadeSetListNotYetOrdered;
+    //bool squarkCascadeSetListNotYetOrdered;
     double const beamEnergy;
     std::list< int > soughtPositivePdgCodeList;
     std::list< int > soughtNegativePdgCodeList;
@@ -1038,7 +1038,6 @@ namespace LHC_FASER
   {
   public:
     gluinoFullCascadeSet( input_handler const* const shortcut,
-                   CppSLHA::particle_property_set const* const initialScolored,
                           electroweakCascadeHandler* const ewCascadeHandler,
                       std::list< fullCascadeSet* >* const squarkCascadeSetList,
                           double const beamEnergy )

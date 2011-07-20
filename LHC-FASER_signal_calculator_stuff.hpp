@@ -140,6 +140,9 @@ namespace LHC_FASER
     //full_cascade* second_cascade;
     std::vector< fullCascade* >* firstCascades;
     std::vector< fullCascade* >* secondCascades;
+    std::list< int > excludedFinalStateParticles;
+    double firstCascadeBrToEwino;
+    double secondCascadeBrToEwino;
   };  // end of signal_calculator class.
 
 
@@ -155,8 +158,8 @@ namespace LHC_FASER
   {
   public:
     signalHandler( std::string const signalName,
-                    signal_shortcuts* const shortcut,
-                    double const crossSectionUnitFactor )
+                   signal_shortcuts* const shortcut,
+                   double const crossSectionUnitFactor )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~signalHandler()
@@ -431,6 +434,7 @@ namespace LHC_FASER
       }
     return log( uncertaintyFactor );
   }
+
 
 
   inline bool

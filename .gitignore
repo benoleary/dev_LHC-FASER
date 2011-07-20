@@ -14,3 +14,5 @@ Debug/CppSLHA/subdir.mk
 .project
 
 .cproject
+
+.DS_Store

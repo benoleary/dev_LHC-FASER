@@ -64,10 +64,9 @@ namespace LHC_FASER
     secondCascades( NULL )
   {
     for( std::vector< signed_particle_shortcut_pair* >::const_iterator
-         pairIterator
-         = signalDefinitions->getShortcuts()->get_input_shortcuts(
+         pairIterator = signalDefinitions->getShortcuts()->get_input_shortcuts(
                            )->get_sparticle_production_combinations()->begin();
-        signalDefinitions->getShortcuts()->get_input_shortcuts(
+         signalDefinitions->getShortcuts()->get_input_shortcuts(
                               )->get_sparticle_production_combinations()->end()
          > pairIterator;
          ++pairIterator )
@@ -134,8 +133,8 @@ namespace LHC_FASER
                                                 shortcut );
     }
     else if( 0 == signalName.compare( "CMS2jMETanyl14TeV" ) )
-      // if the signal is the Atlas 4-jet, missing transverse momentum,
-      // 0 leptons event rate, for a beam energy of 14 TeV...
+      // if the signal is the CMS 2-jet, missing transverse momentum,
+      // any amount of leptons event rate, for a beam energy of 14 TeV...
     {
       std::cout
       << std::endl
@@ -149,7 +148,7 @@ namespace LHC_FASER
       rateCalculator = new reallyWrongCalculator( shortcut );
 
     }
-    else if( 0 == signalName.compare( "sigma_breakdown_test" ) )
+    else if( 0 == signalName.compare( "sigmaBreakdownTest" ) )
       // if the signal is the test to see if the cross-section breakdown works
       // as it should...
     {
@@ -186,6 +185,7 @@ namespace LHC_FASER
   }
 
 
+
   reallyWrongCalculator::reallyWrongCalculator(
                                            signal_shortcuts* const shortcut ) :
     signalCalculator( shortcut )
@@ -197,6 +197,117 @@ namespace LHC_FASER
   {
     // does nothing.
   }
+
+
+
+  sigmaBreakdownTestCalculator::sigmaBreakdownTestCalculator(
+                               signalDefinitionSet* const signalDefinitions ) :
+    signalDefinitions( signalDefinitions )
+  {
+    this->signalDefinitions->setExcludedStandardModelProducts(
+                        signalDefinitions->getShortcuts()->get_input_shortcuts(
+                                                       )->get_not_in_jets5() );
+  }
+
+  sigmaBreakdownTestCalculator::~sigmaBreakdownTestCalculator()
+  {
+
+    // does nothing.
+
+  }
+
+  bool
+  sigmaBreakdownTestCalculator::calculate( double* const signalValue,
+                                           double* const uncertaintyFactor )
+  /* this calculates the event rate for the signal & puts its value in
+   * signal_value, & puts an estimate for the uncertainty into
+   * uncertainty_factor, & returns true if it did all this successfully.
+   */
+  {
+    // debugging:
+    /**std::cout
+    << std::endl
+    << "debugging: sigmaBreakdownTestCalculator::calculate( "
+    << signalValue << ", " << uncertaintyFactor << " ) called.";
+    std::cout << std::endl;**/
+
+    // start by setting the signal value to 0.0:
+    *signalValue = 0.0;
+
+    for( std::vector< productionChannelPointerSet* >::iterator
+         channelIterator = channels.begin();
+         channels.end() > channelIterator;
+         ++channelIterator )
+    {
+      if( LHC_FASER_global::negligible_sigma
+          < (*channelIterator)->getCrossSection() )
+        // if it's worth looking at this channel...
+      {
+        std::cout
+        << std::endl
+        << "channel: "
+        << *((*channelIterator)->getScoloredPair()->get_first_pointer(
+                                                       )->get_name_or_antiname(
+                                           (*channelIterator)->getScoloredPair(
+                                              )->first_is_not_antiparticle() ))
+        << " + "
+        << *((*channelIterator)->getScoloredPair()->get_second_pointer(
+                                                       )->get_name_or_antiname(
+                                           (*channelIterator)->getScoloredPair(
+                                            )->second_is_not_antiparticle() ));
+        std::cout << std::endl;
+        channelBrTotal = 0.0;
+
+        // we have to look at all the open cascade pairings:
+        firstCascades
+        = (*channelIterator)->getFirstCascadeSet()->getOpenCascades(
+          (*channelIterator)->getScoloredPair()->first_is_not_antiparticle(),
+                                                          &signalDefinitions );
+        secondCascades
+        = (*channelIterator)->getSecondCascadeSet()->getOpenCascades(
+           (*channelIterator)->getScoloredPair()->second_is_not_antiparticle(),
+                                                           &signalDefinitions);
+
+        for( std::vector< fullCascade* >::iterator
+             firstCascadeIterator = firstCascades->begin();
+             firstCascades->end() > firstCascadeIterator;
+             ++firstCascadeIterator )
+        {
+          if( ( LHC_FASER_global::negligible_BR
+              * 2.0 * (double)(firstCascades->size()) )
+              < (*firstCascadeIterator)->getBrToEwino() )
+            // this should mean we never throw away more than
+            // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
+          {
+            for( std::vector< fullCascade* >::iterator
+                 secondCascadeIterator = secondCascades->begin();
+                 secondCascades->end() > secondCascadeIterator;
+                 ++secondCascadeIterator )
+            {
+              if( ( LHC_FASER_global::negligible_BR
+                  * 2.0 * (double)(secondCascades->size()) )
+                  < (*secondCascadeIterator)->getBrToEwino() )
+                // this should mean we never throw away more than
+                // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
+              {
+                channelBrTotal += ( (*firstCascadeIterator)->getBrToEwino()
+                                  * (*secondCascadeIterator)->getBrToEwino() );
+              }
+              // end of if the BR of the 2nd cascade to its electroweakino was
+              // not negligible.
+            }  // end of loop over 2nd cascade.
+          }
+          // end of if the BR of the 1st cascade to its electroweakino was not
+          // negligible.
+        }  // end of loop over 1st cascade.
+        std::cout
+        << "BR total: " << channelBrTotal;
+        std::cout << std::endl;
+      }  // end of if the channel's cross-section was not negligible.
+    }  // end of loop over channels.
+    return true;
+  }
+
 
 
   signalCalculator*
@@ -300,6 +411,8 @@ namespace LHC_FASER
                                             signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
                                                 jetAcceptanceGridTableColumn );
+    excludedFinalStateParticles.push_back( CppSLHA::PDG_code::top );
+    excludedFinalStateParticles.push_back( -(CppSLHA::PDG_code::top) );
   }
 
   Atlas4jMET0l_calculator::~Atlas4jMET0l_calculator()
@@ -343,16 +456,18 @@ namespace LHC_FASER
         secondCascades
         = (*channelIterator)->getSecondCascadeSet()->getOpenCascades(
            (*channelIterator)->getScoloredPair()->second_is_not_antiparticle(),
-                                                           &signalDefinitions);
+                                                          &signalDefinitions );
 
         for( std::vector< fullCascade* >::iterator
              firstCascadeIterator = firstCascades->begin();
              firstCascades->end() > firstCascadeIterator;
              ++firstCascadeIterator )
         {
+          firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
+                                                &excludedFinalStateParticles );
           if( ( LHC_FASER_global::negligible_BR
               * 2.0 * (double)(firstCascades->size()) )
-              < (*firstCascadeIterator)->getBrToEwino() )
+              < firstCascadeBrToEwino )
             // this should mean we never throw away more than
             // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
           {
@@ -361,16 +476,17 @@ namespace LHC_FASER
                  secondCascades->end() > secondCascadeIterator;
                  ++secondCascadeIterator )
             {
+              secondCascadeBrToEwino = (*secondCascadeIterator)->getBrToEwino(
+                                                &excludedFinalStateParticles );
               if( ( LHC_FASER_global::negligible_BR
                   * 2.0 * (double)(secondCascades->size()) )
-                  < (*secondCascadeIterator)->getBrToEwino() )
+                  < secondCascadeBrToEwino )
                 // this should mean we never throw away more than
                 // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
               {
                 subchannelCrossSectionTimesBrToEwinos
                 = ( (*channelIterator)->getCrossSection()
-                    * (*firstCascadeIterator)->getBrToEwino()
-                    * (*secondCascadeIterator)->getBrToEwino() );
+                    * firstCascadeBrToEwino * secondCascadeBrToEwino );
                 subchannelZeroOrMoreJetsZeroLeptons
                 = ( (*firstCascadeIterator
                            )->unspecifiedJetsSpecifiedChargeSummedLeptons( 0 )
@@ -556,6 +672,8 @@ namespace LHC_FASER
                                             signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
                                               jetAcceptanceGridTableColumn ) );
+    excludedFinalStateParticles.push_back( CppSLHA::PDG_code::top );
+    excludedFinalStateParticles.push_back( -(CppSLHA::PDG_code::top) );
   }
 
   Atlas3jMET1l_calculator::~Atlas3jMET1l_calculator()
@@ -606,9 +724,11 @@ namespace LHC_FASER
              firstCascades->end() > firstCascadeIterator;
              ++firstCascadeIterator )
         {
+          firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
+                                                &excludedFinalStateParticles );
           if( ( LHC_FASER_global::negligible_BR
               * 2.0 * (double)(firstCascades->size()) )
-              < (*firstCascadeIterator)->getBrToEwino() )
+              < firstCascadeBrToEwino )
             // this should mean we never throw away more than
             // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
           {
@@ -617,16 +737,17 @@ namespace LHC_FASER
                  secondCascades->end() > secondCascadeIterator;
                  ++secondCascadeIterator )
             {
+              secondCascadeBrToEwino = (*secondCascadeIterator)->getBrToEwino(
+                                                &excludedFinalStateParticles );
               if( ( LHC_FASER_global::negligible_BR
                   * 2.0 * (double)(secondCascades->size()) )
-                  < (*secondCascadeIterator)->getBrToEwino() )
+                  < secondCascadeBrToEwino )
                 // this should mean we never throw away more than
                 // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
               {
                 subchannelCrossSectionTimesBrToEwinos
                 = ( (*channelIterator)->getCrossSection()
-                    * (*firstCascadeIterator)->getBrToEwino()
-                    * (*secondCascadeIterator)->getBrToEwino() );
+                    * firstCascadeBrToEwino * secondCascadeBrToEwino );
                 subchannelZeroOrMoreJetsOneLepton
                 = ( (*firstCascadeIterator
                             )->unspecifiedJetsSpecifiedChargeSummedLeptons( 1 )
@@ -674,112 +795,4 @@ namespace LHC_FASER
 
 
 
-  sigmaBreakdownTestCalculator::sigmaBreakdownTestCalculator(
-                               signalDefinitionSet* const signalDefinitions ) :
-    signalDefinitions( signalDefinitions )
-  {
-    this->signalDefinitions->setExcludedStandardModelProducts(
-                        signalDefinitions->getShortcuts()->get_input_shortcuts(
-                                                       )->get_not_in_jets5() );
-  }
-
-  sigmaBreakdownTestCalculator::~sigmaBreakdownTestCalculator()
-  {
-
-    // does nothing.
-
-  }
-
-
-  bool
-  sigmaBreakdownTestCalculator::calculate( double* const signalValue,
-                                           double* const uncertaintyFactor )
-  /* this calculates the event rate for the signal & puts its value in
-   * signal_value, & puts an estimate for the uncertainty into
-   * uncertainty_factor, & returns true if it did all this successfully.
-   */
-  {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: sigmaBreakdownTestCalculator::calculate( "
-    << signalValue << ", " << uncertaintyFactor << " ) called.";
-    std::cout << std::endl;**/
-
-    // start by setting the signal value to 0.0:
-    *signalValue = 0.0;
-
-    for( std::vector< productionChannelPointerSet* >::iterator
-         channelIterator = channels.begin();
-         channels.end() > channelIterator;
-         ++channelIterator )
-    {
-      if( LHC_FASER_global::negligible_sigma
-          < (*channelIterator)->getCrossSection() )
-        // if it's worth looking at this channel...
-      {
-        std::cout
-        << std::endl
-        << "channel: "
-        << *((*channelIterator)->getScoloredPair()->get_first_pointer(
-                                                       )->get_name_or_antiname(
-                                           (*channelIterator)->getScoloredPair(
-                                              )->first_is_not_antiparticle() ))
-        << " + "
-        << *((*channelIterator)->getScoloredPair()->get_second_pointer(
-                                                       )->get_name_or_antiname(
-                                           (*channelIterator)->getScoloredPair(
-                                            )->second_is_not_antiparticle() ));
-        std::cout << std::endl;
-        channelBrTotal = 0.0;
-
-        // we have to look at all the open cascade pairings:
-        firstCascades
-        = (*channelIterator)->getFirstCascadeSet()->getOpenCascades(
-          (*channelIterator)->getScoloredPair()->first_is_not_antiparticle(),
-                                                          &signalDefinitions );
-        secondCascades
-        = (*channelIterator)->getSecondCascadeSet()->getOpenCascades(
-           (*channelIterator)->getScoloredPair()->second_is_not_antiparticle(),
-                                                           &signalDefinitions);
-
-        for( std::vector< fullCascade* >::iterator
-             firstCascadeIterator = firstCascades->begin();
-             firstCascades->end() > firstCascadeIterator;
-             ++firstCascadeIterator )
-        {
-          if( ( LHC_FASER_global::negligible_BR
-              * 2.0 * (double)(firstCascades->size()) )
-              < (*firstCascadeIterator)->getBrToEwino() )
-            // this should mean we never throw away more than
-            // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
-          {
-            for( std::vector< fullCascade* >::iterator
-                 secondCascadeIterator = secondCascades->begin();
-                 secondCascades->end() > secondCascadeIterator;
-                 ++secondCascadeIterator )
-            {
-              if( ( LHC_FASER_global::negligible_BR
-                  * 2.0 * (double)(secondCascades->size()) )
-                  < (*secondCascadeIterator)->getBrToEwino() )
-                // this should mean we never throw away more than
-                // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
-              {
-                channelBrTotal += ( (*firstCascadeIterator)->getBrToEwino()
-                                  * (*secondCascadeIterator)->getBrToEwino() );
-              }
-              // end of if the BR of the 2nd cascade to its electroweakino was
-              // not negligible.
-            }  // end of loop over 2nd cascade.
-          }
-          // end of if the BR of the 1st cascade to its electroweakino was not
-          // negligible.
-        }  // end of loop over 1st cascade.
-        std::cout
-        << "BR total: " << channelBrTotal;
-        std::cout << std::endl;
-      }  // end of if the channel's cross-section was not negligible.
-    }  // end of loop over channels.
-    return true;
-  }
 }  // end of LHC_FASER namespace.

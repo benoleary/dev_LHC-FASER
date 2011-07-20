@@ -3202,7 +3202,7 @@ int main( int argument_count,
   std::cout << std::endl;
 
   LHC_FASER::signal_handler
-  cross_section_breakdown_test( "sigma_breakdown_test",
+  cross_section_breakdown_test( "sigmaBreakdownTest",
                                 &test_signal_shortcuts );
 
   std::cout
@@ -3422,13 +3422,13 @@ int main( int argument_count,
   LHC_FASER::LHC_FASER_UI SPS1a_UI( "SPS1a_spectrum.out" );
   LHC_FASER::LHC_FASER_UI SPS2_UI( "SPS2_spectrum.out" );
 
-  SPS1a_UI.add_signal( "sigma_breakdown_test" );
+  SPS1a_UI.add_signal( "sigmaBreakdownTest" );
   SPS1a_UI.add_signal( "Atlas4jMET0l7TeV" );
   SPS2_UI.add_signal( "badSignalName" );
   SPS2_UI.add_signal( "Atlas4jMET0l7TeV" );
 
   LHC_FASER::signal_handler* sigma_SPS1a
-  = SPS1a_UI.get_signal( "sigma_breakdown_test" );
+  = SPS1a_UI.get_signal( "sigmaBreakdownTest" );
   LHC_FASER::signal_handler* Atlas_SPS1a
   = SPS1a_UI.get_signal( "Atlas4jMET0l7TeV" );
   LHC_FASER::signal_handler* Atlas_SPS2
