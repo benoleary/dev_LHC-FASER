@@ -451,7 +451,7 @@ namespace LHC_FASER
         // we have to look at all the open cascade pairings:
         firstCascades
         = (*channelIterator)->getFirstCascadeSet()->getOpenCascades(
-          (*channelIterator)->getScoloredPair()->first_is_not_antiparticle(),
+            (*channelIterator)->getScoloredPair()->first_is_not_antiparticle(),
                                                           &signalDefinitions );
         secondCascades
         = (*channelIterator)->getSecondCascadeSet()->getOpenCascades(
@@ -712,7 +712,7 @@ namespace LHC_FASER
         // we have to look at all the open cascade pairings:
         firstCascades
         = (*channelIterator)->getFirstCascadeSet()->getOpenCascades(
-          (*channelIterator)->getScoloredPair()->first_is_not_antiparticle(),
+            (*channelIterator)->getScoloredPair()->first_is_not_antiparticle(),
                                                           &signalDefinitions );
         secondCascades
         = (*channelIterator)->getSecondCascadeSet()->getOpenCascades(

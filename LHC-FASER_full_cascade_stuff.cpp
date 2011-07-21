@@ -2155,6 +2155,7 @@ namespace LHC_FASER
 
   fullCascadeSet::fullCascadeSet( input_handler const* const shortcut,
                    CppSLHA::particle_property_set const* const initialScolored,
+                   electroweakCascadeHandler* const electroweakCascadeHandling,
                       std::list< fullCascadeSet* >* const squarkCascadeSetList,
                                   double const beamEnergy ) :
     readied_for_new_point( shortcut->get_readier() ),
@@ -2175,7 +2176,7 @@ namespace LHC_FASER
     sjgjsvsxCascades( &fullCascade::getNewFullCascade() ),
     shortcut( shortcut ),
     squarkCascadeSetList( squarkCascadeSetList ),
-    squarkCascadeSetListNotYetOrdered( true ),
+    //squarkCascadeSetListNotYetOrdered( true ),
     beamEnergy( beamEnergy )
   {
     // just an initialization list.
@@ -2207,7 +2208,7 @@ namespace LHC_FASER
          gxCascades->getVector()->end() > gxIterator;
          ++gxIterator )
     {
-      if( (*sxIterator)->isOpen() )
+      if( (*gxIterator)->isOpen() )
       {
         openCascades.push_back( *gxIterator );
       }
@@ -2317,9 +2318,11 @@ namespace LHC_FASER
       {
         soughtPositivePdgCodeList.clear();
         soughtPositivePdgCodeList.push_back( (*ewIterator)->get_PDG_code() );
+        soughtPositivePdgCodeList.push_back( CppSLHA::PDG_code::gluino );
         soughtNegativePdgCodeList.clear();
         soughtNegativePdgCodeList.push_back(
                                             -((*ewIterator)->get_PDG_code()) );
+        soughtNegativePdgCodeList.push_back( CppSLHA::PDG_code::gluino );
         if( ( initialScolored->get_absolute_mass()
               > ( shortcut->get_gluino()->get_absolute_mass()
                   + (*ewIterator)->get_absolute_mass() ) )

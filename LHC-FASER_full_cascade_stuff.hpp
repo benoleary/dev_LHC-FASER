@@ -370,6 +370,13 @@ namespace LHC_FASER
                    electroweakCascadeSet* const ewinoCascades )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+    bool
+    isOpen()
+    // this returns true if the squark is heavy enough to decay into the
+    // electroweakino, false otherwise.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+
     virtual double
     getBrToEwino( std::list< int > const* excludedSmParticles )
     /* this works out the branching ratio for the decays of colored sparticles
@@ -413,6 +420,12 @@ namespace LHC_FASER
     setProperties( input_handler const* const shortcut,
                    double const beamEnergy,
                    electroweakCascadeSet* const ewinoCascades )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    bool
+    isOpen()
+    // this returns true if the gluino is heavy enough to decay into the
+    // electroweakino, false otherwise.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -1311,6 +1324,23 @@ namespace LHC_FASER
     }
   }
 
+  inline bool
+  sxFullCascade::isOpen()
+  // this returns true if the squark is heavy enough to decay into the
+  // electroweakino, false otherwise.
+  {
+    if( initialScolored->get_absolute_mass()
+        > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+
 
   inline void
   gxFullCascade::setProperties( input_handler const* const shortcut,
@@ -1352,6 +1382,22 @@ namespace LHC_FASER
       return ( 2.0 * initialScolored->inspect_direct_decay_handler(
                     )->get_branching_ratio_for_subset( &soughtDecayProductList,
                                                        excludedSmParticles ) );
+    }
+  }
+
+  inline bool
+  gxFullCascade::isOpen()
+  // this returns true if the gluino is heavy enough to decay into the
+  // electroweakino, false otherwise.
+  {
+    if( initialScolored->get_absolute_mass()
+        > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
     }
   }
 
