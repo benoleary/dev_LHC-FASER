@@ -204,7 +204,7 @@ namespace LHC_FASER
   inline
   minimalAllocationVector< storedClass >::~minimalAllocationVector()
   {
-    for( unsigned int deletionCounter = 0;
+    for( unsigned int deletionCounter( 0 );
          allConstructedPointers.size() > deletionCounter;
          ++deletionCounter )
     {
@@ -357,7 +357,7 @@ namespace LHC_FASER
   minimalAllocationKeyedVector< storedClass,
                                 keyClass >::~minimalAllocationKeyedVector()
   {
-    for( unsigned int deletionCounter = 0;
+    for( unsigned int deletionCounter( 0 );
          allConstructedPointers.size() > deletionCounter;
          ++deletionCounter )
     {
