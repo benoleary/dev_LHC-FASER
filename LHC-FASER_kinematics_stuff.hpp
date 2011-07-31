@@ -76,7 +76,6 @@
 
 namespace LHC_FASER
 {
-
   // this stores the acceptance cut values which are associated with a
   // particular signal.
   class acceptanceCutSet
@@ -183,12 +182,10 @@ namespace LHC_FASER
     setExcludedStandardModelProducts( std::list< int > const* inputList )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
     virtual bool
     isSameAcceptanceCutSet( acceptanceCutSet const* const comparisonCuts )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
     double beamEnergy;
@@ -267,7 +264,9 @@ namespace LHC_FASER
      * value, assuming that the heavy neutralino edge goes to 0.0 as the
      * heavier neutralino mass approaches the lighter scolored mass unless
      * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
-     * it interpolates to the lighter scolored mass.
+     * it interpolates to the lighter scolored mass, or unless
+     * heavy_neutralino_area_is_constant is true, in which case it interpolates
+     * to the same value as the grid points with the heaviest neutralino mass.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -284,7 +283,9 @@ namespace LHC_FASER
      * value, assuming that the heavy neutralino edge goes to 0.0 as the
      * heavier neutralino mass approaches the lighter scolored mass unless
      * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
-     * it interpolates to the lighter scolored mass.
+     * it interpolates to the lighter scolored mass, or unless
+     * heavy_neutralino_area_is_constant is true, in which case it interpolates
+     * to the same value as the grid points with the heaviest neutralino mass.
      * N.B.: this version is just to save a little calculation for the
      * lepton acceptance for a cascade because of the approximation that the
      * kinematics for the lepton acceptance of 1 cascade is independent of that

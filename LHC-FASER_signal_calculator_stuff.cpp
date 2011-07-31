@@ -450,13 +450,9 @@ namespace LHC_FASER
       {
         // we have to look at all the open cascade pairings:
         firstCascades
-        = (*channelIterator)->getFirstCascadeSet()->getOpenCascades(
-            (*channelIterator)->getScoloredPair()->first_is_not_antiparticle(),
-                                                          &signalDefinitions );
+        = (*channelIterator)->getFirstCascadeSet()->getOpenCascades();
         secondCascades
-        = (*channelIterator)->getSecondCascadeSet()->getOpenCascades(
-           (*channelIterator)->getScoloredPair()->second_is_not_antiparticle(),
-                                                          &signalDefinitions );
+        = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
 
         for( std::vector< fullCascade* >::iterator
              firstCascadeIterator = firstCascades->begin();
@@ -489,18 +485,26 @@ namespace LHC_FASER
                     * firstCascadeBrToEwino * secondCascadeBrToEwino );
                 subchannelZeroOrMoreJetsZeroLeptons
                 = ( (*firstCascadeIterator
-                           )->unspecifiedJetsSpecifiedChargeSummedLeptons( 0 )
+                           )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                           0 )
                     * (*secondCascadeIterator
-                         )->unspecifiedJetsSpecifiedChargeSummedLeptons( 0 ) );
+                         )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                         0 ) );
                 // chance of both cascades not producing any leptons which pass
                 // the cut & thus cause the event to be rejected.
                 subchannelOneOrMoreJetsZeroLeptons
                 = ( subchannelZeroOrMoreJetsZeroLeptons
                     - ( (*firstCascadeIterator
-                               )->specifiedJetsSpecifiedChargeSummedLeptons( 0,
+                                  )->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                             0,
                                                                             0 )
                         * (*secondCascadeIterator
-                               )->specifiedJetsSpecifiedChargeSummedLeptons( 0,
+                                  )->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                             0,
                                                                        0 ) ) );
                 // chance of no lepton rejection removing the portion without
                 // any extra jet passing the cut.
@@ -711,13 +715,9 @@ namespace LHC_FASER
       {
         // we have to look at all the open cascade pairings:
         firstCascades
-        = (*channelIterator)->getFirstCascadeSet()->getOpenCascades(
-            (*channelIterator)->getScoloredPair()->first_is_not_antiparticle(),
-                                                          &signalDefinitions );
+        = (*channelIterator)->getFirstCascadeSet()->getOpenCascades();
         secondCascades
-        = (*channelIterator)->getSecondCascadeSet()->getOpenCascades(
-           (*channelIterator)->getScoloredPair()->second_is_not_antiparticle(),
-                                                           &signalDefinitions);
+        = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
 
         for( std::vector< fullCascade* >::iterator
              firstCascadeIterator = firstCascades->begin();
@@ -750,13 +750,21 @@ namespace LHC_FASER
                     * firstCascadeBrToEwino * secondCascadeBrToEwino );
                 subchannelZeroOrMoreJetsOneLepton
                 = ( (*firstCascadeIterator
-                            )->unspecifiedJetsSpecifiedChargeSummedLeptons( 1 )
+                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                            1 )
                     * (*secondCascadeIterator
-                            )->unspecifiedJetsSpecifiedChargeSummedLeptons( 0 )
+                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                            0 )
                     + (*firstCascadeIterator
-                            )->unspecifiedJetsSpecifiedChargeSummedLeptons( 0 )
+                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                            0 )
                       * (*secondCascadeIterator
-                         )->unspecifiedJetsSpecifiedChargeSummedLeptons( 1 ) );
+                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                         1 ) );
                 /* chance for 1st cascade to produce the lepton * chance
                  * of 2nd to not produce any further leptons (which would
                  * cause the event to be rejected) + chance of lepton from

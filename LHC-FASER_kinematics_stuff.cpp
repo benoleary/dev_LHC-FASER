@@ -226,7 +226,6 @@ namespace LHC_FASER
    * value for the transverse momentum cut.
    */
   {
-
     // debugging:
     /**std::cout
     << std::endl
@@ -242,100 +241,94 @@ namespace LHC_FASER
     {
       binFraction = ( givenEnergy * ( transverseMomentumCut
                                       / ( givenCut * binSize ) ) );
-        // now binFraction is givenEnergy scaled to the given momentum cut,
-        // in units of binSize. importantly, binFraction > 0.0 still.
+      // now binFraction is givenEnergy scaled to the given momentum cut,
+      // in units of binSize. importantly, binFraction > 0.0 still.
+      lowerBin = (int)binFraction;
+      /* now lowerBin is 1 more than the lower bin for givenEnergy because
+       * "bin -1" is the acceptance for 0.0 GeV, which is 0.0 by assumption.
+       * "bin 0" is for 2.0 GeV by default, "bin 1" for 4.0 GeV, & so on.
+       */
+      binFraction -= (double)lowerBin;
+      // now binFraction is the fraction of the bin along from lowerBin
+      // that givenEnergy corresponds to.
+      --lowerBin;
+      // now lowerBin corresponds to the correct bin for givenEnergy.
 
-        lowerBin = (int)binFraction;
-        /* now lowerBin is 1 more than the lower bin for givenEnergy because
-         * "bin -1" is the acceptance for 0.0 GeV, which is 0.0 by assumption.
-         * "bin 0" is for 2.0 GeV by default, "bin 1" for 4.0 GeV, & so on.
-         */
-        binFraction -= (double)lowerBin;
-        // now binFraction is the fraction of the bin along from lowerBin
-        // that givenEnergy corresponds to.
-        --lowerBin;
-        // now lowerBin corresponds to the correct bin for givenEnergy.
+      // debugging:
+      /**std::cout
+      << std::endl
+      << "binFraction = " << binFraction
+      << ", lowerBin = " << lowerBin
+      << ", acceptanceBins.size() = " << acceptanceBins.size();
+      std::cout << std::endl;**/
 
+      if( -1 == lowerBin )
+        // if we're in the region 0.0 GeV to binSize GeV...
+      {
         // debugging:
         /**std::cout
         << std::endl
-        << "binFraction = " << binFraction
-        << ", lowerBin = " << lowerBin
-        << ", acceptanceBins.size() = " << acceptanceBins.size();
+        << "( -1 == lowerBin ) is true, binFraction = "
+        << binFraction << ", acceptanceBins.front() = "
+        << acceptanceBins.front();
         std::cout << std::endl;**/
 
-        if( -1 == lowerBin )
-          // if we're in the region 0.0 GeV to binSize GeV...
-          {
+        returnValue = ( givenEnergy * acceptanceBins.front() );
+        // we assume that the acceptance at 0.0 GeV is 0.0, so the linear
+        // interpolation is simple.
 
-            // debugging:
-            /**std::cout
-            << std::endl
-            << "( -1 == lowerBin ) is true, binFraction = "
-            << binFraction << ", acceptanceBins.front() = "
-            << acceptanceBins.front();
-            std::cout << std::endl;**/
+      }
+      else if( ( 0 <= lowerBin )
+               &&
+               ( acceptanceBins.size() > ( lowerBin + 1 ) ) )
+        // if we're in a region between 2 bin entries...
+      {
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "( ( ( 0 <= lowerBin ) &&"
+        << " ( acceptanceBins.size() > ( lowerBin + 1 ) ) ) is true,"
+        << " acceptanceBins.at( lowerBin ) = "
+        << acceptanceBins.at( lowerBin )
+        << ", binFraction = "
+        << binFraction
+        << ", acceptanceBins.at( ( lowerBin + 1 ) ) = "
+        << acceptanceBins.at( ( lowerBin + 1 ) );
+        std::cout << std::endl;**/
 
-            returnValue = ( givenEnergy * acceptanceBins.front() );
-            // we assume that the acceptance at 0.0 GeV is 0.0, so the linear
-            // interpolation is simple.
+        returnValue
+        = ( acceptanceBins.at( lowerBin )
+            + binFraction * ( acceptanceBins.at( ( lowerBin + 1 ) )
+                              - acceptanceBins.at( lowerBin ) ) );
+        // we return a linear interpolation.
 
-          }
-        else if( ( 0 <= lowerBin )
-                 &&
-                 ( acceptanceBins.size() > ( lowerBin + 1 ) ) )
-          // if we're in a region between 2 bin entries...
-          {
+      }
+      else if( acceptanceBins.size() <= ( lowerBin + 1 ) )
+        // if we're in a region beyond the bins...
+      {
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "( acceptanceBins.size() <= ( lowerBin + 1 ) ) is true,"
+        << " acceptanceBins.back() = " << acceptanceBins.back();
+        std::cout << std::endl;**/
 
-            // debugging:
-            /**std::cout
-            << std::endl
-            << "( ( ( 0 <= lowerBin ) &&"
-            << " ( acceptanceBins.size() > ( lowerBin + 1 ) ) ) is true,"
-            << " acceptanceBins.at( lowerBin ) = "
-            << acceptanceBins.at( lowerBin )
-            << ", binFraction = "
-            << binFraction
-            << ", acceptanceBins.at( ( lowerBin + 1 ) ) = "
-            << acceptanceBins.at( ( lowerBin + 1 ) );
-            std::cout << std::endl;**/
+        return_value = acceptanceBins.back();
+        // we assume the acceptance is dominated by the pseudorapidity cut
+        // by this point, so is constant out to any higher energy.
 
-            returnValue
-            = ( acceptanceBins.at( lowerBin )
-                + binFraction * ( acceptanceBins.at( ( lowerBin + 1 ) )
-                                  - acceptanceBins.at( lowerBin ) ) );
-            // we return a linear interpolation.
+      }
 
-          }
-        else if( acceptanceBins.size() <= ( lowerBin + 1 ) )
-          // if we're in a region beyond the bins...
-          {
+      // this is a sanity check that I have decided is unnecessary:
+      /*if( pseudorapidityAcceptance < returnValue )
+      {
 
-            // debugging:
-            /**std::cout
-            << std::endl
-            << "( acceptanceBins.size() <= ( lowerBin + 1 ) ) is true,"
-            << " acceptanceBins.back() = " << acceptanceBins.back();
-            std::cout << std::endl;**/
+        returnValue = pseudorapidityAcceptance;
 
-            return_value = acceptanceBins.back();
-            // we assume the acceptance is dominated by the pseudorapidity cut
-            // by this point, so is constant out to any higher energy.
-
-          }
-
-        // this is a sanity check that I have decided is unnecessary:
-        /*if( pseudorapidityAcceptance < returnValue )
-          {
-
-            returnValue = pseudorapidityAcceptance;
-
-          }*/
+      }*/
 
     }
-
     return returnValue;
-
   }
 
 
@@ -1043,7 +1036,9 @@ namespace LHC_FASER
    * value, assuming that the heavy neutralino edge goes to 0.0 as the
    * heavier neutralino mass approaches the lighter scolored mass unless
    * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
-   * it interpolates to the lighter scolored mass.
+   * it interpolates to the lighter scolored mass, or unless
+   * heavy_neutralino_area_is_constant is true, in which case it interpolates
+   * to the same value as the grid points with the heaviest neutralino mass.
    */
   {
 
@@ -1583,7 +1578,9 @@ namespace LHC_FASER
    * value, assuming that the heavy neutralino edge goes to 0.0 as the
    * heavier neutralino mass approaches the lighter scolored mass unless
    * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
-   * it interpolates to the lighter scolored mass.
+   * it interpolates to the lighter scolored mass, or unless
+   * heavy_neutralino_area_is_constant is true, in which case it interpolates
+   * to the same value as the grid points with the heaviest neutralino mass.
    * N.B.: this version is just to save a little calculation for the
    * lepton acceptance for a cascade because of the approximation that the
    * kinematics for the lepton acceptance of 1 cascade is independent of that
