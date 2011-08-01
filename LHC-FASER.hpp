@@ -214,7 +214,7 @@ namespace LHC_FASER
     input_handler* input_handler_object;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
-    cross_section_handler* cross_section_handler_object;
+    crossSectionHandler* cross_section_handler_object;
     // this holds the lookup tables for LHC colored sparticle pair production
     // cross-sections.
     kinematics_handler* kinematics_handler_object;

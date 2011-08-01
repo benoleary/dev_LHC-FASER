@@ -145,12 +145,12 @@ namespace LHC_FASER
         if( (*scolored_iterator)->get_PDG_code()
             == scolored_pair->get_first_pointer()->get_PDG_code() )
           // if the scolored particle we're looking at also happens to be in
-          // scolored_pair...
+          // scoloredPair...
           {
 
             first_scolored_to_EWino_BRs = scolored_to_EWino_vector;
             first_scolored_to_antiEWino_BRs = scolored_to_antiEWino_vector;
-            // note that the BRs of the scolored_pair are to be found at the
+            // note that the BRs of the scoloredPair are to be found at the
             // same place.
 
           }
@@ -158,12 +158,12 @@ namespace LHC_FASER
         if( (*scolored_iterator)->get_PDG_code()
             == scolored_pair->get_second_pointer()->get_PDG_code() )
           // if the scolored particle we're looking at also happens to be in
-          // scolored_pair...
+          // scoloredPair...
           {
 
             second_scolored_to_EWino_BRs = scolored_to_EWino_vector;
             second_scolored_to_antiEWino_BRs = scolored_to_antiEWino_vector;
-            // note that the BRs of the scolored_pair are to be found at the
+            // note that the BRs of the scoloredPair are to be found at the
             // same place.
 
           }
@@ -318,7 +318,7 @@ namespace LHC_FASER
     << std::endl
     << "1st cascade:"
     << *(first_cascade->get_decayer()->get_name_or_antiname(
-                                  scolored_pair->first_is_not_antiparticle() ))
+                                  scoloredPair->first_is_not_antiparticle() ))
     << "->"
     << *(first_cascade->get_product()->get_name_or_antiname(
                                       first_end_scolored_is_not_antiparticle ))
@@ -328,11 +328,11 @@ namespace LHC_FASER
     << std::endl
     << "2nd cascade:"
     << *(second_cascade->get_decayer()->get_name_or_antiname(
-                                 scolored_pair->second_is_not_antiparticle() ))
+                                 scoloredPair->second_is_not_antiparticle() ))
     << "->(anti)"
-    << *(second_cascade->get_product()->get_name())
+    << *(second_cascade->get_product()->getName())
     << "->(anti)"
-    << *(second_cascade->get_EWino()->get_name())
+    << *(second_cascade->get_EWino()->getName())
     << std::endl
     << "BRs: 1st: " << first_sQCD_BR
     << ", 11: " << second_by_scolored_to_EWino_BR
@@ -873,9 +873,9 @@ namespace LHC_FASER
         /**std::cout
         << std::endl
         << "1st cascade is "
-        << *((*first_sQCD_iterator)->get_decayer()->get_name()) << " => "
-        << *((*first_sQCD_iterator)->get_product()->get_name()) << " => "
-        << *((*first_sQCD_iterator)->get_EWino()->get_name());
+        << *((*first_sQCD_iterator)->get_decayer()->getName()) << " => "
+        << *((*first_sQCD_iterator)->get_product()->getName()) << " => "
+        << *((*first_sQCD_iterator)->get_EWino()->getName());
         std::cout << std::endl;**/
 
         // debugging:
@@ -929,11 +929,11 @@ namespace LHC_FASER
                 /**std::cout
                 << std::endl
                 << "2nd cascade is "
-                << *((*first_sQCD_iterator)->get_decayer()->get_name())
+                << *((*first_sQCD_iterator)->get_decayer()->getName())
                 << " => "
-                << *((*first_sQCD_iterator)->get_product()->get_name())
+                << *((*first_sQCD_iterator)->get_product()->getName())
                 << " => "
-                << *((*first_sQCD_iterator)->get_EWino()->get_name());
+                << *((*first_sQCD_iterator)->get_EWino()->getName());
                 std::cout << std::endl;**/
 
 
@@ -965,11 +965,11 @@ namespace LHC_FASER
                   }
                 //debugging:
                 /**else if( ( CppSLHA::PDG_code::gluino
-                           == scolored_pair->get_first_pointer(
+                           == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                          &&
                          ( CppSLHA::PDG_code::gluino
-                           == scolored_pair->get_second_pointer(
+                           == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                   {
 
@@ -1014,11 +1014,11 @@ namespace LHC_FASER
                   }
                 //debugging:
                 /**else if( ( CppSLHA::PDG_code::gluino
-                           == scolored_pair->get_first_pointer(
+                           == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                          &&
                          ( CppSLHA::PDG_code::gluino
-                           == scolored_pair->get_second_pointer(
+                           == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                   {
 
@@ -1050,11 +1050,11 @@ namespace LHC_FASER
                   }
                 //debugging:
                 /**else if( ( CppSLHA::PDG_code::gluino
-                           == scolored_pair->get_first_pointer(
+                           == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                          &&
                          ( CppSLHA::PDG_code::gluino
-                           == scolored_pair->get_second_pointer(
+                           == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                   {
 
@@ -1092,11 +1092,11 @@ namespace LHC_FASER
                       }
                     //debugging:
                     /**else if( ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_first_pointer(
+                               == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                            &&
                            ( CppSLHA::PDG_code::gluino
-                             == scolored_pair->get_second_pointer(
+                             == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                       {
 
@@ -1128,11 +1128,11 @@ namespace LHC_FASER
                       }
                     //debugging:
                     /**else if( ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_first_pointer(
+                               == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                            &&
                            ( CppSLHA::PDG_code::gluino
-                             == scolored_pair->get_second_pointer(
+                             == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                       {
 
@@ -1164,11 +1164,11 @@ namespace LHC_FASER
                       }
                     //debugging:
                     /**else if( ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_first_pointer(
+                               == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                              &&
                              ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_second_pointer(
+                               == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                       {
 
@@ -1200,11 +1200,11 @@ namespace LHC_FASER
                       }
                     //debugging:
                     /**else if( ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_first_pointer(
+                               == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                              &&
                              ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_second_pointer(
+                               == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                       {
 
@@ -1236,11 +1236,11 @@ namespace LHC_FASER
                       }
                     //debugging:
                     /**else if( ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_first_pointer(
+                               == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                              &&
                              ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_second_pointer(
+                               == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                       {
 
@@ -1272,11 +1272,11 @@ namespace LHC_FASER
                       }
                     //debugging:
                     /**else if( ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_first_pointer(
+                               == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                              &&
                              ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_second_pointer(
+                               == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                       {
 
@@ -1308,11 +1308,11 @@ namespace LHC_FASER
                       }
                     //debugging:
                     /**else if( ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_first_pointer(
+                               == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                              &&
                              ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_second_pointer(
+                               == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                       {
 
@@ -1351,11 +1351,11 @@ namespace LHC_FASER
                     /**std::cout
                     << std::endl
                     << "2nd cascade is "
-                    << *((*second_sQCD_iterator)->get_decayer()->get_name())
+                    << *((*second_sQCD_iterator)->get_decayer()->getName())
                     << " => "
-                    << *((*second_sQCD_iterator)->get_product()->get_name())
+                    << *((*second_sQCD_iterator)->get_product()->getName())
                     << " => "
-                    << *((*second_sQCD_iterator)->get_EWino()->get_name());
+                    << *((*second_sQCD_iterator)->get_EWino()->getName());
                     std::cout << std::endl;**/
 
                     // debugging:
@@ -1445,11 +1445,11 @@ namespace LHC_FASER
                       }  // end of if 2nd sQCD cascade is not negligible.
                     //debugging:
                     /**else if( ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_first_pointer(
+                               == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                              &&
                              ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_second_pointer(
+                               == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                       {
 
@@ -1487,11 +1487,11 @@ namespace LHC_FASER
                     /**std::cout
                     << std::endl
                     << "2nd cascade is "
-                    << *((*second_sQCD_iterator)->get_decayer()->get_name())
+                    << *((*second_sQCD_iterator)->get_decayer()->getName())
                     << " => "
-                    << *((*second_sQCD_iterator)->get_product()->get_name())
+                    << *((*second_sQCD_iterator)->get_product()->getName())
                     << " => "
-                    << *((*second_sQCD_iterator)->get_EWino()->get_name());
+                    << *((*second_sQCD_iterator)->get_EWino()->getName());
                     std::cout << std::endl;**/
 
                     // debugging:
@@ -1581,11 +1581,11 @@ namespace LHC_FASER
                       }  // end of if 2nd sQCD cascade is not negligible.
                     //debugging:
                     /**else if( ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_first_pointer(
+                               == scoloredPair->get_first_pointer(
                                                             )->get_PDG_code() )
                              &&
                              ( CppSLHA::PDG_code::gluino
-                               == scolored_pair->get_second_pointer(
+                               == scoloredPair->get_second_pointer(
                                                           )->get_PDG_code() ) )
                       {
 
@@ -1611,10 +1611,10 @@ namespace LHC_FASER
           }  // end of if 1st sQCD cascade is not negligible.
         //debugging:
         /**else if( ( CppSLHA::PDG_code::gluino
-                   == scolored_pair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::gluino
-                   == scolored_pair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
           {
 
             std::cout
@@ -1710,7 +1710,7 @@ namespace LHC_FASER
 
   signal_shortcuts::signal_shortcuts(
                               input_handler const* const given_input_shortcuts,
-                      cross_section_handler* const given_cross_section_pointer,
+                      crossSectionHandler* const given_cross_section_pointer,
                             kinematics_handler* const given_kinematics_pointer,
                                cascade_handler* const given_cascade_pointer ) :
     input_shortcuts( given_input_shortcuts ),
@@ -1750,7 +1750,7 @@ namespace LHC_FASER
   productionChannelPointerSet::productionChannelPointerSet(
                                   signalDefinitionSet* const signalDefinitions,
                     signed_particle_shortcut_pair const* const scoloredPair ) :
-    crossSection( signalDefinitions->getCrossSections()->get_table(
+    crossSection( signalDefinitions->getCrossSections()->getTable(
         scoloredPair ) ),
     firstCascadeSet( signalDefinitions->getShortcuts()->get_cascade_handler(
                                                             )->get_cascade_set(

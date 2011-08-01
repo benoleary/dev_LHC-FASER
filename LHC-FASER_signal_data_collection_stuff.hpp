@@ -233,7 +233,7 @@ namespace LHC_FASER
   public:
 
     signal_shortcuts( input_handler const* const given_input_shortcuts,
-                      cross_section_handler* const given_cross_section_pointer,
+                      crossSectionHandler* const given_cross_section_pointer,
                       kinematics_handler* const given_kinematics_pointer,
                       cascade_handler* const given_cascade_pointer )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -249,7 +249,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
-    cross_section_handler*
+    crossSectionHandler*
     get_cross_section_handler()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -286,7 +286,7 @@ namespace LHC_FASER
 
     input_handler const* const input_shortcuts;
     sQCD_to_EWino_handler sQCD_to_EWinos;
-    cross_section_handler* const cross_section_pointer;
+    crossSectionHandler* const cross_section_pointer;
     kinematics_handler* const kinematics_pointer;
     cascade_handler* const cascade_pointer;
 
@@ -306,14 +306,11 @@ namespace LHC_FASER
   public:
     signalDefinitionSet( signal_shortcuts* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     signalDefinitionSet( signalDefinitionSet* const copySource )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
     ~signalDefinitionSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     signal_shortcuts*
     getShortcuts()
@@ -321,7 +318,7 @@ namespace LHC_FASER
     void
     setBeamEnergy( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    cross_section_table_set*
+    crossSectionTableSet*
     getCrossSections()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     lepton_acceptance_table*
@@ -338,7 +335,7 @@ namespace LHC_FASER
     signal_shortcuts* const shortcut;
 
     // each signal needs to look up specific tables, based on the beam energy:
-    cross_section_table_set* crossSections;
+    crossSectionTableSet* crossSections;
     lepton_acceptance_table* leptonKinematics;
     jet_acceptance_table* jetPlusMetAcceptance;
     // by default each signal has only a single jet+MET table to look up; if a
@@ -347,7 +344,7 @@ namespace LHC_FASER
 
 
   /* this holds each production channel for a combination of colored sparticles
-   * as a set of pointers to the cross_section_table (which holds a pointer to
+   * as a set of pointers to the crossSectionTable (which holds a pointer to
    * the signed_particle_shortcut_pair) & the relevant cascade_sets for the
    * sparticles.
    */
@@ -377,7 +374,7 @@ namespace LHC_FASER
 
   protected:
     //signal_shortcuts* const shortcut;
-    cross_section_table* crossSection;
+    crossSectionTable* crossSection;
     fullCascadeSet* firstCascadeSet;
     fullCascadeSet* secondCascadeSet;
   };  // end of productionChannelPointerSet class.
@@ -457,7 +454,7 @@ namespace LHC_FASER
   }
 
 
-  inline cross_section_handler*
+  inline crossSectionHandler*
   signal_shortcuts::get_cross_section_handler()
   const
   {
@@ -511,13 +508,13 @@ namespace LHC_FASER
   {
     beamEnergy = inputValue;
     crossSections
-    = shortcut->get_cross_section_handler()->get_table_set( inputValue );
+    = shortcut->get_cross_section_handler()->getTableSet( inputValue );
     leptonKinematics
     = shortcut->get_kinematics_handler()->get_lepton_acceptance_table(
                                                                   inputValue );
   }
 
-  inline cross_section_table_set*
+  inline crossSectionTableSet*
   signalDefinitionSet::getCrossSections()
   {
     return crossSections;
@@ -553,14 +550,14 @@ namespace LHC_FASER
   const
   {
 
-    return crossSection->get_pair();
+    return crossSection->getPair();
 
   }
 
   inline double
   productionChannelPointerSet::getCrossSection()
   {
-    return crossSection->get_value();
+    return crossSection->getValue();
   }
 
   inline fullCascadeSet*

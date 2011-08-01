@@ -148,7 +148,7 @@ namespace LHC_FASER
 
   /* this is a class to handle each individual signal to be calculated.
    * it accesses numbers common to different signals through the
-   * cross_section_handler, kinematics_handler & cascade_handler classes.
+   * crossSectionHandler, kinematics_handler & cascade_handler classes.
    * it takes a string encoding what it should calculate, & constructs a
    * signalCalculator object to actually calculate the signal with the
    * given handlers. it also takes care of updating the signal & storing its
@@ -380,7 +380,7 @@ namespace LHC_FASER
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: signalHandler::get_value() called."
+    << "debugging: signalHandler::getValue() called."
     << " needs_to_prepare_for_this_point() = "
     << needs_to_prepare_for_this_point();
     std::cout << std::endl;**/

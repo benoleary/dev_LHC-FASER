@@ -58,7 +58,7 @@
 namespace LHC_FASER
 {
   electroweakCascade::electroweakCascade(
-                                         leptonAcceptanceCut* const kinematics,
+                                         leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                                   //bool const coloredDecayerIsNotAntiparticle,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
@@ -234,7 +234,7 @@ namespace LHC_FASER
 
 
   electroweakCascadeSet::electroweakCascadeSet(
-                                         leptonAcceptanceCut* const kinematics,
+                                         leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
                                         input_handler const* const shortcut ) :
@@ -3313,7 +3313,7 @@ namespace LHC_FASER
 
             // debugging:
             /**std::cout
-            << "returning " << two_jets_no_leptons.get_value();
+            << "returning " << two_jets_no_leptons.getValue();
             std::cout << std::endl;**/
 
             return two_jets_no_leptons.get_value();
@@ -3340,8 +3340,8 @@ namespace LHC_FASER
 
             // debugging:
             /**std::cout
-            << "returning " << ( one_jet_one_electron.get_value()
-                                 + one_jet_one_muon.get_value() );
+            << "returning " << ( one_jet_one_electron.getValue()
+                                 + one_jet_one_muon.getValue() );
             std::cout << std::endl;**/
 
             return ( one_jet_one_electron.get_value()
@@ -3353,7 +3353,7 @@ namespace LHC_FASER
 
             // debugging:
             /**std::cout
-            << "returning " << one_jet_no_leptons.get_value();
+            << "returning " << one_jet_no_leptons.getValue();
             std::cout << std::endl;**/
 
             return one_jet_no_leptons.get_value();
@@ -3380,9 +3380,9 @@ namespace LHC_FASER
 
             // debugging:
             /**std::cout
-            << "returning " << ( no_jets_two_electrons.get_value()
-                                 + no_jets_two_muons.get_value()
-                                 + no_jets_one_muon_one_electron.get_value() );
+            << "returning " << ( no_jets_two_electrons.getValue()
+                                 + no_jets_two_muons.getValue()
+                                 + no_jets_one_muon_one_electron.getValue() );
             std::cout << std::endl;**/
 
             return ( no_jets_two_electrons.get_value()
@@ -3395,8 +3395,8 @@ namespace LHC_FASER
 
             // debugging:
             /**std::cout
-            << "returning " << ( no_jets_one_electron.get_value()
-                                 + no_jets_one_muon.get_value() );
+            << "returning " << ( no_jets_one_electron.getValue()
+                                 + no_jets_one_muon.getValue() );
             std::cout << std::endl;**/
 
             return ( no_jets_one_electron.get_value()
@@ -3408,7 +3408,7 @@ namespace LHC_FASER
 
             // debugging:
             /**std::cout
-            << "returning " << no_jets_no_leptons.get_value();
+            << "returning " << no_jets_no_leptons.getValue();
             std::cout << std::endl;**/
 
             return no_jets_no_leptons.get_value();

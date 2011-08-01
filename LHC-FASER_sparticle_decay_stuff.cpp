@@ -268,7 +268,7 @@ namespace LHC_FASER
     /**std::cout
     << std::endl
     << "debugging: exclusive_BR_calculator::exclusive_BR_calculator("
-    << *(given_decayer->get_name()) << ", "
+    << *(given_decayer->getName()) << ", "
     << *(given_product->get_name_or_antiname(
                                             product_is_not_antiparticle_flag ))
     << ", excluded:{";

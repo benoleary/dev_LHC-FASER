@@ -61,21 +61,18 @@
 
 namespace LHC_FASER
 {
-
   /* this class reads in a file in the assumed format, stores it, & gives out
    * interpolated values. it was written with cross-sections in mind, with data
    * files in the format
    * squark_mass gluino_mass cross-section newline
    * or K-factors, in a similar format.
    */
-  class square_grid
+  class squareGrid
   {
-
   public:
-
-    square_grid( std::string const* const grid_file_location,
-                 std::string const* const given_grid_name,
-                 square_grid const* const scaling_grid )
+    squareGrid( std::string const* const gridFileLocation,
+                std::string const* const gridName,
+                squareGrid const* const scalingGrid )
     /* this constructor reads in a grid file, assumed to be in the format
      * x_coordinate y_coordinate value
      * in ascending order, y_coordinate varying first
@@ -86,81 +83,70 @@ namespace LHC_FASER
      * 210.0 200.0 876.5
      * 210.0 210.0 432.1
      * ...).
-     * if provided with a non-NULL pointer to another square_grid, it stores
+     * if provided with a non-NULL pointer to another squareGrid, it stores
      * the its values scaled by an interpolated value from this other
-     * square_grid.
+     * squareGrid.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    square_grid( std::string base_grid_file_location,
-                 std::string given_grid_name,
-                 std::string scaling_grid_file_location )
-    // this constructor uses the other constructor to make another square_grid
+    squareGrid( std::string baseGridFileLocation,
+                std::string gridName,
+                std::string scalingGridFileLocation )
+    // this constructor uses the other constructor to make another squareGrid
     // with the scaling factors, which is then used to construct this instance.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~square_grid()
+    ~squareGrid()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     std::string const*
-    get_name()
+    getName()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
-    value_at( double const x_coordinate,
-              double const y_coordinate )
+    valueAt( double const xCoordinate,
+             double const yCoordinate )
     const
     /* this finds the grid square which the given point is in, & then uses
      * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
      * value.
      * N.B.: cross-section grids use
-     * x_coordinate == SQUARK mass, y_coordinate == GLUINO mass!
+     * xCoordinate == SQUARK mass, yCoordinate == GLUINO mass!
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
-    get_lowest_x()
+    getLowestX()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
-    get_highest_x()
+    getHighestX()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
-    get_lowest_y()
+    getLowestY()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
-    get_highest_y()
+    getHighestY()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
-    std::string grid_name;
-    double grid_step_size;
-    double lowest_x_coordinate;
-    double highest_x_coordinate;
-    double lowest_y_coordinate;
-    double highest_y_coordinate;
+    std::string gridName;
+    double gridStepSize;
+    double lowestXCoordinate;
+    double highestXCoordinate;
+    double lowestYCoordinate;
+    double highestYCoordinate;
     std::vector< std::vector< double >* > values;
 
     void
-    read_in( std::string const* const grid_file_location,
-             square_grid const* const scaling_grid )
+    readIn( std::string const* const gridFileLocation,
+            squareGrid const* const scalingGrid )
     // this actually does most of the job of the constructors.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
 
-  /* this class holds a square_grid instance as a cross-section lookup table
+  /* this class holds a squareGrid instance as a cross-section lookup table
    * for a particular colored sparticle combination, & returns the
    * interpolated value by looking up the masses of its sparticles.
    * this class is small enough to be kept entirely in this header file.
@@ -169,144 +155,117 @@ namespace LHC_FASER
    * at the accuracy we work at unless there are large splittings among the
    * sdown & sup mass eigenstates.
    */
-  class cross_section_table : public readied_for_new_point
+  class crossSectionTable : public readied_for_new_point
   {
 
   public:
 
-    cross_section_table( square_grid const* const given_lookup_table,
-                         signed_particle_shortcut_pair const* const given_pair,
-                         double const given_flavor_factor,
-                         input_handler const* const given_shortcuts )
+    crossSectionTable( squareGrid const* const lookupTable,
+                       signed_particle_shortcut_pair const* const scoloredPair,
+                       double const flavorFactor,
+                       input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    virtual
-    ~cross_section_table()
+    ~crossSectionTable()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     signed_particle_shortcut_pair const*
-    get_pair()
+    getPair()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
     double
-    get_value()
+    getValue()
     /* this checks to see if it needs to recalculate the value for this point,
      * & if so, it does, & if the point lies outside the grid, it takes the
      * value of the nearest point on the grid instead.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   protected:
-
-    signed_particle_shortcut_pair const* scolored_pair;
-    CppSLHA::particle_property_set const* directly_produced_squark;
+    signed_particle_shortcut_pair const* scoloredPair;
+    CppSLHA::particle_property_set const* directlyProducedSquark;
     input_handler const* const shortcut;
-
-    double stored_value;
-
-    square_grid const* const lookup_table;
-    double const flavor_factor;
+    double storedValue;
+    squareGrid const* const lookupTable;
+    double const flavorFactor;
     /* this is used when the flavor of squark for this table uses the grid for
      * a different flavor of squark, in the approximation that it has the same
      * cross-section scaled by some factor (e.g. the gluino+sup cross-section
      * is twice the gluino+sdown cross-section for the same squark mass).
      */
-
   };
 
 
-  /* this class holds several square_grid instances as cross-section lookup
+  /* this class holds several squareGrid instances as cross-section lookup
    * tables for various colored sparticle combinations, & returns their
    * interpolated values for given signed_particle_shortcut_pair pointers.
    */
-  class cross_section_table_set
+  class crossSectionTableSet
   {
 
   public:
 
-    cross_section_table_set( std::string const* const given_grid_directory,
-                             int const given_LHC_energy,
-                             input_handler const* const given_shortcuts )
+    crossSectionTableSet( std::string const* const gridDirectory,
+                          int const beamEnergy,
+                          input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    virtual
-    ~cross_section_table_set()
+    ~crossSectionTableSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     int
-    get_LHC_energy()
+    getBeamEnergy()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    cross_section_table*
-    get_table( signed_particle_shortcut_pair const* const requested_channel )
-    // this returns the cross_section_table for the requested pair.
+    crossSectionTable*
+    getTable( signed_particle_shortcut_pair const* const requestedChannel )
+    // this returns the crossSectionTable for the requested pair.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   protected:
-
     input_handler const* const shortcut;
-
-    std::string const grid_directory;
-    int const LHC_energy;
-
-    std::vector< square_grid* > grids;
-    // this holds square_grid instances with unique names.
-    std::vector< cross_section_table* > tables;
-    // this holds cross_section_table instances with appropriate
+    std::string const gridDirectory;
+    int const beamEnergy;
+    std::vector< squareGrid* > grids;
+    // this holds squareGrid instances with unique names.
+    std::vector< crossSectionTable* > tables;
+    // this holds crossSectionTable instances with appropriate
     // signed_particle_shortcut_pair pointers.
 
     double
-    prepare_grid_name( std::string* const grid_name,
-                       signed_particle_shortcut_pair const* const given_pair )
+    prepareGridName( std::string* const gridName,
+                     signed_particle_shortcut_pair const* const scoloredPair )
     // this returns the flavor factor for the requested pair while putting the
-    // square_grid's associated string in grid_name.
+    // squareGrid's associated string in gridName.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    square_grid const*
-    get_grid( std::string const* const grid_name )
-    // this either finds the appropriate square_grid in grids or makes a new
+    squareGrid const*
+    getGrid( std::string const* const gridName )
+    // this either finds the appropriate squareGrid in grids or makes a new
     // instance, stores it, & returns its pointer.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
 
-  class cross_section_handler
+  class crossSectionHandler
   {
-
   public:
-
-    cross_section_handler( input_handler const* const given_shortcuts )
+    crossSectionHandler( input_handler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~crossSectionHandler()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    ~cross_section_handler()
+    crossSectionTableSet*
+    getTableSet( int const beamEnergyInTev )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    cross_section_table_set*
-    get_table_set( int const LHC_energy_in_TeV )
+    crossSectionTable*
+    getTable( int const beamEnergyInTev,
+              signed_particle_shortcut_pair const* const requestedChannel )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    cross_section_table*
-    get_table( int const LHC_energy_in_TeV,
-               signed_particle_shortcut_pair const* const requested_channel )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
     input_handler const* const shortcut;
-    std::vector< cross_section_table_set* > table_sets;
+    std::vector< crossSectionTableSet* > tableSets;
     // this is for holding all the cross-sections which are looked up by the
     // signal handlers.
-
   };
 
 
@@ -316,80 +275,80 @@ namespace LHC_FASER
 
 
   inline std::string const*
-  square_grid::get_name()
+  squareGrid::getName()
   const
   {
 
-    return &grid_name;
+    return &gridName;
 
   }
 
   inline double
-  square_grid::get_lowest_x()
+  squareGrid::getLowestX()
   const
   {
 
-    return lowest_x_coordinate;
+    return lowestXCoordinate;
 
   }
 
   inline double
-  square_grid::get_highest_x()
+  squareGrid::getHighestX()
   const
   {
 
-    return highest_x_coordinate;
+    return highestXCoordinate;
 
   }
 
   inline double
-  square_grid::get_lowest_y()
+  squareGrid::getLowestY()
   const
   {
 
-    return lowest_y_coordinate;
+    return lowestYCoordinate;
 
   }
 
   inline double
-  square_grid::get_highest_y()
+  squareGrid::getHighestY()
   const
   {
 
-    return highest_y_coordinate;
+    return highestYCoordinate;
 
   }
 
 
 
   inline signed_particle_shortcut_pair const*
-  cross_section_table::get_pair()
+  crossSectionTable::getPair()
   const
   {
 
-    return scolored_pair;
+    return scoloredPair;
 
   }
 
 
 
   inline int
-  cross_section_table_set::get_LHC_energy()
+  crossSectionTableSet::getBeamEnergy()
   const
   {
 
-    return LHC_energy;
+    return beamEnergy;
 
   }
 
 
 
-  inline cross_section_table*
-  cross_section_handler::get_table( int const LHC_energy_in_TeV,
-                 signed_particle_shortcut_pair const* const requested_channel )
+  inline crossSectionTable*
+  crossSectionHandler::getTable( int const beamEnergyInTev,
+                  signed_particle_shortcut_pair const* const requestedChannel )
   {
 
-    return get_table_set( LHC_energy_in_TeV )->get_table( requested_channel );
+    return getTableSet( beamEnergyInTev )->getTable( requestedChannel );
 
   }
 

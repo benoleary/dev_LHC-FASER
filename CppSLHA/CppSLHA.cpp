@@ -136,7 +136,7 @@ namespace CppSLHA
         /*std::cout
         << std::endl
         << "debugging: ~CppSLHA0 deleting "
-        << *((*deletion_iterator)->get_name());
+        << *((*deletion_iterator)->getName());
         std::cout << std::endl;*/
         delete *deletion_iterator;
 
@@ -212,7 +212,7 @@ namespace CppSLHA
 
         // debugging:
         /*std::cout << std::endl << "comparing against: "
-                               << (*BLOCK_iterator)->get_name();
+                               << (*BLOCK_iterator)->getName();
         std::cout << std::endl;*/
 
         if( 0 == (*BLOCK_iterator)->get_name()->compare( requested_BLOCK ) )
@@ -461,7 +461,7 @@ namespace CppSLHA
          BLOCKs.end() > BLOCK_iterator;
          ++BLOCK_iterator )
       {
-        std::cout << (*BLOCK_iterator)->get_name();
+        std::cout << (*BLOCK_iterator)->getName();
         std::cout << std::endl;
       }
     std::cout << std::endl << "that's all of them.";
@@ -605,7 +605,7 @@ namespace CppSLHA
                     // debugging:
                     /*std::cout
                     << std::endl << "debugging: found "
-                    << current_BLOCK->get_name() << " BLOCK!" << std::endl
+                    << current_BLOCK->getName() << " BLOCK!" << std::endl
                     << "with pointer " << current_BLOCK;
                     if( !(current_BLOCK->has_recorded()) )
                       {
@@ -667,7 +667,7 @@ namespace CppSLHA
                     // debugging:
                     /*std::cout
                     << std::endl << "debugging: about to look for Q= for "
-                    << current_BLOCK->get_name() << " BLOCK!"
+                    << current_BLOCK->getName() << " BLOCK!"
                     << std::endl << "with pointer " << current_BLOCK;
                     std::cout << std::endl;
                     */
@@ -746,7 +746,7 @@ namespace CppSLHA
             // debugging:
             /*std::cout
             << std::endl << "debugging: reading the following line for "
-            << current_BLOCK->get_name();
+            << current_BLOCK->getName();
             std::cout << std::endl << input_line_as_stream.str();
             std::cout << std::endl;
             */
@@ -1176,7 +1176,7 @@ namespace CppSLHA
          ++BLOCK_iterator )
       {
         // debugging:
-        /*std::cout << "should be \"" << (*BLOCK_iterator)->get_name() << "\"";
+        /*std::cout << "should be \"" << (*BLOCK_iterator)->getName() << "\"";
          std::cout << std::endl;
          std::cout
          << "#-------------------------------------------#"

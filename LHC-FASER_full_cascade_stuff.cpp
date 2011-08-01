@@ -108,9 +108,9 @@ namespace LHC_FASER
     << given_primary_cut << ", "
     << given_secondary_cut << ", "
     << given_jet_cut << ", ..."
-    << *(given_decaying_scolored->get_name())
+    << *(given_decaying_scolored->getName())
     << ", "
-    << *(given_decaying_EWino->get_name())
+    << *(given_decaying_EWino->getName())
     << ", ... ) called.";
     std::cout << std::endl;
     std::cout << std::endl;**/

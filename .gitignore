@@ -20,3 +20,7 @@ Debug/CppSLHA/subdir.mk
 .DS_Store
 
 .DS_Store
+
+LHC-FASER_kinematics_stuff.hpp
+
+LHC-FASER_kinematics_stuff.cpp

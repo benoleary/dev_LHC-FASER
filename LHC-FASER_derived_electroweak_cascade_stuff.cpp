@@ -31,7 +31,7 @@ namespace LHC_FASER
 
 
   neutralinoToSemuCascade::neutralinoToSemuCascade(
-                                         leptonAcceptanceCut* const kinematics,
+                                         leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                                     bool const coloredDecayerIsNotAntiparticle,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
@@ -203,7 +203,7 @@ namespace LHC_FASER
 
 
   chargeSummedNeutralinoToSemuCascade::chargeSummedNeutralinoToSemuCascade(
-                                         leptonAcceptanceCut* const kinematics,
+                                         leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                                     bool const coloredDecayerIsNotAntiparticle,
                 CppSLHA::particle_property_set const* const electroweakDecayer,

@@ -233,7 +233,7 @@ namespace LHC_FASER
   class electroweakCascade : public readied_for_new_point
   {
   public:
-    electroweakCascade( leptonAcceptanceCut* const kinematics,
+    electroweakCascade( leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
                CppSLHA::particle_property_set const* const intermediateDecayer,
@@ -309,7 +309,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    leptonAcceptanceCut* const kinematics;
+    leptonAcceptanceParameterSet* const kinematics;
     CppSLHA::particle_property_set const* const coloredDecayer;
     //bool const coloredDecayerIsNotAntiparticle;
     CppSLHA::particle_property_set const* const electroweakDecayer;
@@ -369,7 +369,7 @@ namespace LHC_FASER
   class electroweakCascadeSet
   {
   public:
-    electroweakCascadeSet( leptonAcceptanceCut* const kinematics,
+    electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
                            input_handler const* const shortcut )
@@ -423,7 +423,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    leptonAcceptanceCut* const kinematics;
+    leptonAcceptanceParameterSet* const kinematics;
     input_handler const* const shortcut;
     CppSLHA::particle_property_set const* const coloredDecayer;
     CppSLHA::particle_property_set const* const electroweakDecayer;

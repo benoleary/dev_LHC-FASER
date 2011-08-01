@@ -156,7 +156,7 @@ namespace LHC_FASER
       rateCalculator
       = new sigmaBreakdownTestCalculator( shortcut,
                                           shortcut->get_cross_section_handler(
-                                                       )->get_table_set( 7 ) );
+                                                       )->getTableSet( 7 ) );
 
     }
     else
@@ -672,7 +672,7 @@ namespace LHC_FASER
   {
     std::string jetGridName( "Atlas3jMET" );
     this->signalDefinitions.setJetPlusMetAcceptance(
-         signalDefinitions.getShortcuts()->get_kinematics_handler()->get_table(
+         signalDefinitions.getShortcuts()->get_kinematics_handler()->getTable(
                                             signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
                                               jetAcceptanceGridTableColumn ) );

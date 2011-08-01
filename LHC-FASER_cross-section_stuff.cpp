@@ -57,11 +57,10 @@
 
 namespace LHC_FASER
 {
-
-  square_grid::square_grid( std::string const* const grid_file_location,
-                            std::string const* const given_grid_name,
-                            square_grid const* const scaling_grid ) :
-    grid_name( *given_grid_name )
+  squareGrid::squareGrid( std::string const* const gridFileLocation,
+                          std::string const* const gridName,
+                          squareGrid const* const scalingGrid ) :
+    gridName( *gridName )
   /* this constructor reads in a grid file, assumed to be in the format
    * x_coordinate y_coordinate value
    * in ascending order, y_coordinate varying first
@@ -72,283 +71,230 @@ namespace LHC_FASER
    * 210.0 200.0 876.5
    * 210.0 210.0 432.1
    * ...).
-   * if provided with a non-NULL pointer to another square_grid, it stores
+   * if provided with a non-NULL pointer to another squareGrid, it stores
    * the its values scaled by an interpolated value from this other
-   * square_grid.
+   * squareGrid.
    */
   {
-
-    read_in( grid_file_location,
-             scaling_grid );
+    readIn( gridFileLocation,
+            scalingGrid );
 
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: square_grid() finished, value at ( 200.0, 200.0 ) = "
-    << value_at( 200.0,
+    << "debugging: squareGrid() finished, value at ( 200.0, 200.0 ) = "
+    << valueAt( 200.0,
                  200.0 );
     std::cout << std::endl;**/
-
   }
 
-  square_grid::square_grid( std::string base_grid_file_location,
-                            std::string given_grid_name,
-                            std::string scaling_grid_file_location ) :
-    grid_name( given_grid_name )
-  // this constructor uses the other constructor to make another square_grid
+  squareGrid::squareGrid( std::string baseGridFileLocation,
+                          std::string gridName,
+                          std::string scalingGridFileLocation ) :
+    gridName( gridName )
+  // this constructor uses the other constructor to make another squareGrid
   // with the scaling factors, which is then used to construct this instance.
   {
-
-    square_grid* scaling_grid = NULL;
-
-    if( !(scaling_grid_file_location.empty()) )
-      {
-
-        scaling_grid = new square_grid( &scaling_grid_file_location,
-                                        &given_grid_name,
-                                        NULL );
-
-      }
-
-    read_in( &base_grid_file_location,
-             scaling_grid );
-
-    if( NULL != scaling_grid )
-      {
-
-        delete scaling_grid;
-
-      }
-
+    squareGrid* scalingGrid = NULL;
+    if( !(scalingGridFileLocation.empty()) )
+    {
+      scalingGrid = new squareGrid( &scalingGridFileLocation,
+                                    &gridName,
+                                    NULL );
+    }
+    readIn( &baseGridFileLocation,
+            scalingGrid );
+    if( NULL != scalingGrid )
+    {
+      delete scalingGrid;
+    }
   }
 
-  square_grid::~square_grid()
+  squareGrid::~squareGrid()
   {
-
     // delete all the vectors held as pointers by the vector of vectors:
-
     for( std::vector< std::vector< double >* >::iterator
-           deletion_iterator = values.begin();
-         values.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-        *deletion_iterator = NULL;  // just to be safe.
-
-      }
-
+         deletionIterator = values.begin();
+         values.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
   }
 
   void
-  square_grid::read_in( std::string const* const grid_file_location,
-                        square_grid const* const scaling_grid )
+  squareGrid::readIn( std::string const* const gridFileLocation,
+                      squareGrid const* const scalingGrid )
   // this actually does most of the job of the constructors.
   {
-
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: square_grid::read_in( "
+    << "debugging: squareGrid::readIn( "
     << *grid_file_location << ", " << scaling_grid << " ) called";
     std::cout << std::endl;**/
 
-    if( NULL != grid_file_location )
+    if( NULL != gridFileLocation )
+    {
+      // open the file:
+      int const maxLengthOfGridFile = 100000;
+      CppSLHA::hash_commented_file_reader
+      inputFileReader( gridFileLocation,
+                       maxLengthOfGridFile,
+                       false );
+      /* a hundred thousand lines should be long enough for any grid file. if
+       * readIn() is reading in more lines than that, it's probably because
+       * of some file corruption.
+       * also, if it's not enough, change it here.
+       */
+      std::string inputLineAsString;
+      // prepare a string to parse the line.
+      std::stringstream inputLineAsStream;
+      // prepare a stringstream to parse the line.
+      // the masses from the last line read & the currently-read line:
+      double lastXCoordinate = 0.0;
+      double lastYCoordinate = 0.0;
+      double currentXCoordinate = 0.0;
+      double currentYCoordinate = 0.0;
+      double currentValue;
+      // the value currently being read in.
+      bool gridSizeStillUnknown = true;
+      // we start out not knowing the step size for the grid (but we do
+      // assume that it is a square grid).
+      std::vector< double >* currentVector = NULL;
+      // this holds all the values for a set of points with the same
+      // x_coordinate.
+
+      while( inputFileReader.read_line( &inputLineAsString ) )
+        // the evaluation of the conditional reads in the next line.
       {
-
-        // open the file:
-        int const max_length_of_grid_file = 100000;
-        CppSLHA::hash_commented_file_reader
-        input_file_reader( grid_file_location,
-                           max_length_of_grid_file,
-                           false );
-        /* a hundred thousand lines should be long enough for any grid file. if
-         * read_in() is reading in more lines than that, it's probably because
-         * of some file corruption.
-         * also, if it's not enough, change it here.
-         */
-
-        std::string input_line_as_string;
-        // prepare a string to parse the line.
-        std::stringstream input_line_as_stream;
-        // prepare a stringstream to parse the line.
-
-        // the masses from the last line read & the currently-read line:
-        double last_x_coordinate = 0.0;
-        double last_y_coordinate = 0.0;
-        double current_x_coordinate = 0.0;
-        double current_y_coordinate = 0.0;
-
-        double current_value;
-        // the value currently being read in.
-
-        bool grid_size_still_unknown = true;
-        // we start out not knowing the step size for the grid (but we do
-        // assume that it is a square grid).
-
-        std::vector< double >* current_vector = NULL;
-        // this holds all the values for a set of points with the same
-        // x_coordinate.
-
-        while( input_file_reader.read_line( &input_line_as_string ) )
-          // the evaluation of the conditional reads in the next line.
+        // read in the line for interpretting:
+        inputLineAsStream.clear();
+        inputLineAsStream.str( inputLineAsString );
+        // update what the masses for the last line were:
+        lastYCoordinate = currentYCoordinate;
+        lastXCoordinate = currentXCoordinate;
+        inputLineAsStream >> currentXCoordinate
+                          >> currentYCoordinate
+                          >> currentValue;
+        if( currentXCoordinate > lastXCoordinate )
+          // if the x_coordinate has changed, we need a new vector for the
+          // values for varying y_coordinates.
+        {
+          // 1st record the last set of points with the same
+          // x_coordinate:
+          if( NULL != currentVector )
+            // if we have a vector to add...
           {
+            values.push_back( currentVector );
 
-            // read in the line for interpretting:
-            input_line_as_stream.clear();
-            input_line_as_stream.str( input_line_as_string );
-
-            // update what the masses for the last line were:
-            last_y_coordinate = current_y_coordinate;
-            last_x_coordinate = current_x_coordinate;
-
-            input_line_as_stream >> current_x_coordinate
-                                 >> current_y_coordinate
-                                 >> current_value;
-
-            if( current_x_coordinate > last_x_coordinate )
-              // if the x_coordinate has changed, we need a new vector for the
-              // values for varying y_coordinates.
-              {
-
-                // 1st record the last set of points with the same
-                // x_coordinate:
-                if( NULL != current_vector )
-                  // if we have a vector to add...
-                  {
-
-                    values.push_back( current_vector );
-
-                    // debugging:
-                    /**std::cout
+            // debugging:
+            /**std::cout
                     << std::endl
                     << "pushed back a vector of size "
                     << current_vector->size();**/
+          }
+          // prepare a new vector for the new x_coordinate:
+          currentVector = new std::vector< double >;
+        }
 
-                  }
-
-                // prepare a new vector for the new x_coordinate:
-                current_vector = new std::vector< double >();
-
-              }
-
-            if( NULL != scaling_grid )
-              // if we have to scale this value...
-              {
-
-                // debugging:
-                /**std::cout
+        if( NULL != scalingGrid )
+          // if we have to scale this value...
+        {
+          // debugging:
+          /**std::cout
                 << std::endl
                 << "debugging: scaling point at ( "
                 << current_x_coordinate << ", " << current_y_coordinate
                 << " ) with value " << current_value << " by factor "
-                << scaling_grid->value_at( current_x_coordinate,
+                << scaling_grid->valueAt( current_x_coordinate,
                                            current_y_coordinate );
                 std::cout << std::endl;**/
 
-                current_value *= scaling_grid->value_at( current_x_coordinate,
-                                                        current_y_coordinate );
+          currentValue *= scalingGrid->valueAt( currentXCoordinate,
+                                                currentYCoordinate );
+        }
+        currentVector->push_back( currentValue );
 
-              }
-
-            current_vector->push_back( current_value );
-
-            if( grid_size_still_unknown
-                &&
-                ( 0.0 < last_x_coordinate )
-                &&
-                ( 0.0 < last_y_coordinate ) )
-              // if we still need to work out the grid step size & we have read
-              // in enough to do so...
-              {
-
-                // first we take note of the 1st point, which should have the
-                // lowest co-ordinate values:
-                lowest_x_coordinate = last_x_coordinate;
-                lowest_y_coordinate = last_y_coordinate;
-
-                // then we work out the grid step size:
-                if( current_x_coordinate > last_x_coordinate )
-                  {
-
-                    grid_step_size = ( current_x_coordinate
-                                       - last_x_coordinate );
-                    grid_size_still_unknown = false;
-
-                  }
-                else if( current_y_coordinate > last_y_coordinate )
-                  {
-
-                    grid_step_size = ( current_y_coordinate
-                                       - last_y_coordinate );
-                    grid_size_still_unknown = false;
-
-                  }
-
-
-                // debugging:
-                /**std::cout
+        if( gridSizeStillUnknown
+            &&
+            ( 0.0 < lastXCoordinate )
+            &&
+            ( 0.0 < lastYCoordinate ) )
+          // if we still need to work out the grid step size & we have read
+          // in enough to do so...
+        {
+          // first we take note of the 1st point, which should have the
+          // lowest co-ordinate values:
+          lowestXCoordinate = lastXCoordinate;
+          lowestYCoordinate = lastYCoordinate;
+          // then we work out the grid step size:
+          if( currentXCoordinate > lastXCoordinate )
+          {
+            gridStepSize = ( currentXCoordinate - lastXCoordinate );
+            gridSizeStillUnknown = false;
+          }
+          else if( currentYCoordinate > lastYCoordinate )
+          {
+            gridStepSize = ( currentYCoordinate - lastYCoordinate );
+            gridSizeStillUnknown = false;
+          }
+          // debugging:
+          /**std::cout
                 << std::endl
-                << "grid_step_size = " << grid_step_size;**/
+                << "gridStepSize = " << gridStepSize;**/
+        }
+      }  // end of while loop going over the lines of the file.
 
-              }
+      // we still have to add the last vector of values for the last x
+      // co-ordinate:
+      values.push_back( currentVector );
 
-          }  // end of while loop going over the lines of the file.
-
-        // we still have to add the last vector of values for the last x
-        // co-ordinate:
-        values.push_back( current_vector );
-
-        // debugging:
-        /**std::cout
+      // debugging:
+      /**std::cout
         << std::endl
         << "pushed back last vector of size "
         << current_vector->size();
         std::cout << std::endl;**/
 
-        // the last co-ordinates should be the maximal values:
-        highest_x_coordinate = current_x_coordinate;
-        highest_y_coordinate = current_y_coordinate;
-
-      }
+      // the last co-ordinates should be the maximal values:
+      highestXCoordinate = currentXCoordinate;
+      highestYCoordinate = currentYCoordinate;
+    }
     else
       // otherwise, a NULL pointer was given instead of a pointer to the
       // grid file name string.
-      {
-
-        std::cout
-        << std::endl
-        << "LHC-FASER::error! asked to open a file with a NULL pointer!";
-        std::cout << std::endl;
-
-      }
-
+    {
+      std::cout
+      << std::endl
+      << "LHC-FASER::error! asked to open a file with a NULL pointer!";
+      std::cout << std::endl;
+    }
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: square_grid::read_in() finished: "
-    << std::endl << "lowest_x_coordinate = " << lowest_x_coordinate
-    << std::endl << "highest_x_coordinate = " << highest_x_coordinate
-    << std::endl << "lowest_y_coordinate = " << lowest_y_coordinate
-    << std::endl << "highest_y_coordinate = " << highest_y_coordinate
-    << std::endl << "value at ( " << lowest_x_coordinate << ", "
-    << lowest_y_coordinate << " ) is " << value_at( lowest_x_coordinate,
-                                                    lowest_y_coordinate )
+    << "debugging: squareGrid::readIn() finished: "
+    << std::endl << "lowestXCoordinate = " << lowestXCoordinate
+    << std::endl << "highestXCoordinate = " << highestXCoordinate
+    << std::endl << "lowestYCoordinate = " << lowestYCoordinate
+    << std::endl << "highestYCoordinate = " << highestYCoordinate
+    << std::endl << "value at ( " << lowestXCoordinate << ", "
+    << lowestYCoordinate << " ) is " << valueAt( lowestXCoordinate,
+                                                    lowestYCoordinate )
     << std::endl << "value at ( "
-    << ( 0.5 * ( lowest_x_coordinate + highest_x_coordinate ) + 0.2 ) << ", "
-    << ( 0.5 * ( lowest_y_coordinate + highest_y_coordinate ) + 0.3 )
+    << ( 0.5 * ( lowestXCoordinate + highestXCoordinate ) + 0.2 ) << ", "
+    << ( 0.5 * ( lowestYCoordinate + highestYCoordinate ) + 0.3 )
     << " ) is "
-    << value_at( ( 0.5 * ( lowest_x_coordinate + highest_x_coordinate )
+    << valueAt( ( 0.5 * ( lowestXCoordinate + highestXCoordinate )
                    + 0.2 ),
-              ( 0.5 * ( lowest_x_coordinate + highest_x_coordinate ) + 0.3 ) );
+              ( 0.5 * ( lowestXCoordinate + highestXCoordinate ) + 0.3 ) );
     std::cout << std::endl;**/
-
   }
 
 
   double
-  square_grid::value_at( double const x_coordinate,
-                         double const y_coordinate )
+  squareGrid::valueAt( double const xCoordinate,
+                       double const yCoordinate )
   const
   /* this finds the grid square which the given point is in, & then uses
    * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
@@ -359,363 +305,281 @@ namespace LHC_FASER
    * x_coordinate == SQUARK mass, y_coordinate == GLUINO mass!
    */
   {
-
-    if( ( 0.0 < grid_step_size )
+    if( ( 0.0 < gridStepSize )
         &&
-        ( x_coordinate >= lowest_x_coordinate )
+        ( xCoordinate >= lowestXCoordinate )
         &&
-        ( y_coordinate >= lowest_y_coordinate ) )
+        ( yCoordinate >= lowestYCoordinate ) )
+    {
+      double xSteps = ( ( xCoordinate - lowestXCoordinate ) / gridStepSize );
+      int lowerLeftX = (int)xSteps;
+      if( values.size() > ( lowerLeftX + 1 ) )
+        // if the x co-ordinate is less than its maximal grid value...
       {
+        double ySteps = ( ( yCoordinate - lowestYCoordinate ) / gridStepSize );
+        int lowerLeftY = (int)ySteps;
 
-        double
-        x_steps = ( ( x_coordinate - lowest_x_coordinate ) / grid_step_size );
-        int lower_left_x = (int)x_steps;
-
-        if( values.size() > ( lower_left_x + 1 ) )
-          // if the x co-ordinate is less than its maximal grid value...
-          {
-
-            double
-            y_steps
-            = ( ( y_coordinate - lowest_y_coordinate ) / grid_step_size );
-            int lower_left_y = (int)y_steps;
-
-            if( values.at( lower_left_x )->size() > ( lower_left_y + 1 ) )
-              // if the y co-ordinate is less than its maximal grid value...
-              {
-
-                return LHC_FASER_global::square_bilinear_interpolation(
-                                                    ( x_steps - lower_left_x ),
-                                                    ( y_steps - lower_left_y ),
-                                 values.at( lower_left_x )->at( lower_left_y ),
-                         values.at( ( lower_left_x + 1 ) )->at( lower_left_y ),
-                 values.at( ( lower_left_x + 1 ) )->at( ( lower_left_y + 1 ) ),
-                       values.at( lower_left_x )->at( ( lower_left_y + 1 ) ) );
-
-              }
-            else if( ( values.at( lower_left_x )->size()
-                       == ( lower_left_y + 1 ) )
-                     &&
-                     ( (double)lower_left_y == y_steps ) )
-              // otherwise, if it's on the maximal y edge...
-              {
-
-                return LHC_FASER_global::unit_linear_interpolation(
-                                                    ( x_steps - lower_left_x ),
-                                 values.at( lower_left_x )->at( lower_left_y ),
-                       values.at( ( lower_left_x + 1 ) )->at( lower_left_y ) );
-
-              }
-            else
-              // otherwise, it's off the grid:
-              {
-
-                return CppSLHA::CppSLHA_global::really_wrong_value;
-
-              }
-
-          }
-        else if( ( values.size() == ( lower_left_x + 1 ) )
+        if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
+          // if the y co-ordinate is less than its maximal grid value...
+        {
+          return LHC_FASER_global::square_bilinear_interpolation(
+                                                       ( xSteps - lowerLeftX ),
+                                                       ( ySteps - lowerLeftY ),
+                                     values.at( lowerLeftX )->at( lowerLeftY ),
+                             values.at( ( lowerLeftX + 1 ) )->at( lowerLeftY ),
+                     values.at( ( lowerLeftX + 1 ) )->at( ( lowerLeftY + 1 ) ),
+                           values.at( lowerLeftX )->at( ( lowerLeftY + 1 ) ) );
+        }
+        else if( ( values.at( lowerLeftX )->size() == ( lowerLeftY + 1 ) )
                  &&
-                 ( (double)lower_left_x == x_steps ) )
-          // otherwise, if it's on the maximal x edge...
-          {
-
-            double
-            y_steps
-            = ( ( y_coordinate - lowest_y_coordinate ) / grid_step_size );
-            int lower_left_y = (int)y_steps;
-
-            if( values.at( lower_left_x )->size() > ( lower_left_y + 1 ) )
-              // if the y co-ordinate is less than its maximal grid value...
-              {
-
-                return LHC_FASER_global::unit_linear_interpolation(
-                                                    ( y_steps - lower_left_y ),
-                                 values.at( lower_left_x )->at( lower_left_y ),
-                       values.at( lower_left_x )->at( ( lower_left_y + 1 ) ) );
-
-              }
-            else if( ( values.at( lower_left_x )->size()
-                       == ( lower_left_y + 1 ) )
-                     &&
-                     ( (double)lower_left_y == y_steps ) )
-              // otherwise, if it's on the maximal x & y corner...
-              {
-
-                return values.at( lower_left_x )->at( lower_left_y );
-
-              }
-            else
-              // otherwise, it's off the grid:
-              {
-
-                return CppSLHA::CppSLHA_global::really_wrong_value;
-
-              }
-
-          }
+                 ( (double)lowerLeftY == ySteps ) )
+          // otherwise, if it's on the maximal y edge...
+        {
+          return LHC_FASER_global::unit_linear_interpolation(
+                                                       ( xSteps - lowerLeftX ),
+                                     values.at( lowerLeftX )->at( lowerLeftY ),
+                           values.at( ( lowerLeftX + 1 ) )->at( lowerLeftY ) );
+        }
         else
           // otherwise, it's off the grid:
-          {
-
-            return CppSLHA::CppSLHA_global::really_wrong_value;
-
-          }
+        {
+          return CppSLHA::CppSLHA_global::really_wrong_value;
+        }
 
       }
+      else if( ( values.size() == ( lowerLeftX + 1 ) )
+               &&
+               ( (double)lowerLeftX == xSteps ) )
+        // otherwise, if it's on the maximal x edge...
+      {
+        double ySteps = ( ( yCoordinate - lowestYCoordinate ) / gridStepSize );
+        int lowerLeftY = (int)ySteps;
+        if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
+          // if the y co-ordinate is less than its maximal grid value...
+        {
+          return LHC_FASER_global::unit_linear_interpolation(
+                                                       ( ySteps - lowerLeftY ),
+                                     values.at( lowerLeftX )->at( lowerLeftY ),
+                           values.at( lowerLeftX )->at( ( lowerLeftY + 1 ) ) );
+        }
+        else if( ( values.at( lowerLeftX )->size() == ( lowerLeftY + 1 ) )
+                 &&
+                 ( (double)lowerLeftY == ySteps ) )
+          // otherwise, if it's on the maximal x & y corner...
+        {
+          return values.at( lowerLeftX )->at( lowerLeftY );
+        }
+        else
+          // otherwise, it's off the grid:
+        {
+          return CppSLHA::CppSLHA_global::really_wrong_value;
+        }
+      }
+      else
+        // otherwise, it's off the grid:
+      {
+        return CppSLHA::CppSLHA_global::really_wrong_value;
+      }
+    }
     else
       // otherwise, it's off the grid (or the grid step size was not positive,
       // which is still a problem...):
-      {
-
-        return CppSLHA::CppSLHA_global::really_wrong_value;
-
-      }
-
+    {
+      return CppSLHA::CppSLHA_global::really_wrong_value;
+    }
   }
 
 
 
-  cross_section_table::cross_section_table(
-                                   square_grid const* const given_lookup_table,
-                         signed_particle_shortcut_pair const* const given_pair,
-                                              double const given_flavor_factor,
-                                   input_handler const* const given_shortcuts ) :
-    readied_for_new_point( given_shortcuts->get_readier() ),
-    shortcut( given_shortcuts ),
-    scolored_pair( given_pair ),
-    lookup_table( given_lookup_table ),
-    flavor_factor( given_flavor_factor )
+  crossSectionTable::crossSectionTable( squareGrid const* const lookupTable,
+                       signed_particle_shortcut_pair const* const scoloredPair,
+                                        double const flavorFactor,
+                                        input_handler const* const shortcut ) :
+    readied_for_new_point( shortcut->get_readier() ),
+    shortcut( shortcut ),
+    scoloredPair( scoloredPair ),
+    lookupTable( lookupTable ),
+    flavorFactor( flavorFactor )
   {
-
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: cross_section_table( "
+    << "debugging: crossSectionTable( "
     << given_lookup_table << ", { "
-    << given_pair->get_first_pointer()->get_name() << ": "
+    << given_pair->get_first_pointer()->getName() << ": "
     << given_pair->is_first_particle() << "; "
-    << given_pair->get_second_pointer()->get_name() << ": "
+    << given_pair->get_second_pointer()->getName() << ": "
     << given_pair->is_second_particle() << " }, "
     << given_flavor_factor << ", " << given_shortcuts << " ) called";
     std::cout << std::endl;**/
 
     // we take the 1st squark found to ask for its mass in looking up the
     // cross-section. if no squark was provided, we keep the pointer as NULL.
-    if( shortcut->is_in( given_pair->get_first_pointer()->get_PDG_code(),
+    if( shortcut->is_in( scoloredPair->get_first_pointer()->get_PDG_code(),
                          shortcut->get_squarks() ) )
-      {
-
-        directly_produced_squark = given_pair->get_first_pointer();
-
-      }
-    else if( shortcut->is_in( given_pair->get_second_pointer()->get_PDG_code(),
+    {
+      directlyProducedSquark = scoloredPair->get_first_pointer();
+    }
+    else if( shortcut->is_in(
+                            scoloredPair->get_second_pointer()->get_PDG_code(),
                               shortcut->get_squarks() ) )
-      {
-
-        directly_produced_squark = given_pair->get_second_pointer();
-
-      }
+    {
+      directlyProducedSquark = scoloredPair->get_second_pointer();
+    }
     else
-      {
-
-        directly_produced_squark = NULL;
-
-      }
-
+    {
+      directlyProducedSquark = NULL;
+    }
   }
 
-  cross_section_table::~cross_section_table()
+  crossSectionTable::~crossSectionTable()
   {
-
     // does nothing.
-
   }
 
 
   double
-  cross_section_table::get_value()
+  crossSectionTable::getValue()
   /* this checks to see if it needs to recalculate the value for this point, &
    * if so, it does, & if the point lies outside the grid, it takes the value
    * of the nearest point on the grid instead.
    */
   {
-
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: cross_section_table::get_value() called."
+    << "debugging: crossSectionTable::getValue() called."
     << " needs_to_prepare_for_this_point() = "
     << needs_to_prepare_for_this_point() << ", "
-    << "flavor_factor = " << flavor_factor;
+    << "flavorFactor = " << flavorFactor;
     std::cout << std::endl;**/
 
     if( needs_to_prepare_for_this_point() )
+    {
+      if( 0.0 < flavorFactor )
       {
-
-        if( 0.0 < flavor_factor )
-          {
-
-            double squark_mass_to_use;
-
-            if( NULL != directly_produced_squark )
-              // if we have a directly-produced squark...
-              {
-
-                squark_mass_to_use
-                = directly_produced_squark->get_absolute_mass();
-
-              }
-            else
-              // otherwise, we use the average squark mass...
-              {
-
-                squark_mass_to_use = shortcut->get_average_squarks4_mass();
-
-              }
-
-            if( squark_mass_to_use
-                < lookup_table->get_lowest_x() )
-              {
-
-                std::cout
-                << std::endl
-                << "LHC-FASER::warning! cross-section requested for a squark"
-                << " mass ( " << squark_mass_to_use << " ) lower than the"
-                << " lowest squark mass of the lookup table (";
-                squark_mass_to_use = lookup_table->get_lowest_x();
-                std::cout
-                << squark_mass_to_use << "); using this lowest mass instead.";
-                std::cout << std::endl;
-
-              }
-            else if( squark_mass_to_use
-                     > lookup_table->get_highest_x() )
-              {
-
-                std::cout
-                << std::endl
-                << "LHC-FASER::warning! cross-section requested for a squark"
-                << " mass ( " << squark_mass_to_use << " ) lower than the"
-                << " highest squark mass of the lookup table ( ";
-                squark_mass_to_use = lookup_table->get_highest_x();
-                std::cout
-                << squark_mass_to_use << " ); using this highest mass"
-                << " instead.";
-                std::cout << std::endl;
-
-              }
-
-            if( shortcut->get_gluino()->get_absolute_mass()
-                < lookup_table->get_lowest_y() )
-              {
-
-                std::cout
-                << std::endl
-                << "LHC-FASER::warning! cross-section requested for a gluino"
-                << " mass ( " << shortcut->get_gluino()->get_absolute_mass()
-                << " ) lower than the lowest gluino mass of the lookup table"
-                << " ( ";
-                stored_value = lookup_table->value_at( squark_mass_to_use,
-                                                lookup_table->get_lowest_y() );
-                std::cout
-                << lookup_table->get_lowest_y()
-                << " ); using this lowest mass instead.";
-                std::cout << std::endl;
-
-              }
-            else if( shortcut->get_gluino()->get_absolute_mass()
-                     > lookup_table->get_highest_y() )
-              {
-
-                std::cout
-                << std::endl
-                << "LHC-FASER::warning! cross-section requested for a gluino"
-                << " mass ( " << shortcut->get_gluino()->get_absolute_mass()
-                << " ) lower than the highest gluino mass of the lookup table"
-                << " ( ";
-                stored_value = lookup_table->value_at( squark_mass_to_use,
-                                               lookup_table->get_highest_y() );
-                std::cout
-                << lookup_table->get_highest_y()
-                << " ); using this highest mass instead.";
-                std::cout << std::endl;
-
-              }
-            else
-              {
-                stored_value = lookup_table->value_at( squark_mass_to_use,
-                                 shortcut->get_gluino()->get_absolute_mass() );
-
-              }
-
-            stored_value *= flavor_factor;
-
-          }
+        double squarkMassToUse;
+        if( NULL != directlyProducedSquark )
+          // if we have a directly-produced squark...
+        {
+          squarkMassToUse = directlyProducedSquark->get_absolute_mass();
+        }
         else
-          {
-
-            stored_value = 0.0;
-
-          }
-
-        finish_preparing_for_this_point();
-
+          // otherwise, we use the average squark mass...
+        {
+          squarkMassToUse = shortcut->get_average_squarks4_mass();
+        }
+        if( squarkMassToUse < lookupTable->getLowestX() )
+        {
+          std::cout
+          << std::endl
+          << "LHC-FASER::warning! cross-section requested for a squark"
+          << " mass ( " << squarkMassToUse << " ) lower than the"
+          << " lowest squark mass of the lookup table (";
+          squarkMassToUse = lookupTable->getLowestX();
+          std::cout
+          << squarkMassToUse << "); using this lowest mass instead.";
+          std::cout << std::endl;
+        }
+        else if( squarkMassToUse > lookupTable->getHighestX() )
+        {
+          std::cout
+          << std::endl
+          << "LHC-FASER::warning! cross-section requested for a squark"
+          << " mass ( " << squarkMassToUse << " ) lower than the"
+          << " highest squark mass of the lookup table ( ";
+          squarkMassToUse = lookupTable->getHighestX();
+          std::cout
+          << squarkMassToUse << " ); using this highest mass"
+          << " instead.";
+          std::cout << std::endl;
+        }
+        if( shortcut->get_gluino()->get_absolute_mass()
+            < lookupTable->getLowestY() )
+        {
+          std::cout
+          << std::endl
+          << "LHC-FASER::warning! cross-section requested for a gluino"
+          << " mass ( " << shortcut->get_gluino()->get_absolute_mass()
+          << " ) lower than the lowest gluino mass of the lookup table"
+          << " ( ";
+          storedValue = lookupTable->valueAt( squarkMassToUse,
+                                              lookupTable->getLowestY() );
+          std::cout
+          << lookupTable->getLowestY()
+          << " ); using this lowest mass instead.";
+          std::cout << std::endl;
+        }
+        else if( shortcut->get_gluino()->get_absolute_mass()
+                 > lookupTable->getHighestY() )
+        {
+          std::cout
+          << std::endl
+          << "LHC-FASER::warning! cross-section requested for a gluino"
+          << " mass ( " << shortcut->get_gluino()->get_absolute_mass()
+          << " ) lower than the highest gluino mass of the lookup table"
+          << " ( ";
+          storedValue = lookupTable->valueAt( squarkMassToUse,
+                                              lookupTable->getHighestY() );
+          std::cout
+          << lookupTable->getHighestY()
+          << " ); using this highest mass instead.";
+          std::cout << std::endl;
+        }
+        else
+        {
+          storedValue = lookupTable->valueAt( squarkMassToUse,
+                                 shortcut->get_gluino()->get_absolute_mass() );
+        }
+        storedValue *= flavorFactor;
       }
-
-    return stored_value;
-
+      else
+      {
+        storedValue = 0.0;
+      }
+      finish_preparing_for_this_point();
+    }
+    return storedValue;
   }
 
 
 
-  cross_section_table_set::cross_section_table_set(
-                                 std::string const* const given_grid_directory,
-                                                    int const given_LHC_energy,
-                                 input_handler const* const given_shortcuts ) :
-    grid_directory( *given_grid_directory ),
-    LHC_energy( given_LHC_energy ),
-    shortcut( given_shortcuts )
+  crossSectionTableSet::crossSectionTableSet(
+                                        std::string const* const gridDirectory,
+                                              int const beamEnergy,
+                                        input_handler const* const shortcut ) :
+    gridDirectory( *gridDirectory ),
+    beamEnergy( beamEnergy ),
+    shortcut( shortcut )
   {
-
     // just an initialization list.
-
   }
 
-  cross_section_table_set::~cross_section_table_set()
+  crossSectionTableSet::~crossSectionTableSet()
   {
-
-    for( std::vector< square_grid* >::iterator
-         deletion_iterator = grids.begin();
-         grids.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
-    for( std::vector< cross_section_table* >::iterator
-         deletion_iterator = tables.begin();
-         tables.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
+    for( std::vector< squareGrid* >::iterator
+         deletionIterator = grids.begin();
+         grids.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+    for( std::vector< crossSectionTable* >::iterator
+         deletionIterator = tables.begin();
+         tables.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
   }
 
 
   double
-  cross_section_table_set::prepare_grid_name( std::string* const grid_name,
-                        signed_particle_shortcut_pair const* const given_pair )
+  crossSectionTableSet::prepareGridName( std::string* const gridName,
+                      signed_particle_shortcut_pair const* const scoloredPair )
   // this returns the flavor factor for the requested pair while putting the
-  // square_grid's associated string in grid_name.
+  // squareGrid's associated string in gridName.
   {
-
     /* here we make the approximations about how the cross-sections are in
      * squark flavors.
      *
@@ -746,506 +610,402 @@ namespace LHC_FASER
      * for t*u + u*t) * phase space halving for identical final-state
      * particles) = 4:12:16 = 1:3:4
      */
-
     if( ( CppSLHA::PDG_code::gluino
-          == given_pair->get_first_pointer()->get_PDG_code() )
+          == scoloredPair->get_first_pointer()->get_PDG_code() )
         &&
         ( CppSLHA::PDG_code::gluino
-          == given_pair->get_second_pointer()->get_PDG_code() ) )
+          == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+    {
+      gridName->assign( "gluino+gluino" );
+      return 1.0;
+    }
+    else if(
+            shortcut->is_in( scoloredPair->get_first_pointer()->get_PDG_code(),
+                             shortcut->get_squarks() )
+             &&
+             ( CppSLHA::PDG_code::gluino
+               == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+    {
+      gridName->assign( "sdown_L+gluino" );
+      if( CppSLHA::PDG_code::sdown_L
+          == scoloredPair->get_first_pointer()->get_PDG_code() )
       {
-
-        grid_name->assign( "gluino+gluino" );
         return 1.0;
-
       }
-    else if( shortcut->is_in( given_pair->get_first_pointer()->get_PDG_code(),
-                              shortcut->get_squarks() )
-             &&
-             ( CppSLHA::PDG_code::gluino
-               == given_pair->get_second_pointer()->get_PDG_code() ) )
+      else if( CppSLHA::PDG_code::sdown_R
+               == scoloredPair->get_first_pointer()->get_PDG_code() )
       {
-
-        grid_name->assign( "sdown_L+gluino" );
-
-        if( CppSLHA::PDG_code::sdown_L
-            == given_pair->get_first_pointer()->get_PDG_code() )
-          {
-
-            return 1.0;
-
-          }
-        else if( CppSLHA::PDG_code::sdown_R
-                 == given_pair->get_first_pointer()->get_PDG_code() )
-          {
-
-            return 1.0;
-
-          }
-        else if( CppSLHA::PDG_code::sup_L
-                 == given_pair->get_first_pointer()->get_PDG_code() )
-          {
-
-            return 2.0;
-
-          }
-        else if( CppSLHA::PDG_code::sup_R
-                 ==  given_pair->get_first_pointer()->get_PDG_code() )
-          {
-
-            return 2.0;
-
-          }
-        else
-          {
-
-            return 0.0;
-
-          }
-
+        return 1.0;
       }
-    else if( shortcut->is_in( given_pair->get_second_pointer()->get_PDG_code(),
-                              shortcut->get_squarks() )
-             &&
-             ( CppSLHA::PDG_code::gluino
-               == given_pair->get_first_pointer()->get_PDG_code() ) )
+      else if( CppSLHA::PDG_code::sup_L
+               == scoloredPair->get_first_pointer()->get_PDG_code() )
       {
-
-        grid_name->assign( "sdown_L+gluino" );
-
-        if( CppSLHA::PDG_code::sdown_L
-            == given_pair->get_second_pointer()->get_PDG_code() )
-          {
-
-            return 1.0;
-
-          }
-        else if( CppSLHA::PDG_code::sdown_R
-                 == given_pair->get_second_pointer()->get_PDG_code() )
-          {
-
-            return 1.0;
-
-          }
-        else if( CppSLHA::PDG_code::sup_L
-                 == given_pair->get_second_pointer()->get_PDG_code() )
-          {
-
-            return 2.0;
-
-          }
-        else if( CppSLHA::PDG_code::sup_R
-                 ==  given_pair->get_second_pointer()->get_PDG_code() )
-          {
-
-            return 2.0;
-
-          }
-        else
-          {
-
-            return 0.0;
-
-          }
-
+        return 2.0;
       }
-    else if( shortcut->is_in( given_pair->get_first_pointer()->get_PDG_code(),
-                              shortcut->get_squarks() )
-             &&
-             shortcut->is_in( given_pair->get_second_pointer()->get_PDG_code(),
-                              shortcut->get_squarks() ) )
+      else if( CppSLHA::PDG_code::sup_R
+               ==  scoloredPair->get_first_pointer()->get_PDG_code() )
       {
-
-        if( ( given_pair->first_is_not_antiparticle()
-              &&
-              !given_pair->second_is_not_antiparticle() )
-            ||
-            ( !given_pair->first_is_not_antiparticle()
-              &&
-              given_pair->second_is_not_antiparticle() ) )
-          {
-
-            if( ( CppSLHA::PDG_code::sdown_L
-                == given_pair->get_first_pointer()->get_PDG_code() )
-                &&
-                ( CppSLHA::PDG_code::sdown_L
-                == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sdown_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sdown_R
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sdown_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sdown_R
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_R" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sdown_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sdown_L
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_R" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sdown_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sup_R
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_R" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sdown_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sup_L
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_R" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sdown_R
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_R" );
-                return 2.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sdown_L
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_R" );
-                return 2.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sup_L
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sup_R
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sup_R
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_R" );
-                return 2.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sup_L
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_R" );
-                return 2.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sstrange_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sstrange_L
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sstrange_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sstrange_R
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::scharm_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::scharm_L
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::scharm_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::scharm_R
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sbottom_one
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sbottom_one
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sbottom_two
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::sbottom_two
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::stop_one
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::stop_one
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::stop_two
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                      &&
-                      ( CppSLHA::PDG_code::stop_two
-                        == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+antisdown_L" );
-                return 1.0;
-
-              }
-            else
-              {
-
-                return 0.0;
-
-              }
-
-          }
-        else if( given_pair->first_is_not_antiparticle()
-                 &&
-                 given_pair->second_is_not_antiparticle() )
-          {
-
-            if( ( CppSLHA::PDG_code::sdown_L
-                  == given_pair->get_first_pointer()->get_PDG_code() )
-                &&
-                ( CppSLHA::PDG_code::sdown_L
-                  == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+sdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sdown_R
-                        == given_pair->get_first_pointer()->get_PDG_code() )
-                     &&
-                     ( CppSLHA::PDG_code::sdown_R
-                       == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+sdown_L" );
-                return 1.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sdown_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                     &&
-                     ( CppSLHA::PDG_code::sup_L
-                       == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+sdown_L" );
-                return 3.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sdown_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                     &&
-                     ( CppSLHA::PDG_code::sup_R
-                       == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+sdown_L" );
-                return 3.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                     &&
-                     ( CppSLHA::PDG_code::sdown_L
-                       == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+sdown_L" );
-                return 3.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                     &&
-                     ( CppSLHA::PDG_code::sdown_R
-                       == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+sdown_L" );
-                return 3.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_L
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                     &&
-                     ( CppSLHA::PDG_code::sup_L
-                       == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+sdown_L" );
-                return 4.0;
-
-              }
-            else if( ( CppSLHA::PDG_code::sup_R
-                       == given_pair->get_first_pointer()->get_PDG_code() )
-                     &&
-                     ( CppSLHA::PDG_code::sup_R
-                       == given_pair->get_second_pointer()->get_PDG_code() ) )
-              {
-
-                grid_name->assign( "sdown_L+sdown_L" );
-                return 4.0;
-
-              }
-            else
-              {
-
-                return 0.0;
-
-              }
-
-          }
-        else
-          {
-
-            return 0.0;
-
-          }
-
+        return 2.0;
       }
-    else
+      else
       {
-
         return 0.0;
-
       }
-
+    }
+    else if(
+           shortcut->is_in( scoloredPair->get_second_pointer()->get_PDG_code(),
+                            shortcut->get_squarks() )
+             &&
+             ( CppSLHA::PDG_code::gluino
+               == scoloredPair->get_first_pointer()->get_PDG_code() ) )
+    {
+      gridName->assign( "sdown_L+gluino" );
+      if( CppSLHA::PDG_code::sdown_L
+          == scoloredPair->get_second_pointer()->get_PDG_code() )
+      {
+        return 1.0;
+      }
+      else if( CppSLHA::PDG_code::sdown_R
+               == scoloredPair->get_second_pointer()->get_PDG_code() )
+      {
+        return 1.0;
+      }
+      else if( CppSLHA::PDG_code::sup_L
+               == scoloredPair->get_second_pointer()->get_PDG_code() )
+      {
+        return 2.0;
+      }
+      else if( CppSLHA::PDG_code::sup_R
+               ==  scoloredPair->get_second_pointer()->get_PDG_code() )
+      {
+        return 2.0;
+      }
+      else
+      {
+        return 0.0;
+      }
+    }
+    else if(
+            shortcut->is_in( scoloredPair->get_first_pointer()->get_PDG_code(),
+                             shortcut->get_squarks() )
+            &&
+           shortcut->is_in( scoloredPair->get_second_pointer()->get_PDG_code(),
+                            shortcut->get_squarks() ) )
+    {
+      if( ( scoloredPair->first_is_not_antiparticle()
+          &&
+          !scoloredPair->second_is_not_antiparticle() )
+          ||
+          ( !scoloredPair->first_is_not_antiparticle()
+              &&
+              scoloredPair->second_is_not_antiparticle() ) )
+      {
+        if( ( CppSLHA::PDG_code::sdown_L
+              == scoloredPair->get_first_pointer()->get_PDG_code() )
+            &&
+            ( CppSLHA::PDG_code::sdown_L
+              == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sdown_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_R" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sdown_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_R" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sdown_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_R" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_R" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_R" );
+          return 2.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sdown_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_R" );
+          return 2.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_R" );
+          return 2.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_R" );
+          return 2.0;
+        }
+        else if( ( CppSLHA::PDG_code::sstrange_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sstrange_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sstrange_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sstrange_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::scharm_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::scharm_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::scharm_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::scharm_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sbottom_one
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sbottom_one
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sbottom_two
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sbottom_two
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::stop_one
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::stop_one
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::stop_two
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::stop_two
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+antisdown_L" );
+          return 1.0;
+        }
+        else
+        {
+          return 0.0;
+        }
+      }
+      else if( scoloredPair->first_is_not_antiparticle()
+               &&
+               scoloredPair->second_is_not_antiparticle() )
+      {
+        if( ( CppSLHA::PDG_code::sdown_L
+              == scoloredPair->get_first_pointer()->get_PDG_code() )
+            &&
+            ( CppSLHA::PDG_code::sdown_L
+              == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+sdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+sdown_L" );
+          return 1.0;
+        }
+        else if( ( CppSLHA::PDG_code::sdown_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+sdown_L" );
+          return 3.0;
+        }
+        else if( ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+sdown_L" );
+          return 3.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sdown_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+sdown_L" );
+          return 3.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sdown_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+sdown_L" );
+          return 3.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_L
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+sdown_L" );
+          return 4.0;
+        }
+        else if( ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                 &&
+                 ( CppSLHA::PDG_code::sup_R
+                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+        {
+          gridName->assign( "sdown_L+sdown_L" );
+          return 4.0;
+        }
+        else
+        {
+          return 0.0;
+        }
+      }
+      else
+      {
+        return 0.0;
+      }
+    }
+    else
+    {
+      return 0.0;
+    }
   }
 
 
-  square_grid const*
-  cross_section_table_set::get_grid( std::string const* const grid_name )
-  // this either finds the appropriate square_grid in grids or makes a new
+  squareGrid const*
+  crossSectionTableSet::getGrid( std::string const* const gridName )
+  // this either finds the appropriate squareGrid in grids or makes a new
   // instance, stores it, & returns its pointer.
   {
-
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: cross_section_table_set::get_grid( "
-    << *grid_name << " ) called";
+    << "debugging: crossSectionTableSet::getGrid( "
+    << *gridName << " ) called";
     std::cout << std::endl;**/
 
-    square_grid* return_pointer = NULL;
+    squareGrid* returnPointer = NULL;
     // this starts as NULL so that we know if it wasn't found among the
     // existing instances.
-
-    for( std::vector< square_grid* >::iterator
-         grid_iterator = grids.begin();
-         grids.end() > grid_iterator;
-         ++grid_iterator )
+    for( std::vector< squareGrid* >::iterator gridIterator = grids.begin();
+         grids.end() > gridIterator;
+         ++gridIterator )
+    {
+      if( 0 == (*gridIterator)->getName()->compare( *gridName ) )
+        // if a table with this name already exists...
       {
-
-        if( 0 == (*grid_iterator)->get_name()->compare( *grid_name ) )
-          // if a table with this name already exists...
-          {
-
-            return *grid_iterator;
-            // note the table.
-            grid_iterator = grids.end();
-            // stop looking.
-
-          }
-
+        returnPointer = *gridIterator;
+        // note the table.
+        gridIterator = grids.end();
+        // stop looking.
       }
+    }
 
     // debugging:
     /**std::cout
@@ -1253,99 +1013,86 @@ namespace LHC_FASER
     << "debugging: return_pointer = " << return_pointer;
     std::cout << std::endl;**/
 
-    if( NULL == return_pointer )
+    if( NULL == returnPointer )
       // if we didn't find an existing match, we make a new instance, store
       // it & return a pointer to it:
-      {
+    {
+      std::string loGridFileName( gridDirectory );
+      loGridFileName.append( "/" );
+      loGridFileName.append( *gridName );
+      loGridFileName.append( "_LO.dat" );
+      // debugging:
+      /**std::cout
+      << std::endl
+      << "debugging: loGridFileName = " << loGridFileName;
+      std::cout << std::endl;**/
 
-        std::string LO_grid_file_name( grid_directory );
-        LO_grid_file_name.append( "/" );
-        LO_grid_file_name.append( *grid_name );
-        LO_grid_file_name.append( "_LO.dat" );
+      // we check for whether we should use NLO K-factors:
+      squareGrid* nloGrid = NULL;
+      if( shortcut->using_NLO() )
+      {
+        std::string nloGridFileName( gridDirectory );
+        nloGridFileName.append( "/" );
+        nloGridFileName.append( *gridName );
+        nloGridFileName.append( "_K.dat" );
 
         // debugging:
         /**std::cout
         << std::endl
-        << "debugging: LO_grid_file_name = " << LO_grid_file_name;
+        << "debugging: nloGridFileName = " << nloGridFileName;
         std::cout << std::endl;**/
 
-        // we check for whether we should use NLO K-factors:
-        square_grid* NLO_grid = NULL;
-        if( shortcut->using_NLO() )
-          {
-
-            std::string NLO_grid_file_name( grid_directory );
-            NLO_grid_file_name.append( "/" );
-            NLO_grid_file_name.append( *grid_name );
-            NLO_grid_file_name.append( "_K.dat" );
-
-            // debugging:
-            /**std::cout
-            << std::endl
-            << "debugging: NLO_grid_file_name = " << NLO_grid_file_name;
-            std::cout << std::endl;**/
-
-            NLO_grid = new square_grid( &NLO_grid_file_name,
-                                        grid_name,
-                                        NULL );
-            // the grid's name isn't important because it is only temporary.
-
-            // debugging:
-            /**std::cout
-            << std::endl
-            << "debugging: NLO_grid = " << NLO_grid
-            << ", value_at( 200.0, 200.0 ) = "
-            << NLO_grid->value_at( 200.0,
-                                   200.0 );
-            std::cout << std::endl;**/
-
-          }
-
-        // we make a new table:
-        return_pointer = new square_grid( &LO_grid_file_name,
-                                          grid_name,
-                                          NLO_grid );
-
-        if( NULL != NLO_grid )
-          // if we needed a K-factor grid...
-          {
-
-            // we can let it go now:
-            delete NLO_grid;
-
-          }
+        nloGrid = new squareGrid( &nloGridFileName,
+                                  gridName,
+                                  NULL );
+        // the grid's name isn't important because it is only temporary.
 
         // debugging:
         /**std::cout
+        << std::endl
+        << "debugging: nloGrid = " << nloGrid
+        << ", valueAt( 200.0, 200.0 ) = "
+        << nloGrid->valueAt( 200.0,
+                             200.0 );
+        std::cout << std::endl;**/
+      }
+      // we make a new table:
+      returnPointer = new squareGrid( &loGridFileName,
+                                      gridName,
+                                      nloGrid );
+      if( NULL != nloGrid )
+        // if we needed a K-factor grid...
+      {
+        // we can let it go now:
+        delete nloGrid;
+      }
+      // debugging:
+      /**std::cout
         << std::endl
         << "debugging: return_pointer = " << return_pointer;
         std::cout << std::endl;**/
 
-        grids.push_back( return_pointer );
-
-      }
-
+      grids.push_back( returnPointer );
+    }
     // debugging:
     /**std::cout
     << std::endl
     << "debugging: returning = " << return_pointer;
     std::cout << std::endl;**/
 
-    return return_pointer;
-
+    return returnPointer;
   }
 
 
-  cross_section_table*
-  cross_section_table_set::get_table(
-                 signed_particle_shortcut_pair const* const requested_channel )
-  // this returns the cross_section_table for the requested pair.
+  crossSectionTable*
+  crossSectionTableSet::getTable(
+                  signed_particle_shortcut_pair const* const requestedChannel )
+  // this returns the crossSectionTable for the requested pair.
   {
-
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: cross_section_table_set::get_table( { "
+    << "debugging: crossSectionTableSet::getTable( { "
     << *(requested_channel->get_first_pointer()->get_name_or_antiname(
                               requested_channel->first_is_not_antiparticle() ))
     << "; "
@@ -1354,170 +1101,140 @@ namespace LHC_FASER
     << " } ) called";
     std::cout << std::endl;**/
 
-    cross_section_table* return_pointer = NULL;
+    crossSectionTable* returnPointer = NULL;
     // this starts as NULL so that we know if it wasn't found among the
     // existing instances.
 
-    for( std::vector< cross_section_table* >::iterator
-         table_iterator = tables.begin();
-         tables.end() > table_iterator;
-         ++table_iterator )
+    for( std::vector< crossSectionTable* >::iterator
+         tableIterator = tables.begin();
+         tables.end() > tableIterator;
+         ++tableIterator )
+    {
+      if( requestedChannel == (*tableIterator)->getPair() )
+        // if we find the requested pair...
       {
-
-        if( requested_channel == (*table_iterator)->get_pair() )
-          // if we find the requested pair...
-          {
-
-            // debugging:
-            /**std::cout
+        // debugging:
+        /**std::cout
             << std::endl
             << "found existing table.";
             std::cout << std::endl;**/
 
-            return_pointer = *table_iterator;
-            // note the table to return.
-            table_iterator = tables.end();
-            // stop looking.
-
-          }
-
+        returnPointer = *tableIterator;
+        // note the table to return.
+        tableIterator = tables.end();
+        // stop looking.
       }
-
-
+    }
     // debugging:
     /**std::cout
     << std::endl
     << "debugging: return_pointer = " << return_pointer;
     std::cout << std::endl;**/
 
-    if( NULL == return_pointer )
+    if( NULL == returnPointer )
       // if we didn't find an existing match, we make a new instance, store
       // it & return a pointer to it:
+    {
+      // debugging:
+      /**std::cout
+      << std::endl
+      << "did not find existing table.";
+      std::cout << std::endl;**/
+
+      // 1st we need to find out which squareGrid to use & what the flavor
+      // factor is:
+      std::string gridName;
+      double flavorFactor = prepareGridName( &gridName,
+                                             requestedChannel );
+
+      // debugging:
+      /**std::cout
+      << std::endl
+      << "debugging: gridName = " << gridName
+      << std::endl
+      << "debugging: flavorFactor = " << flavorFactor;
+      std::cout << std::endl;**/
+      if( 0.0 < flavorFactor )
+        // if it is a non-zero channel as far as this code is concerned...
       {
-
-        // debugging:
-        /**std::cout
-        << std::endl
-        << "did not find existing table.";
-        std::cout << std::endl;**/
-
-        // 1st we need to find out which square_grid to use & what the flavor
-        // factor is:
-        std::string grid_name;
-        double flavor_factor = prepare_grid_name( &grid_name,
-                                                  requested_channel );
-
-        // debugging:
-        /**std::cout
-        << std::endl
-        << "debugging: grid_path = " << grid_name
-        << std::endl
-        << "debugging: flavor_factor = " << flavor_factor;
-        std::cout << std::endl;**/
-        if( flavor_factor > 0.0 )
-          // if it is a non-zero channel as far as this code is concerned...
-          {
-
-            return_pointer = new cross_section_table( get_grid( &grid_name ),
-                                                      requested_channel,
-                                                      flavor_factor,
-                                                      shortcut );
-
-          }
-        else
-          {
-
-            return_pointer = new cross_section_table( NULL,
-                                                      requested_channel,
-                                                      0.0,
-                                                      shortcut );
-            /* a cross_section_table initialized with a NULL square_grid
-             * pointer *should* be OK if its flavor factor is 0.0, so that it
-             * never calls any of the square_grid's member functions.
-             */
-
-          }
-
-        tables.push_back( return_pointer );
-
+        returnPointer = new crossSectionTable( getGrid( &gridName ),
+                                               requestedChannel,
+                                               flavorFactor,
+                                               shortcut );
       }
-
-    return return_pointer;
-
+      else
+      {
+        returnPointer = new crossSectionTable( NULL,
+                                               requestedChannel,
+                                               0.0,
+                                               shortcut );
+        /* a crossSectionTable initialized with a NULL squareGrid
+         * pointer *should* be OK if its flavor factor is 0.0, so that it
+         * never calls any of the squareGrid's member functions.
+         */
+      }
+      tables.push_back( returnPointer );
+    }
+    return returnPointer;
   }
 
 
 
-  cross_section_handler::cross_section_handler(
-                                 input_handler const* const given_shortcuts ) :
-    shortcut( given_shortcuts )
-  {
 
+  crossSectionHandler::crossSectionHandler(
+                                        input_handler const* const shortcut ) :
+    shortcut( shortcut )
+  {
     // just an initialization list
-
-  }
-
-  cross_section_handler::~cross_section_handler()
-  {
-
-    for( std::vector< cross_section_table_set* >::iterator
-         deletion_iterator = table_sets.begin();
-         table_sets.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
   }
 
 
-  cross_section_table_set*
-  cross_section_handler::get_table_set( int const LHC_energy_in_TeV )
+  crossSectionHandler::~crossSectionHandler()
   {
+    for( std::vector< crossSectionTableSet* >::iterator
+         deletionIterator = tableSets.begin();
+         tableSets.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+  }
 
-    cross_section_table_set* return_pointer = NULL;
+
+  crossSectionTableSet*
+  crossSectionHandler::getTableSet( int const beamEnergyInTev )
+  {
+    crossSectionTableSet* returnPointer = NULL;
     // this starts as NULL so that we know if it wasn't found among the
     // existing instances.
-
-    for( std::vector< cross_section_table_set* >::iterator
-         set_iterator = table_sets.begin();
-         table_sets.end() > set_iterator;
-         ++set_iterator )
+    for( std::vector< crossSectionTableSet* >::iterator
+         setIterator = tableSets.begin();
+         tableSets.end() > setIterator;
+         ++setIterator )
+    {
+      if( beamEnergyInTev == (*setIterator)->getBeamEnergy() )
       {
-
-        if( LHC_energy_in_TeV == (*set_iterator)->get_LHC_energy() )
-          {
-
-            return_pointer = *set_iterator;
-            set_iterator = table_sets.end();
-            // stop looking.
-
-          }
-
+        returnPointer = *setIterator;
+        setIterator = tableSets.end();
+        // stop looking.
       }
+    }
 
-    if( NULL == return_pointer )
+    if( NULL == returnPointer )
       // if we didn't find an existing match, we make a new instance, store
       // it & return a pointer to it:
-      {
-
-        std::string
-        energy_name( *(shortcut->inspect_path_to_cross_section_grids()) );
-        std::stringstream energy_stream( "" );
-        energy_stream << "/" << LHC_energy_in_TeV << "TeV";
-        energy_name.append( energy_stream.str() );
-
-        return_pointer = new cross_section_table_set( &energy_name,
-                                                      LHC_energy_in_TeV,
-                                                      shortcut );
-        table_sets.push_back( return_pointer );
-
-      }
-
-    return return_pointer;
-
+    {
+      std::string
+      energyName( *(shortcut->inspect_path_to_cross_section_grids()) );
+      std::stringstream energyStream( "" );
+      energyStream << "/" << beamEnergyInTev << "TeV";
+      energyName.append( energyStream.str() );
+      returnPointer = new crossSectionTableSet( &energyName,
+                                                beamEnergyInTev,
+                                                shortcut );
+      tableSets.push_back( returnPointer );
+    }
+    return returnPointer;
   }
 
 }  // end of LHC_FASER namespace.

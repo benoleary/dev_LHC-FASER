@@ -214,7 +214,7 @@ namespace CppSLHA
 
         // debugging:
         /*std::cout
-        << std::endl << *((*particle_iterator)->first->get_name())
+        << std::endl << *((*particle_iterator)->first->getName())
         << ", " << (*particle_iterator)->second << ", recorded mass: "
         << (*particle_iterator)->first->has_mass_been_recorded();
         std::cout << std::endl;*/
@@ -297,7 +297,7 @@ namespace CppSLHA
 
             // debugging:
             std::cout
-            << std::endl << *((*particle_iterator)->first->get_name())
+            << std::endl << *((*particle_iterator)->first->getName())
             << ", " << (*particle_iterator)->second;
             std::cout << std::endl;
 
@@ -332,7 +332,7 @@ namespace CppSLHA
             << std::endl << "!(massed_particles.empty())"
             << ", massed_particles.size() = " << massed_particles.size()
             << ", massed_particles.begin() is "
-            << *((*(massed_particles.begin()))->first->get_name());*/
+            << *((*(massed_particles.begin()))->first->getName());*/
 
             if( !finished_merging_labels_flag
                 &&
@@ -361,9 +361,9 @@ namespace CppSLHA
                     /*std::cout
                     << std::endl
                     << "first_particle_iterator is "
-                    << *((*first_particle_iterator)->first->get_name())
+                    << *((*first_particle_iterator)->first->getName())
                     << ", second_particle_iterator is "
-                    << *((*second_particle_iterator)->first->get_name());
+                    << *((*second_particle_iterator)->first->getName());
                     std::cout << std::endl;*/
 
                     current_mass_difference
@@ -396,9 +396,9 @@ namespace CppSLHA
                     /*std::cout
                     << std::endl
                     << "first_particle_of_closest_pair is "
-                    << *((*first_particle_of_closest_pair)->first->get_name())
+                    << *((*first_particle_of_closest_pair)->first->getName())
                     << ", second_particle_of_closest_pair is "
-                   << *((*second_particle_of_closest_pair)->first->get_name());
+                   << *((*second_particle_of_closest_pair)->first->getName());
                     std::cout << std::endl;*/
 
                     // move on to the next pair of particles:
@@ -408,7 +408,7 @@ namespace CppSLHA
                     /*std::cout
                     << std::endl
                     << "after iteration, first_particle_iterator is "
-                    << *((*first_particle_iterator)->first->get_name())
+                    << *((*first_particle_iterator)->first->getName())
                     << ", ( massed_particles.end()"
                     << " != second_particle_iterator ) = "
                     << ( massed_particles.end() != second_particle_iterator );
@@ -419,7 +419,7 @@ namespace CppSLHA
                         std::cout
                         << std::endl
                         << "after iteration, second_particle_iterator is "
-                        << *((*second_particle_iterator)->first->get_name());
+                        << *((*second_particle_iterator)->first->getName());
                         std::cout << std::endl;
 
                       }*/
@@ -432,9 +432,9 @@ namespace CppSLHA
                 << " while( massed_particles.end()"
                 << " != second_particle_iterator ),"
                 << " first_particle_of_closest_pair is "
-                << *((*first_particle_of_closest_pair)->first->get_name())
+                << *((*first_particle_of_closest_pair)->first->getName())
                 << ", second_particle_of_closest_pair is "
-                << *((*second_particle_of_closest_pair)->first->get_name())
+                << *((*second_particle_of_closest_pair)->first->getName())
                 << std::endl
                 << "( label_merging_distance * vertical_scale ) = "
                 << ( label_merging_distance * vertical_scale )
@@ -1124,7 +1124,7 @@ namespace CppSLHA
 
         // debugging:
         /*std::cout
-        << "about to copy " << (*copying_iterator)->get_name();
+        << "about to copy " << (*copying_iterator)->getName();
         std::cout << std::endl;*/
 
         particle_property_set*
@@ -1201,7 +1201,7 @@ namespace CppSLHA
         // debugging:
         /*std::cout
         << std::endl
-        << "debugging: deleting " << *((*deletion_iterator)->get_name());
+        << "debugging: deleting " << *((*deletion_iterator)->getName());
         std::cout << std::endl;*/
         // delete the allocated memory pointed at by each pointer.
         delete *deletion_iterator;
@@ -1245,7 +1245,7 @@ namespace CppSLHA
 
         // debugging:
         /*std::cout
-        << "about to copy " << (*copying_iterator)->get_name();
+        << "about to copy " << (*copying_iterator)->getName();
         std::cout << std::endl;*/
 
         // find the pointer in *this* EW_scale_spectrum with the same PDG code
@@ -2279,7 +2279,7 @@ namespace CppSLHA
     /*std::cout
     << std::endl
     << "decay_unstable_particle_in_cascade( " << given_particle
-    << " [" << given_particle->get_name() << "], "
+    << " [" << given_particle->getName() << "], "
     << minimum_branching_ratio_to_keep << " ) called.";
     std::cout << std::endl;*/
 
@@ -2344,7 +2344,7 @@ namespace CppSLHA
                 /*std::cout
                 << std::endl
                 << "found unstable particle " << *decay_iterator << " ("
-                << current_decay_product->get_name() << ").";
+                << current_decay_product->getName() << ").";
                 std::cout << std::endl;*/
 
                 std::list< particle_decay* > const* decays_to_insert;

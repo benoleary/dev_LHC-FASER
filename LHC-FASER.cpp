@@ -265,7 +265,7 @@ namespace LHC_FASER
                                               readier_instance );
 
     cross_section_handler_object
-    = new cross_section_handler( input_handler_object );
+    = new crossSectionHandler( input_handler_object );
     kinematics_handler_object = new kinematics_handler( input_handler_object );
     cascade_handler_object = new cascade_handler( input_handler_object );
 

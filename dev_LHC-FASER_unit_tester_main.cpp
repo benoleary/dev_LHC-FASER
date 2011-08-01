@@ -27,7 +27,7 @@
  *                                                    that I changed anything
  *                                                    here since 0.1 (which
  *                                                    works)...
- * 3: cross_section_table - again, not yet redone, but I don't recall changing
+ * 3: crossSectionTable - again, not yet redone, but I don't recall changing
  *                          anything here since the working 0.1 version.
  * 4: kinematics_table - not yet redone, & it'll be quite different in 0.2,
  *                       unfortunately.
@@ -670,13 +670,13 @@ int main( int argument_count,
                                                          CppSLHA::PDG_code::Z )
   << " GeV"
   << std::endl
-  << *(test_input_handler.get_W_plus()->get_name()) << " "
+  << *(test_input_handler.get_W_plus()->getName()) << " "
   << test_input_handler.get_W_plus()->get_mass() << " GeV"
   << std::endl
-  << *(test_input_handler.get_top()->get_name()) << " "
+  << *(test_input_handler.get_top()->getName()) << " "
   << test_input_handler.get_top()->get_mass() << " GeV"
   << std::endl
-  << *(test_input_handler.get_gluino()->get_name()) << " "
+  << *(test_input_handler.get_gluino()->getName()) << " "
   << test_input_handler.get_gluino()->get_mass() << " GeV"
   << std::endl
   << "average_squarks4_mass = "
@@ -688,7 +688,7 @@ int main( int argument_count,
        test_input_handler.get_colored_sparticles()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -698,7 +698,7 @@ int main( int argument_count,
        test_input_handler.get_charginos()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -708,7 +708,7 @@ int main( int argument_count,
        test_input_handler.get_neutralinos()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -718,7 +718,7 @@ int main( int argument_count,
        test_input_handler.get_unstable_neutralinos()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -728,7 +728,7 @@ int main( int argument_count,
        test_input_handler.get_electroweakinos()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -739,7 +739,7 @@ int main( int argument_count,
        test_input_handler.get_unstable_electroweakinos()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -749,7 +749,7 @@ int main( int argument_count,
        test_input_handler.get_charged_sleptons()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -759,7 +759,7 @@ int main( int argument_count,
        test_input_handler.get_sneutrinos()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -769,7 +769,7 @@ int main( int argument_count,
        test_input_handler.get_sdown_types()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -779,7 +779,7 @@ int main( int argument_count,
        test_input_handler.get_sup_types()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -854,7 +854,7 @@ int main( int argument_count,
        test_input_handler.get_squarks()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -864,7 +864,7 @@ int main( int argument_count,
        test_input_handler.get_squarks4()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -874,7 +874,7 @@ int main( int argument_count,
        test_input_handler.get_squarks5()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
   << std::endl
@@ -903,7 +903,7 @@ int main( int argument_count,
   = test_input_handler.get_colored_cascade_set(
                                              test_input_handler.get_gluino() );
   std::cout
-  << *(gluino_cascade->get_decayer()->get_name())
+  << *(gluino_cascade->get_decayer()->getName())
   << ":" << std::endl
   << "pointer = " << gluino_cascade << ", pointer2 = " << gluino_cascade2
   << std::endl;
@@ -913,10 +913,10 @@ int main( int argument_count,
        ++set_iterator )
     {
       std::cout
-      << *((*set_iterator)->get_decayer()->get_name())
-      << " -> " << *((*set_iterator)->get_product()->get_name())
+      << *((*set_iterator)->get_decayer()->getName())
+      << " -> " << *((*set_iterator)->get_product()->getName())
       << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->get_name())
+      << *((*set_iterator)->get_EWino()->getName())
       << " ( " << (*set_iterator)->get_EWino_position() << " )";
       if( (*set_iterator)->is_sx() )
         {
@@ -940,7 +940,7 @@ int main( int argument_count,
         }
     }
   std::cout
-  << *(sbottom_cascade->get_decayer()->get_name())
+  << *(sbottom_cascade->get_decayer()->getName())
   << ":" << std::endl
   << "pointer = " << sbottom_cascade
   << std::endl;
@@ -950,10 +950,10 @@ int main( int argument_count,
        ++set_iterator )
     {
       std::cout
-      << *((*set_iterator)->get_decayer()->get_name())
-      << " -> " << *((*set_iterator)->get_product()->get_name())
+      << *((*set_iterator)->get_decayer()->getName())
+      << " -> " << *((*set_iterator)->get_product()->getName())
       << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->get_name())
+      << *((*set_iterator)->get_EWino()->getName())
       << " ( " << (*set_iterator)->get_EWino_position() << " )";
       if( (*set_iterator)->is_sx() )
         {
@@ -989,7 +989,7 @@ int main( int argument_count,
     {
       if( (*set_iterator)->is_first_particle() )
         {
-          std::cout << *((*set_iterator)->get_first_pointer()->get_name());
+          std::cout << *((*set_iterator)->get_first_pointer()->getName());
         }
       else
         {
@@ -998,7 +998,7 @@ int main( int argument_count,
       std::cout << " + ";
       if( (*set_iterator)->is_second_particle() )
         {
-          std::cout << *((*set_iterator)->get_second_pointer()->get_name());
+          std::cout << *((*set_iterator)->get_second_pointer()->getName());
         }
       else
         {
@@ -1033,14 +1033,14 @@ int main( int argument_count,
   << "direct_decay_checker: gluino -> sdown_L, sdown_R"
   << std::endl << "pointer = "
   << gluino_to_sdown_LR
-  << std::endl << *(gluino_to_sdown_LR->get_decayer()->get_name())
+  << std::endl << *(gluino_to_sdown_LR->get_decayer()->getName())
   << " -> ";
   for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
        set_iterator = gluino_to_sdown_LR->get_products()->begin();
        gluino_to_sdown_LR->get_products()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << " ";
+      std::cout << *((*set_iterator)->getName()) << " ";
     }
   std::cout
   << std::endl
@@ -1050,14 +1050,14 @@ int main( int argument_count,
   << "2nd gluino -> sdown_L, sdown_R"
   << std::endl << "pointer = "
   << gluino_to_sdown_LR2
-  << std::endl << *(gluino_to_sdown_LR2->get_decayer()->get_name())
+  << std::endl << *(gluino_to_sdown_LR2->get_decayer()->getName())
   << " -> ";
   for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
        set_iterator = gluino_to_sdown_LR2->get_products()->begin();
        gluino_to_sdown_LR2->get_products()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << " ";
+      std::cout << *((*set_iterator)->getName()) << " ";
     }
   std::cout
   << std::endl
@@ -1067,14 +1067,14 @@ int main( int argument_count,
   << "direct_decay_checker: gluino -> sup_L, sup_R"
   << std::endl << "pointer = "
   << gluino_to_sup_LR
-  << std::endl << *(gluino_to_sup_LR->get_decayer()->get_name())
+  << std::endl << *(gluino_to_sup_LR->get_decayer()->getName())
   << " -> ";
   for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
        set_iterator = gluino_to_sup_LR->get_products()->begin();
        gluino_to_sup_LR->get_products()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << " ";
+      std::cout << *((*set_iterator)->getName()) << " ";
     }
   std::cout
   << std::endl
@@ -1107,22 +1107,22 @@ int main( int argument_count,
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
   << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->get_name())
-  << " -> " << *(gluino_to_sdown_L_BR->get_product()->get_name())
+  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->getName())
+  << " -> " << *(gluino_to_sdown_L_BR->get_product()->getName())
   << " has BR " << gluino_to_sdown_L_BR->get_BR()
   << std::endl
   << "2nd gluino -> sdown_L"
   << std::endl << "pointer = "
   << gluino_to_sdown_L_BR2
-  << std::endl << *(gluino_to_sdown_L_BR2->get_decayer()->get_name())
-  << " -> " << *(gluino_to_sdown_L_BR2->get_product()->get_name())
+  << std::endl << *(gluino_to_sdown_L_BR2->get_decayer()->getName())
+  << " -> " << *(gluino_to_sdown_L_BR2->get_product()->getName())
   << " has BR " << gluino_to_sdown_L_BR2->get_BR()
   << std::endl
   << "gluino -> sdown_R"
   << std::endl << "pointer = "
   << gluino_to_sdown_R_BR
-  << std::endl << *(gluino_to_sdown_R_BR->get_decayer()->get_name())
-  << " -> " << *(gluino_to_sdown_R_BR->get_product()->get_name())
+  << std::endl << *(gluino_to_sdown_R_BR->get_decayer()->getName())
+  << " -> " << *(gluino_to_sdown_R_BR->get_product()->getName())
   << " has BR " << gluino_to_sdown_R_BR->get_BR()
   << std::endl
   << std::endl;
@@ -1136,7 +1136,7 @@ int main( int argument_count,
   << test_input_handler.get_CppSLHA()->get_MASS_as_string()
   << std::endl
   << std::endl
-  << *(test_input_handler.get_gluino()->get_name()) << " "
+  << *(test_input_handler.get_gluino()->getName()) << " "
   << test_input_handler.get_gluino()->get_mass() << " GeV"
   << std::endl
   << std::endl
@@ -1146,10 +1146,10 @@ int main( int argument_count,
        test_input_handler.get_charged_sleptons()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
-  << *(gluino_cascade->get_decayer()->get_name())
+  << *(gluino_cascade->get_decayer()->getName())
   << ":" << std::endl
   << "pointer = " << gluino_cascade << ", pointer2 = " << gluino_cascade2
   << std::endl;
@@ -1159,10 +1159,10 @@ int main( int argument_count,
        ++set_iterator )
     {
       std::cout
-      << *((*set_iterator)->get_decayer()->get_name())
-      << " -> " << *((*set_iterator)->get_product()->get_name())
+      << *((*set_iterator)->get_decayer()->getName())
+      << " -> " << *((*set_iterator)->get_product()->getName())
       << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->get_name())
+      << *((*set_iterator)->get_EWino()->getName())
       << " ( " << (*set_iterator)->get_EWino_position() << " )";
       if( (*set_iterator)->is_sx() )
         {
@@ -1186,7 +1186,7 @@ int main( int argument_count,
         }
     }
   std::cout
-  << *(sbottom_cascade->get_decayer()->get_name())
+  << *(sbottom_cascade->get_decayer()->getName())
   << ":" << std::endl
   << "pointer = " << sbottom_cascade
   << std::endl;
@@ -1196,10 +1196,10 @@ int main( int argument_count,
        ++set_iterator )
     {
       std::cout
-      << *((*set_iterator)->get_decayer()->get_name())
-      << " -> " << *((*set_iterator)->get_product()->get_name())
+      << *((*set_iterator)->get_decayer()->getName())
+      << " -> " << *((*set_iterator)->get_product()->getName())
       << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->get_name())
+      << *((*set_iterator)->get_EWino()->getName())
       << " ( " << (*set_iterator)->get_EWino_position() << " )";
       if( (*set_iterator)->is_sx() )
         {
@@ -1227,14 +1227,14 @@ int main( int argument_count,
   << "direct_decay_checker: gluino -> sdown_L, sdown_R"
   << std::endl << "pointer = "
   << gluino_to_sdown_LR
-  << std::endl << *(gluino_to_sdown_LR->get_decayer()->get_name())
+  << std::endl << *(gluino_to_sdown_LR->get_decayer()->getName())
   << " -> ";
   for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
        set_iterator = gluino_to_sdown_LR->get_products()->begin();
        gluino_to_sdown_LR->get_products()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << " ";
+      std::cout << *((*set_iterator)->getName()) << " ";
     }
   std::cout
   << std::endl
@@ -1244,8 +1244,8 @@ int main( int argument_count,
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
   << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->get_name())
-  << " -> " << *(gluino_to_sdown_L_BR->get_product()->get_name())
+  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->getName())
+  << " -> " << *(gluino_to_sdown_L_BR->get_product()->getName())
   << " has BR " << gluino_to_sdown_L_BR->get_BR()
   << std::endl;
 
@@ -1258,7 +1258,7 @@ int main( int argument_count,
   << test_input_handler.get_CppSLHA()->get_MASS_as_string()
   << std::endl
   << std::endl
-  << *(test_input_handler.get_gluino()->get_name()) << " "
+  << *(test_input_handler.get_gluino()->getName()) << " "
   << test_input_handler.get_gluino()->get_mass() << " GeV"
   << std::endl
   << std::endl
@@ -1268,10 +1268,10 @@ int main( int argument_count,
        test_input_handler.get_charged_sleptons()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << std::endl;
+      std::cout << *((*set_iterator)->getName()) << std::endl;
     }
   std::cout
-  << *(gluino_cascade->get_decayer()->get_name())
+  << *(gluino_cascade->get_decayer()->getName())
   << ":" << std::endl
   << "pointer = " << gluino_cascade << ", pointer2 = " << gluino_cascade2
   << std::endl;
@@ -1281,10 +1281,10 @@ int main( int argument_count,
        ++set_iterator )
     {
       std::cout
-      << *((*set_iterator)->get_decayer()->get_name())
-      << " -> " << *((*set_iterator)->get_product()->get_name())
+      << *((*set_iterator)->get_decayer()->getName())
+      << " -> " << *((*set_iterator)->get_product()->getName())
       << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->get_name())
+      << *((*set_iterator)->get_EWino()->getName())
       << " ( " << (*set_iterator)->get_EWino_position() << " )";
       if( (*set_iterator)->is_sx() )
         {
@@ -1308,7 +1308,7 @@ int main( int argument_count,
         }
     }
   std::cout
-  << *(sbottom_cascade->get_decayer()->get_name())
+  << *(sbottom_cascade->get_decayer()->getName())
   << ":" << std::endl
   << "pointer = " << sbottom_cascade
   << std::endl;
@@ -1318,10 +1318,10 @@ int main( int argument_count,
        ++set_iterator )
     {
       std::cout
-      << *((*set_iterator)->get_decayer()->get_name())
-      << " -> " << *((*set_iterator)->get_product()->get_name())
+      << *((*set_iterator)->get_decayer()->getName())
+      << " -> " << *((*set_iterator)->get_product()->getName())
       << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->get_name())
+      << *((*set_iterator)->get_EWino()->getName())
       << " ( " << (*set_iterator)->get_EWino_position() << " )";
       if( (*set_iterator)->is_sx() )
         {
@@ -1349,14 +1349,14 @@ int main( int argument_count,
   << "direct_decay_checker: gluino -> sdown_L, sdown_R"
   << std::endl << "pointer = "
   << gluino_to_sdown_LR
-  << std::endl << *(gluino_to_sdown_LR->get_decayer()->get_name())
+  << std::endl << *(gluino_to_sdown_LR->get_decayer()->getName())
   << " -> ";
   for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
        set_iterator = gluino_to_sdown_LR->get_products()->begin();
        gluino_to_sdown_LR->get_products()->end() > set_iterator;
        ++set_iterator )
     {
-      std::cout << *((*set_iterator)->get_name()) << " ";
+      std::cout << *((*set_iterator)->getName()) << " ";
     }
   std::cout
   << std::endl
@@ -1366,8 +1366,8 @@ int main( int argument_count,
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
   << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->get_name())
-  << " -> " << *(gluino_to_sdown_L_BR->get_product()->get_name())
+  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->getName())
+  << " -> " << *(gluino_to_sdown_L_BR->get_product()->getName())
   << " has BR " << gluino_to_sdown_L_BR->get_BR()
   << std::endl;
 
@@ -1378,8 +1378,8 @@ int main( int argument_count,
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
   << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->get_name())
-  << " -> " << *(gluino_to_sdown_L_BR->get_product()->get_name())
+  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->getName())
+  << " -> " << *(gluino_to_sdown_L_BR->get_product()->getName())
   << " has BR " << gluino_to_sdown_L_BR->get_BR()
   << std::endl;
   std::cout
@@ -1387,8 +1387,8 @@ int main( int argument_count,
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
   << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->get_name())
-  << " -> " << *(gluino_to_sdown_L_BR->get_product()->get_name())
+  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->getName())
+  << " -> " << *(gluino_to_sdown_L_BR->get_product()->getName())
   << " has BR " << gluino_to_sdown_L_BR->get_BR()
   << std::endl;
   SLHA_data.read_file( "SPS1a_spectrum.out" );
@@ -1398,8 +1398,8 @@ int main( int argument_count,
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
   << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->get_name())
-  << " -> " << *(gluino_to_sdown_L_BR->get_product()->get_name())
+  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->getName())
+  << " -> " << *(gluino_to_sdown_L_BR->get_product()->getName())
   << " has BR " << gluino_to_sdown_L_BR->get_BR()
   << std::endl;
   std::cout
@@ -1407,8 +1407,8 @@ int main( int argument_count,
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
   << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->get_name())
-  << " -> " << *(gluino_to_sdown_L_BR->get_product()->get_name())
+  << std::endl << *(gluino_to_sdown_L_BR->get_decayer()->getName())
+  << " -> " << *(gluino_to_sdown_L_BR->get_product()->getName())
   << " has BR " << gluino_to_sdown_L_BR->get_BR()
   << std::endl
   << std::endl
@@ -1468,137 +1468,137 @@ int main( int argument_count,
   std::string
   path_to_test_grid( *(test_input_handler.get_path_to_cross_section_grids()) );
   path_to_test_grid.append( "/7TeV/gluino+gluino_LO.dat" );
-  LHC_FASER::square_grid test_grid( &path_to_test_grid,
+  LHC_FASER::squareGrid test_grid( &path_to_test_grid,
                                     &bluh,
                                     NULL );
-  LHC_FASER::cross_section_table gg_table( &test_grid,
+  LHC_FASER::crossSectionTable gg_table( &test_grid,
            test_input_handler.get_sparticle_production_combinations()->at( 0 ),
                                            1.0,
                                            &test_input_handler );
   std::cout
-  << std::endl << "x: " << test_grid.get_lowest_x() << " - "
-  << test_grid.get_highest_x();
+  << std::endl << "x: " << test_grid.getLowestX() << " - "
+  << test_grid.getHighestX();
   std::cout
-  << std::endl << "y: " << test_grid.get_lowest_y() << " - "
-  << test_grid.get_highest_y();
+  << std::endl << "y: " << test_grid.getLowestY() << " - "
+  << test_grid.getHighestY();
   std::cout
-  << std::endl << "value at { 200.0, 200.0 } = " << test_grid.value_at( 200.0,
+  << std::endl << "value at { 200.0, 200.0 } = " << test_grid.valueAt( 200.0,
                                                                        200.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 200.0, 205.0 } = " << test_grid.value_at( 200.0,
+  << std::endl << "value at { 200.0, 205.0 } = " << test_grid.valueAt( 200.0,
                                                                        205.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 205.0, 200.0 } = " << test_grid.value_at( 205.0,
+  << std::endl << "value at { 205.0, 200.0 } = " << test_grid.valueAt( 205.0,
                                                                        200.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 201.0, 201.0 } = " << test_grid.value_at( 201.0,
+  << std::endl << "value at { 201.0, 201.0 } = " << test_grid.valueAt( 201.0,
                                                                        201.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 210.0, 210.0 } = " << test_grid.value_at( 210.0,
+  << std::endl << "value at { 210.0, 210.0 } = " << test_grid.valueAt( 210.0,
                                                                        210.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 199.5, 201.0 } = " << test_grid.value_at( 199.5,
+  << std::endl << "value at { 199.5, 201.0 } = " << test_grid.valueAt( 199.5,
                                                                        201.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 199.5, 199.5 } = " << test_grid.value_at( 199.5,
+  << std::endl << "value at { 199.5, 199.5 } = " << test_grid.valueAt( 199.5,
                                                                        199.5 );
   std::cout << std::endl;
   std::cout
   << std::endl << "value at { 2000.0, 200.5 } = "
-  << test_grid.value_at( 2000.0,
+  << test_grid.valueAt( 2000.0,
                          200.5 );
   std::cout << std::endl;
   std::cout << std::endl;
   std::cout
   << std::endl << "value at { 2000.5, 200.5 } = "
-  << test_grid.value_at( 2000.5,
+  << test_grid.valueAt( 2000.5,
                          200.5 );
   std::cout << std::endl;
   std::cout
   << std::endl << "value at { 200.5, 2000.0 } = "
-  << test_grid.value_at( 200.5,
+  << test_grid.valueAt( 200.5,
                          2000.0 );
   std::cout << std::endl;
   std::cout
   << std::endl << "value at { 200.5, 2000.5 } = "
-  << test_grid.value_at( 200.5,
+  << test_grid.valueAt( 200.5,
                          2000.5 );
   std::cout << std::endl;
   std::cout
   << std::endl << "value at { 1999.5, 1999.5 } = "
-  << test_grid.value_at( 1999.5,
+  << test_grid.valueAt( 1999.5,
                          1999.5 );
   std::cout << std::endl;
   std::cout
   << std::endl << "value at { 2000.0, 2000.0 } = "
-  << test_grid.value_at( 2000.0,
+  << test_grid.valueAt( 2000.0,
                          2000.0 );
   std::cout << std::endl;
   std::cout
   << std::endl << "value at { 2000.5, 2000.5 } = "
-  << test_grid.value_at( 2000.5,
+  << test_grid.valueAt( 2000.5,
                          2000.5 );
   std::cout << std::endl;
   std::cout
   << std::endl << "ggtable value = "
-  << gg_table.get_value();
+  << gg_table.getValue();
 
   path_to_test_grid.assign(
                      *(test_input_handler.get_path_to_cross_section_grids()) );
   path_to_test_grid.append( "/7TeV/gluino+gluino_K.dat" );
-  LHC_FASER::square_grid test_K( &path_to_test_grid,
+  LHC_FASER::squareGrid test_K( &path_to_test_grid,
                                  &bluh,
                                  NULL );
   std::cout
   << std::endl << "K value at { 200.5, 200.5 } = "
-  << test_K.value_at( 200.5,
+  << test_K.valueAt( 200.5,
                       200.5 );
   std::cout << std::endl;
 
 
-  LHC_FASER::cross_section_handler cross_section_handler_tester(
+  LHC_FASER::crossSectionHandler cross_section_handler_tester(
                                                          &test_input_handler );
-  LHC_FASER::cross_section_table_set*
-  test_cross_section_set = cross_section_handler_tester.get_table_set( 7 );
+  LHC_FASER::crossSectionTableSet*
+  test_cross_section_set = cross_section_handler_tester.getTableSet( 7 );
   std::cout
   << std::endl << "test_cross_section_set = " << test_cross_section_set;
-  N.B.: for the next bit to work, cross_section_handler::get_table() has to be
+  N.B.: for the next bit to work, crossSectionHandler::getTable() has to be
   moved back to public.
-  LHC_FASER::cross_section_table*
+  LHC_FASER::crossSectionTable*
   sd_go_sigma
-  = test_cross_section_set->get_table(
+  = test_cross_section_set->getTable(
          test_input_handler.get_sparticle_production_combinations()->at( 1 ) );
-  LHC_FASER::cross_section_table*
+  LHC_FASER::crossSectionTable*
   su_go_sigma
-  = test_cross_section_set->get_table(
+  = test_cross_section_set->getTable(
         test_input_handler.get_sparticle_production_combinations()->at( 10 ) );
-  LHC_FASER::cross_section_table_set*
-  test_cross_section_set2 = cross_section_handler_tester.get_table_set( 7 );
+  LHC_FASER::crossSectionTableSet*
+  test_cross_section_set2 = cross_section_handler_tester.getTableSet( 7 );
   std::cout
   << std::endl << "test_cross_section_set2 = " << test_cross_section_set2;
-  LHC_FASER::cross_section_table*
+  LHC_FASER::crossSectionTable*
   sd_go_sigma2
-  = test_cross_section_set2->get_table(
+  = test_cross_section_set2->getTable(
          test_input_handler.get_sparticle_production_combinations()->at( 1 ) );
   std::cout
-  << std::endl << "no extra square_grid loading?";
+  << std::endl << "no extra squareGrid loading?";
 
   path_to_test_grid.assign(
                      *(test_input_handler.get_path_to_cross_section_grids()) );
   path_to_test_grid.append( "/7TeV/sdown_L+gluino_LO.dat" );
-  LHC_FASER::square_grid test_sd_go_LO( &path_to_test_grid,
+  LHC_FASER::squareGrid test_sd_go_LO( &path_to_test_grid,
                                         &bluh,
                                         NULL );
   path_to_test_grid.assign(
                      *(test_input_handler.get_path_to_cross_section_grids()) );
   path_to_test_grid.append( "/7TeV/sdown_L+gluino_K.dat" );
-  LHC_FASER::square_grid test_sd_go_K( &path_to_test_grid,
+  LHC_FASER::squareGrid test_sd_go_K( &path_to_test_grid,
                                        &bluh,
                                        NULL );
   double
@@ -1613,24 +1613,24 @@ int main( int argument_count,
   std::cout
   << std::endl << "sd_mass = " << sd_mass
   << std::endl << "go_mass = " << go_mass
-  << std::endl << "test_sd_go_LO value = " << test_sd_go_LO.value_at( sd_mass,
+  << std::endl << "test_sd_go_LO value = " << test_sd_go_LO.valueAt( sd_mass,
                                                                       go_mass )
-  << std::endl << "test_sd_go_K value = " << test_sd_go_K.value_at( sd_mass,
+  << std::endl << "test_sd_go_K value = " << test_sd_go_K.valueAt( sd_mass,
                                                                     go_mass )
   << std::endl << "hence NLO value should be "
-  << ( test_sd_go_LO.value_at( sd_mass,
+  << ( test_sd_go_LO.valueAt( sd_mass,
                                go_mass )
-       * test_sd_go_K.value_at( sd_mass,
+       * test_sd_go_K.valueAt( sd_mass,
                                 go_mass ) )
   << std::endl << "sd_go_sigma = " << sd_go_sigma
   << std::endl << "sd_go_sigma value = "
-  << sd_go_sigma->get_value()
+  << sd_go_sigma->getValue()
   << std::endl << "sd_go_sigma2 = " << sd_go_sigma2
   << std::endl << "sd_go_sigma2 value = "
-  << sd_go_sigma->get_value()
+  << sd_go_sigma->getValue()
   << std::endl << "su_go_sigma = " << su_go_sigma
   << std::endl << "su_go_sigma value = "
-  << su_go_sigma->get_value();
+  << su_go_sigma->getValue();
 
   **/
 
@@ -1644,47 +1644,47 @@ int main( int argument_count,
   std::cout << std::endl;
   acceptance_grid_path.append(
                         "/7TeV/jets/Atlas4jMET/squark+gluino_acceptance.dat" );
-  LHC_FASER::acceptance_grid*
+  LHC_FASER::acceptanceGrid*
   jets_test_acceptance
-  = new LHC_FASER::acceptance_grid( &acceptance_grid_path );
+  = new LHC_FASER::acceptanceGrid( &acceptance_grid_path );
   std::cout
-  << std::endl << "jets_test_acceptance->value_at( "
-  << jets_test_acceptance->get_lowest_squark_mass() << ", "
-  << jets_test_acceptance->get_lowest_gluino_mass() << ", 0.0, 0.0, 0 ) = "
-  << jets_test_acceptance->value_at(
-                                jets_test_acceptance->get_lowest_squark_mass(),
-                                jets_test_acceptance->get_lowest_gluino_mass(),
+  << std::endl << "jets_test_acceptance->valueAt( "
+  << jets_test_acceptance->getLowestSquarkMass() << ", "
+  << jets_test_acceptance->getLowestGluinoMass() << ", 0.0, 0.0, 0 ) = "
+  << jets_test_acceptance->valueAt(
+                                jets_test_acceptance->getLowestSquarkMass(),
+                                jets_test_acceptance->getLowestGluinoMass(),
                                 0.0,
                                 0.0,
                                 0,
                                 false )
   << std::endl
-  << "jets_test_acceptance->value_at( 123.4, 567.8, 12.3, 45.6, 4 ) = "
-  << jets_test_acceptance->value_at( 123.4,
+  << "jets_test_acceptance->valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
+  << jets_test_acceptance->valueAt( 123.4,
                                      567.8,
                                      12.3,
                                      45.6,
                                      4,
                                      false )
   << std::endl
-  << "jets_test_acceptance->value_at( 234.5, 678.9, 12.3, 45.6, 4 ) = "
-  << jets_test_acceptance->value_at( 234.5,
+  << "jets_test_acceptance->valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
+  << jets_test_acceptance->valueAt( 234.5,
                                      678.9,
                                      12.3,
                                      45.6,
                                      4,
                                      false )
   << std::endl
-  << "jets_test_acceptance->value_at( 876.5, 432.1, 1.0, 1.0, 4 ) = "
-  << jets_test_acceptance->value_at( 876.5,
+  << "jets_test_acceptance->valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
+  << jets_test_acceptance->valueAt( 876.5,
                                      432.1,
                                      1.0,
                                      1.0,
                                      4,
                                      false )
   << std::endl
-  << "jets_test_acceptance->value_at( 501.0, 501.0, 0.0, 0.0, 4 ) = "
-  << jets_test_acceptance->value_at( 501.0,
+  << "jets_test_acceptance->valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
+  << jets_test_acceptance->valueAt( 501.0,
                                      501.0,
                                      0.0,
                                      0.0,
@@ -1697,47 +1697,47 @@ int main( int argument_count,
   << std::endl << "path to kinematics grids = " << acceptance_grid_path;
   std::cout << std::endl;
   acceptance_grid_path.append( "/7TeV/leptons/squark+gluino_acceptance.dat" );
-  LHC_FASER::acceptance_grid*
+  LHC_FASER::acceptanceGrid*
   leptons_test_acceptance
-  = new LHC_FASER::acceptance_grid( &acceptance_grid_path );
+  = new LHC_FASER::acceptanceGrid( &acceptance_grid_path );
   std::cout
-  << std::endl << "leptons_test_acceptance->value_at( "
-  << leptons_test_acceptance->get_lowest_squark_mass() << ", "
-  << leptons_test_acceptance->get_lowest_gluino_mass() << ", 0.0, 0.0, 0 ) = "
-  << leptons_test_acceptance->value_at(
-                             leptons_test_acceptance->get_lowest_squark_mass(),
-                             leptons_test_acceptance->get_lowest_gluino_mass(),
+  << std::endl << "leptons_test_acceptance->valueAt( "
+  << leptons_test_acceptance->getLowestSquarkMass() << ", "
+  << leptons_test_acceptance->getLowestGluinoMass() << ", 0.0, 0.0, 0 ) = "
+  << leptons_test_acceptance->valueAt(
+                             leptons_test_acceptance->getLowestSquarkMass(),
+                             leptons_test_acceptance->getLowestGluinoMass(),
                                         0.0,
                                         0.0,
                                         0,
                                         true )
   << std::endl
-  << "leptons_test_acceptance->value_at( 123.4, 567.8, 12.3, 45.6, 4 ) = "
-  << leptons_test_acceptance->value_at( 123.4,
+  << "leptons_test_acceptance->valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
+  << leptons_test_acceptance->valueAt( 123.4,
                                         567.8,
                                         12.3,
                                         45.6,
                                         4,
                                         false )
   << std::endl
-  << "leptons_test_acceptance->value_at( 234.5, 678.9, 12.3, 45.6, 4 ) = "
-  << leptons_test_acceptance->value_at( 234.5,
+  << "leptons_test_acceptance->valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
+  << leptons_test_acceptance->valueAt( 234.5,
                                         678.9,
                                         12.3,
                                         45.6,
                                         4,
                                         false )
   << std::endl
-  << "leptons_test_acceptance->value_at( 876.5, 432.1, 1.0, 1.0, 4 ) = "
-  << leptons_test_acceptance->value_at( 876.5,
+  << "leptons_test_acceptance->valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
+  << leptons_test_acceptance->valueAt( 876.5,
                                         432.1,
                                         1.0,
                                         1.0,
                                         4,
                                         false )
   << std::endl
-  << "leptons_test_acceptance->value_at( 501.0, 501.0, 0.0, 0.0, 4 ) = "
-  << leptons_test_acceptance->value_at( 501.0,
+  << "leptons_test_acceptance->valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
+  << leptons_test_acceptance->valueAt( 501.0,
                                         501.0,
                                         0.0,
                                         0.0,
@@ -1767,8 +1767,8 @@ int main( int argument_count,
                                                              &bluh,
                                                          &test_input_handler );
   std::cout
-  << std::endl << "test_jet_kinematics_table.get_name() = "
-  << *(test_jet_kinematics_table.get_name())
+  << std::endl << "test_jet_kinematics_table.getName() = "
+  << *(test_jet_kinematics_table.getName())
   << std::endl << "test_jet_kinematics_table.get_acceptance( 4,"
   << std::endl
   << "[ ";
@@ -1777,7 +1777,7 @@ int main( int argument_count,
     {
       std::cout
       << *(test_input_handler.get_sparticle_production_combinations(
-                             )->at( sdL_go )->get_first_pointer()->get_name());
+                             )->at( sdL_go )->get_first_pointer()->getName());
     }
   else
     {
@@ -1791,7 +1791,7 @@ int main( int argument_count,
     {
       std::cout
       << *(test_input_handler.get_sparticle_production_combinations()->at(
-                                   sdL_go )->get_second_pointer()->get_name());
+                                   sdL_go )->get_second_pointer()->getName());
     }
   else
     {
@@ -1803,13 +1803,13 @@ int main( int argument_count,
   std::cout
   << "[ "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->get_decayer()->get_name())
+                                                  )->get_decayer()->getName())
   << " -> " << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->get_product()->get_name())
+                                                  )->get_product()->getName())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->get_name())
+                                                    )->get_EWino()->getName())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_sx() )
@@ -1838,13 +1838,13 @@ int main( int argument_count,
   std::cout
   << "[ "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->get_decayer()->get_name())
+                                                  )->get_decayer()->getName())
   << " -> " << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->get_product()->get_name())
+                                                  )->get_product()->getName())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->get_name())
+                                                    )->get_EWino()->getName())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sx() )
@@ -1897,7 +1897,7 @@ int main( int argument_count,
     {
       std::cout
       << *(test_input_handler.get_sparticle_production_combinations()->at(
-                                    sdL_go )->get_first_pointer()->get_name());
+                                    sdL_go )->get_first_pointer()->getName());
     }
   else
     {
@@ -1911,7 +1911,7 @@ int main( int argument_count,
     {
       std::cout
       << *(test_input_handler.get_sparticle_production_combinations()->at(
-                                   sdL_go )->get_second_pointer()->get_name());
+                                   sdL_go )->get_second_pointer()->getName());
     }
   else
     {
@@ -1923,13 +1923,13 @@ int main( int argument_count,
   std::cout
   << "[ "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->get_decayer()->get_name())
+                                                  )->get_decayer()->getName())
   << " -> " << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->get_product()->get_name())
+                                                  )->get_product()->getName())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->get_name())
+                                                    )->get_EWino()->getName())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_sx() )
@@ -1958,13 +1958,13 @@ int main( int argument_count,
   std::cout
   << "[ "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->get_decayer()->get_name())
+                                                  )->get_decayer()->getName())
   << " -> " << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->get_product()->get_name())
+                                                  )->get_product()->getName())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->get_name())
+                                                    )->get_EWino()->getName())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sx() )
@@ -2085,7 +2085,7 @@ int main( int argument_count,
     {
       std::cout
       << *(test_input_handler.get_sparticle_production_combinations()->at(
-                                    sdL_go )->get_first_pointer()->get_name());
+                                    sdL_go )->get_first_pointer()->getName());
     }
   else
     {
@@ -2099,7 +2099,7 @@ int main( int argument_count,
     {
       std::cout
       << *(test_input_handler.get_sparticle_production_combinations()->at(
-                                   sdL_go )->get_second_pointer()->get_name());
+                                   sdL_go )->get_second_pointer()->getName());
     }
   else
     {
@@ -2111,13 +2111,13 @@ int main( int argument_count,
   std::cout
   << "[ "
   << *(gluino_cascade3->get_colored_cascades()->back(
-                                                  )->get_decayer()->get_name())
+                                                  )->get_decayer()->getName())
   << " -> " << *(gluino_cascade3->get_colored_cascades()->back(
-                                                  )->get_product()->get_name())
+                                                  )->get_product()->getName())
   << " ( " << gluino_cascade3->get_colored_cascades()->back(
                                           )->get_product_position() << " ) -> "
   << *(gluino_cascade3->get_colored_cascades()->back(
-                                                    )->get_EWino()->get_name())
+                                                    )->get_EWino()->getName())
   << " ( " << gluino_cascade3->get_colored_cascades()->back(
                                                )->get_EWino_position() << " )";
   if( gluino_cascade3->get_colored_cascades()->back()->is_sx() )
@@ -2146,13 +2146,13 @@ int main( int argument_count,
   std::cout
   << "[ "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->get_decayer()->get_name())
+                                                  )->get_decayer()->getName())
   << " -> " << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->get_product()->get_name())
+                                                  )->get_product()->getName())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->get_name())
+                                                    )->get_EWino()->getName())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sx() )
@@ -2199,7 +2199,7 @@ int main( int argument_count,
     {
       std::cout
       << *(test_input_handler.get_sparticle_production_combinations()->at(
-                                    sdL_go )->get_first_pointer()->get_name());
+                                    sdL_go )->get_first_pointer()->getName());
     }
   else
     {
@@ -2213,7 +2213,7 @@ int main( int argument_count,
     {
       std::cout
       << *(test_input_handler.get_sparticle_production_combinations()->at(
-                                   sdL_go )->get_second_pointer()->get_name());
+                                   sdL_go )->get_second_pointer()->getName());
     }
   else
     {
@@ -2225,13 +2225,13 @@ int main( int argument_count,
   std::cout
   << "[ "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->get_decayer()->get_name())
+                                                  )->get_decayer()->getName())
   << " -> " << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->get_product()->get_name())
+                                                  )->get_product()->getName())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->get_name())
+                                                    )->get_EWino()->getName())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_sx() )
@@ -2260,13 +2260,13 @@ int main( int argument_count,
   std::cout
   << "[ "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->get_decayer()->get_name())
+                                                  )->get_decayer()->getName())
   << " -> " << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->get_product()->get_name())
+                                                  )->get_product()->getName())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->get_name())
+                                                    )->get_EWino()->getName())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sx() )
@@ -2321,17 +2321,17 @@ int main( int argument_count,
                                &test_input_handler );
   std::cout << std::endl;
   std::cout
-  << "kinematics_table_set_tester.get_table( 4"
+  << "kinematics_table_set_tester.getTable( 4"
   << " )->get_jet_acceptance(...)->get_acceptance() = "
-  << kinematics_table_set_tester.get_table( 4 )->get_jet_acceptance(
+  << kinematics_table_set_tester.getTable( 4 )->get_jet_acceptance(
       test_input_handler.get_sparticle_production_combinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
           sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance();
   std::cout << std::endl;
   std::cout
-  << "kinematics_table_set_tester.get_table( 4"
+  << "kinematics_table_set_tester.getTable( 4"
   << " )->get_lepton_acceptance(...)->get_acceptance( 12.34, 8.0 ) = "
-  << kinematics_table_set_tester.get_table( 4 )->get_lepton_acceptance(
+  << kinematics_table_set_tester.getTable( 4 )->get_lepton_acceptance(
       test_input_handler.get_sparticle_production_combinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
@@ -2342,15 +2342,15 @@ int main( int argument_count,
   LHC_FASER::kinematics_handler kinematics_handler_tester(
                                                          &test_input_handler );
   LHC_FASER::kinematics_table*
-  kinematics_handler_table_one = kinematics_handler_tester.get_table( 7,
+  kinematics_handler_table_one = kinematics_handler_tester.getTable( 7,
                                                               &jet_signal_name,
                                                                       4 );
   LHC_FASER::kinematics_table*
-  kinematics_handler_table_two = kinematics_handler_tester.get_table( 7,
+  kinematics_handler_table_two = kinematics_handler_tester.getTable( 7,
                                                               &jet_signal_name,
                                                                       5 );
   LHC_FASER::kinematics_table*
-  kinematics_handler_table_three = kinematics_handler_tester.get_table( 7,
+  kinematics_handler_table_three = kinematics_handler_tester.getTable( 7,
                                                               &jet_signal_name,
                                                                         4 );
   std::cout << std::endl;
@@ -2413,7 +2413,7 @@ int main( int argument_count,
   std::string test_signal_name( "Atlas4jMET" );
   LHC_FASER::lepton_acceptance_value*
   test_lepton_acceptance_value
-  = test_kinematics.get_table( 7,
+  = test_kinematics.getTable( 7,
                                &test_signal_name,
                                4 )->get_lepton_acceptance(
            test_input_handler.get_sparticle_production_combinations()->at( 1 ),
@@ -2644,8 +2644,8 @@ int main( int argument_count,
   std::cout << std::endl;
   std::cout
   << std::endl
-  << "OSSF_minus_OSDF_leptons.get_value() = "
-  << OSSF_minus_OSDF_leptons.get_value();
+  << "OSSF_minus_OSDF_leptons.getValue() = "
+  << OSSF_minus_OSDF_leptons.getValue();
   std::cout << std::endl;
   std::cout
   << std::endl
@@ -2676,8 +2676,8 @@ int main( int argument_count,
   std::cout << std::endl;
   std::cout
   << std::endl
-  << "no_jets_one_muon.get_value() = "
-  << no_jets_one_muon.get_value();
+  << "no_jets_one_muon.getValue() = "
+  << no_jets_one_muon.getValue();
   std::cout << std::endl;
   std::cout
   << std::endl
@@ -2711,16 +2711,16 @@ int main( int argument_count,
   std::cout
   << std::endl
   << "total = "
-  << ( two_jets_no_leptons.get_value()
-       + one_jet_one_muon.get_value()
-       + one_jet_one_electron.get_value()
-       + no_jets_two_muons.get_value()
-       + no_jets_two_electrons.get_value()
-       + no_jets_one_muon_one_electron.get_value()
-       + one_jet_no_leptons.get_value()
-       + no_jets_one_muon.get_value()
-       + no_jets_one_electron.get_value()
-       + no_jets_no_leptons.get_value() )
+  << ( two_jets_no_leptons.getValue()
+       + one_jet_one_muon.getValue()
+       + one_jet_one_electron.getValue()
+       + no_jets_two_muons.getValue()
+       + no_jets_two_electrons.getValue()
+       + no_jets_one_muon_one_electron.getValue()
+       + one_jet_no_leptons.getValue()
+       + no_jets_one_muon.getValue()
+       + no_jets_one_electron.getValue()
+       + no_jets_no_leptons.getValue() )
   << std::endl
   << "to be compared to cascade BR sum = "
   << ( 2.0 * ( neutralino_four_to_smuon_R * smuon_R_to_neutralino_one
@@ -2869,8 +2869,8 @@ int main( int argument_count,
   std::cout << std::endl;
   std::cout
   << std::endl
-  << "one_jet_one_muon2.get_value() = "
-  << one_jet_one_muon2.get_value();
+  << "one_jet_one_muon2.getValue() = "
+  << one_jet_one_muon2.getValue();
   std::cout << std::endl;
   std::cout
   << std::endl
@@ -2900,8 +2900,8 @@ int main( int argument_count,
   std::cout << std::endl;
   std::cout
   << std::endl
-  << "OSSF_minus_OSDF_leptons2.get_value() = "
-  << OSSF_minus_OSDF_leptons2.get_value();
+  << "OSSF_minus_OSDF_leptons2.getValue() = "
+  << OSSF_minus_OSDF_leptons2.getValue();
   std::cout << std::endl;
   std::cout
   << std::endl
@@ -2935,16 +2935,16 @@ int main( int argument_count,
   std::cout
   << std::endl
   << "total = "
-  << ( two_jets_no_leptons2.get_value()
-       + one_jet_one_muon2.get_value()
-       + one_jet_one_electron2.get_value()
-       + no_jets_two_muons2.get_value()
-       + no_jets_two_electrons2.get_value()
-       + no_jets_one_muon_one_electron2.get_value()
-       + one_jet_no_leptons2.get_value()
-       + no_jets_one_muon2.get_value()
-       + no_jets_one_electron2.get_value()
-       + no_jets_no_leptons2.get_value() )
+  << ( two_jets_no_leptons2.getValue()
+       + one_jet_one_muon2.getValue()
+       + one_jet_one_electron2.getValue()
+       + no_jets_two_muons2.getValue()
+       + no_jets_two_electrons2.getValue()
+       + no_jets_one_muon_one_electron2.getValue()
+       + one_jet_no_leptons2.getValue()
+       + no_jets_one_muon2.getValue()
+       + no_jets_one_electron2.getValue()
+       + no_jets_no_leptons2.getValue() )
   << std::endl
   << "to be compared to cascade BR sum = "
   << ( 2.0 * ( neutralino_four_to_smuon_R * smuon_R_to_neutralino_one
@@ -3181,7 +3181,7 @@ int main( int argument_count,
 
 
 
-  LHC_FASER::cross_section_handler test_cross_section_handler(
+  LHC_FASER::crossSectionHandler test_cross_section_handler(
                                                          &test_input_handler );
 
   LHC_FASER::kinematics_handler test_kinematics_handler( &test_input_handler );
@@ -3197,8 +3197,8 @@ int main( int argument_count,
 
   std::cout
   << std::endl
-  << *(test_bad_signal.get_name()) << " has signal value "
-  << test_bad_signal.get_value();
+  << *(test_bad_signal.getName()) << " has signal value "
+  << test_bad_signal.getValue();
   std::cout << std::endl;
 
   LHC_FASER::signal_handler
@@ -3207,8 +3207,8 @@ int main( int argument_count,
 
   std::cout
   << std::endl
-  << *(cross_section_breakdown_test.get_name()) << " has signal value "
-  << cross_section_breakdown_test.get_value();
+  << *(cross_section_breakdown_test.getName()) << " has signal value "
+  << cross_section_breakdown_test.getValue();
   std::cout << std::endl;
 
   LHC_FASER::signal_handler test_Atlas_signal( "Atlas4jMET0l7TeV",
@@ -3216,34 +3216,34 @@ int main( int argument_count,
 
   std::cout
   << std::endl
-  << *(test_Atlas_signal.get_name()) << " constructed without crashing.";
+  << *(test_Atlas_signal.getName()) << " constructed without crashing.";
   std::cout
   << std::endl;
   std::cout
   << std::endl
-  << *(test_Atlas_signal.get_name()) << " has signal value "
-  << test_Atlas_signal.get_value();
+  << *(test_Atlas_signal.getName()) << " has signal value "
+  << test_Atlas_signal.getValue();
   std::cout << std::endl;
 
   SLHA_data.read_file( "SPS2_spectrum.out" );
   std::cout << std::endl;
   std::cout
   << std::endl << "without updating for new point, "
-  << *(cross_section_breakdown_test.get_name()) << " has signal value "
-  << cross_section_breakdown_test.get_value()
+  << *(cross_section_breakdown_test.getName()) << " has signal value "
+  << cross_section_breakdown_test.getValue()
   << std::endl
-  << *(test_Atlas_signal.get_name()) << " has signal value "
-  << test_Atlas_signal.get_value();
+  << *(test_Atlas_signal.getName()) << " has signal value "
+  << test_Atlas_signal.getValue();
   std::cout << std::endl;
 
   test_readier.ready_for_new_point();
   std::cout
   << std::endl << "after updating for new point, "
-  << *(cross_section_breakdown_test.get_name()) << " has signal value "
-  << cross_section_breakdown_test.get_value()
+  << *(cross_section_breakdown_test.getName()) << " has signal value "
+  << cross_section_breakdown_test.getValue()
   << std::endl
-  << *(test_Atlas_signal.get_name()) << " has signal value "
-  << test_Atlas_signal.get_value();
+  << *(test_Atlas_signal.getName()) << " has signal value "
+  << test_Atlas_signal.getValue();
   std::cout << std::endl;
 
   gluino_BR_sum = 0.0;
@@ -3374,8 +3374,8 @@ int main( int argument_count,
       test_readier.ready_for_new_point();
       std::cout
       << std::endl << "SPS1a: "
-      << *(test_Atlas_signal.get_name()) << " has signal value "
-      << test_Atlas_signal.get_value();
+      << *(test_Atlas_signal.getName()) << " has signal value "
+      << test_Atlas_signal.getValue();
       std::cout << std::endl;
 
       SLHA_data.read_file( "SPS2_spectrum.out" );
@@ -3396,8 +3396,8 @@ int main( int argument_count,
       test_readier.ready_for_new_point();
       std::cout
       << std::endl << "SPS2: "
-      << *(test_Atlas_signal.get_name()) << " has signal value "
-      << test_Atlas_signal.get_value();
+      << *(test_Atlas_signal.getName()) << " has signal value "
+      << test_Atlas_signal.getValue();
       std::cout << std::endl;
 
       gettimeofday( &ending_time,
@@ -3451,20 +3451,20 @@ int main( int argument_count,
   std::cout << std::endl;
   std::cout
   << std::endl << "after updating for new point, "
-  << *(sigma_SPS1a->get_name()) << " (sigma_SPS1a) has signal value "
-  << sigma_SPS1a->get_value();
+  << *(sigma_SPS1a->getName()) << " (sigma_SPS1a) has signal value "
+  << sigma_SPS1a->getValue();
   std::cout << std::endl;
   std::cout
-  << *(bad_SPS2->get_name()) << " (bad_SPS2) has signal value "
-  << bad_SPS2->get_value();
+  << *(bad_SPS2->getName()) << " (bad_SPS2) has signal value "
+  << bad_SPS2->getValue();
   std::cout << std::endl;
   std::cout
-  << *(Atlas_SPS1a->get_name()) << " (Atlas_SPS1a) has signal value "
-  << Atlas_SPS1a->get_value();
+  << *(Atlas_SPS1a->getName()) << " (Atlas_SPS1a) has signal value "
+  << Atlas_SPS1a->getValue();
   std::cout << std::endl;
   std::cout
-  << *(Atlas_SPS2->get_name()) << " (Atlas_SPS2) has signal value "
-  << Atlas_SPS2->get_value();
+  << *(Atlas_SPS2->getName()) << " (Atlas_SPS2) has signal value "
+  << Atlas_SPS2->getValue();
   std::cout << std::endl;
 
   **/
