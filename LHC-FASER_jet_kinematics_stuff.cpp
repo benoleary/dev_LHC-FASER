@@ -53,10 +53,150 @@
  *      found in a subdirectory included with this package.
  */
 
-#include "LHC-FASER_kinematics_stuff.hpp"
+#include "LHC-FASER_jet_kinematics_stuff.hpp"
 
 namespace LHC_FASER
 {
+  jetAcceptanceTable::jetAcceptanceTable(
+                                    std::string const* const gridFilesLocation,
+                                          std::string const* const jetCutName,
+                                          int const acceptanceColumn,
+                                        input_handler const* const shortcut ) :
+    jetCutName( *jetCutName ),
+    acceptanceColumn( acceptanceColumn ),
+    shortcut( shortcut )
+  {
+    std::string gridFileBaseName( *gridFilesLocation );
+    gridFileBaseName.append( "/" );
+    gridFileBaseName.append( *jetCutName );
+    std::string gridFileName( gridFileBaseName );
+    gridFileName.append( "/gluino+gluino_acceptance.dat" );
+    gluinoGluinoGrid = new acceptanceGrid( &gridFileName );
+    gridFileName.assign( gridFileBaseName );
+    gridFileName.append( "/squark+gluino_acceptance.dat" );
+    squarkGluinoGrid = new acceptanceGrid( &gridFileName );
+    gridFileName.assign( gridFileBaseName );
+    gridFileName.append( "/squark+antisquark_acceptance.dat" );
+    squarkAntisquarkGrid = new acceptanceGrid( &gridFileName );
+    gridFileName.assign( gridFileBaseName );
+    gridFileName.append( "/squark+squark_acceptance.dat" );
+    squarkSquarkGrid = new acceptanceGrid( &gridFileName );
+    for( int vectorAdder = (int)usedTypes::sizeOfEnum;
+         0 < vectorAdder;
+         --vectorAdder )
+    {
+      gridsMatrix.push_back(
+           new std::vector< acceptanceGrid* >( usedTypes::sizeOfEnum,
+                                               NULL ) );
+    }
+    // now we specify the various cases:
+    gridsMatrix.at( (int)usedTypes::gx )->at( (int)usedTypes::gx )
+    = gluinoGluinoGrid;
+    gridsMatrix.at( (int)usedTypes::gx )->at( (int)usedTypes::sx )
+    = squarkGluinoGrid;
+    gridsMatrix.at( (int)usedTypes::gx )->at( (int)usedTypes::gsx )
+    = gluinoGluinoGrid;
+    gridsMatrix.at( (int)usedTypes::gx )->at( (int)usedTypes::sgx )
+    = squarkGluinoGrid;
+    NEEDS MORE!
+  }
+
+  jetAcceptanceTable::~jetAcceptanceTable()
+  {
+    delete gluinoGluinoGrid;
+    delete squarkGluinoGrid;
+    delete squarkAntisquarkGrid;
+    delete squarkSquarkGrid;
+    for( std::vector< std::vector< acceptanceGrid* >* >::iterator
+         deletionIterator = gridsMatrix.begin();
+         gridsMatrix.end() > deletionIterator;
+         ++vIterator )
+    {
+      delete *deletionIterator;
+      // we don't delete the entries of *deletionIterator because they're just
+      // pointers to the grids which we deleted above.
+    }
+  }
+
+  int
+  jetAcceptanceTable::getIntForCascadeType(
+                                         fullCascade const* const givenCascade,
+                                          double* const squarkMassFromCascade )
+  {
+    usedTypes typeToCountAs;
+    if( fullCascade::colorfulCascadeType::gx
+        == givenCascade->getColofulCascadeType() )
+    {
+      typeToCountAs = gx;
+      *squarkMassFromCascade = shortcut->get_average_squarks4_mass();
+      if( shortcut->get_gluino()->get_absolute_mass()
+          < *squarkMassFromCascade )
+      {
+        *squarkMassFromCascade
+        = ( shortcut->get_gluino()->get_absolute_mass() + 1.0 );
+      }
+    }
+    else if( ( fullCascade::colorfulCascadeType::sx
+               == givenCascade->getColofulCascadeType() )
+             ||
+             ( fullCascade::colorfulCascadeType::svsx
+               == givenCascade->getColofulCascadeType() ) )
+    {
+      typeToCountAs = sx;
+      *squarkMassFromCascade
+      = givenCascade->getCascadeDefiner()->inspectBack(
+                                                 )->first->get_absolute_mass();
+    }
+    else if( ( fullCascade::colorfulCascadeType::sjgx
+               == givenCascade->getColofulCascadeType() )
+             ||
+             ( fullCascade::colorfulCascadeType::svgx
+               == givenCascade->getColofulCascadeType() )
+             ||
+             ( fullCascade::colorfulCascadeType::svsjgx
+               == givenCascade->getColofulCascadeType() ) )
+    {
+      typeToCountAs = sgx;
+      *squarkMassFromCascade
+      = givenCascade->getCascadeDefiner()->inspectPointer( 2
+                                                 )->first->get_absolute_mass();
+    }
+    else
+    {
+      typeToCountAs = gsx;
+      *squarkMassFromCascade
+      = givenCascade->getCascadeDefiner()->inspectPointer( 1
+                                                 )->first->get_absolute_mass();
+    }
+    return (int)typeToCountAs;
+  }
+
+  double
+  jetAcceptanceTable::getAcceptance( fullCascade const* const firstCascade,
+                                     fullCascade const* const secondCascade )
+  const
+  {
+    lighterNeutralinoMassForGrid
+    = firstCascade->getCascadeDefiner()->inspectFront(
+                                                 )->first->get_absolute_mass();
+    heavierNeutralinoMassForGrid
+    = secondCascade->getCascadeDefiner()->inspectFront(
+                                                 )->first->get_absolute_mass();
+    if( lighterNeutralinoMassForGrid > heavierNeutralinoMassForGrid )
+    {
+      double massSwapper = lighterNeutralinoMassForGrid;
+      lighterNeutralinoMassForGrid = heavierNeutralinoMassForGrid;
+      heavierNeutralinoMassForGrid = massSwapper;
+    }
+    gridToUse
+    = gridsMatrix.at( getIntForCascadeType( firstCascade,
+                                            firstCascadeSquarkMass ) )->at(
+                                           getIntForCascadeType( secondCascade,
+                                                   secondCascadeSquarkMass ) );
+    // needs more here, such as deciding what squark mass to use.
+  }
+
+
   acceptanceCutSet::acceptanceCutSet() :
     beamEnergy( -1.0 ),
     primaryLeptonCut( -1.0 ),

@@ -76,10 +76,10 @@ namespace LHC_FASER
     shortcut( shortcut )
   {
     std::string gridFileName( *gridFileLocation );
-    gridFileName.append( "/gluino+gluino_acceptance.dat");
+    gridFileName.append( "/gluino+gluino_acceptance.dat" );
     gluinoTable = new acceptanceGrid( &gridFileName );
     gridFileName.assign( *gridFileLocation );
-    gridFileName.append( "/squark+antisquark_acceptance.dat");
+    gridFileName.append( "/squark+antisquark_acceptance.dat" );
     squarkTable = new acceptanceGrid( &gridFileName );
   }
 
@@ -94,8 +94,7 @@ namespace LHC_FASER
   leptonAcceptanceGrid::getSquarkValue(
                             CppSLHA::particle_property_set const* const squark,
                              CppSLHA::particle_property_set const* const ewino,
-                                        int const requestedColumn,
-                                        bool const lookingForPseudorapidity )
+                                        int const requestedColumn )
   const
   /* this interpolates the requested column based on the squark, gluino, &
    * electroweakino masses. it fudges some cases that were not properly done in
@@ -112,15 +111,13 @@ namespace LHC_FASER
     double appropriateSquarkMass = squark->get_absolute_mass();
     if( appropriateSquarkMass > appropriateGluinoMass )
     {
-      appropriateGluinoMass = appropriateSquarkMass;
+      appropriateGluinoMass = ( appropriateSquarkMass + 1.0 );
     }
-    return squarkTable->valueAt( appropriateSquarkMass,
-                                 appropriateGluinoMass,
-                                 ewino->get_absolute_mass(),
-                                 ewino->get_absolute_mass(),
-                                 requestedColumn,
-                                 false,
-                                 lookingForPseudorapidity );
+    return squarkTable->neutralinoIndependentValueAt( appropriateSquarkMass,
+                                                      appropriateGluinoMass,
+                                                      requestedColumn );
+    // lepton acceptance parameters should be independent of the neutralino
+    // masses used.
   }
 
   double
@@ -145,7 +142,7 @@ namespace LHC_FASER
     double appropriateSquarkMass = shortcut->get_average_squarks4_mass();
     if( appropriateGluinoMass > appropriateSquarkMass )
     {
-      appropriateSquarkMass = appropriateGluinoMass;
+      appropriateSquarkMass = ( appropriateGluinoMass + 1.0 );
     }
     return gluinoTable->valueAt( appropriateSquarkMass,
                                  appropriateGluinoMass,
@@ -481,7 +478,7 @@ namespace LHC_FASER
   {
     std::string gridFileLocation( *gridFileSetLocation );
     std::stringstream energyStream( "" );
-    energyStream << "/" << beamEnergy << "TeV";
+    energyStream << "/" << beamEnergy << "TeV/leptons/";
     gridFileLocation.append( energyStream.str() );
     acceptanceGrid = new leptonAcceptanceGrid( &gridFileLocation,
                                                shortcut );

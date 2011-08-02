@@ -72,6 +72,11 @@
  *   classes, inparticular
  *   -- squarkBasedLeptonAcceptanceTable::getValue
  *   -- gluinoBasedLeptonAcceptanceTable::getValue
+ *
+ * other thoughts: actually, for lepton acceptances, it's probably just as
+ * accurate to just take the grid points nearest the requested point rather
+ * than bothering with a lot of interpolation. I might get around to
+ * implementing that (without removing the interpolating versions though!).
  */
 
 namespace LHC_FASER
@@ -113,8 +118,7 @@ namespace LHC_FASER
     double
     getSquarkValue( CppSLHA::particle_property_set const* const squark,
                     CppSLHA::particle_property_set const* const ewino,
-                    int const requestedColumn,
-                    bool const lookingForPseudorapidity )
+                    int const requestedColumn )
     const
     /* this interpolates the requested column based on the squark, gluino, &
      * electroweakino masses. it fudges some cases that were not properly done
@@ -124,8 +128,7 @@ namespace LHC_FASER
     double
     getGluinoValue( CppSLHA::particle_property_set const* const ewino,
                     int const requestedColumn,
-                    bool const lookingForEffectiveSquarkMass,
-                    bool const lookingForPseudorapidity )
+                    bool const lookingForEffectiveSquarkMass )
     const
     /* this interpolates the requested column based on the squark, gluino, &
      * electroweakino masses. it fudges some cases that were not properly done
@@ -466,19 +469,11 @@ namespace LHC_FASER
     {
       return scolored->get_absolute_mass();
     }
-    else if( 1 == requestedColumn )
-    {
-      return lookupGrid->getSquarkValue( scolored,
-                                         ewino,
-                                         requestedColumn,
-                                         true );
-    }
     else
     {
       return lookupGrid->getSquarkValue( scolored,
                                          ewino,
-                                         requestedColumn,
-                                         false );
+                                         requestedColumn );
     }
   }
 
@@ -500,19 +495,12 @@ namespace LHC_FASER
                                          true,
                                          false );
     }
-    else if( 1 == requestedColumn )
-    {
-      return lookupGrid->getGluinoValue( ewino,
-                                         requestedColumn,
-                                         false,
-                                         true );
-    }
     else
     {
       return lookupGrid->getGluinoValue( ewino,
                                          requestedColumn,
                                          false,
-                                         false );
+                                         true );
     }
   }
 

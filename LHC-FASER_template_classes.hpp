@@ -20,23 +20,37 @@
 #include <list>
 #include <map>
 
-/* you might notice a change of code-writing style with this file. I (BOL) just
- * decided that I should be less idiosyncratic & adopt a conventional style, at
- * least to some extent...
- */
-
 namespace LHC_FASER
 {
   /* this is a template class to hold a vector of pointers to objects. the main
    * use is when the objects are slow to construct but fast to reset.
-   * it needs to be used with storedClass objects that can be constructed by
-   * a single function which takes no arguments.
+   * it needs to be used with storedClass objects that have default
+   * constructors that can be called with "new storedClass".
+   * usage: the intended use is that addNewAtEnd() takes over the role of
+   * memory allocation. instead of
+   * storedClass* egPointer = new storedClass;
+   * the allocation is done with
+   * storedClass* egPointer = egMinimalAllocationVector.addNewAtEnd();
+   * & then carry on as normal, except egMinimalAllocationVector will free up
+   * the memory on its own, so you should *never* try to delete the pointer
+   * yourself.
+   * when the collection needs to be reset, call clear(), but beware that the
+   * next pointers returned by addNewAtEnd() will point to old objects from
+   * before the calling of clear()! you need to reset the objects yourself.
+   * I had made a version with a stored function pointer to allow the objects
+   * to be reset as they are passed out, but in the end I felt that it couldn't
+   * be flexible enough to be really useful. the functionality has been moved
+   * into
+   * addNewAtEnd( void (*makeAsDefaultConstructorWould)( storedClass* const ) )
+   * for obtaining consistent new objects. (makeAsDefaultConstructorWould does
+   * not _have_ to set the object's properties to be as they would be when
+   * constructed by the default constructor, but this is the use intended.)
    */
   template< class storedClass >
   class minimalAllocationVector
   {
   public:
-    minimalAllocationVector( storedClass* const (*constructionFunction)() )
+    minimalAllocationVector()
     /* code after the classes in this .hpp file. */;
 
     ~minimalAllocationVector()
@@ -47,8 +61,21 @@ namespace LHC_FASER
     // if an element out of range is asked for, this returns NULL.
     /* code after the classes in this .hpp file. */;
 
+    storedClass const*
+    inspectPointer( int const requestedElement )
+    const
+    // if an element out of range is asked for, this returns NULL.
+    /* code after the classes in this .hpp file. */;
+
     storedClass*
     getFront()
+    // this returns the 1st element deemed current. if there is none, this
+    // returns NULL.
+    /* code after the classes in this .hpp file. */;
+
+    storedClass const*
+    inspectFront()
+    const
     // this returns the 1st element deemed current. if there is none, this
     // returns NULL.
     /* code after the classes in this .hpp file. */;
@@ -59,8 +86,16 @@ namespace LHC_FASER
     // returns NULL.
     /* code after the classes in this .hpp file. */;
 
+    storedClass const*
+    inspectBack()
+    const
+    // this returns the last element deemed current. if there is none, this
+    // returns NULL.
+    /* code after the classes in this .hpp file. */;
+
     int
     getSize()
+    const
     // this returns the number of elements which are deemed current.
     /* code after the classes in this .hpp file. */;
 
@@ -80,15 +115,33 @@ namespace LHC_FASER
     addNewAtEnd()
     /* this, if necessary, pushes back a new storedClass instance into
      * allConstructedPointers, & pushes back a pointer into currentPointers, &
-     * returns the pointer at the end ofcurrentPointers.
+     * returns the pointer at the end of currentPointers.
      */
     /* code after the classes in this .hpp file. */;
 
+    storedClass*
+    addNewAtEnd( void (*makeAsDefaultConstructorWould)( storedClass* const ) )
+    /* this pushes a pointer to a storedClass instance into currentPointers &
+     * also returns that pointer. the returned pointer either was already in
+     * allConstructedPointers, in which case it also gets reset in some way by
+     * makeAsDefaultConstructorWould before being returned, or points to a new
+     * storedClass instance which is constructed by this function with the
+     * default storedClass constructor, & this pointer is also pushed back into
+     * allConstructedPointers. N.B.: makeAsDefaultConstructorWould is NOT
+     * applied to pointers which just made new storedClass instances - if you
+     * want it applied to every pointer that comes out of addNewAtEnd(), you
+     * might as well just use the argumentless addNewAtEnd() & run
+     * makeAsDefaultConstructorWould on whatever comes out.
+     * (makeAsDefaultConstructorWould does not _have_ to set the object's
+     * properties to be as they would be when constructed by the default
+     * constructor, but this is the use intended.)
+     */
+    /* code after the classes in this .hpp file. */;
 
   protected:
     std::vector< storedClass* > allConstructedPointers;
     std::vector< storedClass* > currentPointers;
-    storedClass* (*constructionFunction)();
+    void (*resetter)( storedClass* const );
   };
 
 
@@ -193,11 +246,9 @@ namespace LHC_FASER
 
   template< class storedClass >
   inline
-  minimalAllocationVector< storedClass >::minimalAllocationVector(
-                               storedClass* const (*constructionFunction)() ) :
-  constructionFunction( constructionFunction )
+  minimalAllocationVector< storedClass >::minimalAllocationVector()
   {
-    // just an initialization list.
+    // just an empty initialization list.
   }
 
   template< class storedClass >
@@ -231,6 +282,16 @@ namespace LHC_FASER
   }
 
   template< class storedClass >
+  inline storedClass const*
+  minimalAllocationVector< storedClass >::inspectPointer(
+                                                   int const requestedElement )
+  const
+  // if an element out of range is asked for, this returns NULL.
+  {
+    return getPointer( requestedElement );
+  }
+
+  template< class storedClass >
   inline storedClass*
   minimalAllocationVector< storedClass >::getFront()
   // this returns the 1st element deemed current. if there is none, this
@@ -244,6 +305,16 @@ namespace LHC_FASER
     {
       return NULL;
     }
+  }
+
+  template< class storedClass >
+  inline storedClass const*
+  minimalAllocationVector< storedClass >::inspectFront()
+  // this returns the 1st element deemed current. if there is none, this
+  // returns NULL.
+  const
+  {
+    return getFront();
   }
 
   template< class storedClass >
@@ -263,8 +334,19 @@ namespace LHC_FASER
   }
 
   template< class storedClass >
+  inline storedClass const*
+  minimalAllocationVector< storedClass >::inspectBack()
+  // this returns the 1st element deemed current. if there is none, this
+  // returns NULL.
+  const
+  {
+    return getBack();
+  }
+
+  template< class storedClass >
   inline int
   minimalAllocationVector< storedClass >::getSize()
+  const
   // this returns the number of elements which are deemed current.
   {
     return (int)(currentPointers.size());
@@ -293,17 +375,57 @@ namespace LHC_FASER
   minimalAllocationVector< storedClass >::addNewAtEnd()
   /* this, if necessary, pushes back a new storedClass instance into
    * allConstructedPointers, & pushes back a pointer into currentPointers, &
-   * returns the pointer at the end ofcurrentPointers.
+   * returns the pointer at the end of currentPointers.
    */
   {
     while( currentPointers.size() >= allConstructedPointers.size() )
       // this should cover cases where currentPointers has been changed in size
       // by malevolent use of getVector...
     {
-      allConstructedPointers.push_back( (*constructionFunction)() );
+      allConstructedPointers.push_back( new storedClass );
     }
     currentPointers.push_back(
                          allConstructedPointers.at( currentPointers.size() ) );
+    return currentPointers.back();
+  }
+
+  template< class storedClass >
+  inline storedClass*
+  minimalAllocationVector< storedClass >::addNewAtEnd(
+                  void (*makeAsDefaultConstructorWould)( storedClass* const ) )
+  /* this pushes a pointer to a storedClass instance into currentPointers &
+   * also returns that pointer. the returned pointer either was already in
+   * allConstructedPointers, in which case it also gets reset in some way by
+   * makeAsDefaultConstructorWould before being returned, or points to a new
+   * storedClass instance which is constructed by this function with the
+   * default storedClass constructor, & this pointer is also pushed back into
+   * allConstructedPointers. N.B.: makeAsDefaultConstructorWould is NOT
+   * applied to pointers which just made new storedClass instances - if you
+   * want it applied to every pointer that comes out of addNewAtEnd(), you
+   * might as well just use the argumentless addNewAtEnd() & run
+   * makeAsDefaultConstructorWould on whatever comes out.
+   * (makeAsDefaultConstructorWould does not _have_ to set the object's
+   * properties to be as they would be when constructed by the default
+   * constructor, but this is the use intended.)
+   */
+  {
+    if( currentPointers.size() < allConstructedPointers.size() )
+    {
+      currentPointers.push_back(
+                         allConstructedPointers.at( currentPointers.size() ) );
+      (*makeAsDefaultConstructorWould)( currentPointers.back() );
+    }
+    else
+    {
+      while( currentPointers.size() >= allConstructedPointers.size() )
+      // this should cover cases where currentPointers has been changed in size
+      // by malevolent use of getVector...
+      {
+        allConstructedPointers.push_back( new storedClass );
+      }
+      currentPointers.push_back(
+                         allConstructedPointers.at( currentPointers.size() ) );
+    }
     return currentPointers.back();
   }
 

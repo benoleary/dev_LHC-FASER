@@ -176,7 +176,8 @@ namespace LHC_FASER
       sjgjsvsx
       /* squark to gluino to other squark to vector boson plus yet another
          squark to electroweakino */
-      /* treated by jets+MET grid as gsx */
+      /* treated by jets+MET grid as gsx */,
+      sizeOfEnumPlusOne /* possibly useful */
     };
 
     fullCascade( colorfulCascadeType const typeOfColorfulCascade,
@@ -215,8 +216,14 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     minimalAllocationVector< std::pair< CppSLHA::particle_property_set const*,
-                                        int > >*
+                                        int > > const*
     getCascadeDefiner()
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    colorfulCascadeType
+    getColofulCascadeType()
+    const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
@@ -1130,10 +1137,18 @@ namespace LHC_FASER
 
   inline minimalAllocationVector< std::pair<
                                          CppSLHA::particle_property_set const*,
-                                             int > >*
+                                             int > > const*
   fullCascade::getCascadeDefiner()
+  const
   {
     return &cascadeDefiner;
+  }
+
+  inline colorfulCascadeType
+  fullCascade::getColofulCascadeType()
+  const
+  {
+    return typeOfColorfulCascade;
   }
 
   inline double

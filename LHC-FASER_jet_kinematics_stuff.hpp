@@ -53,17 +53,15 @@
  *      found in a subdirectory included with this package.
  */
 
-#ifndef LHC_FASER_KINEMATICS_STUFF_HPP_
-#define LHC_FASER_BASE_KINEMATICS_STUFF_HPP_
+#ifndef LHC_FASER_JET_KINEMATICS_STUFF_HPP_
+#define LHC_FASER_JET_KINEMATICS_STUFF_HPP_
 
 #include "LHC-FASER_input_handling_stuff.hpp"
-#include "LHC-FASER_cross-section_stuff.hpp"
-#include "LHC-FASER_derived_lepton_distributions.hpp"
+#include "LHC-FASER_full_cascade_stuff.hpp"
 
 
 /* this file contains all the code relevant to obtaining the acceptance for
- * jet transverse momentum plus missing transverse momentum and lepton
- * transverse momentum and pseudorapidity cuts.
+ * jet transverse momentum plus missing transverse momentum cuts.
  *
  * if the format of the grid files changes, a lot of the code here has to
  * change too. the following are format-dependent:
@@ -75,528 +73,65 @@
 
 namespace LHC_FASER
 {
-  // this stores the acceptance cut values which are associated with a
-  // particular signal.
-  class acceptanceCutSet
+  // this class holds an acceptanceGrid with a string identifying the type of
+  // jet+MET signal which the acceptances are for.
+  class jetAcceptanceTable
   {
   public:
-    acceptanceCutSet()
-    // this constructor sets the values to -1.0, which is the default "unset"
-    // value.
+    enum usedTypes
+    {
+      gx = 0,
+      sx = 1,
+      gsx = 2,
+      sgx = 3,
+      sizeOfEnum = 4 /* should be useful */
+    };
+    // this could be expanded, provided grids that account for multiple squark
+    // flavors are provided.
+
+    jetAcceptanceTable( std::string const* const gridFilesLocation,
+                        std::string const* const jetCutName,
+                        int const acceptanceColumn,
+                        input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    acceptanceCutSet( acceptanceCutSet* const copySource )
-    // this constructor copies the values from a given acceptanceCutSet.
+    ~jetAcceptanceTable()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    virtual
-    ~acceptanceCutSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    static bool
-    compareJetAndBothLeptonCuts( acceptanceCutSet* const firstPointer,
-                                 acceptanceCutSet* const secondPointer )
-    // this returns true if both acceptanceCutSets have the same jet cut & both
-    // lepton cuts.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    static bool
-    compareJustBothLeptonCuts( acceptanceCutSet* const firstPointer,
-                               acceptanceCutSet* const secondPointer )
-    // this returns true if both acceptanceCutSets have the same
-    // primaryLeptonCut & secondaryLeptonCut, regardless of the jet cut.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    static bool
-    compareJustPrimaryLeptonCut( acceptanceCutSet* const firstPointer,
-                                 acceptanceCutSet* const secondPointer )
-    // this returns true if both acceptanceCutSets have the same
-    // primaryLeptonCut, regardless of the other values.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    static bool
-    justReturnTrue( acceptanceCutSet* const firstPointer,
-                    acceptanceCutSet* const secondPointer )
-    // this just returns true, for when the acceptance cut doesn't matter.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    void
-    becomeCopyOf( acceptanceCutSet* const copyPointer )
-    // this copies the values from a given acceptanceCutSet.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    getBeamEnergy()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    // set_beam_energy is only defined in the signal_definitions derived class.
-    double
-    getPrimaryLeptonCut()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    void
-    setPrimaryLeptonCut( double inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getSecondaryLeptonCut()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    void
-    setSecondaryLeptonCut( double inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getLeptonCut()
-    const
-    // this just returns primary_lepton_cut. it is intended to be used when the
-    // signal only has 1 lepton cut.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    void
-    setLeptonCut( double inputValue )
-    // this sets both primary_lepton_cut & secondary_lepton_cut to input_value.
-    // it is intended to be used when the signal only has 1 lepton cut.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getJetCut()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    void
-    setJetCut( double inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    std::list< int > const*
-    getExcludedStandardModelProducts()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    void
-    setExcludedStandardModelProducts( std::list< int > const* inputList )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual bool
-    isSameAcceptanceCutSet( acceptanceCutSet const* const comparisonCuts )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-    double beamEnergy;
-    // the lepton transverse momentum cuts are easy enough to scale that we can
-    // let the user specify them:
-    double primaryLeptonCut;
-    double secondaryLeptonCut;
-    double jetCut;
-    std::list< int > const* const excludedStandardModelProducts;
-  };  // end of acceptanceCutSet class.
-
-  // this is a class derived from acceptance_cut_set, restricted to only look
-  // at primaryLeptonCut.
-  class singleLeptonCut : public acceptanceCutSet
-  {
-  public:
-    singleLeptonCut()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~singleLeptonCut()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    virtual bool
-    isSameAcceptanceCutSet( acceptanceCutSet const* const comparisonCuts )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  //protected:
-    // nothing
-  };
-
-
-
-  /* this class reads in a file in the assumed format, stores it, & gives out
-   * interpolated values. it was written with acceptances for leptons in mind,
-   * to be adapted for jets plus missing transverse momentum as a special case,
-   * with data files in the format
-   * squark_mass gluino_mass lighter_neutralino_mass heavier_neutralino_mass
-   * (continued) then either
-   * 42 lepton acceptance values (effective squark mass, pseudorapitidy cut
-   * acceptance, then 40 bins for transverse momentum cut acceptances)
-   * or
-   * 7 acceptance values for different choices of which jets+MET combination to
-   * use
-   * then newline.
-   */
-  class acceptanceGrid
-  {
-  public:
-    acceptanceGrid( std::string const* const gridFileLocation )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~acceptanceGrid()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    valueAt( double const squarkMass,
-             double const gluinoMass,
-             double const firstNeutralinoMass,
-             double const secondNeutralinoMass,
-             int const acceptanceElement,
-             bool const heavyNeutralinoEdgeIsLighterScoloredMass,
-             bool const heavyNeutralinoAreaIsConstant )
-    const
-    /* this finds the grid square which the given point is in, & then uses
-     * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
-     * value, assuming that the heavy neutralino edge goes to 0.0 as the
-     * heavier neutralino mass approaches the lighter scolored mass unless
-     * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
-     * it interpolates to the lighter scolored mass, or unless
-     * heavy_neutralino_area_is_constant is true, in which case it interpolates
-     * to the same value as the grid points with the heaviest neutralino mass.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    valueAt( double const squarkMass,
-             double const gluinoMass,
-             double const degenerateNeutralinoMass,
-             int const acceptanceElement,
-             bool const heavyNeutralinoEdgeIsLighterScoloredMass,
-             bool const heavyNeutralinoAreaIsConstant )
-    const
-    /* this finds the grid square which the given point is in, & then uses
-     * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
-     * value, assuming that the heavy neutralino edge goes to 0.0 as the
-     * heavier neutralino mass approaches the lighter scolored mass unless
-     * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
-     * it interpolates to the lighter scolored mass, or unless
-     * heavy_neutralino_area_is_constant is true, in which case it interpolates
-     * to the same value as the grid points with the heaviest neutralino mass.
-     * N.B.: this version is just to save a little calculation for the
-     * lepton acceptance for a cascade because of the approximation that the
-     * kinematics for the lepton acceptance of 1 cascade is independent of that
-     * of the other cascade. the improvement is probably utterly negligible,
-     * but I want to write this function anyway...
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    int
-    getNumberOfAcceptanceColumns()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getLowestSquarkMass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getHighestSquarkMass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getLowestGluinoMass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getHighestGluinoMass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-    double scoloredMassStepSize;
-    double lowestSquarkMass;
-    double highestSquarkMass;
-    double lowestGluinoMass;
-    double highestGluinoMass;
-    double lowNeutralinoMassRatio;
-    double middleNeutralinoMassRatio;
-    double highNeutralinoMassRatio;
-    std::vector< std::vector< std::vector< std::vector< double >* >* >* >
-    values;
-    int acceptanceColumns;
-
-    double
-    vectorElementAt( double const squarkMass,
-                     double const gluinoMass,
-                     int const neutralinoElement,
-                     int const acceptanceElement )
-    const
-    // this interpolates the values for the element of the vector for
-    // neutralino masses requested on the squark & gluino masses.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-  };
-
-
-
-  /* this class holds acceptanceGrid instances for looking up acceptances &
-   * returns the interpolated values by looking up the masses of its
-   * sparticles. this class, as well as acceptanceGrid, has to be changed if
-   * the format of the acceptance grids changes.
-   */
-  class leptonAcceptanceGrid
-  {
-
-  public:
-
-    leptonAcceptanceGrid( std::string const* const gridFileLocation,
-                   input_handler const* const shortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~leptonAcceptanceGrid()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    getValue( signed_particle_shortcut_pair const* const scoloreds,
-               colored_cascade const* const first_sQCD_cascade,
-               colored_cascade const* const second_sQCD_cascade,
-               int const requested_column,
-               bool const heavy_neutralino_edge_is_lighter_scolored_mass,
-               bool const heavy_neutralino_area_is_constant )
-    const
-    /* this interpolates the requested column based on the squark, gluino, &
-     * electroweakino masses. it fudges some cases that were not properly done
-     * in the single-quark-flavor approximation.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-    acceptanceGrid* gluinoGluinoTable;
-    acceptanceGrid* squarkGluinoTable;
-    acceptanceGrid* squarkAntisquarkTable;
-    acceptanceGrid* squarkSquarkTable;
-    input_handler const* const shortcut;
-  };
-
-
-
-  /* this stores the binned lepton transverse momentum acceptance values &
-   * returns interpolated values (given a transverse momentum cut to scale to).
-   * it also stores the effective squark mass & the pseudorapidity cut
-   * acceptance.
-   */
-  class leptonAcceptanceParameterSet : public readied_for_new_point,
-                                     effectiveSquarkMassHolder
-  {
-  public:
-    static double const defaultBinSize = 2.0;
-    static double const defaultTransverseMomentumCut = 10.0;
-
-    leptonAcceptanceCut( input_handler* const shortcut,
-                         leptonAcceptanceGrid const* acceptanceTable,
-                         CppSLHA::particle_property_set const* const scolored,
-                         colored_cascade const* const cascade )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    leptonAcceptanceCut( input_handler* const shortcut,
-                         leptonAcceptanceGrid const* acceptanceTable,
-                         CppSLHA::particle_property_set const* const scolored,
-                         colored_cascade const* const cascade,
-                         double const binSize,
-                         double const transverseMomentumCut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~leptonAcceptanceParameterSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    getEffectiveSquarkMass()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    acceptanceAt( double const givenEnergy,
-                  double const givenCut )
-    /* this checks to see if the acceptances need updating, then returns
-     * calculateAcceptanceAt( givenEnergy,
-     *                        givenCut ), which interpolates the values in
-     * acceptance_bins to the requested value, or returns
-     * pseudorapidityAcceptance if it's lower, scaled to the given value for
-     * the transverse momentum cut.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-    input_handler* const shortcut;
-    leptonAcceptanceGrid const* acceptanceTable;
-    CppSLHA::particle_property_set const* const scolored;
-    colored_cascade const* const cascade;
-    signed_particle_shortcut_pair lookupPair;
-    double const binSize;
-    // by default, the grids provide acceptances at 2 GeV spacings for the
-    // default cut on the lepton transverse momentum in the lab rest frame.
-    double const transverseMomentumCut;
-    // by default, the grids provide acceptances assuming a 10 GeV cut on the
-    // lepton transverse momentum in the lab rest frame.
-    double effectiveSquarkMass;
-    std::vector< double > acceptanceBins;
-    double pseudorapidityAcceptance;
-    // these are used by acceptanceAt():
-    double returnValue;
-    double binFraction;
-    int lowerBin;
-    // these are used by calculate():
-    int acceptanceCounter;
-    double currentAcceptance;
-
-    void
-    resetValues()
-    // this interpolates values from acceptanceTable to set up acceptanceBins
-    // for the given colored sparticle.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    calculateAcceptanceAt( double const givenEnergy,
-                           double const givenCut )
-    /* this interpolates the values in acceptanceBins to the requested value,
-     * or returns pseudorapidityAcceptance if it's lower, scaled to the given
-     * value for the transverse momentum cut.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-  };
-
-
-  // instances of this class are 1-shot objects that ask their leptonAcceptanceGrid
-  // to interpolate for their setup & then store the value for reference.
-  class jet_acceptance_value
-  {
-
-  public:
-
-    jet_acceptance_value( leptonAcceptanceGrid const* given_table,
-                          int const given_acceptance_column,
-                         signed_particle_shortcut_pair const* const given_pair,
-                         colored_cascade const* const given_first_sQCD_cascade,
-                       colored_cascade const* const given_second_sQCD_cascade )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~jet_acceptance_value()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    double
-    get_acceptance()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    bool
-    is_requested( int const given_acceptance_column,
-                  signed_particle_shortcut_pair const* const given_pair,
-                  colored_cascade const* const given_first_sQCD_cascade,
-                  colored_cascade const* const given_second_sQCD_cascade )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-
-  protected:
-
-    leptonAcceptanceGrid const* jet_table;
-    int const acceptance_column;
-    signed_particle_shortcut_pair const* const scolored_pair;
-    colored_cascade const* const first_sQCD_cascade;
-    colored_cascade const* const second_sQCD_cascade;
-    double stored_acceptance;
-    bool not_already_calculated;
-
-  };
-
-
-  // instances of this class are 1-shot objects that ask their leptonAcceptanceGrid
-  // to interpolate for their setup & then store the value for reference.
-  class lepton_acceptance_value
-  {
-
-  public:
-
-    lepton_acceptance_value( leptonAcceptanceGrid const* given_table,
-                         signed_particle_shortcut_pair const* const given_pair,
-                         colored_cascade const* const given_first_sQCD_cascade,
-                       colored_cascade const* const given_second_sQCD_cascade )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~lepton_acceptance_value()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    leptonAcceptanceParameterSet const*
-    get_acceptance()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    bool
-    is_requested( signed_particle_shortcut_pair const* const given_pair,
-                  colored_cascade const* const given_first_sQCD_cascade,
-                  colored_cascade const* const given_second_sQCD_cascade )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-  protected:
-
-    leptonAcceptanceGrid const* lepton_table;
-    signed_particle_shortcut_pair const* const scolored_pair;
-    colored_cascade const* const first_sQCD_cascade;
-    colored_cascade const* const second_sQCD_cascade;
-    leptonAcceptanceParameterSet stored_acceptance;
-    bool not_already_calculated;
-
-  };
-
-
-  // this class holds an leptonAcceptanceGrid with a string identifying the type of
-  // jet signal which the acceptances are for.
-  class jet_acceptance_table : public readied_for_new_point
-  {
-
-  public:
-
-    jet_acceptance_table( std::string const* const given_directory,
-                          std::string const* const given_name,
-                          input_handler const* const given_shortcuts )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~jet_acceptance_table()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     std::string const*
-    get_name()
+    getCutName()
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    double
+    getAcceptance( fullCascade const* const firstCascade,
+                   fullCascade const* const secondCascade )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    jet_acceptance_value*
-    get_acceptance( int const given_acceptance_column,
-                    signed_particle_shortcut_pair const* const given_pair,
-                    colored_cascade const* const given_first_sQCD_cascade,
-                    colored_cascade const* const given_second_sQCD_cascade )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
   protected:
-
-    std::string table_name;
-    leptonAcceptanceGrid acceptance_grids;
-    std::vector< jet_acceptance_value* > acceptances;
-
-  };
-
-  // this class holds an leptonAcceptanceGrid with an int identifying the LHC energy
-  // which the kinematics are for.
-  class lepton_acceptance_table : public readied_for_new_point
-  {
-
-  public:
-
-    lepton_acceptance_table( std::string const* const given_directory,
-                             int const given_LHC_energy_in_TeV,
-                             input_handler const* const given_shortcuts )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~lepton_acceptance_table()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
+    std::string const jetCutName;
+    int const acceptanceColumn;
+    input_handler const* const shortcut;
+    acceptanceGrid* gluinoGluinoGrid;
+    acceptanceGrid* squarkGluinoGrid;
+    acceptanceGrid* squarkAntisquarkGrid;
+    acceptanceGrid* squarkSquarkGrid;
+    acceptanceGrid* gridToUse;
+    // this is decided by the types of cascade given.
+    std::vector< std::vector< acceptanceGrid* >* > gridsMatrix;
+    double squarkMassForGrid;
+    double gluinoMassForGrid;
+    double lighterNeutralinoMassForGrid;
+    double heavierNeutralinoMassForGrid;
+    usedTypes firstCascadeType;
+    double firstCascadeSquarkMass;
+    usedTypes secondCascadeType;
+    double secondCascadeSquarkMass;
 
     int
-    get_energy()
-    const
+    getIntForCascadeType( fullCascade const* const givenCascade,
+                          double* const squarkMassFromCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    lepton_acceptance_value*
-    get_acceptance( signed_particle_shortcut_pair const* const given_pair,
-                    colored_cascade const* const given_first_sQCD_cascade,
-                    colored_cascade const* const given_second_sQCD_cascade )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-  protected:
-
-    int const LHC_energy_in_TeV;
-    leptonAcceptanceGrid acceptance_grids;
-    std::vector< lepton_acceptance_value* > acceptances;
-
   };
-
 
 
 
@@ -763,6 +298,13 @@ namespace LHC_FASER
 
 
   // inline functions:
+
+  inline std::string const*
+  jetAcceptanceTable::getCutName()
+  const
+  {
+    return &jetCutName;
+  }
 
   inline void
   acceptanceCutSet::becomeCopyOf( acceptanceCutSet* const copyPointer )
@@ -1248,4 +790,4 @@ namespace LHC_FASER
 
 }  // end of LHC_FASER namespace.
 
-#endif /* LHC_FASER_BASE_KINEMATICS_STUFF_HPP_ */
+#endif /* LHC_FASER_JET_KINEMATICS_STUFF_HPP_ */

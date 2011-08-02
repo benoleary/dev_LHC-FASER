@@ -68,7 +68,8 @@
  *
  * if the format of the grid files changes, a lot of the code here has to
  * change too. the following are format-dependent:
- * - all of the acceptanceGrid class
+ * - the acceptanceGrid class, in particular
+ *   -- acceptanceGrid::neutralinoIndependentValueAt
  */
 
 namespace LHC_FASER
@@ -242,6 +243,14 @@ namespace LHC_FASER
      * of the other cascade. the improvement is probably utterly negligible,
      * but I want to write this function anyway...
      */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    double
+    neutralinoIndependentValueAt( double const squarkMass,
+                                  double const gluinoMass,
+                                  int const acceptanceElement )
+    const
+    // this interpolates for acceptanceElement assuming that the neutralino
+    // masses are on the light-light grid point.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     int
     getNumberOfAcceptanceColumns()
@@ -476,46 +485,52 @@ namespace LHC_FASER
   acceptanceGrid::getNumberOfAcceptanceColumns()
   const
   {
-
     return acceptanceColumns;
-
   }
 
   inline double
   acceptanceGrid::getLowestSquarkMass()
   const
   {
-
     return lowestSquarkMass;
-
   }
 
   inline double
   acceptanceGrid::getHighestSquarkMass()
   const
   {
-
     return  highestSquarkMass;
-
   }
 
   inline double
   acceptanceGrid::getLowestGluinoMass()
   const
   {
-
     return  lowestGluinoMass;
-
   }
 
   inline double
   acceptanceGrid::getHighestGluinoMass()
   const
   {
-
     return  highestGluinoMass;
-
   }
+
+  inline double
+  acceptanceGrid::neutralinoIndependentValueAt( double const squarkMass,
+                                                double const gluinoMass,
+                                                int const acceptanceElement )
+  const
+  // this interpolates for acceptanceElement assuming that the neutralino
+  // masses are on the light-light grid point.
+  {
+    return vectorElementAt( squarkMass,
+                            gluinoMass,
+                            2,
+                            acceptanceElement );
+    // this is format-dependent, & corresponds to 2 being the index for
+    // light-light neutralinos in the grid.
+;  }
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_BASE_KINEMATICS_STUFF_HPP_ */
