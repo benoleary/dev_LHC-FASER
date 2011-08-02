@@ -65,9 +65,13 @@
  *
  * if the format of the grid files changes, a lot of the code here has to
  * change too. the following are format-dependent:
- * - all of the leptonAcceptanceParameterSet class
- * - all of the leptonAcceptanceGrid class, in particular
+ * - the leptonAcceptanceParameterSet class
+ * - the leptonAcceptanceGrid class, in particular
  *   -- leptonAcceptanceGrid::getValue()
+ * - the squarkBasedLeptonAcceptanceTable & gluinoBasedLeptonAcceptanceTable
+ *   classes, inparticular
+ *   -- squarkBasedLeptonAcceptanceTable::getValue
+ *   -- gluinoBasedLeptonAcceptanceTable::getValue
  */
 
 namespace LHC_FASER
@@ -101,7 +105,7 @@ namespace LHC_FASER
   {
   public:
     leptonAcceptanceGrid( std::string const* const gridFileLocation,
-                         input_handler const* const shortcut )
+                          input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~leptonAcceptanceGrid()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -196,7 +200,6 @@ namespace LHC_FASER
   public:
     gluinoBasedLeptonAcceptanceTable(
                                   leptonAcceptanceGrid const* const lookupGrid,
-                          CppSLHA::particle_property_set const* const scolored,
                                       input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
@@ -224,6 +227,9 @@ namespace LHC_FASER
                                               effectiveSquarkMassHolder
   {
   public:
+    static double const defaultBinSize = 2.0;
+    static double const defaultTransverseMomentumCut = 10.0;
+
     leptonAcceptanceParameterSet( input_handler* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                           CppSLHA::particle_property_set const* const scolored,
@@ -254,10 +260,12 @@ namespace LHC_FASER
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-  protected:
-    static double const defaultBinSize = 2.0;
-    static double const defaultTransverseMomentumCut = 10.0;
+    CppSLHA::particle_property_set const*
+    getEwino()
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+  protected:
     input_handler* const shortcut;
     leptonAcceptanceTable const* acceptanceTable;
     CppSLHA::particle_property_set const* const scolored;
@@ -296,48 +304,126 @@ namespace LHC_FASER
   };
 
 
-
-  /* this class does stuff!
-   */
-  class leptonAcceptanceTableSet
+  // this class holds all the leptonAcceptanceParameterSets for a given
+  // scolored at a given beam energy.
+  class leptonAcceptancesForOneScolored
   {
-
   public:
-
-    leptonAcceptanceTableSet( int const given_LHC_energy_in_TeV,
-                          std::string const* const given_grid_directory,
-                          std::string const* const given_jet_subdirectory,
-                          lepton_acceptance_table* const given_lepton_table,
-                          input_handler const* const given_shortcuts )
+    leptonAcceptancesForOneScolored( input_handler const* const shortcut,
+                          CppSLHA::particle_property_set const* const scolored,
+                                 leptonAcceptanceGrid const* acceptanceGrid,
+                                     double const binSize,
+                                     double const transverseMomentumCut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~leptonAcceptancesForOneScolored()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    ~leptonAcceptanceTableSet()
+    leptonAcceptanceParameterSet*
+    getParameterSet( CppSLHA::particle_property_set const* const ewino )
+    // this returns the leptonAcceptanceParameterSet for the requested
+    // electroweakino.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    kinematics_table*
-    get_table( int const given_acceptance_column )
-    // this returns the kinematics_table for the requested column.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    bool
-    is_requested( int const given_LHC_energy_in_TeV,
-                  std::string const* const given_jet_subdirectory )
+    CppSLHA::particle_property_set const*
+    getScolored()
+    const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-
     input_handler const* const shortcut;
+    CppSLHA::particle_property_set const* const scolored;
+    leptonAcceptanceTable const* acceptanceTable;
+    std::vector< leptonAcceptanceParameterSet* > parameterSets;
+    double const binSize;
+    // by default, the grids provide acceptances at 2 GeV spacings for the
+    // default cut on the lepton transverse momentum in the lab rest frame.
+    double const transverseMomentumCut;
+    // by default, the grids provide acceptances assuming a 10 GeV cut on the
+    // lepton transverse momentum in the lab rest frame.
+  };
 
-    int const LHC_energy_in_TeV;
-    std::string const grid_directory;
-    std::string jet_grid_subdirectory;
 
-    lepton_acceptance_table* lepton_table;
-    jet_acceptance_table* jet_table;
-    std::vector< kinematics_table* > kinematics_tables;
+  // this class holds all the leptonAcceptancesForOneScoloreds for a given
+  // beam energy.
+  class leptonAcceptancesForOneBeamEnergy
+  {
+  public:
+    leptonAcceptancesForOneBeamEnergy( input_handler const* const shortcut,
+                                       int const beamEnergy,
+                                  std::string const* const gridFileSetLocation,
+                                       double const binSize,
+                                       double const transverseMomentumCut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~leptonAcceptancesForOneBeamEnergy()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+    leptonAcceptancesForOneScolored*
+    getParameterSets( CppSLHA::particle_property_set const* const scolored )
+    // this returns the leptonAcceptancesForOneScolored for the requested
+    // colored sparticle.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    bool
+    isRequested( int const beamEnergy,
+                 double const binSize,
+                 double const transverseMomentumCut )
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    input_handler const* const shortcut;
+    int const beamEnergy;
+    leptonAcceptanceGrid acceptanceGrid;
+    std::vector< leptonAcceptancesForOneScolored* > acceptanceSets;
+    double const binSize;
+    // by default, the grids provide acceptances at 2 GeV spacings for the
+    // default cut on the lepton transverse momentum in the lab rest frame.
+    double const transverseMomentumCut;
+    // by default, the grids provide acceptances assuming a 10 GeV cut on the
+    // lepton transverse momentum in the lab rest frame.
+  };
+
+
+  // this class holds all the leptonAcceptancesForOneBeamEnergy & passes out
+  // pointers to requested leptonAcceptanceParameterSets.
+  class leptonAcceptanceHandler
+  {
+  public:
+    leptonAcceptanceHandler( input_handler const* const shortcut,
+                             std::string const* const gridFileSetLocation )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~leptonAcceptanceHandler()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    leptonAcceptanceParameterSet*
+    getLeptonAcceptanceParameterSet( int const beamEnergy,
+                          CppSLHA::particle_property_set const* const scolored,
+                             CppSLHA::particle_property_set const* const ewino,
+                                     double const binSize,
+                                     double const transverseMomentumCut )
+    // this looks to see if there is an existing leptonAcceptanceParameterSet
+    // with the requested values, & if not, makes 1, & returns the pointer.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    leptonAcceptanceParameterSet*
+    getLeptonAcceptanceParameterSet( int const beamEnergy,
+                          CppSLHA::particle_property_set const* const scolored,
+                            CppSLHA::particle_property_set const* const ewino )
+    // this calls getLeptonAcceptanceParameterSet with the default binSize &
+    // transverseMomentumCut.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    input_handler const* const shortcut;
+    std::string const gridFileSetLocation;
+    std::vector< leptonAcceptancesForOneBeamEnergy* > acceptanceTables;
+
+    leptonAcceptancesForOneBeamEnergy*
+    getleptonAcceptancesForOneBeamEnergy( int const beamEnergy,
+                                          double const binSize,
+                                          double const transverseMomentumCut )
+    /* this looks to see if there is an existing
+     * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
+     * makes 1, & returns the pointer.
+     */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
 
@@ -365,51 +451,6 @@ namespace LHC_FASER
 
     }
 
-  }
-
-
-
-  inline double
-  leptonAcceptanceParameterSet::getEffectiveSquarkMass()
-  {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: leptonAcceptanceParameterSet::getEffectiveSquarkMass()"
-    << " called.";
-    std::cout << std::endl;**/
-
-    if( needs_to_prepare_for_this_point() )
-    {
-      resetValues();
-    }
-    return effectiveSquarkMass;
-  }
-
-  inline double
-  leptonAcceptanceParameterSet::acceptanceAt( double const givenEnergy,
-                                     double const givenCut )
-  /* this checks to see if the acceptances need updating, then returns
-   * calculateAcceptanceAt( givenEnergy,
-   *                        givenCut ), which interpolates the values in
-   * acceptance_bins to the requested value, or returns
-   * pseudorapidityAcceptance if it's lower, scaled to the given value for
-   * the transverse momentum cut.
-   */
-  {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: leptonAcceptanceParameterSet::acceptanceAt( " << givenEnergy
-    << ", " << givenCut << " ) called.";
-    std::cout << std::endl;**/
-
-    if( needs_to_prepare_for_this_point() )
-    {
-      resetValues();
-    }
-    return calculateAcceptanceAt( givenEnergy,
-                                  givenCut );
   }
 
 
@@ -473,6 +514,123 @@ namespace LHC_FASER
                                          false,
                                          false );
     }
+  }
+
+
+
+  inline double
+  leptonAcceptanceParameterSet::getEffectiveSquarkMass()
+  {
+    // debugging:
+    /**std::cout
+    << std::endl
+    << "debugging: leptonAcceptanceParameterSet::getEffectiveSquarkMass()"
+    << " called.";
+    std::cout << std::endl;**/
+
+    if( needs_to_prepare_for_this_point() )
+    {
+      resetValues();
+    }
+    return effectiveSquarkMass;
+  }
+
+  inline double
+  leptonAcceptanceParameterSet::acceptanceAt( double const givenEnergy,
+                                     double const givenCut )
+  /* this checks to see if the acceptances need updating, then returns
+   * calculateAcceptanceAt( givenEnergy,
+   *                        givenCut ), which interpolates the values in
+   * acceptance_bins to the requested value, or returns
+   * pseudorapidityAcceptance if it's lower, scaled to the given value for
+   * the transverse momentum cut.
+   */
+  {
+    // debugging:
+    /**std::cout
+    << std::endl
+    << "debugging: leptonAcceptanceParameterSet::acceptanceAt( " << givenEnergy
+    << ", " << givenCut << " ) called.";
+    std::cout << std::endl;**/
+
+    if( needs_to_prepare_for_this_point() )
+    {
+      resetValues();
+    }
+    return calculateAcceptanceAt( givenEnergy,
+                                  givenCut );
+  }
+
+  inline CppSLHA::particle_property_set const*
+  leptonAcceptanceParameterSet::getEwino()
+  const
+  {
+    return ewino;
+  }
+
+
+
+  inline CppSLHA::particle_property_set const*
+  leptonAcceptancesForOneScolored::getScolored()
+  const
+  {
+    return scolored;
+  }
+
+
+
+  inline bool
+  leptonAcceptancesForOneBeamEnergy::isRequested( int const beamEnergy,
+               double const binSize,
+               double const transverseMomentumCut )
+  const
+  {
+    if( ( beamEnergy == this->beamEnergy )
+        &&
+        ( binSize == this->binSize )
+        &&
+        ( transverseMomentumCut == this->transverseMomentumCut ) )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+
+
+  inline leptonAcceptanceParameterSet*
+  leptonAcceptanceHandler::getLeptonAcceptanceParameterSet(
+                                                          int const beamEnergy,
+                          CppSLHA::particle_property_set const* const scolored,
+                             CppSLHA::particle_property_set const* const ewino,
+                                                          double const binSize,
+                                          double const transverseMomentumCut )
+  // this looks to see if there is an existing leptonAcceptanceParameterSet
+  // with the requested values, & if not, makes 1, & returns the pointer.
+  {
+    return getleptonAcceptancesForOneBeamEnergy( beamEnergy,
+                                                 binSize,
+                                                 transverseMomentumCut
+                                                  )->getParameterSets( scolored
+                                                   )->getParameterSet( ewino );
+  }
+
+  inline leptonAcceptanceParameterSet*
+  leptonAcceptanceHandler::getLeptonAcceptanceParameterSet(
+                                                          int const beamEnergy,
+                           CppSLHA::particle_property_set const* const scolored,
+                          CppSLHA::particle_property_set const* const ewino )
+  // this calls getLeptonAcceptanceParameterSet with the default binSize &
+  // transverseMomentumCut.
+  {
+    return getLeptonAcceptanceParameterSet( beamEnergy,
+                                            scolored,
+                                            ewino,
+                                  leptonAcceptanceParameterSet::defaultBinSize,
+                  leptonAcceptanceParameterSet::defaultTransverseMomentumCut );
   }
 }  // end of LHC_FASER namespace.
 

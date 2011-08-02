@@ -142,7 +142,7 @@ namespace LHC_FASER
     std::cout << std::endl;**/
 
     double appropriateGluinoMass = shortcut->get_gluino()->get_absolute_mass();
-    double appropriateSquarkMass = squark->get_absolute_mass();
+    double appropriateSquarkMass = shortcut->get_average_squarks4_mass();
     if( appropriateGluinoMass > appropriateSquarkMass )
     {
       appropriateSquarkMass = appropriateGluinoMass;
@@ -194,57 +194,53 @@ namespace LHC_FASER
 
 
 
-  leptonAcceptanceParameterSet::leptonAcceptanceCut( input_handler* const shortcut,
-                                   leptonAcceptanceGrid const* acceptanceTable,
+  leptonAcceptanceParameterSet::leptonAcceptanceParameterSet(
+                                                 input_handler* const shortcut,
+                                  leptonAcceptanceTable const* acceptanceTable,
                           CppSLHA::particle_property_set const* const scolored,
-                                       colored_cascade const* const cascade ) :
+                          CppSLHA::particle_property_set const* const ewino ) :
     readied_for_new_point( shortcut->get_readier() ),
     effectiveSquarkMassHolder(),
     shortcut( shortcut ),
     acceptanceTable( acceptanceTable ),
     scolored( scolored ),
-    lookupPair( scolored,
-                true,
-                scolored,
-                false ),
-    cascade( cascade ),
+    ewino( ewino ),
     binSize( defaultBinSize ),
     transverseMomentumCut( defaultTransverseMomentumCut ),
-    effectiveSquarkMass( 0.0 ),
-    pseudorapidityAcceptance( 0.0 )
+    effectiveSquarkMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    pseudorapidityAcceptance( CppSLHA::CppSLHA_global::really_wrong_value )
   {
-    acceptanceBins.push_back( 0.0 );
+    acceptanceBins.push_back( CppSLHA::CppSLHA_global::really_wrong_value );
     // this is to ensure that there is at least 1 entry for the transverse
     // momentum cut.
   }
 
-  leptonAcceptanceParameterSet::leptonAcceptanceCut( input_handler* const shortcut,
-                                         leptonAcceptanceGrid const* acceptanceTable,
+  leptonAcceptanceParameterSet::leptonAcceptanceParameterSet(
+                                                 input_handler* const shortcut,
+                                  leptonAcceptanceTable const* acceptanceTable,
                           CppSLHA::particle_property_set const* const scolored,
-                                          colored_cascade const* const cascade,
-                                            double const binSize,
+                             CppSLHA::particle_property_set const* const ewino,
+                                                          double const binSize,
                                          double const transverseMomentumCut ) :
     readied_for_new_point( shortcut->get_readier() ),
     effectiveSquarkMassHolder(),
     shortcut( shortcut ),
     acceptanceTable( acceptanceTable ),
     scolored( scolored ),
-    cascade( cascade ),
+    ewino( ewino ),
     binSize( binSize ),
     transverseMomentumCut( transverseMomentumCut ),
-    effectiveSquarkMass( 0.0 ),
-    pseudorapidityAcceptance( 0.0 )
+    effectiveSquarkMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    pseudorapidityAcceptance( CppSLHA::CppSLHA_global::really_wrong_value )
   {
-    acceptanceBins.push_back( 0.0 );
+    acceptanceBins.push_back( CppSLHA::CppSLHA_global::really_wrong_value );
     // this is to ensure that there is at least 1 entry for the transverse
     // momentum cut.
   }
 
   leptonAcceptanceParameterSet::~leptonAcceptanceParameterSet()
   {
-
     // does nothing.
-
   }
 
 
@@ -400,378 +396,201 @@ namespace LHC_FASER
 
 
 
-  lepton_acceptance_table::lepton_acceptance_table(
-                                      std::string const* const given_directory,
-                                             int const given_LHC_energy_in_TeV,
-                                 input_handler const* const given_shortcuts ) :
-    readied_for_new_point( given_shortcuts->get_readier() ),
-    LHC_energy_in_TeV( given_LHC_energy_in_TeV ),
-    acceptance_grids( given_directory,
-                      given_shortcuts )
+
+  leptonAcceptancesForOneScolored::leptonAcceptancesForOneScolored(
+                                           input_handler const* const shortcut,
+                          CppSLHA::particle_property_set const* const scolored,
+                                    leptonAcceptanceGrid const* acceptanceGrid,
+                                                          double const binSize,
+                                         double const transverseMomentumCut ) :
+    shortcut( shortcut ),
+    scolored( scolored ),
+    binSize( binSize ),
+    transverseMomentumCut( transverseMomentumCut )
+  {
+    if( CppSLHA::PDG_code::gluino == scolored->get_PDG_code() )
+    {
+      acceptanceTable = new gluinoBasedLeptonAcceptanceTable( acceptanceGrid,
+                                                              shortcut );
+    }
+    else
+    {
+      acceptanceTable = new squarkBasedLeptonAcceptanceTable( acceptanceGrid,
+                                                              scolored,
+                                                              shortcut );
+    }
+  }
+
+  leptonAcceptancesForOneScolored::~leptonAcceptancesForOneScolored()
+  {
+    for( std::vector< leptonAcceptanceParameterSet* >::iterator
+         deletionIterator = parameterSets->begin();
+         parameterSets->end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+  }
+
+  leptonAcceptanceParameterSet*
+  leptonAcceptancesForOneScolored::getParameterSet(
+                            CppSLHA::particle_property_set const* const ewino )
+  // this returns the leptonAcceptanceParameterSet for the requested
+  // electroweakino.
+  {
+    leptonAcceptanceParameterSet* returnPointer( NULL );
+    // we look to see if we already have a leptonAcceptanceParameterSet for
+    // this electroweakino:
+    for( std::vector< leptonAcceptanceParameterSet* >::iterator
+         searchIterator = parameterSets->begin();
+         parameterSets->end() > searchIterator;
+         ++searchIterator )
+    {
+      if( ewino == (*searchIterator)->getEwino() )
+      {
+        returnPointer = *searchIterator;
+        searchIterator = parameterSets->end();
+      }
+    }
+    if( NULL == returnPointer )
+      // if we do not already have a leptonAcceptanceParameterSet for this
+      // electroweakino, we make a new instance:
+    {
+      returnPointer = new leptonAcceptanceParameterSet( shortcut,
+                                                        acceptanceTable,
+                                                        scolored,
+                                                        ewino,
+                                                        binSize,
+                                                       transverseMomentumCut );
+      parameterSets.push_back( returnPointer );
+    }
+    return returnPointer;
+  }
+
+
+  leptonAcceptancesForOneBeamEnergy::leptonAcceptancesForOneBeamEnergy(
+                                           input_handler const* const shortcut,
+                                                          int const beamEnergy,
+                                  std::string const* const gridFileSetLocation,
+                                                          double const binSize,
+                                         double const transverseMomentumCut ) :
+    shortcut( shortcut ),
+    beamEnergy( beamEnergy ),
+    binSize( binSize ),
+    transverseMomentumCut( transverseMomentumCut )
+  {
+    std::string gridFileLocation( *gridFileSetLocation );
+    std::stringstream energyStream( "" );
+    energyStream << "/" << beamEnergy << "TeV";
+    gridFileLocation.append( energyStream.str() );
+    acceptanceGrid = new leptonAcceptanceGrid( &gridFileLocation,
+                                               shortcut );
+  }
+
+  leptonAcceptancesForOneBeamEnergy::~leptonAcceptancesForOneBeamEnergy()
+  {
+    for( std::vector< leptonAcceptancesForOneScolored* >::iterator
+         deletionIterator = acceptanceSets->begin();
+         acceptanceSets->end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+    delete acceptanceGrid;
+  }
+
+  leptonAcceptancesForOneScolored*
+  leptonAcceptancesForOneBeamEnergy::getParameterSets(
+                         CppSLHA::particle_property_set const* const scolored )
+  // this returns the leptonAcceptancesForOneScolored for the requested
+  // colored sparticle.
+  {
+    leptonAcceptancesForOneScolored* returnPointer( NULL );
+    // we look to see if we already have a leptonAcceptancesForOneScolored for
+    // this colored sparticle:
+    for( std::vector< leptonAcceptancesForOneScolored* >::iterator
+         searchIterator = acceptanceSets->begin();
+         acceptanceSets->end() > searchIterator;
+         ++searchIterator )
+    {
+      if( scolored == (*searchIterator)->getScolored() )
+      {
+        returnPointer = *searchIterator;
+        searchIterator = acceptanceSets->end();
+      }
+    }
+    if( NULL == returnPointer )
+      // if we do not already have a leptonAcceptanceParameterSet for this
+      // electroweakino, we make a new instance:
+    {
+      returnPointer = new leptonAcceptancesForOneScolored( shortcut,
+                                                           scolored,
+                                                           acceptanceGrid,
+                                                           binSize,
+                                                       transverseMomentumCut );
+      acceptanceSets.push_back( returnPointer );
+    }
+    return returnPointer;
+  }
+
+
+
+  leptonAcceptanceHandler::leptonAcceptanceHandler(
+                                           input_handler const* const shortcut,
+                               std::string const* const gridFileSetLocation ) :
+    shortcut( shortcut ),
+    gridFileSetLocation( *gridFileSetLocation )
   {
     // just an initialization list.
   }
 
-  lepton_acceptance_table::~lepton_acceptance_table()
+  leptonAcceptanceHandler::~leptonAcceptanceHandler()
   {
-
-    for( std::vector< lepton_acceptance_value* >::iterator
-         deletion_iterator = acceptances.begin();
-         acceptances.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-        delete *deletion_iterator;
-      }
-
+    for( std::vector< leptonAcceptancesForOneBeamEnergy* >::iterator
+         deletionIterator = acceptanceTables->begin();
+         acceptanceTables->end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
   }
 
-
-  lepton_acceptance_value*
-  lepton_acceptance_table::get_acceptance(
-                         signed_particle_shortcut_pair const* const given_pair,
-                         colored_cascade const* const given_first_sQCD_cascade,
-                       colored_cascade const* const given_second_sQCD_cascade )
+  leptonAcceptancesForOneBeamEnergy*
+  leptonAcceptanceHandler::getleptonAcceptancesForOneBeamEnergy(
+                                                          int const beamEnergy,
+                                                          double const binSize,
+                                           double const transverseMomentumCut )
+  // this returns the leptonAcceptancesForOneBeamEnergy for the requested
+  // values.
   {
-
-    if( needs_to_prepare_for_this_point() )
+    leptonAcceptancesForOneBeamEnergy* returnPointer( NULL );
+    // we look to see if we already have a leptonAcceptancesForOneBeamEnergy
+    // for these values:
+    for( std::vector< leptonAcceptancesForOneBeamEnergy* >::iterator
+         searchIterator = acceptanceTables->begin();
+         acceptanceTables->end() > searchIterator;
+         ++searchIterator )
+    {
+      if( scolored == (*searchIterator)->isRequested( beamEnergy,
+                                                      binSize,
+                                                      transverseMomentumCut ) )
       {
-
-        for( std::vector< lepton_acceptance_value* >::iterator
-             deletion_iterator = acceptances.begin();
-             acceptances.end() > deletion_iterator;
-             ++deletion_iterator )
-          {
-
-            delete *deletion_iterator;
-
-          }
-
-        acceptances.clear();
-        finish_preparing_for_this_point();
-
+        returnPointer = *searchIterator;
+        searchIterator = acceptanceTables->end();
       }
-
-    lepton_acceptance_value* return_pointer = NULL;
-
-    for( std::vector< lepton_acceptance_value* >::iterator
-         value_iterator = acceptances.begin();
-         acceptances.end() > value_iterator;
-         ++value_iterator )
-      {
-
-        if( (*value_iterator)->is_requested( given_pair,
-                                             given_first_sQCD_cascade,
-                                             given_second_sQCD_cascade ) )
-          {
-
-            return_pointer = *value_iterator;
-            value_iterator = acceptances.end();
-
-          }
-
-      }
-
-    if( NULL == return_pointer )
-      {
-
-        return_pointer = new lepton_acceptance_value( &acceptance_grids,
-                                                      given_pair,
-                                                      given_first_sQCD_cascade,
-                                                   given_second_sQCD_cascade );
-
-        acceptances.push_back( return_pointer );
-
-      }
-
-    return return_pointer;
-
-  }
-
-
-
-  kinematics_table::kinematics_table(
-                                  jet_acceptance_table* const given_jets_table,
-                                      int const given_jet_acceptance_column,
-                         lepton_acceptance_table* const given_leptons_table ) :
-    jets_table( given_jets_table ),
-    jet_acceptance_column( given_jet_acceptance_column ),
-    leptons_table( given_leptons_table )
-  {
-
-    // just an initialization list.
-
-  }
-
-  kinematics_table::~kinematics_table()
-  {
-
-    // does nothing.
-
-  }
-
-
-
-  kinematics_table_set::kinematics_table_set(
-                                             int const given_LHC_energy_in_TeV,
-                                 std::string const* const given_grid_directory,
-                               std::string const* const given_jet_subdirectory,
-                             lepton_acceptance_table* const given_lepton_table,
-                                 input_handler const* const given_shortcuts ) :
-    LHC_energy_in_TeV( given_LHC_energy_in_TeV ),
-    grid_directory( *given_grid_directory ),
-    jet_grid_subdirectory( *given_grid_directory ),
-    lepton_table( given_lepton_table ),
-    shortcut( given_shortcuts )
-  {
-
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: kinematics_table_set::kinematics_table_set( "
-    << given_LHC_energy_in_TeV << ", " << *given_grid_directory
-    << ", " << *given_jet_subdirectory << ", " << given_lepton_table << ", "
-    << given_shortcuts << ") about to make a new jet_acceptance_table( "
-    << energy_name << ", " << *given_grid_directory << ", "
-    << given_shortcuts << " )";
-    std::cout << std::endl;**/
-    jet_grid_subdirectory.append( "/jets/" );
-    jet_grid_subdirectory.append( *given_jet_subdirectory );
-    jet_table = new jet_acceptance_table( &jet_grid_subdirectory,
-                                          given_grid_directory,
-                                          given_shortcuts );
-    jet_grid_subdirectory.assign( *given_jet_subdirectory );
-    // we set jet_grid_subdirectory back to *given_jet_subdirectory for later
-    // comparisons.
-
-  }
-
-  kinematics_table_set::~kinematics_table_set()
-  {
-
-    for( std::vector< kinematics_table* >::iterator
-         deletion_iterator = kinematics_tables.begin();
-         kinematics_tables.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
-    delete jet_table;
-
-  }
-
-
-  kinematics_table*
-  kinematics_table_set::get_table( int const given_acceptance_column )
-  // this returns the kinematics_table for the requested setup.
-  {
-
-    kinematics_table* return_pointer = NULL;
-    // this starts as NULL so that we know if it wasn't found among the
-    // existing instances.
-
-    for( std::vector< kinematics_table* >::iterator
-         table_iterator = kinematics_tables.begin();
-         kinematics_tables.end() > table_iterator;
-         ++table_iterator )
-      {
-
-        if( given_acceptance_column == (*table_iterator)->get_column() )
-          // if we find the requested column...
-          {
-
-            return_pointer = *table_iterator;
-            // note the table to return.
-            table_iterator = kinematics_tables.end();
-            // stop looking.
-
-          }
-
-      }
-
-    if( NULL == return_pointer )
-      // if we didn't find an existing match, we make a new instance, store
-      // it & return a pointer to it:
-      {
-
-        return_pointer = new kinematics_table( jet_table,
-                                               given_acceptance_column,
-                                               lepton_table );
-
-        kinematics_tables.push_back( return_pointer );
-
-      }
-
-    return return_pointer;
-
-  }
-
-
-
-  kinematics_handler::kinematics_handler(
-                                 input_handler const* const given_shortcuts ) :
-    shortcut( given_shortcuts )
-  {
-
-    // just an initialization list
-
-  }
-
-  kinematics_handler::~kinematics_handler()
-  {
-
-    for( std::vector< kinematics_table_set* >::iterator
-         deletion_iterator = table_sets.begin();
-         table_sets.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
-    for( std::vector< lepton_acceptance_table* >::iterator
-         deletion_iterator = lepton_tables.begin();
-         lepton_tables.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
-  }
-
-
-  lepton_acceptance_table*
-  kinematics_handler::get_lepton_acceptance_table(
-                                                  int const LHC_energy_in_TeV )
-  {
-
-    // we have to check to see if the lepton_acceptance_table already exists:
-    lepton_acceptance_table* return_pointer = NULL;
-    for( std::vector< lepton_acceptance_table* >::iterator
-         lepton_iterator = lepton_tables.begin();
-         lepton_tables.end() > lepton_iterator;
-         ++lepton_iterator )
-      {
-
-        if( LHC_energy_in_TeV == (*lepton_iterator)->get_energy() )
-          {
-
-            return_pointer = *lepton_iterator;
-            lepton_iterator = lepton_tables.end();
-
-          }
-
-      }
-    if( NULL == return_pointer )
-      {
-
-        std::string
-        lepton_grids( *(shortcut->inspect_path_to_kinematics_grids()) );
-        std::stringstream energy_stream( "" );
-        energy_stream << "/" << LHC_energy_in_TeV << "TeV";
-        lepton_grids.append( energy_stream.str() );
-        lepton_grids.append( "/leptons/" );
-
-        return_pointer = new lepton_acceptance_table( &lepton_grids,
-                                                      LHC_energy_in_TeV,
-                                                      shortcut );
-
-        lepton_tables.push_back( return_pointer );
-
-      }
-
-    return return_pointer;
-
-  }
-
-
-  kinematics_table_set*
-  kinematics_handler::get_table_set( int const LHC_energy_in_TeV,
-                              std::string const* const given_jet_subdirectory )
-  {
-
-    kinematics_table_set* return_pointer = NULL;
-    // this starts as NULL so that we know if it wasn't found among the
-    // existing instances.
-
-    for( std::vector< kinematics_table_set* >::iterator
-         set_iterator = table_sets.begin();
-         table_sets.end() > set_iterator;
-         ++set_iterator )
-      {
-
-        if( (*set_iterator)->is_requested( LHC_energy_in_TeV,
-                                           given_jet_subdirectory ) )
-          {
-
-            return_pointer = *set_iterator;
-            set_iterator = table_sets.end();
-            // stop looking.
-
-          }
-
-      }
-
-    if( NULL == return_pointer )
-      // if we didn't find an existing match, we make a new instance, store
-      // it & return a pointer to it:
-      {
-
-        std::string
-        energy_name( *(shortcut->inspect_path_to_kinematics_grids()) );
-        std::stringstream energy_stream( "" );
-        energy_stream << "/" << LHC_energy_in_TeV << "TeV";
-        energy_name.append( energy_stream.str() );
-
-        // we have to check to see if the lepton_acceptance_table already
-        // exists:
-        lepton_acceptance_table* lepton_pointer = NULL;
-        for( std::vector< lepton_acceptance_table* >::iterator
-             lepton_iterator = lepton_tables.begin();
-             lepton_tables.end() > lepton_iterator;
-             ++lepton_iterator )
-          {
-
-            if( LHC_energy_in_TeV == (*lepton_iterator)->get_energy() )
-              {
-
-                lepton_pointer = *lepton_iterator;
-                lepton_iterator = lepton_tables.end();
-
-              }
-
-          }
-        if( NULL == lepton_pointer )
-          {
-
-            std::string lepton_grids( energy_name );
-            lepton_grids.append( "/leptons/" );
-
-            lepton_pointer = new lepton_acceptance_table( &lepton_grids,
-                                                          LHC_energy_in_TeV,
-                                                          shortcut );
-
-            lepton_tables.push_back( lepton_pointer );
-
-          }
-
-        return_pointer = new kinematics_table_set( LHC_energy_in_TeV,
-                                                   &energy_name,
-                                                   given_jet_subdirectory,
-                                                   lepton_pointer,
-                                                   shortcut );
-
-        table_sets.push_back( return_pointer );
-
-      }
-
-    return return_pointer;
-
+    }
+    if( NULL == returnPointer )
+      // if we do not already have a leptonAcceptanceParameterSet for this
+      // electroweakino, we make a new instance:
+    {
+      returnPointer = new leptonAcceptancesForOneBeamEnergy( shortcut,
+                                                             beamEnergy,
+                                                          &gridFileSetLocation,
+                                                             binSize,
+                                                       transverseMomentumCut );
+      acceptanceTables.push_back( returnPointer );
+    }
+    return returnPointer;
   }
 
 }  // end of LHC_FASER namespace.
