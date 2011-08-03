@@ -1173,8 +1173,8 @@ namespace LHC_FASER
   {
 
     double
-    twice_square_of_weak_cosine = ( 2.0 * given_shortcuts->get_weak_cosine()
-                                        * given_shortcuts->get_weak_cosine() );
+    twice_square_of_weak_cosine = ( 2.0 * given_shortcuts->getWeakCosine()
+                                        * given_shortcuts->getWeakCosine() );
     negative_tau_left_handedness
     = ( ( 1 - 2.0 * twice_square_of_weak_cosine
           + twice_square_of_weak_cosine * twice_square_of_weak_cosine )

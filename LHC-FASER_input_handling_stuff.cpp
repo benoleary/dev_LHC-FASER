@@ -209,11 +209,14 @@ namespace LHC_FASER
   {
 
     update_dependent_input_values
-    = new update_dependent_inputs( given_CppSLHA_pointer->inspect_BLOCK(
+    = new updateDependentGaugeInputs( given_CppSLHA_pointer->inspect_BLOCK(
                                                                   "SMINPUTS" ),
                                    W_plus_pointer,
                                    Z_pointer,
                                    given_readier );
+
+    updatedDependentMasses = new updateDependentAbsoluteMasses( gluino_pointer,
+                                                               given_readier );
 
     // the default cross-sections are those generated with the MSTW2008 PDF
     // set, & the default kinematics grids are those from PYTHIA 8.0:

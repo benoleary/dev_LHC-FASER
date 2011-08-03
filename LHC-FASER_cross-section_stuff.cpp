@@ -494,15 +494,13 @@ namespace LHC_FASER
           << " instead.";
           std::cout << std::endl;
         }
-        if( shortcut->get_gluino()->get_absolute_mass()
-            < lookupTable->getLowestY() )
+        if( shortcut->getGluinoMass() < lookupTable->getLowestY() )
         {
           std::cout
           << std::endl
           << "LHC-FASER::warning! cross-section requested for a gluino"
-          << " mass ( " << shortcut->get_gluino()->get_absolute_mass()
-          << " ) lower than the lowest gluino mass of the lookup table"
-          << " ( ";
+          << " mass ( " << shortcut->getGluinoMass()
+          << " ) lower than the lowest gluino mass of the lookup table ( ";
           storedValue = lookupTable->valueAt( squarkMassToUse,
                                               lookupTable->getLowestY() );
           std::cout
@@ -510,15 +508,13 @@ namespace LHC_FASER
           << " ); using this lowest mass instead.";
           std::cout << std::endl;
         }
-        else if( shortcut->get_gluino()->get_absolute_mass()
-                 > lookupTable->getHighestY() )
+        else if( shortcut->getGluinoMass() > lookupTable->getHighestY() )
         {
           std::cout
           << std::endl
           << "LHC-FASER::warning! cross-section requested for a gluino"
-          << " mass ( " << shortcut->get_gluino()->get_absolute_mass()
-          << " ) lower than the highest gluino mass of the lookup table"
-          << " ( ";
+          << " mass ( " << shortcut->getGluinoMass()
+          << " ) lower than the highest gluino mass of the lookup table ( ";
           storedValue = lookupTable->valueAt( squarkMassToUse,
                                               lookupTable->getHighestY() );
           std::cout
@@ -529,7 +525,7 @@ namespace LHC_FASER
         else
         {
           storedValue = lookupTable->valueAt( squarkMassToUse,
-                                 shortcut->get_gluino()->get_absolute_mass() );
+                                              shortcut->getGluinoMass() );
         }
         storedValue *= flavorFactor;
       }

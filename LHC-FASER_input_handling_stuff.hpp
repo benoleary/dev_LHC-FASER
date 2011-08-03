@@ -68,171 +68,128 @@ namespace LHC_FASER
    * every new point. it is kept separate from the input_handler class for ease
    * of (abusing) const correctness.
    */
-  class update_dependent_inputs : public readied_for_new_point
+  class updateDependentGaugeInputs : public readied_for_new_point
   {
-
   public:
-
-    update_dependent_inputs( CppSLHA::SLHA_BLOCK const* given_SM_inputs,
-              CppSLHA::particle_property_set const* const given_W_plus_pointer,
-                   CppSLHA::particle_property_set const* const given_Z_pointer,
-                             readier_for_new_point* const given_readier ) :
-      readied_for_new_point( given_readier ),
-      SM_inputs( given_SM_inputs ),
-      W_plus_pointer( given_W_plus_pointer ),
-      Z_pointer( given_Z_pointer )
+    updateDependentGaugeInputs( CppSLHA::SLHA_BLOCK const* smInputs,
+                      CppSLHA::particle_property_set const* const wPlusPointer,
+                          CppSLHA::particle_property_set const* const zPointer,
+                                readier_for_new_point* const readier ) :
+      readied_for_new_point( readier ),
+      smInputs( smInputs ),
+      wPlusPointer( wPlusPointer ),
+      zPointer( zPointer )
     {
-
       // just an initialization list.
-
     }
 
-    ~update_dependent_inputs()
+    ~updateDependentGaugeInputs()
     {
-
       // does nothing.
-
     }
 
 
     inline double
     get_electromagnetic_coupling()
     {
-
       if( needs_to_prepare_for_this_point() )
         {
-
-          calculate_gauge_couplings();
+          calculateGaugeCouplings();
           finish_preparing_for_this_point();
-
         }
-
-      return electromagnetic_coupling;
-
+      return electromagneticCoupling;
     }
 
     inline double
-    get_g_one()
+    getGOne()
     {
-
       if( needs_to_prepare_for_this_point() )
         {
-
-          calculate_gauge_couplings();
+          calculateGaugeCouplings();
           finish_preparing_for_this_point();
-
         }
-
-      return g_one;
-
+      return gOne;
     }
 
     inline double
-    get_g_two()
+    getGTwo()
     {
-
       if( needs_to_prepare_for_this_point() )
         {
-
-          calculate_gauge_couplings();
+          calculateGaugeCouplings();
           finish_preparing_for_this_point();
-
         }
-
-      return g_two;
-
+      return gTwo;
     }
 
     inline double
-    get_g_three()
+    getGThree()
     {
-
       if( needs_to_prepare_for_this_point() )
         {
-
-          calculate_gauge_couplings();
+          calculateGaugeCouplings();
           finish_preparing_for_this_point();
-
         }
-
-      return g_three;
-
+      return gThree;
     }
 
     inline double
-    get_weak_sine()
+    getWeakSine()
     {
-
       if( needs_to_prepare_for_this_point() )
         {
-
-          calculate_gauge_couplings();
+          calculateGaugeCouplings();
           finish_preparing_for_this_point();
-
         }
-
-      return weak_sine;
-
+      return weakSine;
     }
 
     inline double
-    get_weak_cosine()
+    getWeakCosine()
     {
-
       if( needs_to_prepare_for_this_point() )
         {
-
-          calculate_gauge_couplings();
+          calculateGaugeCouplings();
           finish_preparing_for_this_point();
-
         }
-
-      return weak_cosine;
-
+      return weakCosine;
     }
-
 
 
   protected:
-
-    CppSLHA::SLHA_BLOCK const* SM_inputs;
-    CppSLHA::particle_property_set const* const W_plus_pointer;
-    CppSLHA::particle_property_set const* const Z_pointer;
-
+    CppSLHA::SLHA_BLOCK const* smInputs;
+    CppSLHA::particle_property_set const* const wPlusPointer;
+    CppSLHA::particle_property_set const* const zPointer;
     // the gauge couplings:
-    double electromagnetic_coupling;
-    double g_one;
+    double electromagneticCoupling;
+    double gOne;
     // the gauge coupling for U(1) at m_Z.
-    double g_two;
+    double gTwo;
     // the gauge coupling for SU(2) at m_Z.
-    double g_three;
+    double gThree;
     // the gauge coupling for SU(3) at m_Z.
-    double weak_sine;
+    double weakSine;
     // the sine of the weak mixing angle.
-    double weak_cosine;
+    double weakCosine;
     // the cosine of the weak mixing angle.
 
     inline void
-    calculate_gauge_couplings()
+    calculateGaugeCouplings()
     {
-
       // we work out the gauge couplings from the SMINPUTS BLOCK:
       if( NULL != SM_inputs )
         {
-
-          electromagnetic_coupling
-          = sqrt( ( ( 4.0 * M_PI ) / SM_inputs->get_entry( 1 ) ) );
-          weak_cosine = ( W_plus_pointer->get_absolute_mass()
-                          / Z_pointer->get_absolute_mass() );
-          weak_sine = sqrt( ( 1.0 - weak_cosine * weak_cosine ) );
-          g_one = ( electromagnetic_coupling / weak_cosine );
-          g_two = ( electromagnetic_coupling / weak_sine );
-          g_three = sqrt( ( 4.0 * M_PI * SM_inputs->get_entry( 3 ) ) );
-
+          electromagneticCoupling
+          = sqrt( ( ( 4.0 * M_PI ) / smInputs->get_entry( 1 ) ) );
+          weakCosine = ( wPlusPointer->get_absolute_mass()
+                          / zPointer->get_absolute_mass() );
+          weakSine = sqrt( ( 1.0 - weakCosine * weakCosine ) );
+          gOne = ( electromagneticCoupling / weakCosine );
+          gTwo = ( electromagneticCoupling / weakSine );
+          gThree = sqrt( ( 4.0 * M_PI * smInputs->get_entry( 3 ) ) );
         }
       else
         {
-
           std::cout
           << std::endl
           << "LHC-FASER::warning! input_handler::input_handler() did not"
@@ -240,18 +197,53 @@ namespace LHC_FASER
           << CppSLHA::CppSLHA_global::really_wrong_value_string;
           std::cout << std::endl;
 
-          electromagnetic_coupling
+          electromagneticCoupling
           = CppSLHA::CppSLHA_global::really_wrong_value;
-          weak_sine = CppSLHA::CppSLHA_global::really_wrong_value;
-          weak_cosine = CppSLHA::CppSLHA_global::really_wrong_value;
-          g_one = CppSLHA::CppSLHA_global::really_wrong_value;
-          g_two = CppSLHA::CppSLHA_global::really_wrong_value;
-          g_three = CppSLHA::CppSLHA_global::really_wrong_value;
-
+          weakSine = CppSLHA::CppSLHA_global::really_wrong_value;
+          weakCosine = CppSLHA::CppSLHA_global::really_wrong_value;
+          gOne = CppSLHA::CppSLHA_global::really_wrong_value;
+          gTwo = CppSLHA::CppSLHA_global::really_wrong_value;
+          gThree = CppSLHA::CppSLHA_global::really_wrong_value;
         }
+    }
+  };
 
+
+  /* this class is to hold commonly-accessed absolute masses which are
+   * re-calculated for every new point. it is kept separate from the
+   * input_handler class for ease of (abusing) const correctness.
+   */
+  class updateDependentAbsoluteMasses : public readied_for_new_point
+  {
+  public:
+    updateDependentAbsoluteMasses(
+                     CppSLHA::particle_property_set const* const gluinoPointer,
+                                   readier_for_new_point* const readier ) :
+      readied_for_new_point( readier ),
+      gluinoPointer( gluinoPointer )
+    {
+      // just an initialization list.
     }
 
+    ~updateDependentAbsoluteMasses()
+    {
+      // does nothing.
+    }
+
+    inline double
+    getGluinoMass()
+    {
+      if( needs_to_prepare_for_this_point() )
+        {
+          gluinoMass = gluinoPointer->get_absolute_mass();
+          finish_preparing_for_this_point();
+        }
+      return gluinoMass;
+    }
+
+  protected:
+    CppSLHA::particle_property_set const* const gluinoPointer;
+    double gluinoMass;
   };
 
 
@@ -397,7 +389,7 @@ namespace LHC_FASER
     const
     {
 
-      return update_dependent_input_values->get_g_one();
+      return update_dependent_input_values->getGOne();
 
     }
 
@@ -406,7 +398,7 @@ namespace LHC_FASER
     const
     {
 
-      return update_dependent_input_values->get_g_two();
+      return update_dependent_input_values->getGTwo();
 
     }
 
@@ -415,7 +407,7 @@ namespace LHC_FASER
     const
     {
 
-      return update_dependent_input_values->get_g_three();
+      return update_dependent_input_values->getGThree();
 
     }
 
@@ -424,7 +416,7 @@ namespace LHC_FASER
     const
     {
 
-      return update_dependent_input_values->get_weak_sine();
+      return update_dependent_input_values->getWeakSine();
 
     }
 
@@ -433,7 +425,7 @@ namespace LHC_FASER
     const
     {
 
-      return update_dependent_input_values->get_weak_cosine();
+      return update_dependent_input_values->getWeakCosine();
 
     }
 
@@ -635,6 +627,13 @@ namespace LHC_FASER
 
       return gluino_pointer;
 
+    }
+
+    inline double
+    getGluinoMass()
+    const
+    {
+      return updatedDependentMasses->getGluinoMass();
     }
 
     inline CppSLHA::particle_property_set const*
@@ -1312,7 +1311,8 @@ namespace LHC_FASER
     CppSLHA::SLHA_BLOCK const* YU_pointer;
     CppSLHA::SLHA_BLOCK const* YE_pointer;
 
-    update_dependent_inputs* update_dependent_input_values;
+    updateDependentGaugeInputs* update_dependent_input_values;
+    updateDependentAbsoluteMasses* updatedDependentMasses;
 
 
     std::list< int > empty_list;

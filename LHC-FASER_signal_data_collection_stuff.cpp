@@ -75,7 +75,7 @@ namespace LHC_FASER
   {
 
     if( scolored_pair->get_first_pointer()->get_PDG_code()
-        != shortcut->get_gluino()->get_PDG_code() )
+        != CppSLHA::PDG_code::gluino )
       {
 
         first_scolored_to_gluino_BR
@@ -94,7 +94,7 @@ namespace LHC_FASER
       }
 
     if( scolored_pair->get_second_pointer()->get_PDG_code()
-        != shortcut->get_gluino()->get_PDG_code() )
+        != CppSLHA::PDG_code::gluino )
       {
 
         second_scolored_to_gluino_BR

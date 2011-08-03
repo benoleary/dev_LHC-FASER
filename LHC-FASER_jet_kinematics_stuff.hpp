@@ -73,12 +73,114 @@
 
 namespace LHC_FASER
 {
+  // this is an abstract base class for a set of functors for deciding what
+  // squark mass to use for looking up the grid.
+  class squarkMassForGridDecider
+  {
+  public:
+    squarkMassForGridDecider( input_handler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~squarkMassForGridDecider()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual double
+    operator()( CppSLHA::particle_property_set const* const firstScolored,
+                CppSLHA::particle_property_set const* const secondScolored )
+    = 0;
+
+  protected:
+    input_handler const* const shortcut;
+  };
+
+  /* this is a derived class returning the average mass of the non-stop,
+   * non-sbottom squarks, or the gluino mass + 1.0 if it would be less than the
+   * gluino mass.
+   */
+  class heavierThanGluinoSquarkMassForGrid : public squarkMassForGridDecider
+  {
+  public:
+    heavierThanGluinoSquarkMassForGrid( input_handler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~heavierThanGluinoSquarkMassForGrid()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    double
+    operator()( CppSLHA::particle_property_set const* const firstScolored,
+                CppSLHA::particle_property_set const* const secondScolored )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  //protected:
+    // nothing
+  };
+
+  // this is a derived class returning the mass of the 1st provided
+  // squarks.
+  class firstMassForGrid : public squarkMassForGridDecider
+  {
+  public:
+    firstMassForGrid( input_handler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~firstMassForGrid()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    double
+    operator()( CppSLHA::particle_property_set const* const firstScolored,
+                CppSLHA::particle_property_set const* const secondScolored )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  //protected:
+    // nothing
+  };
+
+  // this is a derived class returning the mass of the 2nd provided
+  // squarks.
+  class secondMassForGrid : public squarkMassForGridDecider
+  {
+  public:
+    secondMassForGrid( input_handler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~secondMassForGrid()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    double
+    operator()( CppSLHA::particle_property_set const* const firstScolored,
+                CppSLHA::particle_property_set const* const secondScolored )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  //protected:
+    // nothing
+  };
+
+  // this is a derived class returning the average mass of the provided
+  // squarks.
+  class averageSquarkMassForGrid : public squarkMassForGridDecider
+  {
+  public:
+    averageSquarkMassForGrid( input_handler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~averageSquarkMassForGrid()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    double
+    operator()( CppSLHA::particle_property_set const* const firstScolored,
+                CppSLHA::particle_property_set const* const secondScolored )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  //protected:
+    // nothing
+  };
+
   // this class holds an acceptanceGrid with a string identifying the type of
   // jet+MET signal which the acceptances are for.
   class jetAcceptanceTable
   {
   public:
-    enum usedTypes
+    enum usedCascades
     {
       gx = 0,
       sx = 1,
@@ -97,14 +199,15 @@ namespace LHC_FASER
     ~jetAcceptanceTable()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    std::string const*
-    getCutName()
+    bool
+    isRequested( std::string const* const jetCutName,
+                 int const acceptanceColumn )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
-    getAcceptance( fullCascade const* const firstCascade,
+    getAcceptance( signed_particle_shortcut_pair const* const initialPair,
+                   fullCascade const* const firstCascade,
                    fullCascade const* const secondCascade )
-    const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
@@ -116,16 +219,25 @@ namespace LHC_FASER
     acceptanceGrid* squarkAntisquarkGrid;
     acceptanceGrid* squarkSquarkGrid;
     acceptanceGrid* gridToUse;
-    // this is decided by the types of cascade given.
-    std::vector< std::vector< acceptanceGrid* >* > gridsMatrix;
-    double squarkMassForGrid;
-    double gluinoMassForGrid;
-    double lighterNeutralinoMassForGrid;
-    double heavierNeutralinoMassForGrid;
-    usedTypes firstCascadeType;
-    double firstCascadeSquarkMass;
-    usedTypes secondCascadeType;
-    double secondCascadeSquarkMass;
+    minimalAllocationVector< minimalAllocationVector< std::pair<
+                                                               acceptanceGrid*,
+                                                squarkMassForGridDecider* > > >
+    gridsMatrix;
+    minimalAllocationVector< std::pair< acceptanceGrid*,
+                                        squarkMassForGridDecider* > >*
+    gridMatrixRow;
+    std::pair< acceptanceGrid*,
+               squarkMassForGridDecider* >* gridMatrixElement;
+    heavierThanGluinoSquarkMassForGrid heavierThanGluinoSquarkMass;
+    firstMassForGrid useFirstMass;
+    secondMassForGrid useSecondMass;
+    averageSquarkMassForGrid useAverageMass;
+    usedCascades firstCascadeType;
+    CppSLHA::particle_property_set const* firstCascadeSquark;
+    // this is NULL if there is no squark in the cascade.
+    usedCascades secondCascadeType;
+    CppSLHA::particle_property_set const* secondCascadeSquark;
+    // this is NULL if there is no squark in the cascade.
 
     int
     getIntForCascadeType( fullCascade const* const givenCascade,
@@ -135,162 +247,67 @@ namespace LHC_FASER
 
 
 
-  /* this class holds pointers to a jet_acceptance_table & a
-   * lepton_acceptance_table for looking up the jets plus missing transverse
-   * momentum acceptance with an int for which column to use & the lepton
-   * acceptances, & gives out pointers from the jet_acceptance_table & the
-   * lepton_acceptance_table to the value-calculating instances they produce
-   * (which are all released & re-created with every update for a new point).
-   */
-  class kinematics_table
+  // this class holds all the jetAcceptanceTables for a given beam energy.
+  class jetAcceptanceTablesForOneBeamEnergy
   {
-
   public:
-
-    kinematics_table( jet_acceptance_table* const given_jets_table,
-                      int const given_jet_acceptance_column,
-                      lepton_acceptance_table* const given_leptons_table )
+    jetAcceptanceTablesForOneBeamEnergy( input_handler const* const shortcut,
+                                         int const beamEnergy,
+                                 std::string const* const gridFileSetLocation )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~jetAcceptanceTablesForOneBeamEnergy()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    ~kinematics_table()
+    jetAcceptanceTable*
+    getTable( std::string const* const jetCutName,
+              int const acceptanceColumn )
+    // this returns the jetAcceptanceTable for the requested signal & column.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     int
-    get_column()
+    getBeamEnergy()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
-    jet_acceptance_value*
-    get_jet_acceptance( signed_particle_shortcut_pair const* const given_pair,
-                        colored_cascade const* const given_first_sQCD_cascade,
-                       colored_cascade const* const given_second_sQCD_cascade )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    lepton_acceptance_value*
-    get_lepton_acceptance(
-                         signed_particle_shortcut_pair const* const given_pair,
-                         colored_cascade const* const given_first_sQCD_cascade,
-                       colored_cascade const* const given_second_sQCD_cascade )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
   protected:
-
-    jet_acceptance_table* const jets_table;
-    int const jet_acceptance_column;
-    lepton_acceptance_table* const leptons_table;
-
-  };
-
-  /* this class holds several kinematics_table instances as lookup tables for
-   * various colored sparticle combinations, & returns pointers to them for
-   * given kinematics_identifer pointers. it holds the lepton_acceptance_table
-   * instances directly, giving pointers to them to its kinematics_table
-   * instances.
-   */
-  class kinematics_table_set
-  {
-
-  public:
-
-    kinematics_table_set( int const given_LHC_energy_in_TeV,
-                          std::string const* const given_grid_directory,
-                          std::string const* const given_jet_subdirectory,
-                          lepton_acceptance_table* const given_lepton_table,
-                          input_handler const* const given_shortcuts )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~kinematics_table_set()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    kinematics_table*
-    get_table( int const given_acceptance_column )
-    // this returns the kinematics_table for the requested column.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    bool
-    is_requested( int const given_LHC_energy_in_TeV,
-                  std::string const* const given_jet_subdirectory )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-
     input_handler const* const shortcut;
-
-    int const LHC_energy_in_TeV;
-    std::string const grid_directory;
-    std::string jet_grid_subdirectory;
-
-    lepton_acceptance_table* lepton_table;
-    jet_acceptance_table* jet_table;
-    std::vector< kinematics_table* > kinematics_tables;
-
+    int const beamEnergy;
+    std::string const gridFileSetLocation;
+    std::vector< jetAcceptanceTable* > jetTables;
   };
 
 
-  // this holds a set of kinematics_table_set instances & returns pointers to
-  // them based on the given LHC energy & signal name.
-  class kinematics_handler
+  // this class holds all the leptonAcceptancesForOneBeamEnergy & passes out
+  // pointers to requested leptonAcceptanceParameterSets.
+  class jetPlusMetAcceptanceHandler
   {
-
   public:
-
-    kinematics_handler( input_handler const* const given_shortcuts )
+    jetPlusMetAcceptanceHandler( input_handler const* const shortcut,
+                             std::string const* const gridFileSetLocation )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~jetPlusMetAcceptanceHandler()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    ~kinematics_handler()
+    jetAcceptanceTable*
+    getJetPlusMetAcceptanceTable( int const beamEnergy,
+                                  std::string const* const jetCutName,
+                                  int const acceptanceColumn )
+    // this looks to see if there is an existing jetAcceptanceTable with the
+    // requested values, & if not, makes 1, & returns the pointer.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    kinematics_table*
-    get_table( int const LHC_energy_in_TeV,
-               std::string const* const given_jet_subdirectory,
-               int const given_acceptance_column )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    lepton_acceptance_table*
-    get_lepton_acceptance_table( int const LHC_energy_in_TeV )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    enum sQCD_cascade_type
-    {
-
-      sx /* direct squark to electroweakino */,
-      sw /* direct squark to other squark plus W boson */,
-      gx /* direct gluino to electroweakino */,
-      sgx /* squark to gluino to electroweakino */,
-      gsx /* gluino to squark to electroweakino */,
-      gsw /* gluino to squark to other squark plus W boson */,
-      sgsx /* squark to gluino to squark to electroweakino */,
-      sgsw /* squark to gluino to squark to other squark plus W boson */
-
-      /* we don't take into account squark -> other squark + W boson, other
-       * squark -> gluino etc., because if the 1st decay is open, so is the
-       * decay of the heavier squark directly into the gluino, & for the
-       * purposes of this code, we assume that that sQCD decay trumps the EW
-       * decay.
-       */
-
-    };
-
 
   protected:
-
     input_handler const* const shortcut;
+    std::string const gridFileSetLocation;
+    std::vector< jetAcceptanceTablesForOneBeamEnergy* > acceptanceTables;
 
-    std::vector< kinematics_table_set* > table_sets;
-    std::vector< lepton_acceptance_table* > lepton_tables;
-
-    kinematics_table_set*
-    get_table_set( int const LHC_energy_in_TeV,
-                   std::string const* const given_jet_subdirectory )
+    jetAcceptanceTablesForOneBeamEnergy*
+    getJetAcceptanceTablesForOneBeamEnergy( int const beamEnergy )
+    /* this looks to see if there is an existing
+     * jetAcceptanceTablesForOneBeamEnergy with the requested beamEnergy, & if
+     * not, makes 1, & returns the pointer.
+     */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
 
@@ -299,495 +316,89 @@ namespace LHC_FASER
 
   // inline functions:
 
-  inline std::string const*
-  jetAcceptanceTable::getCutName()
-  const
+  inline double
+  heavierThanGluinoSquarkMassForGrid::operator()(
+                     CppSLHA::particle_property_set const* const firstScolored,
+                   CppSLHA::particle_property_set const* const secondScolored )
   {
-    return &jetCutName;
-  }
-
-  inline void
-  acceptanceCutSet::becomeCopyOf( acceptanceCutSet* const copyPointer )
-  // this copies the values from a given acceptanceCutSet.
-  {
-    beamEnergy = copyPointer->getBeamEnergy();
-    primaryLeptonCut = copyPointer->getPrimaryLeptonCut();
-    secondaryLeptonCut = copyPointer->getSecondaryLeptonCut();
-    jetCut = copyPointer->getJetCut();
-  }
-
-  inline bool
-  acceptanceCutSet::compareJetAndBothLeptonCuts(
-                                          acceptanceCutSet* const firstPointer,
-                                        acceptanceCutSet* const secondPointer )
-  // this returns true if both acceptanceCutSets have the same jet cut & both
-  // lepton cuts.
-  {
-    if( firstPointer->isSameAcceptanceCutSet( secondPointer ) )
+    double returnValue( shortcut->get_average_squarks4_mass() );
+    if( shortcut->getGluinoMass() > returnValue )
     {
-      return true;
+      returnValue = ( shortcut->getGluinoMass() + 1.0 );
     }
-    else
-    {
-      return false;
-    }
-  }
-
-  inline bool
-  acceptanceCutSet::compareJustBothLeptonCuts(
-                                          acceptanceCutSet* const firstPointer,
-                                        acceptanceCutSet* const secondPointer )
-  {
-    if( ( firstPointer->getPrimaryLeptonCut()
-          == secondPointer->getPrimaryLeptonCut() )
-        &&
-        ( firstPointer->getSecondaryLeptonCut()
-          == secondPointer->getSecondaryLeptonCut() ) )
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-
-  inline bool
-  acceptanceCutSet::compareJustPrimaryLeptonCut(
-                                          acceptanceCutSet* const firstPointer,
-                                        acceptanceCutSet* const secondPointer )
-  {
-    if( firstPointer->getPrimaryLeptonCut()
-        == secondPointer->getPrimaryLeptonCut() )
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-
-  inline bool
-  acceptanceCutSet::justReturnTrue( acceptanceCutSet* const firstPointer,
-                                    acceptanceCutSet* const secondPointer )
-  {
-    return true;
+    return returnValue;
   }
 
 
   inline double
-  acceptanceCutSet::getBeamEnergy()
+  firstMassForGrid::operator()(
+                     CppSLHA::particle_property_set const* const firstScolored,
+                   CppSLHA::particle_property_set const* const secondScolored )
+  {
+    return firstScolored->get_absolute_mass();
+  }
+
+
+  inline double
+  secondMassForGrid::operator()(
+                     CppSLHA::particle_property_set const* const firstScolored,
+                   CppSLHA::particle_property_set const* const secondScolored )
+  {
+    return secondScolored->get_absolute_mass();
+  }
+
+
+  inline double
+  averageSquarkMassForGrid::operator()(
+                     CppSLHA::particle_property_set const* const firstScolored,
+                   CppSLHA::particle_property_set const* const secondScolored )
+  {
+    return ( 0.5 * ( firstScolored->get_absolute_mass()
+                     + secondScolored->get_absolute_mass() ) );
+  }
+
+
+
+  inline bool
+  jetAcceptanceTable::isRequested( std::string const* const jetCutName,
+                                   int const acceptanceColumn )
   const
   {
+    if( ( acceptanceColumn == this->acceptanceColumn )
+        &&
+        ( 0 == jetCutName->compare( this->jetCutName ) ) )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
 
+
+
+  inline int
+  jetAcceptanceTablesForOneBeamEnergy::getBeamEnergy()
+  const
+  {
     return beamEnergy;
-
   }
 
 
-  inline double
-  acceptanceCutSet::getPrimaryLeptonCut()
-  const
+
+  inline jetAcceptanceTable*
+  jetPlusMetAcceptanceHandler::getJetPlusMetAcceptanceTable(
+                                                          int const beamEnergy,
+                                           std::string const* const jetCutName,
+                                                   int const acceptanceColumn )
+  // this looks to see if there is an existing jetAcceptanceTable with the
+  // requested values, & if not, makes 1, & returns the pointer.
   {
-
-    return primaryLeptonCut;
-
+    return
+    getJetAcceptanceTablesForOneBeamEnergy( beamEnergy )->getTable( jetCutName,
+                                                            acceptanceColumn );
   }
-
-  inline void
-  acceptanceCutSet::setPrimaryLeptonCut( double inputValue )
-  {
-
-    primaryLeptonCut = inputValue;
-
-  }
-
-
-  inline double
-  acceptanceCutSet::getSecondaryLeptonCut()
-  const
-  {
-
-    return secondaryLeptonCut;
-
-  }
-
-  inline void
-  acceptanceCutSet::setSecondaryLeptonCut( double inputValue )
-  {
-
-    secondaryLeptonCut = inputValue;
-
-  }
-
-
-  inline double
-  acceptanceCutSet::getLeptonCut()
-  const
-  {
-
-    return getPrimaryLeptonCut();
-
-  }
-
-  inline void
-  acceptanceCutSet::setLeptonCut( double inputValue )
-  {
-
-    setPrimaryLeptonCut( inputValue );
-    setSecondaryLeptonCut( inputValue );
-
-  }
-
-
-  inline double
-  acceptanceCutSet::getJetCut()
-  const
-  {
-
-    return jetCut;
-
-  }
-
-  inline void
-  acceptanceCutSet::setJetCut( double inputValue )
-  {
-
-    jetCut = inputValue;
-
-  }
-
-
-  inline bool
-  acceptanceCutSet::isSameAcceptanceCutSet(
-                              acceptanceCutSet const* const comparisonCuts )
-  const
-  {
-
-    if( ( comparisonCuts->getBeamEnergy() == beamEnergy )
-        &&
-        ( comparisonCuts->getJetCut() == jetCut )
-        &&
-        ( comparisonCuts->getPrimaryLeptonCut() == primaryLeptonCut )
-        &&
-        ( comparisonCuts->getSecondaryLeptonCut()
-          == secondaryLeptonCut ) )
-    {
-
-      return true;
-
-    }
-    else
-    {
-
-      return false;
-
-    }
-
-  }
-
-
-
-  inline bool
-  singleLeptonCut::isSameAcceptanceCutSet(
-                              acceptanceCutSet const* const comparison_cuts )
-  const
-  {
-
-    if( ( comparison_cuts->getBeamEnergy() == beamEnergy )
-        &&
-        ( comparison_cuts->getPrimaryLeptonCut() == primaryLeptonCut )  )
-    {
-
-      return true;
-
-    }
-    else
-    {
-
-      return false;
-
-    }
-
-  }
-
-
-
-  inline double
-  leptonAcceptanceParameterSet::getEffectiveSquarkMass()
-  {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: leptonAcceptanceParameterSet::getEffectiveSquarkMass() called.";
-    std::cout << std::endl;**/
-
-    if( needs_to_prepare_for_this_point() )
-    {
-      resetValues();
-    }
-    return effectiveSquarkMass;
-  }
-
-  inline double
-  leptonAcceptanceParameterSet::acceptanceAt( double const givenEnergy,
-                                     double const givenCut )
-  /* this checks to see if the acceptances need updating, then returns
-   * calculateAcceptanceAt( givenEnergy,
-   *                        givenCut ), which interpolates the values in
-   * acceptance_bins to the requested value, or returns
-   * pseudorapidityAcceptance if it's lower, scaled to the given value for
-   * the transverse momentum cut.
-   */
-  {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: leptonAcceptanceParameterSet::acceptanceAt( " << givenEnergy
-    << ", " << givenCut << " ) called.";
-    std::cout << std::endl;**/
-
-    if( needs_to_prepare_for_this_point() )
-    {
-      resetValues();
-    }
-    return calculateAcceptanceAt( givenEnergy,
-                                  givenCut );
-  }
-
-
-  inline int
-  acceptanceGrid::getNumberOfAcceptanceColumns()
-  const
-  {
-
-    return acceptanceColumns;
-
-  }
-
-  inline double
-  acceptanceGrid::getLowestSquarkMass()
-  const
-  {
-
-    return lowestSquarkMass;
-
-  }
-
-  inline double
-  acceptanceGrid::getHighestSquarkMass()
-  const
-  {
-
-    return  highestSquarkMass;
-
-  }
-
-  inline double
-  acceptanceGrid::getLowestGluinoMass()
-  const
-  {
-
-    return  lowestGluinoMass;
-
-  }
-
-  inline double
-  acceptanceGrid::getHighestGluinoMass()
-  const
-  {
-
-    return  highestGluinoMass;
-
-  }
-
-
-
-  inline double
-  jet_acceptance_value::get_acceptance()
-  {
-
-    if( not_already_calculated )
-      {
-
-        stored_acceptance = jet_table->getValue( scolored_pair,
-                                                  first_sQCD_cascade,
-                                                  second_sQCD_cascade,
-                                                  acceptance_column,
-                                                  false,
-                                                  false );
-        not_already_calculated = false;
-
-      }
-
-    return stored_acceptance;
-
-  }
-
-
-  inline bool
-  jet_acceptance_value::is_requested( int const given_acceptance_column,
-                         signed_particle_shortcut_pair const* const given_pair,
-                         colored_cascade const* const given_first_sQCD_cascade,
-                       colored_cascade const* const given_second_sQCD_cascade )
-  const
-  {
-
-    if( ( given_acceptance_column == acceptance_column )
-        &&
-        ( given_pair == scolored_pair )
-        &&
-        ( given_first_sQCD_cascade == first_sQCD_cascade )
-        &&
-        ( given_second_sQCD_cascade == second_sQCD_cascade ) )
-      {
-
-        return true;
-
-      }
-    else
-      {
-
-        return false;
-
-      }
-
-  }
-
-
-
-  inline bool
-  lepton_acceptance_value::is_requested(
-                         signed_particle_shortcut_pair const* const given_pair,
-                         colored_cascade const* const given_first_sQCD_cascade,
-                       colored_cascade const* const given_second_sQCD_cascade )
-  const
-  {
-
-    if( ( given_pair == scolored_pair )
-        &&
-        ( given_first_sQCD_cascade == first_sQCD_cascade )
-        &&
-        ( given_second_sQCD_cascade == second_sQCD_cascade ) )
-      {
-
-        return true;
-
-      }
-    else
-      {
-
-        return false;
-
-      }
-
-  }
-
-
-
-  inline std::string const*
-  jet_acceptance_table::get_name()
-  const
-  {
-
-    return &table_name;
-
-  }
-
-
-
-  inline int
-  lepton_acceptance_table::get_energy()
-  const
-  {
-
-    return LHC_energy_in_TeV;
-
-  }
-
-
-
-  inline jet_acceptance_value*
-  kinematics_table::get_jet_acceptance(
-                         signed_particle_shortcut_pair const* const given_pair,
-                         colored_cascade const* const given_first_sQCD_cascade,
-                       colored_cascade const* const given_second_sQCD_cascade )
-  {
-
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: kinematics_table::get_jet_acceptance(...) called,";
-    std::cout << std::endl;**/
-
-    return jets_table->get_acceptance( jet_acceptance_column,
-                                       given_pair,
-                                       given_first_sQCD_cascade,
-                                       given_second_sQCD_cascade );
-
-  }
-
-  inline lepton_acceptance_value*
-  kinematics_table::get_lepton_acceptance(
-                       signed_particle_shortcut_pair const* const given_pair,
-                       colored_cascade const* const given_first_sQCD_cascade,
-                     colored_cascade const* const given_second_sQCD_cascade )
-  {
-
-    return leptons_table->get_acceptance( given_pair,
-                                          given_first_sQCD_cascade,
-                                          given_second_sQCD_cascade );
-
-  }
-
-
-  inline int
-  kinematics_table::get_column()
-  const
-  {
-
-    return jet_acceptance_column;
-
-  }
-
-
-
-  inline bool
-  kinematics_table_set::is_requested( int const given_LHC_energy_in_TeV,
-                              std::string const* const given_jet_subdirectory )
-  {
-
-    if( ( given_LHC_energy_in_TeV == LHC_energy_in_TeV )
-        &&
-        ( 0 == given_jet_subdirectory->compare( jet_grid_subdirectory ) ) )
-      {
-
-        return true;
-
-      }
-    else
-      {
-
-        return false;
-
-      }
-
-  }
-
-
-
-  inline kinematics_table*
-  kinematics_handler::get_table( int const LHC_energy_in_TeV,
-                               std::string const* const given_jet_subdirectory,
-                                 int const given_acceptance_column )
-  {
-
-    return get_table_set( LHC_energy_in_TeV,
-                given_jet_subdirectory )->get_table( given_acceptance_column );
-
-  }
-
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_JET_KINEMATICS_STUFF_HPP_ */

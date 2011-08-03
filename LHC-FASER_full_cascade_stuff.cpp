@@ -2265,8 +2265,7 @@ namespace LHC_FASER
     sjgjsvsxCascades.clear();
     svgxCascades.clear();
     svgjsxCascades.clear();
-    if( initialScolored->get_absolute_mass()
-        > shortcut->get_gluino()->get_absolute_mass() )
+    if( initialScolored->get_absolute_mass() > shortcut->getGluinoMass() )
     {
       for( std::vector< gxFullCascade* >::iterator
            gxIterator
@@ -2324,7 +2323,7 @@ namespace LHC_FASER
                                             -((*ewIterator)->get_PDG_code()) );
         soughtNegativePdgCodeList.push_back( CppSLHA::PDG_code::gluino );
         if( ( initialScolored->get_absolute_mass()
-              > ( shortcut->get_gluino()->get_absolute_mass()
+              > ( shortcut->getGluinoMass()
                   + (*ewIterator)->get_absolute_mass() ) )
             &&
             ( ( LHC_FASER_global::negligible_BR

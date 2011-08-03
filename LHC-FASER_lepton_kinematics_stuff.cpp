@@ -107,7 +107,7 @@ namespace LHC_FASER
     << "leptonAcceptanceGrid::getSquarkValue(...) called.";
     std::cout << std::endl;**/
 
-    double appropriateGluinoMass = shortcut->get_gluino()->get_absolute_mass();
+    double appropriateGluinoMass = shortcut->getGluinoMass();
     double appropriateSquarkMass = squark->get_absolute_mass();
     if( appropriateSquarkMass > appropriateGluinoMass )
     {
@@ -138,7 +138,7 @@ namespace LHC_FASER
     << "leptonAcceptanceGrid::getGluinoValue(...) called.";
     std::cout << std::endl;**/
 
-    double appropriateGluinoMass = shortcut->get_gluino()->get_absolute_mass();
+    double appropriateGluinoMass = shortcut->getGluinoMass();
     double appropriateSquarkMass = shortcut->get_average_squarks4_mass();
     if( appropriateGluinoMass > appropriateSquarkMass )
     {
@@ -518,7 +518,7 @@ namespace LHC_FASER
     }
     if( NULL == returnPointer )
       // if we do not already have a leptonAcceptanceParameterSet for this
-      // electroweakino, we make a new instance:
+      // colored sparticle, we make a new instance:
     {
       returnPointer = new leptonAcceptancesForOneScolored( shortcut,
                                                            scolored,
@@ -553,12 +553,14 @@ namespace LHC_FASER
   }
 
   leptonAcceptancesForOneBeamEnergy*
-  leptonAcceptanceHandler::getleptonAcceptancesForOneBeamEnergy(
+  leptonAcceptanceHandler::getLeptonAcceptancesForOneBeamEnergy(
                                                           int const beamEnergy,
                                                           double const binSize,
                                            double const transverseMomentumCut )
-  // this returns the leptonAcceptancesForOneBeamEnergy for the requested
-  // values.
+  /* this looks to see if there is an existing
+   * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
+   * makes 1, & returns the pointer.
+   */
   {
     leptonAcceptancesForOneBeamEnergy* returnPointer( NULL );
     // we look to see if we already have a leptonAcceptancesForOneBeamEnergy
@@ -589,6 +591,5 @@ namespace LHC_FASER
     }
     return returnPointer;
   }
-
 }  // end of LHC_FASER namespace.
 

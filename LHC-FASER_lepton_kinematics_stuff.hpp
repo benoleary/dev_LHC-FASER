@@ -419,7 +419,7 @@ namespace LHC_FASER
     std::vector< leptonAcceptancesForOneBeamEnergy* > acceptanceTables;
 
     leptonAcceptancesForOneBeamEnergy*
-    getleptonAcceptancesForOneBeamEnergy( int const beamEnergy,
+    getLeptonAcceptancesForOneBeamEnergy( int const beamEnergy,
                                           double const binSize,
                                           double const transverseMomentumCut )
     /* this looks to see if there is an existing
@@ -599,7 +599,7 @@ namespace LHC_FASER
   // this looks to see if there is an existing leptonAcceptanceParameterSet
   // with the requested values, & if not, makes 1, & returns the pointer.
   {
-    return getleptonAcceptancesForOneBeamEnergy( beamEnergy,
+    return getLeptonAcceptancesForOneBeamEnergy( beamEnergy,
                                                  binSize,
                                                  transverseMomentumCut
                                                   )->getParameterSets( scolored
