@@ -52,7 +52,6 @@ namespace LHC_FASER
   public:
     minimalAllocationVector()
     /* code after the classes in this .hpp file. */;
-
     ~minimalAllocationVector()
     /* code after the classes in this .hpp file. */;
 
@@ -97,6 +96,13 @@ namespace LHC_FASER
     getSize()
     const
     // this returns the number of elements which are deemed current.
+    /* code after the classes in this .hpp file. */;
+
+    int
+    getLastIndex()
+    const
+    // this returns the number for getPointer to access the last of elements
+    // which are deemed current.
     /* code after the classes in this .hpp file. */;
 
     std::vector< storedClass* >*
@@ -350,6 +356,16 @@ namespace LHC_FASER
   // this returns the number of elements which are deemed current.
   {
     return (int)(currentPointers.size());
+  }
+
+  template< class storedClass >
+  inline int
+  minimalAllocationVector< storedClass >::getLastIndex()
+  const
+  // this returns the number for getPointer to access the last of elements
+  // which are deemed current.
+  {
+    return ( getSize() - 1 );
   }
 
   template< class storedClass >

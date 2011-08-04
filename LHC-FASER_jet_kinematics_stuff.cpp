@@ -244,7 +244,7 @@ namespace LHC_FASER
     {
       typeToCountAs = sx;
       *squarkMassCascade
-      = givenCascade->getCascadeDefiner()->inspectBack()->first;
+      = givenCascade->getCascadeDefiner()->back()->first;
     }
     else if( ( fullCascade::colorfulCascadeType::sjgx
                == givenCascade->getColofulCascadeType() )
@@ -257,13 +257,13 @@ namespace LHC_FASER
     {
       typeToCountAs = sgx;
       *squarkFromCascade
-      = givenCascade->getCascadeDefiner()->inspectPointer( 2 )->first;
+      = givenCascade->getCascadeDefiner()->at( 2 )->first;
     }
     else
     {
       typeToCountAs = gsx;
       *squarkFromCascade
-      = givenCascade->getCascadeDefiner()->inspectPointer( 1 )->first;
+      = givenCascade->getCascadeDefiner()->at( 1 )->first;
     }
     return (int)typeToCountAs;
   }
@@ -296,9 +296,9 @@ namespace LHC_FASER
     gridToUse->valueAt( (*(gridMatrixElement->second))( firstCascadeSquark,
                                                         secondCascadeSquark ),
                         shortcut->getGluinoMass(),
-                        firstCascade->getCascadeDefiner()->inspectFront(
+                        firstCascade->getCascadeDefiner()->front(
                                                  )->first->get_absolute_mass(),
-                        secondCascade->getCascadeDefiner()->inspectFront(
+                        secondCascade->getCascadeDefiner()->front(
                                                  )->first->get_absolute_mass(),
                         acceptanceColumn,
                         false,

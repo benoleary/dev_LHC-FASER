@@ -1538,7 +1538,9 @@ namespace LHC_FASER
     ewinoCascades( NULL ),
     vectorCascades( NULL ),
     soughtDecayProductList( 1,
-                            CppSLHA::CppSLHA_global::really_wrong_value )
+                            CppSLHA::CppSLHA_global::really_wrong_value ),
+    cachedBranchingRatio( CppSLHA::CppSLHA_global::really_wrong_value ),
+    branchingRatioNeedsToBeReCalculated( true )
   {
     // just an initialization list.
   }
@@ -2160,20 +2162,6 @@ namespace LHC_FASER
                                   double const beamEnergy ) :
     readied_for_new_point( shortcut->get_readier() ),
     initialScolored( initialScolored ),
-    sxCascades( &fullCascade::getNewFullCascade() ),
-    gxCascades( &fullCascade::getNewFullCascade() ),
-    sjgxCascades( &fullCascade::getNewFullCascade() ),
-    gjsxCascades( &fullCascade::getNewFullCascade() ),
-    sjgjsxCascades( &fullCascade::getNewFullCascade() ),
-    svsxCascades( &fullCascade::getNewFullCascade() ),
-    gvsxCascades( &fullCascade::getNewFullCascade() ),
-    gjsvsxCascades( &fullCascade::getNewFullCascade() ),
-    svgxCascades( &fullCascade::getNewFullCascade() ),
-    svsjgxCascades( &fullCascade::getNewFullCascade() ),
-    svsjgjsxCascades( &fullCascade::getNewFullCascade() ),
-    svgjsxCascades( &fullCascade::getNewFullCascade() ),
-    sjgvsxCascades( &fullCascade::getNewFullCascade() ),
-    sjgjsvsxCascades( &fullCascade::getNewFullCascade() ),
     shortcut( shortcut ),
     squarkCascadeSetList( squarkCascadeSetList ),
     //squarkCascadeSetListNotYetOrdered( true ),
@@ -2193,6 +2181,8 @@ namespace LHC_FASER
   // fullCascades that initialScolored has for this point.
   {
     openCascades.clear();
+    openSxCascades.clear();
+    openGxCascades.clear();
     for( std::vector< sxFullCascade* >::iterator
          sxIterator = sxCascades->getVector()->begin();
          sxCascades->getVector()->end() > sxIterator;
@@ -2200,7 +2190,8 @@ namespace LHC_FASER
     {
       if( (*sxIterator)->isOpen() )
       {
-        openCascades.push_back( *sxIterator );
+        addOpenCascade( *sxIterator );
+        openSxCascades.push_back( *sxIterator );
       }
     }
     for( std::vector< gxFullCascade* >::iterator
@@ -2210,7 +2201,8 @@ namespace LHC_FASER
     {
       if( (*gxIterator)->isOpen() )
       {
-        openCascades.push_back( *gxIterator );
+        addOpenCascade( *gxIterator );
+        openGxCascades.push_back( *gxIterator );
       }
     }
     buildLongerCascades();
@@ -2275,7 +2267,7 @@ namespace LHC_FASER
       {
         sjgxCascades.addNewAtEnd()->setProperties( initialScolored,
                                                    *gxIterator );
-        openCascades.push_back( sjgxCascades.getBack() );
+        addOpenCascade( sjgxCascades.getBack() );
       }
       for( std::vector< gjsxFullCascade* >::iterator
            gjsxIterator
@@ -2286,7 +2278,7 @@ namespace LHC_FASER
       {
         sjgjsxCascades.addNewAtEnd()->setProperties( initialScolored,
                                                      *gjsxIterator );
-        openCascades.push_back( sjgjsxCascades.getBack() );
+        addOpenCascade( sjgjsxCascades.getBack() );
       }
       for( std::vector< gvsxFullCascade* >::iterator
            gvsxIterator
@@ -2297,7 +2289,7 @@ namespace LHC_FASER
       {
         sjgvsxCascades.addNewAtEnd()->setProperties( initialScolored,
                                                      *gvsxIterator );
-        openCascades.push_back( sjgvsxCascades.getBack() );
+        addOpenCascade( sjgvsxCascades.getBack() );
       }
       for( std::vector< gjsvsxFullCascade* >::iterator
            gjsvsxIterator
@@ -2308,7 +2300,7 @@ namespace LHC_FASER
       {
         sjgjsvsxCascades.addNewAtEnd()->setProperties( initialScolored,
                                                        *gjsvsxIterator );
-        openCascades.push_back( sjgjsvsxCascades.getBack() );
+        addOpenCascade( sjgjsvsxCascades.getBack() );
       }
       for( std::vector< CppSLHA::particle_property_set const* >::iterator
            ewIterator = shortcut->get_EW_veved_and_vector_bosons()->begin();
@@ -2347,7 +2339,7 @@ namespace LHC_FASER
                                                                initialScolored,
                                                                   *ewIterator),
                                                        *gxIterator );
-            openCascades.push_back( svgxCascades.getBack() );
+            addOpenCascade( svgxCascades.getBack() );
           }
           for( std::vector< gxFullCascade* >::iterator
                gjsxIterator
@@ -2361,7 +2353,7 @@ namespace LHC_FASER
                                                                initialScolored,
                                                                   *ewIterator),
                                                          *gjsxIterator );
-            openCascades.push_back( svgjsxCascades.getBack() );
+            addOpenCascade( svgjsxCascades.getBack() );
           }
         }
       }  // end of loop over if svg is open
@@ -2418,7 +2410,7 @@ namespace LHC_FASER
                                                                initialScolored,
                                                                   *ewIterator),
                                                        *sxIterator );
-            openCascades.push_back( svsxCascades.getBack() );
+            addOpenCascade( svsxCascades.getBack() );
           }
           for( std::vector< sjgxFullCascade* >::iterator
                sjgxIterator
@@ -2432,7 +2424,7 @@ namespace LHC_FASER
                                                                initialScolored,
                                                                   *ewIterator),
                                                          *sjgxIterator );
-            openCascades.push_back( svsjgxCascades.getBack() );
+            addOpenCascade( svsjgxCascades.getBack() );
           }
           for( std::vector< sjgxFullCascade* >::iterator
                sjgjsxIterator
@@ -2446,7 +2438,7 @@ namespace LHC_FASER
                                                                initialScolored,
                                                                   *ewIterator),
                                                            *sjgjsxIterator );
-            openCascades.push_back( svsjgjsxCascades.getBack() );
+            addOpenCascade( svsjgjsxCascades.getBack() );
           }
         }
       }  // end of loop over if svs is open
@@ -2499,8 +2491,8 @@ namespace LHC_FASER
          cascadeIterator = squarkCascadeSetList->begin();
          ( ( squarkCascadeSetList->end() != cascadeIterator )
            &&
-           (*cascadeIterator)->initialScolored->get_absolute_mass()
-           < initialScolored->get_absolute_mass() );
+           ( (*cascadeIterator)->initialScolored->get_absolute_mass()
+             < initialScolored->get_absolute_mass() ) );
          ++cascadeIterator )
     {
       // each of the squarks looked at in this loop are lighter than the
@@ -2513,7 +2505,7 @@ namespace LHC_FASER
            ++sxIterator )
       {
         gjsxCascades.addNewAtEnd()->setProperties( *sxIterator );
-        openCascades.push_back( gjsxCascades.getBack() );
+        addOpenCascade( gjsxCascades.getBack() );
       }
       for( std::vector< svsxFullCascade* >::iterator
            svsxIterator
@@ -2523,7 +2515,7 @@ namespace LHC_FASER
            ++svsxIterator )
       {
         gjsvsxCascades.addNewAtEnd()->setProperties( *svsxIterator );
-        openCascades.push_back( gjsvsxCascades.getBack() );
+        addOpenCascade( gjsvsxCascades.getBack() );
       }
 
       // now we check for gvs:
@@ -2557,7 +2549,7 @@ namespace LHC_FASER
           for( std::vector< sxFullCascade* >::iterator
                sxIterator
                = (*cascadeIterator)->getSxCascades()->getVector()->begin();
-              (*cascadeIterator)->getSxCascades()->getVector()->end()
+               (*cascadeIterator)->getSxCascades()->getVector()->end()
                > sxIterator;
                ++sxIterator )
           {
@@ -2566,10 +2558,140 @@ namespace LHC_FASER
                                                                initialScolored,
                                                                   *ewIterator),
                                                        *sxIterator );
-            openCascades.push_back( gvsxCascades.getBack() );
+            addOpenCascade( gvsxCascades.getBack() );
           }
         }
       }  // end of loop over if gvs is open
     }  // end of loop over squarkFullCascadeSets
   }
+
+
+
+  fullCascadeSetsForOneBeamEnergy::fullCascadeSetsForOneBeamEnergy(
+                                           input_handler const* const shortcut,
+                             electroweakCascadeHandler* const ewCascadeHandler,
+                                                    double const beamEnergy ) :
+    shortcut( shortcut ),
+    ewCascadeHandler( ewCascadeHandler ),
+    beamEnergy( beamEnergy )
+  {
+    gluinoCascadeSet = new gluinoFullCascadeSet( shortcut,
+                                                 ewCascadeHandler,
+                                                 &squarkCascadeSetList,
+                                                 beamEnergy );
+    for( std::vector< CppSLHA::particle_property_set const* const >::iterator
+         squarkIterator = shortcut->get_squarks()->begin();
+         shortcut->get_squarks()->end() > squarkIterator;
+         ++squarkIterator )
+    {
+      squarkCascadeSets.push_back( new squarkFullCascadeSet( shortcut,
+                                                    electroweakCascadeHandling,
+                                                             *squarkIterator,
+                                                         &squarkCascadeSetList,
+                                                             gluinoCascadeSet,
+                                                             beamEnergy ) );
+      squarkCascadeSetList.push_back( squarkCascadeSets.back() );
+    }
+  }
+
+  fullCascadeSetsForOneBeamEnergy::~fullCascadeSetsForOneBeamEnergy()
+  {
+    for( std::vector< squarkFullCascadeSet* >::iterator
+         deletionIterator = squarkCascadeSets->begin();
+         squarkCascadeSets->end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+    delete gluinoCascadeSet;
+  }
+
+  fullCascadeSet*
+  fullCascadeSetsForOneBeamEnergy::getFullCascadeSet(
+                  CppSLHA::particle_property_set const* const initialScolored )
+  /* this returns the fullCascadeSet for the requested colored sparticle, or
+   * NULL if we were asked for a sparticle that is not the gluino or in
+   * shortcut->get_squarks().
+   */
+  {
+    if( CppSLHA::PDG_code::gluino == initialScolored->get_PDG_code() )
+    {
+      return gluinoCascadeSet;
+    }
+    else
+    {
+      fullCascadeSet* returnPointer( NULL );
+      // we look to see if we already have a fullCascadeSet for this squark:
+      for( std::vector< squarkFullCascadeSet* >::iterator
+           searchIterator = squarkCascadeSets->begin();
+           squarkCascadeSets->end() > searchIterator;
+           ++searchIterator )
+      {
+        if( initialScolored == (*searchIterator)->getInitialScolored() )
+        {
+          returnPointer = *searchIterator;
+          searchIterator = squarkCascadeSets->end();
+        }
+      }
+      return returnPointer;
+    }
+  }
+
+
+  fullCascadeSetFactory::fullCascadeSetFactory(
+                                           input_handler const* const shortcut,
+                          electroweakCascadeHandler* const ewCascadeHandler ) :
+    shortcut( shortcut ),
+    ewCascadeHandler( ewCascadeHandler )
+  {
+    // just an initialization list.
+  }
+
+  fullCascadeSetFactory::~fullCascadeSetFactory()
+  {
+    for( std::vector< fullCascadeSetsForOneBeamEnergy* >::iterator
+         deletionIterator = cascadeSetsPerEnergy->begin();
+         cascadeSetsPerEnergy->end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+  }
+
+  fullCascadeSet*
+  fullCascadeSetFactory::getFullCascadeSet(
+                   CppSLHA::particle_property_set const* const initialScolored,
+                                            int const beamEnergy )
+  /* this looks to see if there is an existing
+   * fullCascadeSetsForOneBeamEnergy with the requested values, & if not,
+   * makes 1, & returns the pointer.
+   */
+  {
+    fullCascadeSetsForOneBeamEnergy* setForEnergyPointer( NULL );
+    // we look to see if we already have a fullCascadeSetsForOneBeamEnergy for
+    // these values:
+    for( std::vector< fullCascadeSetsForOneBeamEnergy* >::iterator
+         searchIterator = cascadeSetsPerEnergy->begin();
+         cascadeSetsPerEnergy->end() > searchIterator;
+         ++searchIterator )
+    {
+      if( beamEnergy
+          == (*searchIterator)->getBeamEnergy() )
+      {
+        setForEnergyPointer = *searchIterator;
+        searchIterator = cascadeSetsPerEnergy->end();
+      }
+    }
+    if( NULL == setForEnergyPointer )
+      // if we do not already have a fullCascadeSetsForOneBeamEnergy for this
+      // beam energy, we make a new instance:
+    {
+      setForEnergyPointer = new fullCascadeSetsForOneBeamEnergy( shortcut,
+                                                              ewCascadeHandler,
+                                                                 beamEnergy );
+      cascadeSetsPerEnergy.push_back( setForEnergyPointer );
+    }
+    return setForEnergyPointer->getFullCascadeSet( initialScolored );
+  }
+
 }  // end of LHC_FASER namespace.
