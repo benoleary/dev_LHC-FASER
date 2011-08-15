@@ -31,25 +31,21 @@ namespace LHC_FASER
 
 
   neutralinoToSemuCascade::neutralinoToSemuCascade(
-                                         leptonAcceptanceParameterSet* const kinematics,
+                                leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
-                                    bool const coloredDecayerIsNotAntiparticle,
+                                  //bool const coloredDecayerIsNotAntiparticle,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
-                                bool const electroweakDecayerIsNotAntiparticle,
+                              //bool const electroweakDecayerIsNotAntiparticle,
                CppSLHA::particle_property_set const* const intermediateDecayer,
                                         input_handler const* const shortcut ) :
     electroweakCascade( kinematics,
                         coloredDecayer,
-                        coloredDecayerIsNotAntiparticle,
+                        //coloredDecayerIsNotAntiparticle,
                         electroweakDecayer,
-                        electroweakDecayerIsNotAntiparticle,
+                        //electroweakDecayerIsNotAntiparticle,
                         intermediateDecayer,
                         true,
-                        shortcut ),
-    nearSameDistribution( NULL ),
-    farSameDistribution( NULL ),
-    nearOppositeDistribution( NULL ),
-    farOppositeDistribution( NULL )
+                        shortcut )
   {
     if( ( CppSLHA::PDG_code::smuon_L == intermediateDecayer->get_PDG_code() )
         ||
@@ -76,21 +72,21 @@ namespace LHC_FASER
     = new same_chirality_near_muon( shortcut->get_readier(),
                                     shortcut->get_CppSLHA(),
                                     coloredDecayer,
-                        kinematics->getAcceptance()->getEffectiveSquarkMass(),
+                                    kinematics,
                                     electroweakDecayer,
                                     intermediateDecayer );
     nearOppositeDistribution
     = new opposite_chirality_near_muon( shortcut->get_readier(),
                                         shortcut->get_CppSLHA(),
                                         coloredDecayer,
-                        kinematics->getAcceptance()->getEffectiveSquarkMass(),
+                                        kinematics,
                                         electroweakDecayer,
                                         intermediateDecayer );
     farSameDistribution
     = new same_chirality_far_muon( shortcut->get_readier(),
                                    shortcut->get_CppSLHA(),
                                    coloredDecayer,
-                        kinematics->getAcceptance()->getEffectiveSquarkMass(),
+                                   kinematics,
                                    electroweakDecayer,
                                    intermediateDecayer,
                                    shortcut->get_neutralino_one() );
@@ -98,7 +94,7 @@ namespace LHC_FASER
     = new opposite_chirality_far_muon( shortcut->get_readier(),
                                        shortcut->get_CppSLHA(),
                                        coloredDecayer,
-                        kinematics->getAcceptance()->getEffectiveSquarkMass(),
+                                       kinematics,
                                        electroweakDecayer,
                                        intermediateDecayer,
                                        shortcut->get_neutralino_one() );
@@ -319,315 +315,155 @@ namespace LHC_FASER
 
 
 
-  neutralino_to_stau_cascade::neutralino_to_stau_cascade(
-                                    readier_for_new_point* const given_readier,
-                                                 bool const should_sum_charges,
-                                                double const given_cuts->getPrimaryLeptonCut(),
-                                              double const given_cuts->getSecondaryLeptonCut(),
-                               lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                                 bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                                    bool const given_EWino_is_not_antiparticle,
-          CppSLHA::particle_property_set const* const given_mediating_particle,
-                                    input_handler const* const given_shortcuts,
-                                       double* const given_two_jets_no_leptons,
-                             double* const given_one_jet_one_negative_electron,
-                             double* const given_one_jet_one_positive_electron,
-                                 double* const given_one_jet_one_negative_muon,
-                                 double* const given_one_jet_one_positive_muon,
-                                     double* const given_no_jets_two_electrons,
-                                         double* const given_no_jets_two_muons,
-           double* const given_no_jets_one_positive_muon_one_negative_electron,
-           double* const given_no_jets_one_negative_muon_one_positive_electron,
-                                        double* const given_one_jet_no_leptons,
-                             double* const given_no_jets_one_negative_electron,
-                             double* const given_no_jets_one_positive_electron,
-                                 double* const given_no_jets_one_negative_muon,
-                                 double* const given_no_jets_one_positive_muon,
-                                     double* const given_no_jets_no_leptons ) :
-    channel_calculator( given_readier,
-                        given_cuts->getPrimaryLeptonCut(),
-                        given_cuts->getSecondaryLeptonCut(),
-                        -1.0,
-                        given_kinematics,
-                        given_decaying_scolored,
-                        given_scolored_is_not_antiparticle,
-                        given_decaying_EWino,
-                        given_EWino_is_not_antiparticle,
-                        given_mediating_particle,
-                        given_shortcuts ),
-    should_sum_charges_flag( should_sum_charges ),
-    near_same_distribution( NULL ),
-    far_same_distribution( NULL ),
-    near_opposite_distribution( NULL ),
-    far_opposite_distribution( NULL ),
-    near_same_hard_muon_distribution( NULL ),
-    near_same_soft_muon_distribution( NULL ),
-    near_same_hard_pion_distribution( NULL ),
-    near_same_soft_pion_distribution( NULL ),
-    near_opposite_hard_muon_distribution( NULL ),
-    near_opposite_soft_muon_distribution( NULL ),
-    near_opposite_hard_pion_distribution( NULL ),
-    near_opposite_soft_pion_distribution( NULL ),
-    far_same_hard_muon_distribution( NULL ),
-    far_same_soft_muon_distribution( NULL ),
-    far_same_hard_pion_distribution( NULL ),
-    far_same_soft_pion_distribution( NULL ),
-    far_opposite_hard_muon_distribution( NULL ),
-    far_opposite_soft_muon_distribution( NULL ),
-    far_opposite_hard_pion_distribution( NULL ),
-    far_opposite_soft_pion_distribution( NULL ),
-    two_jets_no_leptons( given_two_jets_no_leptons ),
-    one_jet_one_negative_electron( given_one_jet_one_negative_electron ),
-    one_jet_one_positive_electron( given_one_jet_one_positive_electron ),
-    one_jet_one_negative_muon( given_one_jet_one_negative_muon ),
-    one_jet_one_positive_muon( given_one_jet_one_positive_muon ),
-    no_jets_two_electrons( given_no_jets_two_electrons ),
-    no_jets_two_muons( given_no_jets_two_muons ),
-    no_jets_one_positive_muon_one_negative_electron(
-                       given_no_jets_one_positive_muon_one_negative_electron ),
-    no_jets_one_negative_muon_one_positive_electron(
-                       given_no_jets_one_negative_muon_one_positive_electron ),
-    one_jet_no_leptons( given_one_jet_no_leptons ),
-    no_jets_one_negative_electron( given_no_jets_one_negative_electron ),
-    no_jets_one_positive_electron( given_no_jets_one_positive_electron ),
-    no_jets_one_negative_muon( given_no_jets_one_negative_muon ),
-    no_jets_one_positive_muon( given_no_jets_one_positive_muon ),
-    no_jets_no_leptons( given_no_jets_no_leptons )
+  neutralinoToStauCascade::neutralinoToStauCascade(
+                                leptonAcceptanceParameterSet* const kinematics,
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+                CppSLHA::particle_property_set const* const electroweakDecayer,
+               CppSLHA::particle_property_set const* const intermediateDecayer,
+                                        input_handler const* const shortcut ) :
+    electroweakCascade( kinematics,
+                        coloredDecayer,
+                        electroweakDecayer,
+                        intermediateDecayer,
+                        false,
+                        shortcut )
   {
-
-    // we start by setting up the BR of the (only) channel:
-    bool not_particle_antiparticle_flip = true;
-    if( ( scolored_is_not_antiparticle
-          &&
-          !EWino_is_not_antiparticle )
-        ||
-        ( !scolored_is_not_antiparticle
-          &&
-          EWino_is_not_antiparticle ) )
-      {
-
-        not_particle_antiparticle_flip = false;
-
-      }
-    first_BR
-    = shortcut->get_exclusive_BR_calculator( decaying_EWino,
-                                             mediating_particle,
-                                             not_particle_antiparticle_flip,
-                                           given_shortcuts->get_empty_list() );
-    second_BR
-    = shortcut->get_exclusive_BR_calculator( mediating_particle,
+    // we set up the BR of the (only-ish) channel:
+    firstBr
+    = shortcut->get_exclusive_BR_calculator( electroweakDecayer,
+                                             intermediateDecayer,
+                                             true,
+                                             shortcut->get_empty_list() );
+    secondBr
+    = shortcut->get_exclusive_BR_calculator( intermediateDecayer,
                                              shortcut->get_neutralino_one(),
                                              true,
-                                           given_shortcuts->get_empty_list() );
-
-    if( should_sum_charges )
-      {
-
-        near_same_distribution
-        = new same_chirality_near_muon( given_shortcuts->get_readier(),
-                                        given_shortcuts->get_CppSLHA(),
-                                        decaying_scolored,
-                     leptonKinematics->getAcceptance()->getEffectiveSquarkMass(),
-                                        decaying_EWino,
-                                        mediating_particle );
-        far_same_distribution
-        = new same_chirality_far_muon( given_shortcuts->get_readier(),
-                                       given_shortcuts->get_CppSLHA(),
-                                       decaying_scolored,
-                     leptonKinematics->getAcceptance()->getEffectiveSquarkMass(),
-                                       decaying_EWino,
-                                       mediating_particle,
-                                       given_shortcuts->get_neutralino_one() );
-        // near_same_distribution & far_same_distribution are used even though
-        // the distributions sum over charges & helicities.
-        active_distributions.push_back( near_same_distribution );
-        active_distributions.push_back( far_same_distribution );
-
-        near_same_hard_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_same_distribution,
-                                  given_shortcuts->get_hard_muon_from_tau() );
-        near_same_soft_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                 near_same_distribution,
-                          given_shortcuts->get_soft_muon_from_tau() );
-        near_same_hard_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_same_distribution,
-                                  given_shortcuts->get_hard_pion_from_tau() );
-        near_same_soft_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_same_distribution,
-                                  given_shortcuts->get_soft_pion_from_tau() );
-        far_same_hard_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_same_distribution,
-                                  given_shortcuts->get_hard_muon_from_tau() );
-        far_same_soft_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_same_distribution,
-                                  given_shortcuts->get_soft_muon_from_tau() );
-        far_same_hard_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_same_distribution,
-                                  given_shortcuts->get_hard_pion_from_tau() );
-        far_same_soft_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_same_distribution,
-                                  given_shortcuts->get_soft_pion_from_tau() );
-        active_distributions.push_back( near_same_hard_muon_distribution );
-        active_distributions.push_back( near_same_soft_muon_distribution );
-        active_distributions.push_back( near_same_hard_pion_distribution );
-        active_distributions.push_back( near_same_soft_pion_distribution );
-        active_distributions.push_back( far_same_hard_muon_distribution );
-        active_distributions.push_back( far_same_soft_muon_distribution );
-        active_distributions.push_back( far_same_hard_pion_distribution );
-        active_distributions.push_back( far_same_soft_pion_distribution );
-
-      }
-    else
-      {
-
-        near_same_distribution
-        = new same_chirality_near_muon( shortcut->get_readier(),
+                                             shortcut->get_empty_list() );
+    nearSameTauDistribution
+    = new same_chirality_near_muon( shortcut->get_readier(),
+                                    shortcut->get_CppSLHA(),
+                                    coloredDecayer,
+                                    kinematics,
+                                    electroweakDecayer,
+                                    intermediateDecayer );
+    nearOppositeTauDistribution
+    = new opposite_chirality_near_muon( shortcut->get_readier(),
                                         shortcut->get_CppSLHA(),
-                                        decaying_scolored,
-                     leptonKinematics->getAcceptance()->getEffectiveSquarkMass(),
-                                        decaying_EWino,
-                                        mediating_particle );
-        near_opposite_distribution
-        = new opposite_chirality_near_muon( shortcut->get_readier(),
-                                            shortcut->get_CppSLHA(),
-                                            decaying_scolored,
-                     leptonKinematics->getAcceptance()->getEffectiveSquarkMass(),
-                                            decaying_EWino,
-                                            mediating_particle );
-        far_same_distribution
-        = new same_chirality_far_muon( shortcut->get_readier(),
+                                        coloredDecayer,
+                                        kinematics,
+                                        electroweakDecayer,
+                                        intermediateDecayer );
+    farSameTauDistribution
+    = new same_chirality_far_muon( shortcut->get_readier(),
+                                   shortcut->get_CppSLHA(),
+                                   coloredDecayer,
+                                   kinematics,
+                                   electroweakDecayer,
+                                   intermediateDecayer,
+                                   shortcut->get_neutralino_one() );
+    farOppositeTauDistribution
+    = new opposite_chirality_far_muon( shortcut->get_readier(),
                                        shortcut->get_CppSLHA(),
-                                       decaying_scolored,
-                     leptonKinematics->getAcceptance()->getEffectiveSquarkMass(),
-                                       decaying_EWino,
-                                       mediating_particle,
-                                       given_shortcuts->get_neutralino_one() );
-        far_opposite_distribution
-        = new opposite_chirality_far_muon( shortcut->get_readier(),
-                                           shortcut->get_CppSLHA(),
-                                           decaying_scolored,
-                     leptonKinematics->getAcceptance()->getEffectiveSquarkMass(),
-                                           decaying_EWino,
-                                           mediating_particle,
-                                       given_shortcuts->get_neutralino_one() );
-        active_distributions.push_back( near_same_distribution );
-        active_distributions.push_back( near_opposite_distribution );
-        active_distributions.push_back( far_same_distribution );
-        active_distributions.push_back( far_opposite_distribution );
+                                       coloredDecayer,
+                                       kinematics,
+                                       electroweakDecayer,
+                                       intermediateDecayer,
+                                       shortcut->get_neutralino_one() );
+    activeDistributions.push_back( nearSameTauDistribution );
+    activeDistributions.push_back( nearOppositeTauDistribution );
+    activeDistributions.push_back( farSameTauDistribution );
+    activeDistributions.push_back( farOppositeTauDistribution );
 
-        near_same_hard_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_same_distribution,
-                                  given_shortcuts->get_hard_muon_from_tau() );
-        near_same_soft_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                 near_same_distribution,
-                          given_shortcuts->get_soft_muon_from_tau() );
-        near_same_hard_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_same_distribution,
-                                  given_shortcuts->get_hard_pion_from_tau() );
-        near_same_soft_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_same_distribution,
-                                  given_shortcuts->get_soft_pion_from_tau() );
-        near_opposite_hard_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_opposite_distribution,
-                                  given_shortcuts->get_hard_muon_from_tau() );
-        near_opposite_soft_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_opposite_distribution,
-                                   given_shortcuts->get_soft_muon_from_tau() );
-        near_opposite_hard_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_opposite_distribution,
-                                  given_shortcuts->get_hard_pion_from_tau() );
-        near_opposite_soft_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         near_opposite_distribution,
-                                  given_shortcuts->get_soft_pion_from_tau() );
-        far_same_hard_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_same_distribution,
-                                  given_shortcuts->get_hard_muon_from_tau() );
-        far_same_soft_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_same_distribution,
-                                  given_shortcuts->get_soft_muon_from_tau() );
-        far_same_hard_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_same_distribution,
-                                  given_shortcuts->get_hard_pion_from_tau() );
-        far_same_soft_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_same_distribution,
-                                  given_shortcuts->get_soft_pion_from_tau() );
-        far_opposite_hard_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_opposite_distribution,
-                                  given_shortcuts->get_hard_muon_from_tau() );
-        far_opposite_soft_muon_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_opposite_distribution,
-                                  given_shortcuts->get_soft_muon_from_tau() );
-        far_opposite_hard_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_opposite_distribution,
-                                  given_shortcuts->get_hard_pion_from_tau() );
-        far_opposite_soft_pion_distribution
-        = new visible_tau_decay_product( given_shortcuts->get_readier(),
-                                         far_opposite_distribution,
-                                  given_shortcuts->get_soft_pion_from_tau() );
-        active_distributions.push_back( near_same_hard_muon_distribution );
-        active_distributions.push_back( near_same_soft_muon_distribution );
-        active_distributions.push_back( near_same_hard_pion_distribution );
-        active_distributions.push_back( near_same_soft_pion_distribution );
-        active_distributions.push_back( near_opposite_hard_muon_distribution );
-        active_distributions.push_back( near_opposite_soft_muon_distribution );
-        active_distributions.push_back( near_opposite_hard_pion_distribution );
-        active_distributions.push_back( near_opposite_soft_pion_distribution );
-        active_distributions.push_back( far_same_hard_muon_distribution );
-        active_distributions.push_back( far_same_soft_muon_distribution );
-        active_distributions.push_back( far_same_hard_pion_distribution );
-        active_distributions.push_back( far_same_soft_pion_distribution );
-        active_distributions.push_back( far_opposite_hard_muon_distribution );
-        active_distributions.push_back( far_opposite_soft_muon_distribution );
-        active_distributions.push_back( far_opposite_hard_pion_distribution );
-        active_distributions.push_back( far_opposite_soft_pion_distribution );
-
-      }
-
+    nearSameHardMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearSameTauDistribution,
+                                     shortcut->get_hard_muon_from_tau() );
+    nearSameSoftMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearSameTauDistribution,
+                                     shortcut->get_soft_muon_from_tau() );
+    nearSameHardPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearSameTauDistribution,
+                                     shortcut->get_hard_pion_from_tau() );
+    nearSameSoftPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearSameTauDistribution,
+                                     shortcut->get_soft_pion_from_tau() );
+    nearOppositeHardMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearOppositeTauDistribution,
+                                     shortcut->get_hard_muon_from_tau() );
+    nearOppositeSoftMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearOppositeTauDistribution,
+                                     shortcut->get_soft_muon_from_tau() );
+    nearOppositeHardPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearOppositeTauDistribution,
+                                     shortcut->get_hard_pion_from_tau() );
+    nearOppositeSoftPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearOppositeTauDistribution,
+                                     shortcut->get_soft_pion_from_tau() );
+    farSameHardMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farSameTauDistribution,
+                                     shortcut->get_hard_muon_from_tau() );
+    farSameSoftMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farSameTauDistribution,
+                                     shortcut->get_soft_muon_from_tau() );
+    farSameHardPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farSameTauDistribution,
+                                     shortcut->get_hard_pion_from_tau() );
+    farSameSoftPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farSameTauDistribution,
+                                     shortcut->get_soft_pion_from_tau() );
+    farOppositeHardMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farOppositeTauDistribution,
+                                     shortcut->get_hard_muon_from_tau() );
+    farOppositeSoftMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farOppositeTauDistribution,
+                                     shortcut->get_soft_muon_from_tau() );
+    farOppositeHardPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farOppositeTauDistribution,
+                                     shortcut->get_hard_pion_from_tau() );
+    farOppositeSoftPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farOppositeTauDistribution,
+                                     shortcut->get_soft_pion_from_tau() );
+    activeDistributions.push_back( nearSameHardMuonDistribution );
+    activeDistributions.push_back( nearSameSoftMuonDistribution );
+    activeDistributions.push_back( nearSameHardPionDistribution );
+    activeDistributions.push_back( nearSameSoftPionDistribution );
+    activeDistributions.push_back( nearOppositeHardMuonDistribution );
+    activeDistributions.push_back( nearOppositeSoftMuonDistribution );
+    activeDistributions.push_back( nearOppositeHardPionDistribution );
+    activeDistributions.push_back( nearOppositeSoftPionDistribution );
+    activeDistributions.push_back( farSameHardMuonDistribution );
+    activeDistributions.push_back( farSameSoftMuonDistribution );
+    activeDistributions.push_back( farSameHardPionDistribution );
+    activeDistributions.push_back( farSameSoftPionDistribution );
+    activeDistributions.push_back( farOppositeHardMuonDistribution );
+    activeDistributions.push_back( farOppositeSoftMuonDistribution );
+    activeDistributions.push_back( farOppositeHardPionDistribution );
+    activeDistributions.push_back( farOppositeSoftPionDistribution );
   }
 
-  neutralino_to_stau_cascade::~neutralino_to_stau_cascade()
+  neutralinoToStauCascade::~neutralinoToStauCascade()
   {
-
-    for( std::vector< leptonEnergyDistribution* >::iterator
-         deletion_iterator = active_distributions.begin();
-         active_distributions.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
+    // does nothing.
   }
 
 
   void
-  neutralino_to_stau_cascade::calculate()
+  neutralinoToStauCascade::calculate()
   {
 
     cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
@@ -917,7 +753,7 @@ namespace LHC_FASER
   }
 
   void
-  neutralino_to_stau_cascade::charge_summed_calculate()
+  neutralinoToStauCascade::charge_summed_calculate()
   /* this updates values based on the current near & far muon/electron & pion
    * distributions & configuration branching ratio, summing over tau lepton
    * charges.
@@ -1009,7 +845,7 @@ namespace LHC_FASER
   }
 
   void
-  neutralino_to_stau_cascade::charge_distinguished_calculate()
+  neutralinoToStauCascade::charge_distinguished_calculate()
   /* this updates values based on the current near & far muon/electron & pion
    * distributions & configuration branching ratio, separately recording
    * values for differing charges.

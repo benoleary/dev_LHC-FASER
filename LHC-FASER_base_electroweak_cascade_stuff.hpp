@@ -56,7 +56,7 @@
 #ifndef LHC_FASER_BASE_ELECTROWEAK_CASCADE_STUFF_HPP_
 #define LHC_FASER_BASE_ELECTROWEAK_CASCADE_STUFF_HPP_
 
-#include "LHC-FASER_kinematics_stuff.hpp"
+#include "LHC-FASER_lepton_kinematics_stuff.hpp"
 #include "LHC-FASER_derived_lepton_distributions.hpp"
 
 namespace LHC_FASER
@@ -68,18 +68,20 @@ namespace LHC_FASER
    */
   class acceptanceValues
   {
-
   public:
-
     acceptanceValues( double const defaultUnsetValues )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     ~acceptanceValues()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     void
     reset( double const unsetValues )
     // this sets all values to unsetValues & alreadyCalculatedFlag to false.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    reset()
+    // this sets all values to CppSLHA::CppSLHA_global::really_wrong_value &
+    // alreadyCalculatedFlag to false.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     bool
     notAlreadyCalculated()
@@ -202,7 +204,7 @@ namespace LHC_FASER
 
 
   protected:
-    bool alreadyCalculated;
+    bool notAlreadyCalculatedFlag;
     double twoJets;
     double oneJetOneNegativeElectron;
     double oneJetOnePositiveElectron;
@@ -215,7 +217,7 @@ namespace LHC_FASER
     double negativeMuonPlusPositiveElectron;
     double muonPlusAntimuon;
     double zeroJetsOneNegativeElectron;
-    double zerJetsOnePositiveElectron;
+    double zeroJetsOnePositiveElectron;
     double zeroJetsOneNegativeMuon;
     double zeroJetsOnePositiveMuon;
     double zeroJetsZeroLeptons;
@@ -247,9 +249,8 @@ namespace LHC_FASER
 
     input_handler const*
     getShortcut()
-    {
-      return shortcut;
-    }
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     double
     getAcceptance( acceptanceCutSet const* const cuts,
@@ -386,7 +387,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     double
-    getAcceptance( acceptanceCutSet const* const cuts,
+    getAcceptance( acceptanceCutSet* const cuts,
                    int const numberOfAdditionalJets,
                    int const numberOfNegativeElectrons,
                    int const numberOfPositiveElectrons,
@@ -409,7 +410,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     double
-    getOssfMinusOsdf( acceptanceCutSet const* const cuts )
+    getOssfMinusOsdf( acceptanceCutSet* const cuts )
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the value for acceptance * branching ratio FOR THE
@@ -436,11 +437,11 @@ namespace LHC_FASER
   class electroweakCascadeHandler
   {
   public:
-    electroweakCascadeHandler( kinematics_handler* const kinematics,
+    electroweakCascadeHandler(
+                      leptonAcceptancesForOneBeamEnergy* const kinematicsTable,
                                int const beamEnergy,
                                input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
     ~electroweakCascadeHandler()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -456,7 +457,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    lepton_acceptance_table* const kinematicsTable;
+    leptonAcceptancesForOneBeamEnergy* const kinematicsTable;
     int const beamEnergy;
     input_handler const* const shortcut;
     std::vector< electroweakCascadeSet* > cascadeSets;
@@ -467,279 +468,273 @@ namespace LHC_FASER
 
 
 
-  /* this is an abstract base class for objects that calculate a set of
-   * acceptances & update their respective values.
-   */
-  class channel_calculator : public readied_for_new_point
-  {
-
-  public:
-
-    channel_calculator( double const given_primary_cut,
-                        double const given_secondary_cut,
-                        double const given_jet_cut,
-                        lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                        bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                        bool const given_EWino_is_not_antiparticle,
-          CppSLHA::particle_property_set const* const given_mediating_particle,
-                        input_handler const* const given_shortcuts )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    virtual
-    ~channel_calculator()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    void
-    update_numbers()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-  protected:
-
-    double const primary_cut;
-    double const secondary_cut;
-    double const jet_cut;
-    lepton_acceptance_value* const kinematics;
-    CppSLHA::particle_property_set const* const decaying_scolored;
-    bool const scolored_is_not_antiparticle;
-    CppSLHA::particle_property_set const* const decaying_EWino;
-    bool const EWino_is_not_antiparticle;
-    CppSLHA::particle_property_set const* const mediating_particle;
-    input_handler const* const shortcut;
-
-    exclusive_BR_calculator* first_BR;
-    exclusive_BR_calculator* second_BR;
-    double cascade_BR;
-    // these refer to the branching ratios for the 1st & 2nd vertices of the
-    // "main" (ignoring tau decay vertices) Feynmann diagrams of the cascade.
-
-    std::vector< leptonEnergyDistribution* > active_distributions;
-    // this is just to keep track of which lepton_energy_distribution pointers
-    // have been allocated memory.
-
-
-    /* this controls how fine the summation of the trapezia is for the
-     * approximation of the integral of the product of the lepton energy
-     * distribution with the acceptance:
-     */
-    static int const integration_bins = 10;
-
-    // these are for ease of calculating branching ratios of distributions with
-    // tau leptons:
-    static double const tau_pair_to_muon_pair_BR
-    = ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR
-        * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR );
-    static double const tau_pair_to_muon_electron_BR
-    = ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR
-        * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR );
-    static double const tau_pair_to_electron_pair_BR
-    = ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR
-        * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR );
-    static double const tau_pair_to_jet_pair_BR
-    = ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
-        * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR );
-    static double const tau_pair_to_jet_muon_BR
-    = ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
-        * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR );
-    static double const tau_pair_to_jet_electron_BR
-    = ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
-        * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR );
-
-    virtual void
-    calculate()
-    = 0
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    integrate_acceptance( double const given_cut,
-                  leptonEnergyDistribution const* const lepton_distribution )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  };
-
-
-  // this holds pointers to all the channel_calculator instances associated
-  // with a particular cascade acceptance value as well as the value itself.
-  class cascade_acceptance_value : public readied_for_new_point
-  {
-
-  public:
-
-    cascade_acceptance_value( double const given_starting_value,
-                              readier_for_new_point* const given_readier )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~cascade_acceptance_value()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    double
-    get_value()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double* const
-    get_value_pointer()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    void
-    add_channel( channel_calculator* given_channel )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-  protected:
-
-    double acceptance_value;
-
-    std::vector< channel_calculator* > channels;
-
-  };
-
-
-  /* this sets up all the open channel_calculators & registers them with their
-   * appropriate cascade_acceptance_values, uses the cascade_acceptance_values
-   * to return values for various acceptances.
-   * this does not keep track of different charges of lepton separately. I
-   * intend to write another class to do that some day, when a relevant signal
-   * needs it.
-   */
-  class charge_summed_cascade_calculator
-  {
-
-  public:
-
-    charge_summed_cascade_calculator( double const given_primary_cut,
-                                      double const given_secondary_cut,
-                                      double const given_jet_cut,
-                               lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                                 bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                                    bool const given_EWino_is_not_antiparticle,
-                                   input_handler const* const given_shortcuts )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~charge_summed_cascade_calculator()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    bool
-    is_requested( double const given_primary_cut,
-                  double const given_secondary_cut,
-                  double const given_jet_cut,
-                  lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                  bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                  bool const given_EWino_is_not_antiparticle )
-    /* this returns true if the relevant cuts, the kinematics, & the sparticles
-     * match those held. relevant cuts are those over 0.0, any cuts of 0.0 or
-     * less are assumed to be irrelevant to the signal requesting these values,
-     * so this calculator can be given to the signal.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    get_OSSF_minus_OSDF_acceptance()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    get_acceptance( int const number_of_jets,
-                    int const number_of_leptons )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    get_muon_acceptance( int const number_of_jets,
-                         int const number_of_muons )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    get_electron_acceptance( int const number_of_jets,
-                             int const number_of_electrons )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-  protected:
-
-    std::vector< channel_calculator* > channels;
-
-    cascade_acceptance_value OSSF_minus_OSDF_leptons;
-    cascade_acceptance_value two_jets_no_leptons;
-    cascade_acceptance_value one_jet_one_muon;
-    cascade_acceptance_value one_jet_one_electron;
-    cascade_acceptance_value no_jets_two_muons;
-    cascade_acceptance_value no_jets_two_electrons;
-    cascade_acceptance_value no_jets_one_muon_one_electron;
-
-    cascade_acceptance_value one_jet_no_leptons;
-    cascade_acceptance_value no_jets_one_muon;
-    cascade_acceptance_value no_jets_one_electron;
-
-    cascade_acceptance_value no_jets_no_leptons;
-
-    // this stuff needs to be stored to identify the
-    // charge_summed_cascade_calculator
-    double const primary_cut;
-    double const secondary_cut;
-    double const jet_cut;
-    lepton_acceptance_value* const kinematics;
-    CppSLHA::particle_property_set const* const decaying_scolored;
-    bool const scolored_is_not_antiparticle;
-    CppSLHA::particle_property_set const* const decaying_EWino;
-    bool const EWino_is_not_antiparticle;
-
-  };
-
-
-  // this class passes out pointers to cascade_calculators for given
-  // kinematics & decaying sparticles.
-  class cascade_handler : public readied_for_new_point
-  {
-
-  public:
-
-    cascade_handler( input_handler const* const given_shortcuts )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~cascade_handler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    charge_summed_cascade_calculator*
-    get_charge_summed_calculator( double given_primary_cut,
-                                  double given_secondary_cut,
-                                  double given_jet_cut,
-                               lepton_acceptance_value* const given_kinematics,
-                 CppSLHA::particle_property_set const* const decaying_scolored,
-                                  bool const scolored_is_not_antiparticle,
-                    CppSLHA::particle_property_set const* const decaying_EWino,
-                                  bool const EWino_is_not_antiparticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-
-    input_handler const* const shortcut;
-
-    std::vector< charge_summed_cascade_calculator* > calculators;
-
-  };
-
-
-
-
 
   // inline functions:
 
+  inline void
+  acceptanceValues::reset( double const unsetValues )
+  // this sets all values to unsetValues & notAlreadyCalculatedFlag to true.
+  {
+    notAlreadyCalculatedFlag = true;
+    twoJets = unsetValues;
+    oneJetOneNegativeElectron = unsetValues;
+    oneJetOnePositiveElectron = unsetValues;
+    oneJetOneNegativeMuon = unsetValues;
+    oneJetOnePositiveMuon = unsetValues;
+    oneJetZeroLeptons = unsetValues;
+    ossfMinusOsdf = unsetValues;
+    electronPlusAntielectron = unsetValues;
+    negativeElectronPlusPositiveMuon = unsetValues;
+    negativeMuonPlusPositiveElectron = unsetValues;
+    muonPlusAntimuon = unsetValues;
+    zeroJetsOneNegativeElectron = unsetValues;
+    zeroJetsOnePositiveElectron = unsetValues;
+    zeroJetsOneNegativeMuon = unsetValues;
+    zeroJetsOnePositiveMuon = unsetValues;
+    zeroJetsZeroLeptons = unsetValues;
+  }
+
+  inline void
+  acceptanceValues::reset()
+  // this sets all values to CppSLHA::CppSLHA_global::really_wrong_value &
+  // alreadyCalculatedFlag to false.
+  {
+    reset( CppSLHA::CppSLHA_global::really_wrong_value );
+  }
+
+  inline bool
+  acceptanceValues::notAlreadyCalculated()
+  {
+    return notAlreadyCalculatedFlag;
+  }
+
+  inline void
+  acceptanceValues::flagAsAlreadyCalculated()
+  {
+    notAlreadyCalculatedFlag = false;
+  }
+
+  inline double
+  acceptanceValues::getTwoJets()
+  const
+  {
+    return twoJets;
+  }
+
+  inline void
+  acceptanceValues::setTwoJets( double const inputValue )
+  {
+    twoJets = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getOneJetOneNegativeElectron()
+  const
+  {
+    return oneJetOneNegativeElectron;
+  }
+
+  inline void
+  acceptanceValues::setOneJetOneNegativeElectron( double const inputValue )
+  {
+    oneJetOneNegativeElectron = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getOneJetOnePositiveElectron()
+  const
+  {
+    return oneJetOnePositiveElectron;
+  }
+
+  inline void
+  acceptanceValues::setOneJetOnePositiveElectron( double const inputValue )
+  {
+    oneJetOnePositiveElectron = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getOneJetOneNegativeMuon()
+  const
+  {
+    return oneJetOneNegativeMuon;
+  }
+
+  inline void
+  acceptanceValues::setOneJetOneNegativeMuon( double const inputValue )
+  {
+    oneJetOneNegativeMuon = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getOneJetOnePositiveMuon()
+  const
+  {
+    return oneJetOnePositiveMuon;
+  }
+
+  inline void
+  acceptanceValues::setOneJetOnePositiveMuon( double const inputValue )
+  {
+    oneJetOnePositiveMuon = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getOneJetZeroLeptons()
+  const
+  {
+    return oneJetZeroLeptons;
+  }
+
+  inline void
+  acceptanceValues::setOneJetZeroLeptons( double const inputValue )
+  {
+    oneJetZeroLeptons = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getOssfMinusOsdf()
+  const
+  {
+    return ossfMinusOsdf;
+  }
+
+  inline void
+  acceptanceValues::setOssfMinusOsdf( double const inputValue )
+  {
+    ossfMinusOsdf = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getElectronPlusAntielectron()
+  const
+  {
+    return electronPlusAntielectron;
+  }
+
+  inline void
+  acceptanceValues::setElectronPlusAntielectron( double const inputValue )
+  {
+    electronPlusAntielectron = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getNegativeElectronPlusPositiveMuon()
+  const
+  {
+    return negativeElectronPlusPositiveMuon;
+  }
+
+  inline void
+  acceptanceValues::setNegativeElectronPlusPositiveMuon(
+                                                      double const inputValue )
+  {
+    negativeElectronPlusPositiveMuon = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getNegativeMuonPlusPositiveElectron()
+  const
+  {
+    return negativeMuonPlusPositiveElectron;
+  }
+
+  inline void
+  acceptanceValues::setNegativeMuonPlusPositiveElectron(
+                                                      double const inputValue )
+  {
+    negativeMuonPlusPositiveElectron = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getMuonPlusAntimuon()
+  const
+  {
+    return muonPlusAntimuon;
+  }
+
+  inline void
+  acceptanceValues::setMuonPlusAntimuon( double const inputValue )
+  {
+    muonPlusAntimuon = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getZeroJetsOneNegativeElectron()
+  const
+  {
+    return zeroJetsOneNegativeElectron;
+  }
+
+  inline void
+  acceptanceValues::setZeroJetsOneNegativeElectron( double const inputValue )
+  {
+    zeroJetsOneNegativeElectron = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getZeroJetsOnePositiveElectron()
+  const
+  {
+    return zeroJetsOnePositiveElectron;
+  }
+
+  inline void
+  acceptanceValues::setZeroJetsOnePositiveElectron( double const inputValue )
+  {
+    zeroJetsOnePositiveElectron = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getZeroJetsOneNegativeMuon()
+  const
+  {
+    return zeroJetsOneNegativeMuon;
+  }
+
+  inline void
+  acceptanceValues::setZeroJetsOneNegativeMuon( double const inputValue )
+  {
+    zeroJetsOneNegativeMuon = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getZeroJetsOnePositiveMuon()
+  const
+  {
+    return zeroJetsOnePositiveMuon;
+  }
+
+  inline void
+  acceptanceValues::setZeroJetsOnePositiveMuon( double const inputValue )
+  {
+    zeroJetsOnePositiveMuon = inputValue;
+  }
+
+  inline double
+  acceptanceValues::getZeroJetsZeroLeptons()
+  const
+  {
+    return zeroJetsZeroLeptons;
+  }
+
+  inline void
+  acceptanceValues::setZeroJetsZeroLeptons( double const inputValue )
+  {
+    zeroJetsZeroLeptons = inputValue;
+  }
+
+
+
   inline input_handler const*
   electroweakCascade::getShortcut()
+  const
   {
     return shortcut;
   }
 
-  inline acceptanceValues const*
-  electroweakCascade::getOssfMinusOsdf( acceptanceCutSet const* const cuts )
+  inline double
+  electroweakCascade::getOssfMinusOsdf( acceptanceCutSet* const cuts )
   /* this does the common job of checking to see if the point has been
    * updated before calling the relevant protected virtual function, which
    * returns the set of values for acceptance * branching ratio FOR THE
@@ -798,22 +793,6 @@ namespace LHC_FASER
     cachedKey->becomeCopyOf( constructionKey );
   }
 
-  inline acceptanceValues const*
-  electroweakCascade::protectedGetAcceptance( int const numberOfJets,
-                                           int const numberOfNegativeElectrons,
-                                           int const numberOfPositiveElectrons,
-                                              int const numberOfNegativeMuons,
-                                              int const numberOfPositiveMuons )
-  {
-    return NULL;
-  }
-
-  inline acceptanceValues const*
-  electroweakCascade::protectedGetOssfMinusOsdf()
-  {
-    return NULL;
-  }
-
 
 
   inline bool
@@ -849,159 +828,15 @@ namespace LHC_FASER
          cascades.end() > cascadeIterator;
          ++cascadeIterator )
     {
-      returnValue
-      += (*cascadeIterator)->getAcceptance( cuts,
-                                            numberOfAdditionalJets,
-                                            numberOfNegativeElectrons,
-                                            numberOfPositiveElectrons,
-                                            numberOfNegativeMuons,
-                                            numberOfPositiveMuons );
+      returnValue += (*cascadeIterator)->getAcceptance( cuts,
+                                                        numberOfAdditionalJets,
+                                                     numberOfNegativeElectrons,
+                                                     numberOfPositiveElectrons,
+                                                        numberOfNegativeMuons,
+                                                       numberOfPositiveMuons );
     }
     return returnValue;
   }
-
-
-
-
-
-
-
-  inline void
-  channel_calculator::update_numbers()
-  {
-
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: channel_calculator::update_numbers() called."
-    << std::endl << "this = " << this
-    << std::endl << "needs_to_prepare_for_this_point() = "
-    << needs_to_prepare_for_this_point();
-    std::cout << std::endl;**/
-
-    if( needs_to_prepare_for_this_point() )
-      {
-
-        calculate();
-        finish_preparing_for_this_point();
-
-      }
-
-  }
-
-
-
-  inline double
-  cascade_acceptance_value::get_value()
-  {
-
-    if( needs_to_prepare_for_this_point() )
-      {
-
-        acceptance_value = 0.0;
-
-        for( std::vector< channel_calculator* >::iterator
-             channel_iterator = channels.begin();
-             channels.end() > channel_iterator;
-             ++channel_iterator )
-          {
-
-            // debugging:
-            /**std::cout
-            << std::endl
-            << "debugging: " << *channel_iterator << "->update_numbers()";
-            std::cout << std::endl;**/
-
-            (*channel_iterator)->update_numbers();
-
-          }
-
-        finish_preparing_for_this_point();
-
-      }
-
-    return acceptance_value;
-
-  }
-
-  inline double* const
-  cascade_acceptance_value::get_value_pointer()
-  {
-
-    return &acceptance_value;
-
-  }
-
-  inline void
-  cascade_acceptance_value::add_channel( channel_calculator* given_channel )
-  {
-
-    channels.push_back( given_channel );
-
-  }
-
-
-
-  inline bool
-  charge_summed_cascade_calculator::is_requested( double given_primary_cut,
-                                                  double given_secondary_cut,
-                                                  double given_jet_cut,
-                               lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                                 bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                                   bool const given_EWino_is_not_antiparticle )
-  /* this returns true if the relevant cuts, the kinematics, & the sparticles
-   * match those held. relevant cuts are those over 0.0, any cuts of 0.0 or
-   * less are assumed to be irrelevant to the signal requesting these values,
-   * so this calculator can be given to the signal.
-   */
-  {
-
-    if( ( ( given_primary_cut == primary_cut )
-          ||
-          ( given_primary_cut <= 0.0 ) )
-        &&
-        ( ( given_secondary_cut == secondary_cut )
-          ||
-          ( given_secondary_cut <= 0.0 ) )
-        &&
-        ( ( given_jet_cut == jet_cut )
-          ||
-          ( given_jet_cut <= 0.0 ) )
-        &&
-        ( given_kinematics == kinematics )
-        &&
-        ( given_decaying_scolored == decaying_scolored )
-        &&
-        ( given_scolored_is_not_antiparticle == scolored_is_not_antiparticle )
-        &&
-        ( given_decaying_EWino == decaying_EWino )
-        &&
-        ( given_EWino_is_not_antiparticle == EWino_is_not_antiparticle ) )
-      {
-
-        return true;
-
-      }
-    else
-      {
-
-        return false;
-
-      }
-
-  }
-
-
-  inline double
-  charge_summed_cascade_calculator::get_OSSF_minus_OSDF_acceptance()
-  {
-
-    return OSSF_minus_OSDF_leptons.get_value();
-
-  }
-
 }
 
 #endif /* LHC_FASER_BASE_ELECTROWEAK_CASCADE_STUFF_HPP_ */

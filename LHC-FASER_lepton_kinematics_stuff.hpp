@@ -128,7 +128,8 @@ namespace LHC_FASER
     double
     getGluinoValue( CppSLHA::particle_property_set const* const ewino,
                     int const requestedColumn,
-                    bool const lookingForEffectiveSquarkMass )
+                    bool const lookingForEffectiveSquarkMass,
+                    bool const lookingForLeptonAcceptanceNumber )
     const
     /* this interpolates the requested column based on the squark, gluino, &
      * electroweakino masses. it fudges some cases that were not properly done
@@ -482,9 +483,7 @@ namespace LHC_FASER
   inline double
   gluinoBasedLeptonAcceptanceTable::getValue(
                              CppSLHA::particle_property_set const* const ewino,
-                                              int const requestedColumn,
-                                      bool const lookingForEffectiveSquarkMass,
-                                          bool const lookingForPseudorapidity )
+                                              int const requestedColumn )
   const
   // this gets the appropriate interpolated value from lookupGrid.
   {

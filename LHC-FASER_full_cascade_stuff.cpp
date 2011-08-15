@@ -94,7 +94,7 @@ namespace LHC_FASER
     oneJetZeroLeptons( CppSLHA::CppSLHA_global::really_wrong_value ),
     zeroJetsOneNegativeElectron(
                                  CppSLHA::CppSLHA_global::really_wrong_value ),
-    zerJetsOnePositiveElectron(
+    zeroJetsOnePositiveElectron(
                                  CppSLHA::CppSLHA_global::really_wrong_value ),
     zeroJetsOneNegativeMuon( CppSLHA::CppSLHA_global::really_wrong_value ),
     zeroJetsOnePositiveMuon( CppSLHA::CppSLHA_global::really_wrong_value ),

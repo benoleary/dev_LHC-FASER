@@ -125,7 +125,7 @@ namespace LHC_FASER
                              CppSLHA::particle_property_set const* const ewino,
                                         int const requestedColumn,
                                       bool const lookingForEffectiveSquarkMass,
-                                        bool const lookingForPseudorapidity )
+                                  bool const lookingForLeptonAcceptanceNumber )
   const
   /* this interpolates the requested column based on the squark, gluino, &
    * electroweakino masses. it fudges some cases that were not properly done in
@@ -150,7 +150,7 @@ namespace LHC_FASER
                                  ewino->get_absolute_mass(),
                                  requestedColumn,
                                  lookingForEffectiveSquarkMass,
-                                 lookingForPseudorapidity );
+                                 lookingForLeptonAcceptanceNumber );
   }
 
 

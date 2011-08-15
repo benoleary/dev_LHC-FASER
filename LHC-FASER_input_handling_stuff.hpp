@@ -177,7 +177,7 @@ namespace LHC_FASER
     calculateGaugeCouplings()
     {
       // we work out the gauge couplings from the SMINPUTS BLOCK:
-      if( NULL != SM_inputs )
+      if( NULL != smInputs )
         {
           electromagneticCoupling
           = sqrt( ( ( 4.0 * M_PI ) / smInputs->get_entry( 1 ) ) );

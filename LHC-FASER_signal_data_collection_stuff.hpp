@@ -58,7 +58,7 @@
 
 #include "LHC-FASER_input_handling_stuff.hpp"
 #include "LHC-FASER_cross-section_stuff.hpp"
-#include "LHC-FASER_kinematics_stuff.hpp"
+#include "LHC-FASER_jet_kinematics_stuff.hpp"
 #include "LHC-FASER_full_cascade_stuff.hpp"
 
 namespace LHC_FASER
