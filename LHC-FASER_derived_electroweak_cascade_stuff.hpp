@@ -177,6 +177,13 @@ namespace LHC_FASER
   class neutralinoToStauCascade : public electroweakCascade
   {
   public:
+    static double const tauPairToPionPairBr;
+    static double const tauToPionTimesTauToElectronBr;
+    static double const tauToPionTimesTauToMuonBr;
+    static double const tauPairToElectronPairBr;
+    static double const tauToElectronTimesTauToMuonBr;
+    static double const tauPairToMuonPairBr;
+
     neutralinoToStauCascade( leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
@@ -188,7 +195,6 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    bool muonsNotElectrons;
     leptonEnergyDistribution* nearSameTauDistribution;
     leptonEnergyDistribution* farSameTauDistribution;
     leptonEnergyDistribution* nearOppositeTauDistribution;
@@ -213,6 +219,8 @@ namespace LHC_FASER
     leptonEnergyDistribution* currentNearPionDistribution;
     leptonEnergyDistribution* currentFarMuonDistribution;
     leptonEnergyDistribution* currentFarPionDistribution;
+    acceptanceCutSet* currentCuts;
+    acceptanceValues* currentAcceptance;
     double jetLeftHandedness;
     double jetRightHandedness;
     double nearNegativeTauLeftHandedness;
@@ -227,7 +235,7 @@ namespace LHC_FASER
     // configurations of the tau leptons being calculated.
 
     double nearMuonPass;
-    double nearMuon_fail;
+    double nearMuonFail;
     double farMuonPass;
     double farMuonFail;
     double nearPionPass;
@@ -236,6 +244,8 @@ namespace LHC_FASER
     double farPionFail;
     double bothPass;
     double currentPass;
+    double currentNearFailSum;
+    double currentFarFailSum;
     // these are for holding the pass & fail rates for whichever configuration
     // is being calculated.
 
@@ -256,6 +266,98 @@ namespace LHC_FASER
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    void
+    calculateForCurrentConfiguration()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+  };
+
+  /* this is a derived class that implements the channel
+   * decaying neutralino -> stau -> lightest neutralino.
+   * it also includes ... -> antistau -> ... assuming that
+   * the charge-conjugate process is identical for these purposes. it does
+   * *not*, however, account for both stau mass eigenstates.
+   */
+  class chargeSummedNeutralinoToStauCascade : public electroweakCascade
+  {
+  public:
+    chargeSummedNeutralinoToStauCascade(
+                                leptonAcceptanceParameterSet* const kinematics,
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+                CppSLHA::particle_property_set const* const electroweakDecayer,
+               CppSLHA::particle_property_set const* const intermediateDecayer,
+                                         input_handler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    ~chargeSummedNeutralinoToStauCascade()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    leptonEnergyDistribution* nearTauDistribution;
+    leptonEnergyDistribution* farTauDistribution;
+    leptonEnergyDistribution* nearHardMuonDistribution;
+    leptonEnergyDistribution* nearSoftMuonDistribution;
+    leptonEnergyDistribution* nearHardPionDistribution;
+    leptonEnergyDistribution* nearSoftPionDistribution;
+    leptonEnergyDistribution* farHardMuonDistribution;
+    leptonEnergyDistribution* farSoftMuonDistribution;
+    leptonEnergyDistribution* farHardPionDistribution;
+    leptonEnergyDistribution* farSoftPionDistribution;
+    leptonEnergyDistribution* currentNearMuonDistribution;
+    leptonEnergyDistribution* currentNearPionDistribution;
+    leptonEnergyDistribution* currentFarMuonDistribution;
+    leptonEnergyDistribution* currentFarPionDistribution;
+    acceptanceCutSet* currentCuts;
+    acceptanceValues* currentAcceptance;
+    double jetLeftHandedness;
+    double jetRightHandedness;
+    double nearNegativeTauLeftHandedness;
+    double farNegativeTauLeftHandedness;
+    double nearNegativeTauRightHandedness;
+    double farNegativeTauRightHandedness;
+    // the above are for the case of a positively-charged up-type quark or
+    // negatively-charged down-type quark as the jet.
+    double configurationBr;
+    // this is the branching ratio for the particular polarization & charge
+    // configuration of the tau leptons being calculated.
+
+    double nearMuonPass;
+    double nearMuonFail;
+    double farMuonPass;
+    double farMuonFail;
+    double nearPionPass;
+    double nearPionFail;
+    double farPionPass;
+    double farPionFail;
+    double bothPass;
+    double currentPass;
+    double currentNearFailSum;
+    double currentFarFailSum;
+    // these are for holding the pass & fail rates for whichever configuration
+    // is being calculated.
+
+    virtual bool
+    validSignal( int const numberOfJets,
+                 int const numberOfNegativeElectrons,
+                 int const numberOfPositiveElectrons,
+                 int const numberOfNegativeMuons,
+                 int const numberOfPositiveMuons )
+    /* this returns true if a configuration where each of the signs of tau
+     * lepton decayed either into a detected jet, detected lepton, or
+     * undetected particle, & false otherwise.
+     */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual void
+    calculateAcceptance( acceptanceCutSet* const cuts,
+                         acceptanceValues* const currentAcceptance )
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through the selectron or smuon to the LSP.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    void
+    calculateForCurrentConfiguration()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 

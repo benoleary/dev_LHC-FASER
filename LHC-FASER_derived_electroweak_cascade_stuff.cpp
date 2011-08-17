@@ -192,7 +192,7 @@ namespace LHC_FASER
     // debugging:
     /**std::cout
     << std::endl
-    << "cascade_BR = " << cascade_BR;
+    << "cascadeBr = " << cascadeBr;
     std::cout << std::endl;**/
   }
 
@@ -314,6 +314,30 @@ namespace LHC_FASER
   }
 
 
+  double const
+  neutralinoToStauCascade::tauPairToPionPairBr(
+                          ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
+                     * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR ) );
+  double const
+  neutralinoToStauCascade::tauToPionTimesTauToElectronBr(
+                          ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
+                  * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR ) );
+  double const
+  neutralinoToStauCascade::tauToPionTimesTauToMuonBr(
+                          ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
+                      * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) );
+  double const
+  neutralinoToStauCascade::tauPairToElectronPairBr(
+                       ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR
+                  * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR ) );
+  double const
+  neutralinoToStauCascade::tauToElectronTimesTauToMuonBr(
+                       ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR
+                      * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) );
+  double const
+  neutralinoToStauCascade::tauPairToMuonPairBr(
+                           ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR
+                      * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) );
 
   neutralinoToStauCascade::neutralinoToStauCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
@@ -463,484 +487,590 @@ namespace LHC_FASER
 
 
   void
-  neutralinoToStauCascade::calculate()
+  neutralinoToStauCascade::calculateAcceptance( acceptanceCutSet* const cuts,
+                                    acceptanceValues* const currentAcceptance )
+  // this returns the appropriate acceptances multiplied by branching ratios
+  // from the electroweakino through the stau to the LSP.
   {
-
     cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
-
     if( LHC_FASER_global::negligible_BR < cascadeBr )
       // if the branching ratio into this channel is not negligible...
-      {
-
-        near_negative_tau_left_handedness
-        = shortcut->quark_or_lepton_left_handedness(
-                                        mediating_particle->get_PDG_code(),
-                                          decaying_EWino->get_PDG_code() );
-        near_negative_tau_right_handedness
-        = ( 1.0 - near_negative_tau_left_handedness );
-        far_negative_tau_left_handedness
-        = shortcut->quark_or_lepton_left_handedness(
-                                        mediating_particle->get_PDG_code(),
-                              shortcut->get_neutralino_one()->get_PDG_code() );
-        far_negative_tau_right_handedness
-        = ( 1.0 - far_negative_tau_left_handedness );
-
-        if( should_sum_charges_flag )
-          {
-
-            /* 1st, left-handed quark, left-handed near negative tau lepton
-             * with left-handed far positive tau lepton + right-handed near
-             * positive tau lepton with right-handed far negative tau lepton,
-             * plus the all-handedness-flipped versions:
-             */
-            current_near_muon_distribution = near_same_hard_muon_distribution;
-            current_near_pion_distribution = near_same_soft_pion_distribution;
-            current_far_muon_distribution = far_same_soft_muon_distribution;
-            current_far_pion_distribution = far_same_hard_pion_distribution;
-            negative_near_configuration_BR
-            = ( cascadeBr * ( near_negative_tau_left_handedness
-                               * far_negative_tau_right_handedness ) );
-            charge_summed_calculate();
-
-            /* 2nd, left-handed quark, left-handed near negative tau lepton
-             * with right-handed far positive tau lepton + right-handed near
-             * positive tau lepton with left-handed far negative tau lepton,
-             * plus the all-handedness-flipped versions:
-             */
-            current_near_muon_distribution = near_same_hard_muon_distribution;
-            current_near_pion_distribution = near_same_soft_pion_distribution;
-            current_far_muon_distribution = far_same_hard_muon_distribution;
-            current_far_pion_distribution = far_same_soft_pion_distribution;
-            negative_near_configuration_BR
-            = ( cascadeBr * ( near_negative_tau_left_handedness
-                               * far_negative_tau_left_handedness ) );
-            charge_summed_calculate();
-
-            /* 3rd, left-handed quark, right-handed near negative tau lepton
-             * with left-handed far positive tau lepton + left-handed near
-             * positive tau lepton with right-handed far negative tau lepton,
-             * plus the all-handedness-flipped versions:
-             */
-            current_near_muon_distribution
-            = near_opposite_soft_muon_distribution;
-            current_near_pion_distribution
-            = near_opposite_hard_pion_distribution;
-            current_far_muon_distribution
-            = far_opposite_soft_muon_distribution;
-            current_far_pion_distribution
-            = far_opposite_hard_pion_distribution;
-            negative_near_configuration_BR
-            = ( cascadeBr * ( near_negative_tau_right_handedness
-                               * far_negative_tau_right_handedness ) );
-            charge_summed_calculate();
-
-            /* 4th, left-handed quark, right-handed near negative tau lepton
-             * with right-handed far positive tau lepton + left-handed near
-             * positive tau lepton with left-handed far negative tau lepton,
-             * plus the all-handedness-flipped versions:
-             */
-            current_near_muon_distribution
-            = near_opposite_soft_muon_distribution;
-            current_near_pion_distribution
-            = near_opposite_hard_pion_distribution;
-            current_far_muon_distribution
-            = far_opposite_hard_muon_distribution;
-            current_far_pion_distribution
-            = far_opposite_soft_pion_distribution;
-            negative_near_configuration_BR
-            = ( cascadeBr * ( near_negative_tau_right_handedness
-                               * far_negative_tau_left_handedness ) );
-            charge_summed_calculate();
-
-          }
-        else
-          {
-
-            jet_left_handedness
-            = shortcut->quark_or_lepton_left_handedness(
-                                             decaying_scolored->get_PDG_code(),
+    {
+      currentCuts = cuts;
+      this->currentAcceptance = currentAcceptance;
+      jetLeftHandedness
+      = shortcut->quark_or_lepton_left_handedness(
+                                                coloredDecayer->get_PDG_code(),
+                                          electroweakDecayer->get_PDG_code() );
+      jetRightHandedness = ( 1.0 - jetLeftHandedness );
+      nearNegativeTauLeftHandedness
+      = shortcut->quark_or_lepton_left_handedness(
+                                            mediating_particle->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
-            jet_right_handedness = ( 1.0 - jet_left_handedness );
-
-            /* in the following, XY(bar)Z(bar) is quark handedness, near tau
-             * lepton handedness, far tau lepton handedness, YbarZ means that
-             * the near tau lepton is positive while YZbar means that the far
-             * tau lepton is positive.
-             */
-
-            // near lepton same handedness as quark:
-
-            // hard near muons, hard far muons:
-            current_near_muon_distribution = near_same_hard_muon_distribution;
-            current_near_pion_distribution = near_same_soft_pion_distribution;
-            current_far_muon_distribution = far_same_hard_muon_distribution;
-            current_far_pion_distribution = far_same_soft_pion_distribution;
-
-            // LLRbar
-            negative_near_configuration_BR
-            = ( cascadeBr * jet_left_handedness
-                * near_negative_tau_left_handedness
-                * far_negative_tau_left_handedness );
-            // RRbarL
-            positive_near_configuration_BR
-            = ( cascadeBr * jet_right_handedness
-                * near_negative_tau_left_handedness
-                * far_negative_tau_left_handedness );
-            charge_distinguished_calculate();
+      nearNegativeTauRightHandedness = ( 1.0 - nearNegativeTauLeftHandedness );
+      farNegativeTauLeftHandedness
+      = shortcut->quark_or_lepton_left_handedness(
+                                            mediating_particle->get_PDG_code(),
+                              shortcut->get_neutralino_one()->get_PDG_code() );
+      farNegativeTauRightHandedness = ( 1.0 - farNegativeTauLeftHandedness );
 
 
-            // hard near muons, soft far muons:
-            current_near_muon_distribution = near_same_hard_muon_distribution;
-            current_near_pion_distribution = near_same_soft_pion_distribution;
-            current_far_muon_distribution = far_same_soft_muon_distribution;
-            current_far_pion_distribution = far_same_hard_pion_distribution;
+      /* in the following, XY(bar)Z(bar) is quark handedness, near tau
+       * lepton handedness, far tau lepton handedness, YbarZ means that
+       * the near tau lepton is positive while YZbar means that the far
+       * tau lepton is positive.
+       */
+      // near lepton same handedness as quark:
+      // hard near muons, hard far muons:
+      currentNearMuonDistribution = nearSameHardMuonDistribution;
+      currentNearPionDistribution = nearSameSoftPionDistribution;
+      currentFarMuonDistribution = farSameHardMuonDistribution;
+      currentFarPionDistribution = farSameSoftPionDistribution;
+      // LLRbar
+      negativeNearConfigurationBr = ( cascadeBr * jetLeftHandedness
+                                                * nearNegativeTauLeftHandedness
+                                              * farNegativeTauLeftHandedness );
+      // RRbarL
+      positiveNearConfigurationBr = ( cascadeBr * jetRightHandedness
+                                                * nearNegativeTauLeftHandedness
+                                              * farNegativeTauLeftHandedness );
+      calculateForCurrentConfiguration();
 
-            // LLLbar
-            negative_near_configuration_BR
-            = ( cascadeBr * jet_left_handedness
-                * near_negative_tau_left_handedness
-                * far_negative_tau_right_handedness );
-            // RRbarR
-            positive_near_configuration_BR
-            = ( cascadeBr * jet_right_handedness
-                * near_negative_tau_left_handedness
-                * far_negative_tau_right_handedness );
-            charge_distinguished_calculate();
+      // hard near muons, soft far muons:
+      currentNearMuonDistribution = nearSameHardMuonDistribution;
+      currentNearPionDistribution = nearSameSoftPionDistribution;
+      currentFarMuonDistribution = farSameSoftMuonDistribution;
+      currentFarPionDistribution = farSameHardPionDistribution;
+      // LLLbar
+      negativeNearConfigurationBr = ( cascadeBr * jetLeftHandedness
+                                                * nearNegativeTauLeftHandedness
+                                             * farNegativeTauRightHandedness );
+      // RRbarR
+      positiveNearConfigurationBr = ( cascadeBr * jetRightHandedness
+                                                * nearNegativeTauLeftHandedness
+                                             * farNegativeTauRightHandedness );
+      calculateForCurrentConfiguration();
 
+      // soft near muons, hard far muons:
+      currentNearMuonDistribution = nearSameSoftMuonDistribution;
+      currentNearPionDistribution = nearSameHardPionDistribution;
+      currentFarMuonDistribution = farSameHardMuonDistribution;
+      currentFarPionDistribution = farSameSoftPionDistribution;
+      // RRRbar
+      negativeNearConfigurationBr = ( cascadeBr * jetRightHandedness
+                                               * nearNegativeTauRightHandedness
+                                              * farNegativeTauLeftHandedness );
+      // LLbarL
+      positiveNearConfigurationBr = ( cascadeBr * jetLeftHandedness
+                                               * nearNegativeTauRightHandedness
+                                              * farNegativeTauLeftHandedness );
+      calculateForCurrentConfiguration();
 
-            // soft near muons, hard far muons:
-            current_near_muon_distribution = near_same_soft_muon_distribution;
-            current_near_pion_distribution = near_same_hard_pion_distribution;
-            current_far_muon_distribution = far_same_hard_muon_distribution;
-            current_far_pion_distribution = far_same_soft_pion_distribution;
+      // soft near muons, soft far muons:
+      currentNearMuonDistribution = nearSameSoftMuonDistribution;
+      currentNearPionDistribution = nearSameHardPionDistribution;
+      currentFarMuonDistribution = farSameSoftMuonDistribution;
+      currentFarPionDistribution = farSameHardPionDistribution;
+      // RRLbar
+      negativeNearConfigurationBr = ( cascadeBr * jetRightHandedness
+                                               * nearNegativeTauRightHandedness
+                                             * farNegativeTauRightHandedness );
+      // LLbarR
+      positiveNearConfigurationBr = ( cascadeBr * jetLeftHandedness
+                                               * nearNegativeTauRightHandedness
+                                             * farNegativeTauRightHandedness );
+      calculateForCurrentConfiguration();
 
-            // RRRbar
-            negative_near_configuration_BR
-            = ( cascadeBr * jet_right_handedness
-                * near_negative_tau_right_handedness
-                * far_negative_tau_left_handedness );
-            // LLbarL
-            positive_near_configuration_BR
-            = ( cascadeBr * jet_left_handedness
-                * near_negative_tau_right_handedness
-                * far_negative_tau_left_handedness );
-            charge_distinguished_calculate();
+      // near lepton opposite handedness to quark:
+      // hard near muons, hard far muons:
+      currentNearMuonDistribution = nearOppositeHardMuonDistribution;
+      currentNearPionDistribution = nearOppositeSoftPionDistribution;
+      currentFarMuonDistribution = farOppositeHardMuonDistribution;
+      currentFarPionDistribution = farOppositeSoftPionDistribution;
+      // RLRbar
+      negativeNearConfigurationBr = ( cascadeBr * jetRightHandedness
+                                                * nearNegativeTauLeftHandedness
+                                              * farNegativeTauLeftHandedness );
+      // LRbarL
+      positiveNearConfigurationBr = ( cascadeBr * jetLeftHandedness
+                                                * nearNegativeTauLeftHandedness
+                                              * farNegativeTauLeftHandedness );
+      calculateForCurrentConfiguration();
 
+      // hard near muons, soft far muons:
+      currentNearMuonDistribution = nearOppositeHardMuonDistribution;
+      currentNearPionDistribution = nearOppositeSoftPionDistribution;
+      currentFarMuonDistribution = farOppositeSoftMuonDistribution;
+      currentFarPionDistribution = farOppositeHardPionDistribution;
+      // RLLbar
+      negativeNearConfigurationBr = ( cascadeBr * jetRightHandedness
+                                                * nearNegativeTauLeftHandedness
+                                             * farNegativeTauRightHandedness );
+      // LRbarR
+      positiveNearConfigurationBr = ( cascadeBr * jetLeftHandedness
+                                                * nearNegativeTauLeftHandedness
+                                             * farNegativeTauRightHandedness );
+      calculateForCurrentConfiguration();
 
-            // soft near muons, soft far muons:
-            current_near_muon_distribution = near_same_soft_muon_distribution;
-            current_near_pion_distribution = near_same_hard_pion_distribution;
-            current_far_muon_distribution = far_same_soft_muon_distribution;
-            current_far_pion_distribution = far_same_hard_pion_distribution;
+      // soft near muons, hard far muons:
+      currentNearMuonDistribution = nearOppositeSoftMuonDistribution;
+      currentNearPionDistribution = nearOppositeHardPionDistribution;
+      currentFarMuonDistribution = farOppositeHardMuonDistribution;
+      currentFarPionDistribution = farOppositeSoftPionDistribution;
+      // LRRbar
+      negativeNearConfigurationBr = ( cascadeBr * jetLeftHandedness
+                                               * nearNegativeTauRightHandedness
+                                              * farNegativeTauLeftHandedness );
+      // RLbarL
+      positiveNearConfigurationBr = ( cascadeBr * jetRightHandedness
+                                               * nearNegativeTauRightHandedness
+                                              * farNegativeTauLeftHandedness );
+      calculateForCurrentConfiguration();
 
-            // RRLbar
-            negative_near_configuration_BR
-            = ( cascadeBr * jet_right_handedness
-                * near_negative_tau_right_handedness
-                * far_negative_tau_right_handedness );
-            // LLbarR
-            positive_near_configuration_BR
-            = ( cascadeBr * jet_left_handedness
-                * near_negative_tau_right_handedness
-                * far_negative_tau_right_handedness );
-            charge_distinguished_calculate();
+      // soft near muons, soft far muons:
+      currentNearMuonDistribution = nearOppositeSoftMuonDistribution;
+      currentNearPionDistribution = nearOppositeHardPionDistribution;
+      currentFarMuonDistribution = farOppositeSoftMuonDistribution;
+      currentFarPionDistribution = farOppositeHardPionDistribution;
 
-
-            // near lepton opposite handedness to quark:
-
-            // hard near muons, hard far muons:
-            current_near_muon_distribution
-            = near_opposite_hard_muon_distribution;
-            current_near_pion_distribution
-            = near_opposite_soft_pion_distribution;
-            current_far_muon_distribution
-            = far_opposite_hard_muon_distribution;
-            current_far_pion_distribution
-            = far_opposite_soft_pion_distribution;
-
-            // RLRbar
-            negative_near_configuration_BR
-            = ( cascadeBr * jet_right_handedness
-                * near_negative_tau_left_handedness
-                * far_negative_tau_left_handedness );
-            // LRbarL
-            positive_near_configuration_BR
-            = ( cascadeBr * jet_left_handedness
-                * near_negative_tau_left_handedness
-                * far_negative_tau_left_handedness );
-            charge_distinguished_calculate();
-
-
-            // hard near muons, soft far muons:
-            current_near_muon_distribution
-            = near_opposite_hard_muon_distribution;
-            current_near_pion_distribution
-            = near_opposite_soft_pion_distribution;
-            current_far_muon_distribution
-            = far_opposite_soft_muon_distribution;
-            current_far_pion_distribution
-            = far_opposite_hard_pion_distribution;
-
-            // RLLbar
-            negative_near_configuration_BR
-            = ( cascadeBr * jet_right_handedness
-                * near_negative_tau_left_handedness
-                * far_negative_tau_right_handedness );
-            // LRbarR
-            positive_near_configuration_BR
-            = ( cascadeBr * jet_left_handedness
-                * near_negative_tau_left_handedness
-                * far_negative_tau_right_handedness );
-            charge_distinguished_calculate();
-
-
-            // soft near muons, hard far muons:
-            current_near_muon_distribution
-            = near_opposite_soft_muon_distribution;
-            current_near_pion_distribution
-            = near_opposite_hard_pion_distribution;
-            current_far_muon_distribution
-            = far_opposite_hard_muon_distribution;
-            current_far_pion_distribution
-            = far_opposite_soft_pion_distribution;
-
-            // LRRbar
-            negative_near_configuration_BR
-            = ( cascadeBr * jet_left_handedness
-                * near_negative_tau_right_handedness
-                * far_negative_tau_left_handedness );
-            // RLbarL
-            positive_near_configuration_BR
-            = ( cascadeBr * jet_right_handedness
-                * near_negative_tau_right_handedness
-                * far_negative_tau_left_handedness );
-            charge_distinguished_calculate();
-
-
-            // soft near muons, soft far muons:
-            current_near_muon_distribution
-            = near_opposite_soft_muon_distribution;
-            current_near_pion_distribution
-            = near_opposite_hard_pion_distribution;
-            current_far_muon_distribution
-            = far_opposite_soft_muon_distribution;
-            current_far_pion_distribution
-            = far_opposite_hard_pion_distribution;
-
-            // LRLbar
-            negative_near_configuration_BR
-            = ( cascadeBr * jet_left_handedness
-                * near_negative_tau_right_handedness
-                * far_negative_tau_right_handedness );
-            // RLbarR
-            positive_near_configuration_BR
-            = ( cascadeBr * jet_right_handedness
-                * near_negative_tau_right_handedness
-                * far_negative_tau_right_handedness );
-            charge_distinguished_calculate();
-
-
-            // debugging:
-            /**std::cout
-            << std::endl
-            << "cascade_BR = " << cascade_BR;
-            std::cout << std::endl;**/
-
-          }  // end of if summing over charges or not.
-
-      }  // end of if cascade branching ratio was large enough to care about.
-
+      // LRLbar
+      negativeNearConfigurationBr = ( cascadeBr * jetLeftHandedness
+                                               * nearNegativeTauRightHandedness
+                                             * farNegativeTauRightHandedness );
+      // RLbarR
+      positiveNearConfigurationBr = ( cascadeBr * jetRightHandedness
+                                               * nearNegativeTauRightHandedness
+                                             * farNegativeTauRightHandedness );
+      calculateForCurrentConfiguration();
+    }
+    else
+      // otherwise the cascade branching ratio was not large enough to care
+      // about.
+    {
+      currentAcceptance->setTwoJets( 0.0 );
+      currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
+      currentAcceptance->setOneJetOnePositiveElectron( 0.0 );
+      currentAcceptance->setOneJetOneNegativeMuon( 0.0 );
+      currentAcceptance->setOneJetOnePositiveMuon( 0.0 );
+      currentAcceptance->setOneJetZeroLeptons( 0.0 );
+      currentAcceptance->setZeroJetsOneNegativeElectron( 0.0 );
+      currentAcceptance->setZeroJetsOnePositiveElectron( 0.0 );
+      currentAcceptance->setZeroJetsOneNegativeMuon( 0.0 );
+      currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
+      currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
+    }
+    // debugging:
+    /**std::cout
+    << std::endl
+    << "cascadeBr = " << cascadeBr;
+    std::cout << std::endl;**/
   }
 
   void
-  neutralinoToStauCascade::charge_summed_calculate()
-  /* this updates values based on the current near & far muon/electron & pion
-   * distributions & configuration branching ratio, summing over tau lepton
-   * charges.
-   */
+  neutralinoToStauCascade::calculateForCurrentConfiguration()
   {
+    nearMuonPass = integrateAcceptance( currentNearMuonDistribution,
+                                        currentCuts->getPrimaryLeptonCut() );
+    nearMuonFail = ( 1.0 - integrateAcceptance( currentNearMuonDistribution,
+                                      currentCuts->getSecondaryLeptonCut() ) );
+    nearPionPass = integrateAcceptance( currentNearMuonDistribution,
+                                        currentCuts->getJetCut() );
+    nearPionFail = ( 1.0 - nearPionPass );
+    farMuonPass = integrateAcceptance( currentFarMuonDistribution,
+                                       currentCuts->getPrimaryLeptonCut() );
+    farMuonFail = ( 1.0 - integrateAcceptance( currentFarMuonDistribution,
+                                      currentCuts->getSecondaryLeptonCut() ) );
+    farPionPass = integrateAcceptance( currentFarMuonDistribution,
+                                       currentCuts->getJetCut() );
+    farPionFail = ( 1.0 - farPionPass );
 
-    // at this point, ( 2 * negative_near_configuration_BR ) is the sum of the
-    // BRs into this configuration.
+    currentAcceptance->setTwoJets( ( negativeNearConfigurationBr
+                                     + positiveNearConfigurationBr )
+                                   * tauPairToPionPairBr
+                                   * nearPionPass * farPionPass );
 
-    near_muon_pass = integrateAcceptance( current_near_muon_distribution, cuts->getPrimaryLeptonCut() );
-    near_muon_fail = ( 1.0 - integrateAcceptance( current_near_muon_distribution, cuts->getSecondaryLeptonCut() ) );
-    near_pion_pass = integrateAcceptance( current_near_pion_distribution, jet_cut );
-    near_pion_fail = ( 1.0 - near_pion_pass );
-    far_muon_pass = integrateAcceptance( current_far_muon_distribution, cuts->getPrimaryLeptonCut() );
-    far_muon_fail = ( 1.0 - integrateAcceptance( current_far_muon_distribution, cuts->getSecondaryLeptonCut() ) );
-    far_pion_pass = integrateAcceptance( current_far_pion_distribution, jet_cut );
-    far_pion_fail = ( 1.0 - far_pion_pass );
+    currentPass = ( negativeNearConfigurationBr * nearMuonPass * farPionPass
+                  + positiveNearConfigurationBr * nearPionPass * farMuonPass );
+    currentAcceptance->setOneJetOneNegativeElectron(
+                                 tauToPionTimesTauToElectronBr * currentPass );
+    currentAcceptance->setOneJetOneNegativeMuon( tauToPionTimesTauToMuonBr
+                                                 * currentPass );
 
-    *two_jets_no_leptons
-    += ( 2.0 * negative_near_configuration_BR
-         * tau_pair_to_jet_pair_BR
-         * near_pion_pass * far_pion_pass );
-    // the factor of 2.0 accounts for the charge-conjugate.
+    currentPass = ( positiveNearConfigurationBr * nearMuonPass * farPionPass
+                  + negativeNearConfigurationBr * nearPionPass * farMuonPass );
+    currentAcceptance->setOneJetOnePositiveElectron(
+                                 tauToPionTimesTauToElectronBr * currentPass );
+    currentAcceptance->setOneJetOnePositiveMuon( tauToPionTimesTauToMuonBr
+                                                 * currentPass );
 
-    both_pass
-    = ( 2.0 * ( near_pion_pass * far_muon_pass
-                + near_muon_pass * far_pion_pass ) );
-    // the factor of 2.0 accounts for the charge-conjugate.
-    current_pass = ( negative_near_configuration_BR
-                     * tau_pair_to_jet_electron_BR * both_pass );
-    *one_jet_one_negative_electron += current_pass;
-    *one_jet_one_positive_electron += current_pass;
-    current_pass = ( negative_near_configuration_BR
-                     * tau_pair_to_jet_muon_BR * both_pass );
-    *one_jet_one_negative_muon += current_pass;
-    *one_jet_one_positive_muon += current_pass;
-    both_pass = ( 2.0 * near_muon_pass * far_muon_pass );
-    // the factor of 2.0 accounts for the charge-conjugate.
-    *no_jets_two_electrons += ( negative_near_configuration_BR
-                                * tau_pair_to_electron_pair_BR * both_pass );
-    *no_jets_two_muons += ( negative_near_configuration_BR
-                            * tau_pair_to_muon_pair_BR * both_pass );
-    current_pass = ( negative_near_configuration_BR
-                     * tau_pair_to_muon_electron_BR * both_pass );
-    *no_jets_one_positive_muon_one_negative_electron += current_pass;
-    *no_jets_one_negative_muon_one_positive_electron += current_pass;
+    currentPass
+    = ( ( negativeNearConfigurationBr + positiveNearConfigurationBr )
+        * nearMuonPass * farMuonPass );
+    currentAcceptance->setElectronPlusAntielectron( tauPairToElectronPairBr
+                                                    * currentPass );
+    currentAcceptance->setMuonPlusAntimuon( tauPairToMuonPairBr
+                                            * currentPass );
+    currentPass *= tauToElectronTimesTauToMuonBr;
+    currentAcceptance->setNegativeElectronPlusPositiveMuon( currentPass );
+    currentAcceptance->setNegativeMuonPlusPositiveElectron( currentPass );
 
-    *one_jet_no_leptons
-    += ( 2.0 * negative_near_configuration_BR
-         * ( tau_pair_to_jet_pair_BR
-             * ( near_pion_pass * far_pion_fail
-                 + near_pion_fail * far_pion_pass ) )
-             + ( tau_pair_to_jet_muon_BR + tau_pair_to_jet_electron_BR )
-               * ( near_pion_pass * far_muon_fail
-                   + near_muon_fail * far_pion_pass ) );
-    // the factor of 2.0 accounts for the charge-conjugate.
-    current_pass
-    = ( negative_near_configuration_BR
-        * ( tau_pair_to_jet_electron_BR
-            * ( near_muon_pass * far_pion_fail
-                + near_pion_fail * far_muon_pass )
-            + ( tau_pair_to_electron_pair_BR + tau_pair_to_muon_electron_BR )
-              * ( near_muon_pass * far_muon_fail
-                  + near_muon_fail * far_muon_pass ) ) );
-    *no_jets_one_negative_electron += current_pass;
-    *no_jets_one_positive_electron += current_pass;
-    current_pass
-    = ( negative_near_configuration_BR
-        * ( tau_pair_to_jet_muon_BR
-            * ( near_muon_pass * far_pion_fail
-                + near_pion_fail * far_muon_pass )
-            + ( tau_pair_to_muon_pair_BR + tau_pair_to_muon_electron_BR )
-              * ( near_muon_pass * far_muon_fail
-                  + near_muon_fail * far_muon_pass ) ) );
-    *no_jets_one_negative_muon += current_pass;
-    *no_jets_one_positive_muon += current_pass;
+    currentAcceptance->setOneJetZeroLeptons( ( negativeNearConfigurationBr
+                                               + positiveNearConfigurationBr )
+                                               * ( tauPairToPionPairBr
+                                                 * ( nearPionPass * farPionFail
+                                                 + nearPionFail * farPionPass )
+                                              + ( tauToPionTimesTauToElectronBr
+                                                  + tauToPionTimesTauToMuonBr )
+                                                 * ( nearPionPass * farMuonFail
+                                            + nearMuonFail * farPionPass ) ) );
 
-    *no_jets_no_leptons
-    += ( 2.0 * negative_near_configuration_BR
-         * ( tau_pair_to_jet_pair_BR * near_pion_fail * far_pion_fail
-             + ( tau_pair_to_jet_muon_BR + tau_pair_to_jet_electron_BR )
-               * ( near_pion_fail * far_muon_fail
-                   + near_muon_fail * far_pion_fail )
-             + ( tau_pair_to_muon_pair_BR + 2.0 * tau_pair_to_muon_electron_BR
-                 + tau_pair_to_electron_pair_BR )
-               * near_muon_fail * far_muon_fail ) );
-    // the factor of 2.0 accounts for the charge-conjugate.
+    currentNearFailSum
+    = ( tauToPionTimesTauToElectronBr * nearPionFail
+        + ( tauPairToElectronPairBr + tauToElectronTimesTauToMuonBr )
+          * nearMuonFail );
+    currentFarFailSum
+    = ( tauToPionTimesTauToElectronBr * farPionFail
+        + ( tauPairToElectronPairBr + tauToElectronTimesTauToMuonBr )
+          * farMuonFail );
+    currentAcceptance->setZeroJetsOneNegativeElectron(
+                                 ( negativeNearConfigurationBr * nearMuonPass )
+                                 * currentFarFailSum
+                                + ( positiveNearConfigurationBr * farMuonPass )
+                                  * currentNearFailSum );
+    currentAcceptance->setZeroJetsOnePositiveElectron(
+                                 ( positiveNearConfigurationBr * nearMuonPass )
+                                 * currentFarFailSum
+                                + ( negativeNearConfigurationBr * farMuonPass )
+                                  * currentNearFailSum );
 
+    currentNearFailSum
+    = ( tauToPionTimesTauToMuonBr * nearPionFail
+        + ( tauToElectronTimesTauToMuonBr + tauPairToMuonPairBr )
+        * nearMuonFail );
+    currentFarFailSum
+    = ( tauToPionTimesTauToMuonBr * farPionFail
+        + ( tauToElectronTimesTauToMuonBr + tauPairToMuonPairBr )
+          * farMuonFail );
+    currentAcceptance->setZeroJetsOneNegativeMuon(
+                                 ( negativeNearConfigurationBr * nearMuonPass )
+                                 * currentFarFailSum
+                                + ( positiveNearConfigurationBr * farMuonPass )
+                                  * currentNearFailSum );
+    currentAcceptance->setZeroJetsOnePositiveMuon(
+                                 ( positiveNearConfigurationBr * nearMuonPass )
+                                 * currentFarFailSum
+                                + ( negativeNearConfigurationBr * farMuonPass )
+                                  * currentNearFailSum );
+
+    currentAcceptance->setZeroJetsZeroLeptons(
+                  ( negativeNearConfigurationBr + positiveNearConfigurationBr )
+                  * ( tauPairToPionPairBr * nearPionFail * farPionFail
+                + ( tauToPionTimesTauToElectronBr + tauToPionTimesTauToMuonBr )
+                  * ( nearPionFail * farMuonFail + nearMuonFail * farPionFail )
+              + ( tauPairToElectronPairBr + 2.0 * tauToElectronTimesTauToMuonBr
+                  + tauPairToMuonPairBr ) * nearMuonFail * farMuonFail ) );
+  }
+
+
+
+  chargeSummedNeutralinoToStauCascade::chargeSummedNeutralinoToStauCascade(
+                                leptonAcceptanceParameterSet* const kinematics,
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+                CppSLHA::particle_property_set const* const electroweakDecayer,
+               CppSLHA::particle_property_set const* const intermediateDecayer,
+                                        input_handler const* const shortcut ) :
+    electroweakCascade( kinematics,
+                        coloredDecayer,
+                        electroweakDecayer,
+                        intermediateDecayer,
+                        false,
+                        shortcut )
+  {
+    // we set up the BR of the (only-ish) channel:
+    firstBr
+    = shortcut->get_exclusive_BR_calculator( electroweakDecayer,
+                                             intermediateDecayer,
+                                             true,
+                                             shortcut->get_empty_list() );
+    secondBr
+    = shortcut->get_exclusive_BR_calculator( intermediateDecayer,
+                                             shortcut->get_neutralino_one(),
+                                             true,
+                                             shortcut->get_empty_list() );
+    nearTauDistribution
+    = new flat_near_muon_plus_antimuon( shortcut->get_readier(),
+                                        shortcut->get_CppSLHA(),
+                                        coloredDecayer,
+                                        kinematics,
+                                        electroweakDecayer,
+                                        intermediateDecayer );
+    farTauDistribution
+    = new flat_far_muon_plus_antimuon( shortcut->get_readier(),
+                                       shortcut->get_CppSLHA(),
+                                       coloredDecayer,
+                                       kinematics,
+                                       electroweakDecayer,
+                                       intermediateDecayer,
+                                       shortcut->get_neutralino_one() );
+    activeDistributions.push_back( nearTauDistribution );
+    activeDistributions.push_back( farTauDistribution );
+
+    nearHardMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearTauDistribution,
+                                     shortcut->get_hard_muon_from_tau() );
+    nearSoftMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearTauDistribution,
+                                     shortcut->get_soft_muon_from_tau() );
+    nearHardPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearTauDistribution,
+                                     shortcut->get_hard_pion_from_tau() );
+    nearSoftPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     nearTauDistribution,
+                                     shortcut->get_soft_pion_from_tau() );
+    farHardMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farTauDistribution,
+                                     shortcut->get_hard_muon_from_tau() );
+    farSoftMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farTauDistribution,
+                                     shortcut->get_soft_muon_from_tau() );
+    farHardPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farTauDistribution,
+                                     shortcut->get_hard_pion_from_tau() );
+    farSoftPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     farTauDistribution,
+                                     shortcut->get_soft_pion_from_tau() );
+    activeDistributions.push_back( nearHardMuonDistribution );
+    activeDistributions.push_back( nearSoftMuonDistribution );
+    activeDistributions.push_back( nearHardPionDistribution );
+    activeDistributions.push_back( nearSoftPionDistribution );
+    activeDistributions.push_back( farHardMuonDistribution );
+    activeDistributions.push_back( farSoftMuonDistribution );
+    activeDistributions.push_back( farHardPionDistribution );
+    activeDistributions.push_back( farSoftPionDistribution );
+  }
+
+  chargeSummedNeutralinoToStauCascade::~chargeSummedNeutralinoToStauCascade()
+  {
+    // does nothing.
   }
 
   void
-  neutralinoToStauCascade::charge_distinguished_calculate()
-  /* this updates values based on the current near & far muon/electron & pion
-   * distributions & configuration branching ratio, separately recording
-   * values for differing charges.
-   */
+  chargeSummedNeutralinoToStauCascade::calculateAcceptance(
+                                                  acceptanceCutSet* const cuts,
+                                    acceptanceValues* const currentAcceptance )
+  // this returns the appropriate acceptances multiplied by branching ratios
+  // from the electroweakino through the stau to the LSP.
   {
+    cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
+    if( LHC_FASER_global::negligible_BR < cascadeBr )
+      // if the branching ratio into this channel is not negligible...
+    {
+      currentCuts = cuts;
+      this->currentAcceptance = currentAcceptance;
+      jetLeftHandedness
+      = shortcut->quark_or_lepton_left_handedness(
+                                                coloredDecayer->get_PDG_code(),
+                                          electroweakDecayer->get_PDG_code() );
+      jetRightHandedness = ( 1.0 - jetLeftHandedness );
+      nearNegativeTauLeftHandedness
+      = shortcut->quark_or_lepton_left_handedness(
+                                            mediating_particle->get_PDG_code(),
+                                              decaying_EWino->get_PDG_code() );
+      nearNegativeTauRightHandedness = ( 1.0 - nearNegativeTauLeftHandedness );
+      farNegativeTauLeftHandedness
+      = shortcut->quark_or_lepton_left_handedness(
+                                            mediating_particle->get_PDG_code(),
+                              shortcut->get_neutralino_one()->get_PDG_code() );
+      farNegativeTauRightHandedness = ( 1.0 - farNegativeTauLeftHandedness );
 
-    // at this point, negative_near_configuration_BR is the BR with a negative
-    // near tau lepton.
+      /* 1st, left-handed quark, left-handed near negative tau lepton
+       * with left-handed far positive tau lepton + right-handed near
+       * positive tau lepton with right-handed far negative tau lepton,
+       * plus the all-handedness-flipped versions:
+       */
+      currentNearMuonDistribution = nearHardMuonDistribution;
+      currentNearPionDistribution = nearSoftPionDistribution;
+      currentFarMuonDistribution = farSoftMuonDistribution;
+      currentFarPionDistribution = farHardPionDistribution;
+      configurationBr = ( cascadeBr * nearNegativeTauLeftHandedness
+                                    * farNegativeTauRightHandedness );
+      calculateForCurrentConfiguration();
 
-    near_muon_pass = integrateAcceptance( current_near_muon_distribution, cuts->getPrimaryLeptonCut() );
-    near_muon_fail = ( 1.0 - integrateAcceptance( current_near_muon_distribution, cuts->getSecondaryLeptonCut() ) );
-    near_pion_pass = integrateAcceptance( current_near_pion_distribution, jet_cut );
-    near_pion_fail = ( 1.0 - near_pion_pass );
-    far_muon_pass = integrateAcceptance( current_far_muon_distribution, cuts->getPrimaryLeptonCut() );
-    far_muon_fail = ( 1.0 - integrateAcceptance( current_far_muon_distribution, cuts->getSecondaryLeptonCut() ) );
-    far_pion_pass = integrateAcceptance( current_far_pion_distribution, jet_cut );
-    far_pion_fail = ( 1.0 - far_pion_pass );
+      /* 2nd, left-handed quark, left-handed near negative tau lepton
+       * with right-handed far positive tau lepton + right-handed near
+       * positive tau lepton with left-handed far negative tau lepton,
+       * plus the all-handedness-flipped versions:
+       */
+      currentNearMuonDistribution = nearHardMuonDistribution;
+      currentNearPionDistribution = nearSoftPionDistribution;
+      currentFarMuonDistribution = farHardMuonDistribution;
+      currentFarPionDistribution = farSoftPionDistribution;
+      configurationBr = ( cascadeBr * nearNegativeTauLeftHandedness
+                                    * farNegativeTauLeftHandedness );
+      calculateForCurrentConfiguration();
 
-    *two_jets_no_leptons
-    += ( ( negative_near_configuration_BR + positive_near_configuration_BR )
-         * tau_pair_to_jet_pair_BR
-         * near_pion_pass * far_pion_pass );
+      /* 3rd, left-handed quark, right-handed near negative tau lepton
+       * with left-handed far positive tau lepton + left-handed near
+       * positive tau lepton with right-handed far negative tau lepton,
+       * plus the all-handedness-flipped versions:
+       */
+      currentNearMuonDistribution = nearSoftMuonDistribution;
+      currentNearPionDistribution = nearHardPionDistribution;
+      currentFarMuonDistribution = farSoftMuonDistribution;
+      currentFarPionDistribution = farHardPionDistribution;
+      configurationBr = ( cascadeBr * nearNegativeTauRightHandedness
+                                    * farNegativeTauRightHandedness );
+      calculateForCurrentConfiguration();
 
-    both_pass
-    = ( negative_near_configuration_BR * near_muon_pass * far_pion_pass
-        + positive_near_configuration_BR * near_pion_pass * far_muon_pass );
-    *one_jet_one_negative_electron
-    += ( tau_pair_to_jet_electron_BR * both_pass );
-    *one_jet_one_negative_muon
-    += ( tau_pair_to_jet_muon_BR * both_pass );
-    both_pass
-    = ( positive_near_configuration_BR * near_muon_pass * far_pion_pass
-        + negative_near_configuration_BR * near_pion_pass * far_muon_pass );
-    *one_jet_one_positive_electron
-    += ( tau_pair_to_jet_electron_BR * both_pass );
-    *one_jet_one_positive_muon
-    += ( tau_pair_to_jet_muon_BR * both_pass );
-    both_pass = ( near_muon_pass * far_muon_pass );
-    current_pass
-    = ( ( negative_near_configuration_BR + positive_near_configuration_BR )
-        * both_pass );
-    *no_jets_two_muons += ( tau_pair_to_muon_pair_BR * both_pass );
-    *no_jets_two_electrons += ( tau_pair_to_electron_pair_BR * both_pass );
-    current_pass *= tau_pair_to_muon_electron_BR;
-    *no_jets_one_positive_muon_one_negative_electron += current_pass;
-    *no_jets_one_negative_muon_one_positive_electron += current_pass;
-
-    *one_jet_no_leptons
-    += ( ( negative_near_configuration_BR + positive_near_configuration_BR )
-         * ( tau_pair_to_jet_pair_BR
-             * ( near_pion_pass * far_pion_fail
-                 + near_pion_fail * far_pion_pass ) )
-             + ( tau_pair_to_jet_muon_BR + tau_pair_to_jet_electron_BR )
-               * ( near_pion_pass * far_muon_fail
-                   + near_muon_fail * far_pion_pass ) );
-    *no_jets_one_negative_muon
-    += ( ( negative_near_configuration_BR * near_muon_pass )
-         * ( tau_pair_to_jet_muon_BR * far_pion_fail
-             + tau_pair_to_muon_pair_BR * far_muon_fail )
-         + ( positive_near_configuration_BR * far_muon_pass )
-           * ( tau_pair_to_jet_muon_BR * near_pion_fail
-               + tau_pair_to_muon_pair_BR * near_muon_fail ) );
-    *no_jets_one_negative_electron
-    += ( ( negative_near_configuration_BR * near_muon_pass )
-         * ( tau_pair_to_jet_electron_BR * far_pion_fail
-             + tau_pair_to_electron_pair_BR * far_muon_fail )
-         + ( positive_near_configuration_BR * far_muon_pass )
-           * ( tau_pair_to_jet_electron_BR * near_pion_fail
-               + tau_pair_to_electron_pair_BR * near_muon_fail ) );
-    *no_jets_one_positive_muon
-    += ( ( positive_near_configuration_BR * near_muon_pass )
-         * ( tau_pair_to_jet_muon_BR * far_pion_fail
-             + tau_pair_to_muon_pair_BR * far_muon_fail )
-         + ( negative_near_configuration_BR * far_muon_pass )
-           * ( tau_pair_to_jet_muon_BR * near_pion_fail
-               + tau_pair_to_muon_pair_BR * near_muon_fail ) );
-    *no_jets_one_positive_electron
-    += ( ( positive_near_configuration_BR * near_muon_pass )
-         * ( tau_pair_to_jet_electron_BR * far_pion_fail
-             + tau_pair_to_electron_pair_BR * far_muon_fail )
-         + ( negative_near_configuration_BR * far_muon_pass )
-           * ( tau_pair_to_jet_electron_BR * near_pion_fail
-               + tau_pair_to_electron_pair_BR * near_muon_fail ) );
-
-    *no_jets_no_leptons
-    += ( ( negative_near_configuration_BR + positive_near_configuration_BR )
-         * ( tau_pair_to_jet_pair_BR * near_pion_fail * far_pion_fail
-             + ( tau_pair_to_jet_muon_BR + tau_pair_to_jet_electron_BR )
-               * ( near_pion_fail * far_muon_fail
-                   + near_muon_fail * far_pion_fail )
-             + ( tau_pair_to_muon_pair_BR + 2.0 * tau_pair_to_muon_electron_BR
-                 + tau_pair_to_electron_pair_BR )
-               * near_muon_fail * far_muon_fail ) );
-
+      /* 4th, left-handed quark, right-handed near negative tau lepton
+       * with right-handed far positive tau lepton + left-handed near
+       * positive tau lepton with left-handed far negative tau lepton,
+       * plus the all-handedness-flipped versions:
+       */
+      currentNearMuonDistribution = nearSoftMuonDistribution;
+      currentNearPionDistribution = nearHardPionDistribution;
+      currentFarMuonDistribution = farHardMuonDistribution;
+      currentFarPionDistribution = farSoftPionDistribution;
+      configurationBr = ( cascadeBr * nearNegativeTauRightHandedness
+                                    * farNegativeTauLeftHandedness );
+      calculateForCurrentConfiguration();
+    }
+    else
+      // otherwise the cascade branching ratio was not large enough to care
+      // about.
+    {
+      currentAcceptance->setTwoJets( 0.0 );
+      currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
+      currentAcceptance->setOneJetOnePositiveElectron( 0.0 );
+      currentAcceptance->setOneJetOneNegativeMuon( 0.0 );
+      currentAcceptance->setOneJetOnePositiveMuon( 0.0 );
+      currentAcceptance->setOneJetZeroLeptons( 0.0 );
+      currentAcceptance->setZeroJetsOneNegativeElectron( 0.0 );
+      currentAcceptance->setZeroJetsOnePositiveElectron( 0.0 );
+      currentAcceptance->setZeroJetsOneNegativeMuon( 0.0 );
+      currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
+      currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
+    }
+    // debugging:
+    /**std::cout
+    << std::endl
+    << "cascadeBr = " << cascadeBr;
+    std::cout << std::endl;**/
   }
+
+  void
+  chargeSummedNeutralinoToStauCascade::calculateForCurrentConfiguration()
+  {
+    nearMuonPass = integrateAcceptance( currentNearMuonDistribution,
+                                        currentCuts->getPrimaryLeptonCut() );
+    nearMuonFail = ( 1.0 - integrateAcceptance( currentNearMuonDistribution,
+                                      currentCuts->getSecondaryLeptonCut() ) );
+    nearPionPass = integrateAcceptance( currentNearMuonDistribution,
+                                        currentCuts->getJetCut() );
+    nearPionFail = ( 1.0 - nearPionPass );
+    farMuonPass = integrateAcceptance( currentFarMuonDistribution,
+                                       currentCuts->getPrimaryLeptonCut() );
+    farMuonFail = ( 1.0 - integrateAcceptance( currentFarMuonDistribution,
+                                      currentCuts->getSecondaryLeptonCut() ) );
+    farPionPass = integrateAcceptance( currentFarMuonDistribution,
+                                       currentCuts->getJetCut() );
+    farPionFail = ( 1.0 - farPionPass );
+
+    currentAcceptance->setTwoJets( 2.0 * configurationBr * tauPairToPionPairBr
+                                   * nearPionPass * farPionPass );
+    // the factor of 2.0 accounts for the charge-conjugate decay.
+
+    currentPass = ( configurationBr * ( nearMuonPass * farPionPass
+                                        + nearPionPass * farMuonPass ) );
+    currentAcceptance->setOneJetOneNegativeElectron(
+        neutralinoToStauCascade::tauToPionTimesTauToElectronBr * currentPass );
+    currentAcceptance->setOneJetOnePositiveElectron(
+        neutralinoToStauCascade::tauToPionTimesTauToElectronBr * currentPass );
+    currentAcceptance->setOneJetOnePositiveMuon(
+            neutralinoToStauCascade::tauToPionTimesTauToMuonBr * currentPass );
+    currentAcceptance->setOneJetOneNegativeMuon(
+            neutralinoToStauCascade::tauToPionTimesTauToMuonBr * currentPass );
+    /* the charges are split evenly (chargeSummedNeutralinoToStauCascade should
+     * only be used in situations where overall the charges are even, such as
+     * in the case of a gluino decaying, which has equal branching ratio into
+     * each charge version, so all the charge asymmetry cancels out, so we
+     * might as well not bother calculating the asymmetry in the 1st place.
+     */
+
+    currentPass = ( 2.0 * configurationBr * nearMuonPass * farMuonPass );
+    // the factor of 2.0 accounts for the charge-conjugate decay.
+    currentAcceptance->setElectronPlusAntielectron(
+              neutralinoToStauCascade::tauPairToElectronPairBr * currentPass );
+    currentAcceptance->setMuonPlusAntimuon(
+                  neutralinoToStauCascade::tauPairToMuonPairBr * currentPass );
+    currentPass *= neutralinoToStauCascade::tauToElectronTimesTauToMuonBr;
+    currentAcceptance->setNegativeElectronPlusPositiveMuon( currentPass );
+    currentAcceptance->setNegativeMuonPlusPositiveElectron( currentPass );
+    // as above, the charges are split evenly.
+
+    currentAcceptance->setOneJetZeroLeptons( 2.0 * configurationBr
+                               * ( neutralinoToStauCascade::tauPairToPionPairBr
+                                                 * ( nearPionPass * farPionFail
+                                                 + nearPionFail * farPionPass )
+                     + ( neutralinoToStauCascade::tauToPionTimesTauToElectronBr
+                         + neutralinoToStauCascade::tauToPionTimesTauToMuonBr )
+                                                 * ( nearPionPass * farMuonFail
+                                            + nearMuonFail * farPionPass ) ) );
+    // the factor of 2.0 accounts for the charge-conjugate decay.
+
+    currentPass
+    = ( configurationBr
+        * ( nearMuonPass
+            * ( neutralinoToStauCascade::tauToPionTimesTauToElectronBr
+                * nearPionFail
+                + ( neutralinoToStauCascade::tauPairToElectronPairBr
+                    + neutralinoToStauCascade::tauToElectronTimesTauToMuonBr )
+                  * nearMuonFail )
+            + farMuonPass
+              * ( neutralinoToStauCascade::tauToPionTimesTauToElectronBr
+                  * farPionFail
+                  + ( neutralinoToStauCascade::tauPairToElectronPairBr
+                     + neutralinoToStauCascade::tauToElectronTimesTauToMuonBr )
+                    * farMuonFail ) ) );
+    currentAcceptance->setZeroJetsOneNegativeElectron( currentPass );
+    currentAcceptance->setZeroJetsOnePositiveElectron( currentPass );
+    currentPass
+    = ( configurationBr
+        * ( nearMuonPass
+            * ( neutralinoToStauCascade::tauToPionTimesTauToMuonBr
+                * nearPionFail
+                + ( neutralinoToStauCascade::tauToElectronTimesTauToMuonBr
+                    + neutralinoToStauCascade::tauPairToMuonPairBr )
+                  * nearMuonFail )
+            + farMuonPass
+              * ( neutralinoToStauCascade::tauToPionTimesTauToMuonBr
+                  * farPionFail
+                  + ( neutralinoToStauCascade::tauToElectronTimesTauToMuonBr
+                      + neutralinoToStauCascade::tauPairToMuonPairBr )
+                    * farMuonFail ) ) );
+    currentAcceptance->setZeroJetsOneNegativeMuon( currentPass );
+    currentAcceptance->setZeroJetsOnePositiveMuon( currentPass );
+
+    currentAcceptance->setZeroJetsZeroLeptons( configurationBr
+                               * ( neutralinoToStauCascade::tauPairToPionPairBr
+                                   * nearPionFail * farPionFail
+                     + ( neutralinoToStauCascade::tauToPionTimesTauToElectronBr
+                         + neutralinoToStauCascade::tauToPionTimesTauToMuonBr )
+                  * ( nearPionFail * farMuonFail + nearMuonFail * farPionFail )
+              + ( neutralinoToStauCascade::tauPairToElectronPairBr
+                 + 2.0 * neutralinoToStauCascade::tauToElectronTimesTauToMuonBr
+                  + neutralinoToStauCascade::tauPairToMuonPairBr )
+                  * nearMuonFail * farMuonFail ) );
+  }
+
 
 
   neutralino_to_Z_cascade::neutralino_to_Z_cascade(
