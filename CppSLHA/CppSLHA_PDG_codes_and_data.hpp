@@ -218,6 +218,7 @@ namespace CppSLHA
     static double const Z_to_electron_neutrino_antineutrino_BR;
     static double const Z_to_muon_neutrino_antineutrino_BR;
     static double const Z_to_tau_neutrino_antineutrino_BR;
+    static double const Z_to_hadrons_BR;
     static double const Z_to_charm_anticharm_BR;
     static double const Z_to_bottom_antibottom_BR;
     static double const Z_to_down_antidown_BR;

@@ -96,12 +96,18 @@ namespace LHC_FASER
     void
     setTwoJets( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToTwoJets( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getOneJetOneNegativeElectron()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     setOneJetOneNegativeElectron( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToOneJetOneNegativeElectron( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getOneJetOnePositiveElectron()
@@ -110,12 +116,18 @@ namespace LHC_FASER
     void
     setOneJetOnePositiveElectron( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToOneJetOnePositiveElectron( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getOneJetOneNegativeMuon()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     setOneJetOneNegativeMuon( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToOneJetOneNegativeMuon( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getOneJetOnePositiveMuon()
@@ -124,12 +136,18 @@ namespace LHC_FASER
     void
     setOneJetOnePositiveMuon( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToOneJetOnePositiveMuon( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getOneJetZeroLeptons()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     setOneJetZeroLeptons( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToOneJetZeroLeptons( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getOssfMinusOsdf()
@@ -138,12 +156,18 @@ namespace LHC_FASER
     void
     setOssfMinusOsdf( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToOssfMinusOsdf( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getElectronPlusAntielectron()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     setElectronPlusAntielectron( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToElectronPlusAntielectron( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getNegativeElectronPlusPositiveMuon()
@@ -152,12 +176,18 @@ namespace LHC_FASER
     void
     setNegativeElectronPlusPositiveMuon( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToNegativeElectronPlusPositiveMuon( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getNegativeMuonPlusPositiveElectron()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     setNegativeMuonPlusPositiveElectron( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToNegativeMuonPlusPositiveElectron( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getMuonPlusAntimuon()
@@ -166,12 +196,18 @@ namespace LHC_FASER
     void
     setMuonPlusAntimuon( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToMuonPlusAntimuon( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getZeroJetsOneNegativeElectron()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     setZeroJetsOneNegativeElectron( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToZeroJetsOneNegativeElectron( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getZeroJetsOnePositiveElectron()
@@ -180,12 +216,18 @@ namespace LHC_FASER
     void
     setZeroJetsOnePositiveElectron( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToZeroJetsOnePositiveElectron( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getZeroJetsOneNegativeMuon()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     setZeroJetsOneNegativeMuon( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToZeroJetsOneNegativeMuon( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getZeroJetsOnePositiveMuon()
@@ -194,12 +236,18 @@ namespace LHC_FASER
     void
     setZeroJetsOnePositiveMuon( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToZeroJetsOnePositiveMuon( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getZeroJetsZeroLeptons()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     setZeroJetsZeroLeptons( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addToZeroJetsZeroLeptons( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
@@ -276,7 +324,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     double
-    getOssfMinusOsdf( acceptanceCutSet const* const cuts )
+    getOssfMinusOsdf( acceptanceCutSet* const cuts )
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the value for acceptance * branching ratio FOR THE
@@ -310,6 +358,13 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
+    static double const tauPairToPionPairBr;
+    static double const tauToPionTimesTauToElectronBr;
+    static double const tauToPionTimesTauToMuonBr;
+    static double const tauPairToElectronPairBr;
+    static double const tauToElectronTimesTauToMuonBr;
+    static double const tauPairToMuonPairBr;
+
     leptonAcceptanceParameterSet* const kinematics;
     CppSLHA::particle_property_set const* const coloredDecayer;
     //bool const coloredDecayerIsNotAntiparticle;
@@ -387,7 +442,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     double
-    getAcceptance( acceptanceCutSet* const cuts,
+    getAcceptance( acceptanceCutSet const* const cuts,
                    int const numberOfAdditionalJets,
                    int const numberOfNegativeElectrons,
                    int const numberOfPositiveElectrons,
@@ -527,6 +582,12 @@ namespace LHC_FASER
     twoJets = inputValue;
   }
 
+  inline void
+  acceptanceValues::addToTwoJets( double const inputValue )
+  {
+    twoJets += inputValue;
+  }
+
   inline double
   acceptanceValues::getOneJetOneNegativeElectron()
   const
@@ -538,6 +599,12 @@ namespace LHC_FASER
   acceptanceValues::setOneJetOneNegativeElectron( double const inputValue )
   {
     oneJetOneNegativeElectron = inputValue;
+  }
+
+  inline void
+  acceptanceValues::addToOneJetOneNegativeElectron( double const inputValue )
+  {
+    oneJetOneNegativeElectron += inputValue;
   }
 
   inline double
@@ -553,6 +620,12 @@ namespace LHC_FASER
     oneJetOnePositiveElectron = inputValue;
   }
 
+  inline void
+  acceptanceValues::addToOneJetOnePositiveElectron( double const inputValue )
+  {
+    oneJetOnePositiveElectron += inputValue;
+  }
+
   inline double
   acceptanceValues::getOneJetOneNegativeMuon()
   const
@@ -564,6 +637,12 @@ namespace LHC_FASER
   acceptanceValues::setOneJetOneNegativeMuon( double const inputValue )
   {
     oneJetOneNegativeMuon = inputValue;
+  }
+
+  inline void
+  acceptanceValues::addToOneJetOneNegativeMuon( double const inputValue )
+  {
+    oneJetOneNegativeMuon += inputValue;
   }
 
   inline double
@@ -579,6 +658,12 @@ namespace LHC_FASER
     oneJetOnePositiveMuon = inputValue;
   }
 
+  inline void
+  acceptanceValues::addToOneJetOnePositiveMuon( double const inputValue )
+  {
+    oneJetOnePositiveMuon += inputValue;
+  }
+
   inline double
   acceptanceValues::getOneJetZeroLeptons()
   const
@@ -590,6 +675,12 @@ namespace LHC_FASER
   acceptanceValues::setOneJetZeroLeptons( double const inputValue )
   {
     oneJetZeroLeptons = inputValue;
+  }
+
+  inline void
+  acceptanceValues::addToOneJetZeroLeptons( double const inputValue )
+  {
+    oneJetZeroLeptons += inputValue;
   }
 
   inline double
@@ -605,6 +696,12 @@ namespace LHC_FASER
     ossfMinusOsdf = inputValue;
   }
 
+  inline void
+  acceptanceValues::addToOssfMinusOsdf( double const inputValue )
+  {
+    ossfMinusOsdf += inputValue;
+  }
+
   inline double
   acceptanceValues::getElectronPlusAntielectron()
   const
@@ -616,6 +713,12 @@ namespace LHC_FASER
   acceptanceValues::setElectronPlusAntielectron( double const inputValue )
   {
     electronPlusAntielectron = inputValue;
+  }
+
+  inline void
+  acceptanceValues::addToElectronPlusAntielectron( double const inputValue )
+  {
+    electronPlusAntielectron += inputValue;
   }
 
   inline double
@@ -632,6 +735,13 @@ namespace LHC_FASER
     negativeElectronPlusPositiveMuon = inputValue;
   }
 
+  inline void
+  acceptanceValues::addToNegativeElectronPlusPositiveMuon(
+                                                      double const inputValue )
+  {
+    negativeElectronPlusPositiveMuon += inputValue;
+  }
+
   inline double
   acceptanceValues::getNegativeMuonPlusPositiveElectron()
   const
@@ -644,6 +754,13 @@ namespace LHC_FASER
                                                       double const inputValue )
   {
     negativeMuonPlusPositiveElectron = inputValue;
+  }
+
+  inline void
+  acceptanceValues::addToNegativeMuonPlusPositiveElectron(
+                                                      double const inputValue )
+  {
+    negativeMuonPlusPositiveElectron += inputValue;
   }
 
   inline double
@@ -659,6 +776,12 @@ namespace LHC_FASER
     muonPlusAntimuon = inputValue;
   }
 
+  inline void
+  acceptanceValues::addToMuonPlusAntimuon( double const inputValue )
+  {
+    muonPlusAntimuon += inputValue;
+  }
+
   inline double
   acceptanceValues::getZeroJetsOneNegativeElectron()
   const
@@ -670,6 +793,12 @@ namespace LHC_FASER
   acceptanceValues::setZeroJetsOneNegativeElectron( double const inputValue )
   {
     zeroJetsOneNegativeElectron = inputValue;
+  }
+
+  inline void
+  acceptanceValues::addToZeroJetsOneNegativeElectron( double const inputValue )
+  {
+    zeroJetsOneNegativeElectron += inputValue;
   }
 
   inline double
@@ -685,6 +814,12 @@ namespace LHC_FASER
     zeroJetsOnePositiveElectron = inputValue;
   }
 
+  inline void
+  acceptanceValues::addToZeroJetsOnePositiveElectron( double const inputValue )
+  {
+    zeroJetsOnePositiveElectron += inputValue;
+  }
+
   inline double
   acceptanceValues::getZeroJetsOneNegativeMuon()
   const
@@ -696,6 +831,12 @@ namespace LHC_FASER
   acceptanceValues::setZeroJetsOneNegativeMuon( double const inputValue )
   {
     zeroJetsOneNegativeMuon = inputValue;
+  }
+
+  inline void
+  acceptanceValues::addToZeroJetsOneNegativeMuon( double const inputValue )
+  {
+    zeroJetsOneNegativeMuon += inputValue;
   }
 
   inline double
@@ -711,6 +852,12 @@ namespace LHC_FASER
     zeroJetsOnePositiveMuon = inputValue;
   }
 
+  inline void
+  acceptanceValues::addToZeroJetsOnePositiveMuon( double const inputValue )
+  {
+    zeroJetsOnePositiveMuon += inputValue;
+  }
+
   inline double
   acceptanceValues::getZeroJetsZeroLeptons()
   const
@@ -722,6 +869,12 @@ namespace LHC_FASER
   acceptanceValues::setZeroJetsZeroLeptons( double const inputValue )
   {
     zeroJetsZeroLeptons = inputValue;
+  }
+
+  inline void
+  acceptanceValues::addToZeroJetsZeroLeptons( double const inputValue )
+  {
+    zeroJetsZeroLeptons += inputValue;
   }
 
 

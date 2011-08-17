@@ -1,0 +1,45 @@
+
+1st, here's a list of things that just cannot get any better within the
+framework of LHC-FASER:
+
+- electroweak contributions to sparticle production
+- neutrino contributions to MET
+- showering from extra jets from cascades such as those from W bosons
+
+
+here's a list of things that *might* be feasible to implement, with a hell of a
+lot of work & presumably a huge speed hit:
+
+- correlations of lepton acceptance numbers with jet+MET cuts
+  (currently lepton cuts are based on all events, rather than just the subset
+  that pass jet+MET cuts; to change this, we'd need lepton acceptance grids per
+  signal as well)
+- correlations of acceptances of leptons from the same cascade
+  (currently each lepton is assumed to pass or fail cuts pretty independently
+  of the rest of the leptons; to change this, we'd need a lot more work on the
+  analytic formulae & probably new lepton grids, & all for probably not much
+  improvement in accuracy at all)
+
+
+here's a list of things that we really should implement, since they should be
+straightforward, though maybe time-consuming:
+
+- proper flavor-by-flavor (LO) cross-section grids
+  (not sure how trustworthy Prospino is for this though)
+- more accurate K-factor grids
+  (NNLO or NLL or whatever)
+  
+
+here's a list of things that are quite necessary, but are just placeholder
+because we're trying to just get a half-working version as soon as we can:
+
+- proper 3-body electroweakino decays
+  (at the very least in some limit of just off-shell Z or just off-shell
+  selectron, maybe with 1/m^2-type propagators)
+- decoupling of transverse & longitudinal modes of electroweakino cascade
+  decays through on-shell vector bosons
+  (should be straightforward breakdown in terms of squared couplings, but
+  currently the longitudinal parts are assumed to be negligible because Ben is
+  really confused about unitary & Feynman-'t Hooft gauges, & 2-Higgs-Doublet
+  models)
+

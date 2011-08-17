@@ -85,6 +85,30 @@ namespace LHC_FASER
   }
 
 
+  double const
+  electroweakCascade::tauPairToPionPairBr(
+                          ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
+                     * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR ) );
+  double const
+  electroweakCascade::tauToPionTimesTauToElectronBr(
+                          ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
+                  * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR ) );
+  double const
+  electroweakCascade::tauToPionTimesTauToMuonBr(
+                          ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
+                      * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) );
+  double const
+  electroweakCascade::tauPairToElectronPairBr(
+                       ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR
+                  * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR ) );
+  double const
+  electroweakCascade::tauToElectronTimesTauToMuonBr(
+                       ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR
+                      * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) );
+  double const
+  electroweakCascade::tauPairToMuonPairBr(
+                           ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR
+                      * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) );
 
   electroweakCascade::electroweakCascade(
                                 leptonAcceptanceParameterSet* const kinematics,

@@ -177,13 +177,6 @@ namespace LHC_FASER
   class neutralinoToStauCascade : public electroweakCascade
   {
   public:
-    static double const tauPairToPionPairBr;
-    static double const tauToPionTimesTauToElectronBr;
-    static double const tauToPionTimesTauToMuonBr;
-    static double const tauPairToElectronPairBr;
-    static double const tauToElectronTimesTauToMuonBr;
-    static double const tauPairToMuonPairBr;
-
     neutralinoToStauCascade( leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
@@ -242,7 +235,6 @@ namespace LHC_FASER
     double nearPionFail;
     double farPionPass;
     double farPionFail;
-    double bothPass;
     double currentPass;
     double currentNearFailSum;
     double currentFarFailSum;
@@ -330,7 +322,6 @@ namespace LHC_FASER
     double nearPionFail;
     double farPionPass;
     double farPionFail;
-    double bothPass;
     double currentPass;
     double currentNearFailSum;
     double currentFarFailSum;
@@ -363,117 +354,66 @@ namespace LHC_FASER
 
   // this is a derived class that implements the channel
   // decaying neutralino -> Z -> lightest neutralino
-  class neutralino_to_Z_cascade : public channel_calculator
+  class neutralinoToZCascade : public electroweakCascade
   {
-
   public:
-
-    neutralino_to_Z_cascade( readier_for_new_point* const given_readier,
-                             bool const should_sum_charges,
-                             double const given_primary_cut,
-                             double const given_secondary_cut,
-                             lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                             bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                             bool const given_EWino_is_not_antiparticle,
-          CppSLHA::particle_property_set const* const given_mediating_particle,
-                             input_handler const* const given_shortcuts,
-                             double* const given_two_jets_no_leptons,
-                             double* const given_one_jet_one_negative_electron,
-                             double* const given_one_jet_one_positive_electron,
-                             double* const given_one_jet_one_negative_muon,
-                             double* const given_one_jet_one_positive_muon,
-                             double* const given_OSSF_minus_OSDF_leptons,
-                             double* const given_no_jets_two_electrons,
-                             double* const given_no_jets_two_muons,
-           double* const given_no_jets_one_positive_muon_one_negative_electron,
-           double* const given_no_jets_one_negative_muon_one_positive_electron,
-                             double* const given_one_jet_no_leptons,
-                             double* const given_no_jets_one_negative_electron,
-                             double* const given_no_jets_one_positive_electron,
-                             double* const given_no_jets_one_negative_muon,
-                             double* const given_no_jets_one_positive_muon,
-                             double* const given_no_jets_no_leptons )
+    neutralinoToZCascade( leptonAcceptanceParameterSet* const kinematics,
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+                CppSLHA::particle_property_set const* const electroweakDecayer,
+                          input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~neutralino_to_Z_cascade()
+    ~neutralinoToZCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-
-    bool const should_sum_charges_flag;
-
-    leptonEnergyDistribution* direct_distribution;
-
-    leptonEnergyDistribution* hard_muon_distribution;
-    leptonEnergyDistribution* soft_muon_distribution;
-    leptonEnergyDistribution* hard_pion_distribution;
-    leptonEnergyDistribution* soft_pion_distribution;
-
-    double const negative_tau_left_handedness;
-
-    double negative_near_configuration_BR;
-    double positive_near_configuration_BR;
-    /* these are the branching ratios for the particular polarization & charge
-     * configurations of the tau leptons being calculated. for the
-     * charge-summed case, just negative_near_configuration_BR is used & it
-     * covers both charges.
-     */
-
-    double near_muon_pass;
-    double near_muon_fail;
-    double far_muon_pass;
-    double far_muon_fail;
-    double near_pion_pass;
-    double near_pion_fail;
-    double far_pion_pass;
-    double far_pion_fail;
-    double both_pass;
-    double current_pass;
+    leptonEnergyDistribution* directMuonDistribution;
+    leptonEnergyDistribution* sameHandedTauDistribution;
+    leptonEnergyDistribution* oppositeHandedTauDistribution;
+    leptonEnergyDistribution* sameHardMuonDistribution;
+    leptonEnergyDistribution* sameSoftMuonDistribution;
+    leptonEnergyDistribution* sameHardPionDistribution;
+    leptonEnergyDistribution* sameSoftPionDistribution;
+    leptonEnergyDistribution* oppositeHardMuonDistribution;
+    leptonEnergyDistribution* oppositeSoftMuonDistribution;
+    leptonEnergyDistribution* oppositeHardPionDistribution;
+    leptonEnergyDistribution* oppositeSoftPionDistribution;
+    leptonEnergyDistribution* currentMuonDistribution;
+    leptonEnergyDistribution* currentPionDistribution;
+    double negativeTauLeftHandedness;
+    double jetLeftHandedness;
+    double directMuonPass;
+    double directMuonFail;
+    double directJetPass;
+    double directJetFail;
+    double tauMuonPass;
+    double tauMuonFail;
+    double tauPionPass;
+    double tauPionFail;
+    double currentPass;
     // these are for holding the pass & fail rates for whichever configuration
     // is being calculated.
+    double configurationBr;
+    // this is the branching ratio for the particular polarization & charge
+    // configuration of the tau leptons being calculated.
 
-    double* const two_jets_no_leptons;
-    double* const one_jet_one_negative_electron;
-    double* const one_jet_one_positive_electron;
-    double* const one_jet_one_negative_muon;
-    double* const one_jet_one_positive_muon;
-    double* const OSSF_minus_OSDF_leptons;
-    double* const no_jets_two_electrons;
-    double* const no_jets_two_muons;
-    double* const no_jets_one_positive_muon_one_negative_electron;
-    double* const no_jets_one_negative_muon_one_positive_electron;
-
-    double* const one_jet_no_leptons;
-    double* const no_jets_one_negative_electron;
-    double* const no_jets_one_positive_electron;
-    double* const no_jets_one_negative_muon;
-    double* const no_jets_one_positive_muon;
-
-    double* const no_jets_no_leptons;
-
-
-    void
-    calculate()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    void
-    charge_summed_calculate()
-    /* this updates values based on the current near & far muon/electron & pion
-     * distributions & configuration branching ratio, summing over tau lepton
-     * charges.
+    virtual bool
+    validSignal( int const numberOfJets,
+                 int const numberOfNegativeElectrons,
+                 int const numberOfPositiveElectrons,
+                 int const numberOfNegativeMuons,
+                 int const numberOfPositiveMuons )
+    /* this returns true if a configuration where each of the signs of tau
+     * lepton decayed either into a detected jet, detected lepton, or
+     * undetected particle, & false otherwise.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    void
-    charge_distinguished_calculate()
-    /* this updates values based on the current near & far muon/electron & pion
-     * distributions & configuration branching ratio, separately recording
-     * values for differing charges.
-     */
+    virtual void
+    calculateAcceptance( acceptanceCutSet* const cuts,
+                         acceptanceValues* const currentAcceptance )
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through the selectron or smuon to the LSP.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
 
@@ -1112,65 +1052,6 @@ namespace LHC_FASER
 
 
 
-  inline bool
-  neutralinoToStauCascade::validSignal( int const numberOfJets,
-                                        int const numberOfNegativeElectrons,
-                                        int const numberOfPositiveElectrons,
-                                        int const numberOfNegativeMuons,
-                                        int const numberOfPositiveMuons )
-  /* this returns true if a configuration where each of the signs of tau lepton
-   * decayed either into a detected jet, detected lepton, or undetected
-   * particle, & false otherwise.
-   */
-  {
-    if( 2 == numberOfJets )
-    {
-      if( ( 0 == numberOfNegativeElectrons )
-          &&
-          ( 0 == numberOfPositiveElectrons )
-          &&
-          ( 0 == numberOfNegativeMuons )
-          &&
-          ( 0 == numberOfPositiveMuons ) )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else if( ( 0 <= numberOfJets )
-             &&
-             ( 0 <= numberOfNegativeElectrons )
-             &&
-             ( 0 <= numberOfPositiveElectrons )
-             &&
-             ( 0 <= numberOfNegativeMuons )
-             &&
-             ( 0 <= numberOfPositiveMuons )
-             &&
-             ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
-             &&
-             ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
-    {
-      if( 2 >=
-          ( numberOfJets
-            + numberOfNegativeElectrons + numberOfPositiveElectrons
-            + numberOfNegativeMuons + numberOfPositiveMuons ) )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else
-    {
-      return false;
-    }
-  }
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_DERIVED_ELECTROWEAK_CASCADE_STUFF_HPP_ */

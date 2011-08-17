@@ -205,12 +205,13 @@ namespace CppSLHA
 
   // this code assumes that the rest of the hadronic decay width of the Z boson
   // is equally divided between down, up and strange:
+  double const PDG_data::Z_to_hadrons_BR = 0.6991;
   double const PDG_data::Z_to_charm_anticharm_BR = 0.1203;
   double const PDG_data::Z_to_bottom_antibottom_BR = 0.1512;
   double const
   PDG_data::Z_to_down_antidown_BR
-    = ( ( 0.6991 - PDG_data::Z_to_charm_anticharm_BR
-                 - PDG_data::Z_to_bottom_antibottom_BR ) / 3.0 );
+    = ( ( PDG_data::Z_to_hadrons_BR - PDG_data::Z_to_charm_anticharm_BR
+          - PDG_data::Z_to_bottom_antibottom_BR ) / 3.0 );
   double const
   PDG_data::Z_to_up_antiup_BR = PDG_data::Z_to_down_antidown_BR;
   double const
