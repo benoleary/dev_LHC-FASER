@@ -341,7 +341,7 @@ namespace LHC_FASER
                                                     shortcut->get_stau_two(),
                                                     shortcut );
       cascades.push_back( currentCascade );
-      currentCascade = new neutralinoToZOrScalarCascade( kinematics,
+      currentCascade = new neutralinoToZCascade( kinematics,
                                                  coloredDecayer,
                                                  electroweakDecayer,
                                                  shortcut );
@@ -407,7 +407,7 @@ namespace LHC_FASER
                                                     shortcut->get_stau_two(),
                                                     shortcut );
       cascades.push_back( currentCascade );
-      currentCascade = new neutralinoToZOrScalarCascade( kinematics,
+      currentCascade = new neutralinoToZCascade( kinematics,
                                                  coloredDecayer,
                                                  electroweakDecayer,
                                                  shortcut );
