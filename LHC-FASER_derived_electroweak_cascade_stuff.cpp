@@ -1127,17 +1127,8 @@ namespace LHC_FASER
           + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
         / ( 5.0 - 2.0 * twiceSquareOfWeakCosine
             + 2.0 * twiceSquareOfWeakCosine * twiceSquareOfWeakCosine ) );
-    // we set up the BR of the (only-ish) channel:
-    firstBr
-    = shortcut->get_exclusive_BR_calculator( electroweakDecayer,
-                                             intermediateDecayer,
-                                             true,
-                                             shortcut->get_empty_list() );
-    secondBr
-    = shortcut->get_exclusive_BR_calculator( intermediateDecayer,
-                                             shortcut->get_neutralino_one(),
-                                             true,
-                                             shortcut->get_empty_list() );
+    // here firstBr & secondBr don't work as well as just getting the branching
+    // ratios from the CppSLHA::particle_property_set pointers.
     directMuonDistribution = new Z_handed_muon( shortcut->get_readier(),
                                                 shortcut->get_CppSLHA(),
                                                 coloredDecayer,
@@ -1298,7 +1289,12 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsOneNegativeMuon( 0.0 );
     currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
-    cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
+    cascadeBr
+    = ( electroweakDecayer->inspect_direct_decay_handler(
+                  )->get_branching_ratio_for_exact_match( CppSLHA::PDG_code::Z,
+                                         CppSLHA::PDG_code::neutralino_one ) );
+    // the branching ratios of the Z into the various SM fermions are covered
+    // by the following code.
     if( LHC_FASER_global::negligible_BR < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
@@ -1535,17 +1531,8 @@ namespace LHC_FASER
           + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
         / ( 5.0 - 2.0 * twiceSquareOfWeakCosine
             + 2.0 * twiceSquareOfWeakCosine * twiceSquareOfWeakCosine ) );
-    // we set up the BR of the (only-ish) channel:
-    firstBr
-    = shortcut->get_exclusive_BR_calculator( electroweakDecayer,
-                                             intermediateDecayer,
-                                             true,
-                                             shortcut->get_empty_list() );
-    secondBr
-    = shortcut->get_exclusive_BR_calculator( intermediateDecayer,
-                                             shortcut->get_neutralino_one(),
-                                             true,
-                                             shortcut->get_empty_list() );
+    // here firstBr & secondBr don't work as well as just getting the branching
+    // ratios from the CppSLHA::particle_property_set pointers.
     directMuonDistribution = new Z_handed_muon( shortcut->get_readier(),
                                                 shortcut->get_CppSLHA(),
                                                 coloredDecayer,
@@ -1667,7 +1654,12 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsOneNegativeMuon( 0.0 );
     currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
-    cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
+    cascadeBr
+    = ( electroweakDecayer->inspect_direct_decay_handler(
+                  )->get_branching_ratio_for_exact_match( CppSLHA::PDG_code::Z,
+                                         CppSLHA::PDG_code::neutralino_one ) );
+    // the branching ratios of the Z into the various SM fermions are covered
+    // by the following code.
     if( LHC_FASER_global::negligible_BR < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
