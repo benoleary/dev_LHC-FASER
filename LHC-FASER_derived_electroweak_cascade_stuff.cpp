@@ -1305,18 +1305,13 @@ namespace LHC_FASER
       /* at some point, it'd be nice to break this down into transverse
        * contributions & longitudinal contributions, since actually the
        * Goldstone boson contribution should both be large (only needs the
-       * Higgsino component of just 1 of the neutralinos, rather than both, &
-       * also has coupling to the SM fermions enhanced by 1/sin(beta)
-       * which goes like tan(beta) for large tan(beta)) & has a different (&
-       * easier to calculate) distribution.
+       * Higgsino component of just 1 of the neutralinos, rather than both) &
+       * has a different (& easier to calculate) distribution.
        *
-       * however, right now I just don't understand what's going on with regard
-       * to the Goldstone Boson Equivalence Theorem in the context of
-       * 2-Higgs-Doublet models such as the MSSM, so until I understand it,
-       * I'll just leave it as it is, assuming that the longitudinal component
-       * is negligible. (well, summing over charges gives a distribution from
-       * the Z boson that looks very similar to that from a scalar boson,
-       * though I don't know how it goes for distinguishing charges.)
+       * however, I think that for LHC-relevant energies, the Higgsino
+       * components of all the neutralinos is still going to be larger than
+       * m_tau / m_W, enough that I'm going to ignore the longitudinal
+       * contributions.
        */
 
       directMuonPass = integrateAcceptance( directMuonDistribution,
@@ -1360,6 +1355,7 @@ namespace LHC_FASER
                              * directMuonFail * directMuonFail ) );
 
       // now Z decays to tau-antitau pairs, followed by the decays of the taus:
+      cascadeBr *= CppSLHA::PDG_data::Z_to_tau_lepton_antilepton_BR;
       jetLeftHandedness
       = shortcut->quark_or_lepton_left_handedness(
                                                 coloredDecayer->get_PDG_code(),
@@ -1367,32 +1363,40 @@ namespace LHC_FASER
       // left-handed quark, left-handed negative tau lepton:
       configurationBr
       = ( cascadeBr * jetLeftHandedness * negativeTauLeftHandedness );
-      currentMuonDistribution = sameHardMuonDistribution;
-      currentPionDistribution = sameSoftPionDistribution;
+      currentNegativeMuonDistribution = sameHardMuonDistribution;
+      currentNegativePionDistribution = sameSoftPionDistribution;
+      currentPositiveMuonDistribution = oppositeHardMuonDistribution;
+      currentPositivePionDistribution = oppositeSoftPionDistribution;
       calculateForCurrentConfiguration();
 
       // left-handed quark, right-handed negative tau lepton:
       configurationBr
       = ( cascadeBr * jetLeftHandedness
                     * ( 1.0 - negativeTauLeftHandedness ) );
-      currentMuonDistribution = oppositeSoftMuonDistribution;
-      currentPionDistribution = oppositeHardPionDistribution;
+      currentNegativeMuonDistribution = oppositeSoftMuonDistribution;
+      currentNegativePionDistribution = oppositeHardPionDistribution;
+      currentPositiveMuonDistribution = sameSoftMuonDistribution;
+      currentPositivePionDistribution = sameHardPionDistribution;
       calculateForCurrentConfiguration();
 
       // right-handed quark, left-handed negative tau lepton:
       configurationBr
       = ( cascadeBr * ( 1.0 - jetLeftHandedness )
           * negativeTauLeftHandedness );
-      currentMuonDistribution = oppositeHardMuonDistribution;
-      currentPionDistribution = oppositeSoftPionDistribution;
+      currentNegativeMuonDistribution = oppositeHardMuonDistribution;
+      currentNegativePionDistribution = oppositeSoftPionDistribution;
+      currentPositiveMuonDistribution = sameHardMuonDistribution;
+      currentPositivePionDistribution = sameSoftPionDistribution;
       calculateForCurrentConfiguration();
 
       // right-handed quark, right-handed negative tau lepton:
       configurationBr
       = ( cascadeBr * ( 1.0 - jetLeftHandedness )
                     * ( 1.0 - negativeTauLeftHandedness ) );
-      currentMuonDistribution = sameSoftMuonDistribution;
-      currentPionDistribution = sameHardPionDistribution;
+      currentNegativeMuonDistribution = sameSoftMuonDistribution;
+      currentNegativePionDistribution = sameHardPionDistribution;
+      currentPositiveMuonDistribution = oppositeSoftMuonDistribution;
+      currentPositivePionDistribution = oppositeHardPionDistribution;
       calculateForCurrentConfiguration();
     }
     // debugging:
@@ -1404,6 +1408,346 @@ namespace LHC_FASER
 
   void
   neutralinoToZCascade::calculateForCurrentConfiguration()
+  {
+    negativeTauMuonPass = integrateAcceptance( currentNegativeMuonDistribution,
+                                          currentCuts->getPrimaryLeptonCut() );
+    negativeTauMuonFail
+    = ( 1.0 - integrateAcceptance( currentNegativeMuonDistribution,
+                                   currentCuts->getSecondaryLeptonCut() ) );
+    negativeTauPionPass = integrateAcceptance( currentNegativePionDistribution,
+                                               currentCuts->getJetCut() );
+    negativeTauPionFail = ( 1.0 - negativeTauPionPass );
+    positiveTauMuonPass = integrateAcceptance( currentPositiveMuonDistribution,
+                                          currentCuts->getPrimaryLeptonCut() );
+    positiveTauMuonFail
+    = ( 1.0 - integrateAcceptance( currentPositiveMuonDistribution,
+                                   currentCuts->getSecondaryLeptonCut() ) );
+    positiveTauPionPass = integrateAcceptance( currentPositivePionDistribution,
+                                               currentCuts->getJetCut() );
+    positiveTauPionFail = ( 1.0 - positiveTauPionPass );
+
+    currentAcceptance->addToTwoJets( configurationBr
+                                     * tauPairToPionPairBr
+                                     * negativeTauPionPass
+                                     * positiveTauPionPass );
+    currentPass = ( configurationBr * tauToPionTimesTauToElectronBr );
+    currentAcceptance->addToOneJetOneNegativeElectron( currentPass
+                                                       * positiveTauPionPass
+                                                       * negativeTauMuonPass );
+    currentAcceptance->addToOneJetOnePositiveElectron( currentPass
+                                                       * negativeTauPionPass
+                                                       * positiveTauMuonPass );
+    currentPass = ( configurationBr * tauToPionTimesTauToMuonBr );
+    currentAcceptance->addToOneJetOneNegativeMuon( currentPass
+                                                   * positiveTauPionPass
+                                                   * negativeTauMuonPass );
+    currentAcceptance->addToOneJetOnePositiveMuon( currentPass
+                                                   * negativeTauPionPass
+                                                   * positiveTauMuonPass );
+    currentPass
+    = ( configurationBr * negativeTauMuonPass * positiveTauMuonPass );
+    currentAcceptance->addToElectronPlusAntielectron( tauPairToElectronPairBr
+                                                      * currentPass );
+    currentAcceptance->addToMuonPlusAntimuon( tauPairToMuonPairBr
+                                              * currentPass );
+    currentPass *= tauToElectronTimesTauToMuonBr;
+    currentAcceptance->addToNegativeElectronPlusPositiveMuon( currentPass );
+    currentAcceptance->addToNegativeMuonPlusPositiveElectron( currentPass );
+
+    currentAcceptance->addToOneJetZeroLeptons( configurationBr
+                                               * ( tauPairToPionPairBr
+                                                   * ( negativeTauPionPass
+                                                       * positiveTauPionFail
+                                                       + positiveTauPionPass
+                                                        * negativeTauPionFail )
+                                              + ( tauToPionTimesTauToElectronBr
+                                                  + tauToPionTimesTauToMuonBr )
+                                                * ( negativeTauPionPass
+                                                    * positiveTauMuonFail
+                                                    + positiveTauPionPass
+                                                   * negativeTauMuonFail ) ) );
+
+    currentAcceptance->addToZeroJetsOneNegativeElectron( configurationBr
+                                                         * negativeTauMuonPass
+                                              * ( tauToPionTimesTauToElectronBr
+                                                  * positiveTauPionFail
+                                                  + ( tauPairToElectronPairBr
+                                              + tauToElectronTimesTauToMuonBr )
+                                                     * positiveTauMuonFail ) );
+    currentAcceptance->addToZeroJetsOnePositiveElectron( configurationBr
+                                                         * positiveTauMuonPass
+                                              * ( tauToPionTimesTauToElectronBr
+                                                  * negativeTauPionFail
+                                                  + ( tauPairToElectronPairBr
+                                              + tauToElectronTimesTauToMuonBr )
+                                                     * negativeTauMuonFail ) );
+    currentAcceptance->addToZeroJetsOneNegativeMuon( configurationBr
+                                                     * negativeTauMuonPass
+                                                  * ( tauToPionTimesTauToMuonBr
+                                                      * positiveTauPionFail
+                                              + ( tauToElectronTimesTauToMuonBr
+                                                  + tauPairToMuonPairBr )
+                                                     * positiveTauMuonFail ) );
+    currentAcceptance->addToZeroJetsOnePositiveMuon( configurationBr
+                                                     * positiveTauMuonPass
+                                                  * ( tauToPionTimesTauToMuonBr
+                                                      * negativeTauPionFail
+                                              + ( tauToElectronTimesTauToMuonBr
+                                                  + tauPairToMuonPairBr )
+                                                     * negativeTauMuonFail ) );
+
+    currentAcceptance->addToZeroJetsZeroLeptons( configurationBr
+                                                 * ( tauPairToPionPairBr
+                                                     * negativeTauPionFail
+                                                     * positiveTauPionFail
+                                              + ( tauToPionTimesTauToElectronBr
+                                                  + tauToPionTimesTauToMuonBr )
+                                                  * ( negativeTauPionFail
+                                                      * positiveTauMuonFail
+                                                        + positiveTauPionFail
+                                                        * negativeTauMuonFail )
+                                                 + ( tauPairToElectronPairBr
+                                          + 2.0 * tauToElectronTimesTauToMuonBr
+                                                     + tauPairToMuonPairBr )
+                                                   * negativeTauMuonFail
+                                                   * negativeTauMuonFail ) );
+  }
+
+
+
+  chargeSummedNeutralinoToZCascade::chargeSummedNeutralinoToZCascade(
+                                leptonAcceptanceParameterSet* const kinematics,
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+                CppSLHA::particle_property_set const* const electroweakDecayer,
+                                        input_handler const* const shortcut ) :
+    electroweakCascade( kinematics,
+                        coloredDecayer,
+                        electroweakDecayer,
+                        shortcut->get_Z(),
+                        true,
+                        shortcut )
+  {
+    double
+    twiceSquareOfWeakCosine
+    = ( 2.0 * shortcut->getWeakCosine() * shortcut->getWeakCosine() );
+    negativeTauLeftHandedness
+    = ( ( 1 - 2.0 * twiceSquareOfWeakCosine
+          + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
+        / ( 5.0 - 2.0 * twiceSquareOfWeakCosine
+            + 2.0 * twiceSquareOfWeakCosine * twiceSquareOfWeakCosine ) );
+    // we set up the BR of the (only-ish) channel:
+    firstBr
+    = shortcut->get_exclusive_BR_calculator( electroweakDecayer,
+                                             intermediateDecayer,
+                                             true,
+                                             shortcut->get_empty_list() );
+    secondBr
+    = shortcut->get_exclusive_BR_calculator( intermediateDecayer,
+                                             shortcut->get_neutralino_one(),
+                                             true,
+                                             shortcut->get_empty_list() );
+    directMuonDistribution = new Z_handed_muon( shortcut->get_readier(),
+                                                shortcut->get_CppSLHA(),
+                                                coloredDecayer,
+                                                kinematics,
+                                                electroweakDecayer,
+                                                intermediateDecayer,
+                                                shortcut->get_neutralino_one(),
+                                                true,
+                                                true );
+    activeDistributions.push_back( directMuonDistribution );
+
+    hardMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     directMuonDistribution,
+                                     shortcut->get_hard_muon_from_tau() );
+    softMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     directMuonDistribution,
+                                     shortcut->get_soft_muon_from_tau() );
+    hardPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     directMuonDistribution,
+                                     shortcut->get_hard_pion_from_tau() );
+    softPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     directMuonDistribution,
+                                     shortcut->get_soft_pion_from_tau() );
+    activeDistributions.push_back( hardMuonDistribution );
+    activeDistributions.push_back( softMuonDistribution );
+    activeDistributions.push_back( hardPionDistribution );
+    activeDistributions.push_back( softPionDistribution );
+  }
+
+  chargeSummedNeutralinoToZCascade::~chargeSummedNeutralinoToZCascade()
+  {
+    // does nothing.
+  }
+
+
+  bool
+  chargeSummedNeutralinoToZCascade::validSignal( int const numberOfJets,
+                                           int const numberOfNegativeElectrons,
+                                           int const numberOfPositiveElectrons,
+                                               int const numberOfNegativeMuons,
+                                              int const numberOfPositiveMuons )
+  /* this returns true if a configuration where each of the signs of tau lepton
+   * decayed either into a detected jet, detected lepton, or undetected
+   * particle, & false otherwise.
+   */
+  {
+    if( 2 == numberOfJets )
+    {
+      if( ( 0 == numberOfNegativeElectrons )
+          &&
+          ( 0 == numberOfPositiveElectrons )
+          &&
+          ( 0 == numberOfNegativeMuons )
+          &&
+          ( 0 == numberOfPositiveMuons ) )
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else if( ( 0 <= numberOfJets )
+             &&
+             ( 0 <= numberOfNegativeElectrons )
+             &&
+             ( 0 <= numberOfPositiveElectrons )
+             &&
+             ( 0 <= numberOfNegativeMuons )
+             &&
+             ( 0 <= numberOfPositiveMuons )
+             &&
+             ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
+             &&
+             ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
+    {
+      if( 2 >=
+          ( numberOfJets
+            + numberOfNegativeElectrons + numberOfPositiveElectrons
+            + numberOfNegativeMuons + numberOfPositiveMuons ) )
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  void
+  chargeSummedNeutralinoToZCascade::calculateAcceptance(
+                                                  acceptanceCutSet* const cuts,
+                                    acceptanceValues* const currentAcceptance )
+  // this returns the appropriate acceptances multiplied by branching ratios
+  // from the electroweakino through the stau to the LSP.
+  {
+    currentAcceptance->setTwoJets( 0.0 );
+    currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
+    currentAcceptance->setOneJetOnePositiveElectron( 0.0 );
+    currentAcceptance->setOneJetOneNegativeMuon( 0.0 );
+    currentAcceptance->setOneJetOnePositiveMuon( 0.0 );
+    currentAcceptance->setElectronPlusAntielectron( 0.0 );
+    currentAcceptance->setNegativeElectronPlusPositiveMuon( 0.0 );
+    currentAcceptance->setNegativeMuonPlusPositiveElectron( 0.0 );
+    currentAcceptance->setMuonPlusAntimuon( 0.0 );
+    currentAcceptance->setOneJetZeroLeptons( 0.0 );
+    currentAcceptance->setZeroJetsOneNegativeElectron( 0.0 );
+    currentAcceptance->setZeroJetsOnePositiveElectron( 0.0 );
+    currentAcceptance->setZeroJetsOneNegativeMuon( 0.0 );
+    currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
+    currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
+    cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
+    if( LHC_FASER_global::negligible_BR < cascadeBr )
+      // if the branching ratio into this channel is not negligible...
+    {
+      /* at some point, it'd be nice to break this down into transverse
+       * contributions & longitudinal contributions, since actually the
+       * Goldstone boson contribution should both be large (only needs the
+       * Higgsino component of just 1 of the neutralinos, rather than both) &
+       * has a different (& easier to calculate) distribution.
+       *
+       * however, I think that for LHC-relevant energies, the Higgsino
+       * components of all the neutralinos is still going to be larger than
+       * m_tau / m_W, enough that I'm going to ignore the longitudinal
+       * contributions.
+       */
+
+      directMuonPass = integrateAcceptance( directMuonDistribution,
+                                            cuts->getPrimaryLeptonCut() );
+      directMuonFail = ( 1.0 - integrateAcceptance( directMuonDistribution,
+                                             cuts->getSecondaryLeptonCut() ) );
+      directJetPass = integrateAcceptance( directMuonDistribution,
+                                           cuts->getJetCut() );
+      directJetFail = ( 1.0 - directJetPass );
+
+      configurationBr
+      = ( cascadeBr * CppSLHA::PDG_data::Z_to_hadrons_BR * directJetPass );
+      currentAcceptance->addToTwoJets( configurationBr * directJetPass );
+      currentAcceptance->addToOneJetZeroLeptons( 2.0 * configurationBr
+                                                     * directJetFail );
+      currentAcceptance->addToOssfMinusOsdf( cascadeBr
+                           * ( CppSLHA::PDG_data::Z_to_electron_antielectron_BR
+                               + CppSLHA::PDG_data::Z_to_muon_antimuon_BR )
+                             * directMuonPass * directMuonPass );
+      configurationBr
+      = ( cascadeBr * CppSLHA::PDG_data::Z_to_electron_antielectron_BR
+          * directMuonPass );
+      currentAcceptance->addToElectronPlusAntielectron( configurationBr
+                                                        * directMuonPass );
+      configurationBr *= directMuonFail;
+      currentAcceptance->addToZeroJetsOneNegativeElectron( configurationBr );
+      currentAcceptance->addToZeroJetsOnePositiveElectron( configurationBr );
+      configurationBr
+      = ( cascadeBr * CppSLHA::PDG_data::Z_to_muon_antimuon_BR
+          * directMuonPass );
+      currentAcceptance->addToMuonPlusAntimuon( configurationBr
+                                                * directMuonPass );
+      configurationBr *= directMuonFail;
+      currentAcceptance->addToZeroJetsOneNegativeMuon( configurationBr );
+      currentAcceptance->addToZeroJetsOnePositiveMuon( configurationBr );
+      currentAcceptance->addToZeroJetsZeroLeptons( cascadeBr
+                                         * ( CppSLHA::PDG_data::Z_to_hadrons_BR
+                                             * directJetFail * directJetFail
+                           + ( CppSLHA::PDG_data::Z_to_electron_antielectron_BR
+                                   + CppSLHA::PDG_data::Z_to_muon_antimuon_BR )
+                             * directMuonFail * directMuonFail ) );
+
+      // now Z decays to tau-antitau pairs, followed by the decays of the taus:
+      cascadeBr *= CppSLHA::PDG_data::Z_to_tau_lepton_antilepton_BR;
+      // left-handed negative tau lepton:
+      configurationBr
+      = ( cascadeBr * negativeTauLeftHandedness );
+      currentMuonDistribution = hardMuonDistribution;
+      currentPionDistribution = softPionDistribution;
+      calculateForCurrentConfiguration();
+
+      // right-handed negative tau lepton:
+      configurationBr
+      = ( cascadeBr * ( 1.0 - negativeTauLeftHandedness ) );
+      currentMuonDistribution = softMuonDistribution;
+      currentPionDistribution = hardPionDistribution;
+      calculateForCurrentConfiguration();
+    }
+    // debugging:
+    /**std::cout
+    << std::endl
+    << "cascadeBr = " << cascadeBr;
+    std::cout << std::endl;**/
+  }
+
+  void
+  chargeSummedNeutralinoToZCascade::calculateForCurrentConfiguration()
   {
     tauMuonPass = integrateAcceptance( currentMuonDistribution,
                                        currentCuts->getPrimaryLeptonCut() );

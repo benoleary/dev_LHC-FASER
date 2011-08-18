@@ -377,10 +377,74 @@ namespace LHC_FASER
     leptonEnergyDistribution* oppositeSoftMuonDistribution;
     leptonEnergyDistribution* oppositeHardPionDistribution;
     leptonEnergyDistribution* oppositeSoftPionDistribution;
+    leptonEnergyDistribution* currentNegativeMuonDistribution;
+    leptonEnergyDistribution* currentPositivePionDistribution;
+    leptonEnergyDistribution* currentPositiveMuonDistribution;
+    leptonEnergyDistribution* currentNegativePionDistribution;
+    double negativeTauLeftHandedness;
+    double jetLeftHandedness;
+    double directMuonPass;
+    double directMuonFail;
+    double directJetPass;
+    double directJetFail;
+    double negativeTauMuonPass;
+    double negativeTauMuonFail;
+    double negativeTauPionPass;
+    double negativeTauPionFail;
+    double positiveTauMuonPass;
+    double positiveTauMuonFail;
+    double positiveTauPionPass;
+    double positiveTauPionFail;
+    double currentPass;
+    // these are for holding the pass & fail rates for whichever configuration
+    // is being calculated.
+    double configurationBr;
+    // this is the branching ratio for the particular polarization & charge
+    // configuration of the tau leptons being calculated.
+
+    virtual bool
+    validSignal( int const numberOfJets,
+                 int const numberOfNegativeElectrons,
+                 int const numberOfPositiveElectrons,
+                 int const numberOfNegativeMuons,
+                 int const numberOfPositiveMuons )
+    /* this returns true if a configuration where each of the signs of tau
+     * lepton decayed either into a detected jet, detected lepton, or
+     * undetected particle, & false otherwise.
+     */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual void
+    calculateAcceptance( acceptanceCutSet* const cuts,
+                         acceptanceValues* const currentAcceptance )
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through the selectron or smuon to the LSP.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+  };
+
+  // this is a derived class that implements the channel
+  // decaying neutralino -> Z -> lightest neutralino
+  class chargeSummedNeutralinoToZCascade : public electroweakCascade
+  {
+  public:
+    chargeSummedNeutralinoToZCascade(
+                                leptonAcceptanceParameterSet* const kinematics,
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+                CppSLHA::particle_property_set const* const electroweakDecayer,
+                          input_handler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~chargeSummedNeutralinoToZCascade()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    leptonEnergyDistribution* directMuonDistribution;
+    leptonEnergyDistribution* hardMuonDistribution;
+    leptonEnergyDistribution* softMuonDistribution;
+    leptonEnergyDistribution* hardPionDistribution;
+    leptonEnergyDistribution* softPionDistribution;
     leptonEnergyDistribution* currentMuonDistribution;
     leptonEnergyDistribution* currentPionDistribution;
     double negativeTauLeftHandedness;
-    double jetLeftHandedness;
     double directMuonPass;
     double directMuonFail;
     double directJetPass;
