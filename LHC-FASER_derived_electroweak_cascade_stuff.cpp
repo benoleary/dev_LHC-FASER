@@ -1107,26 +1107,28 @@ namespace LHC_FASER
 
 
 
-  neutralinoToZCascade::neutralinoToZCascade(
+  neutralinoToZOrScalarCascade::neutralinoToZOrScalarCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
+               CppSLHA::particle_property_set const* const intermediateDecayer,
                                         input_handler const* const shortcut ) :
     electroweakCascade( kinematics,
                         coloredDecayer,
                         electroweakDecayer,
-                        shortcut->get_Z(),
+                        intermediateDecayer,
                         true,
-                        shortcut )
+                        shortcut ),
+    toHadronsBr( CppSLHA::PDG_data::Z_to_hadrons_BR ),
+    toTausBr( CppSLHA::PDG_data::Z_to_tau_lepton_antilepton_BR ),
+    toMuonsBr( CppSLHA::PDG_data::Z_to_muon_antimuon_BR ),
+    toElectronsBr( CppSLHA::PDG_data::Z_to_electron_antielectron_BR )
+  // by default we assume a Z, but these get over-written if it turns out that
+  // it's not a Z boson.
   {
-    double
-    twiceSquareOfWeakCosine
-    = ( 2.0 * shortcut->getWeakCosine() * shortcut->getWeakCosine() );
-    negativeTauLeftHandedness
-    = ( ( 1 - 2.0 * twiceSquareOfWeakCosine
-          + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
-        / ( 5.0 - 2.0 * twiceSquareOfWeakCosine
-            + 2.0 * twiceSquareOfWeakCosine * twiceSquareOfWeakCosine ) );
+    // 1st we set up the scalar stuff, valid for any scalars or pseudoscalars,
+    // & also used for the longitudinal component of Z bosons.
+
     // we set up the BR of the (only-ish) channel:
     firstBr
     = shortcut->get_exclusive_BR_calculator( electroweakDecayer,
@@ -1138,37 +1140,77 @@ namespace LHC_FASER
                                              shortcut->get_neutralino_one(),
                                              true,
                                              shortcut->get_empty_list() );
-    directMuonDistribution = new Z_handed_muon( shortcut->get_readier(),
-                                                shortcut->get_CppSLHA(),
-                                                coloredDecayer,
-                                                kinematics,
-                                                electroweakDecayer,
-                                                intermediateDecayer,
-                                                shortcut->get_neutralino_one(),
-                                                true,
-                                                true );
-    sameHandedTauDistribution = new Z_handed_muon( shortcut->get_readier(),
-                                                   shortcut->get_CppSLHA(),
-                                                   coloredDecayer,
-                                                   kinematics,
-                                                   electroweakDecayer,
-                                                   intermediateDecayer,
-                                                shortcut->get_neutralino_one(),
-                                                   true,
-                                                   false );
-    oppositeHandedTauDistribution = new Z_handed_muon( shortcut->get_readier(),
-                                                       shortcut->get_CppSLHA(),
-                                                       coloredDecayer,
-                                                       kinematics,
-                                                       electroweakDecayer,
-                                                       intermediateDecayer,
-                                                shortcut->get_neutralino_one(),
-                                                       false,
-                                                       false );
-    activeDistributions.push_back( directMuonDistribution );
-    activeDistributions.push_back( sameHandedTauDistribution );
-    activeDistributions.push_back( oppositeHandedTauDistribution );
 
+    scalarDirectMuonDistribution
+    = new Higgs_muon_plus_antimuon( shortcut->get_readier(),
+                                    shortcut->get_CppSLHA(),
+                                    coloredDecayer,
+                                    kinematics,
+                                    electroweakDecayer,
+                                    intermediateDecayer,
+                                    shortcut->get_neutralino_one() );
+    scalarHardMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     scalarDirectMuonDistribution,
+                                     shortcut->get_hard_muon_from_tau() );
+    scalarSoftMuonDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     scalarDirectMuonDistribution,
+                                     shortcut->get_soft_muon_from_tau() );
+    scalarHardPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     scalarDirectMuonDistribution,
+                                     shortcut->get_hard_pion_from_tau() );
+    scalarSoftPionDistribution
+    = new visible_tau_decay_product( shortcut->get_readier(),
+                                     scalarDirectMuonDistribution,
+                                     shortcut->get_soft_pion_from_tau() );
+    activeDistributions.push_back( scalarDirectMuonDistribution );
+    activeDistributions.push_back( scalarHardMuonDistribution );
+    activeDistributions.push_back( scalarSoftMuonDistribution );
+    activeDistributions.push_back( scalarHardPionDistribution );
+    activeDistributions.push_back( scalarSoftPionDistribution );
+
+    if( intermediateDecayer == shortcut->get_Z() )
+    {
+      double
+      twiceSquareOfWeakCosine
+      = ( 2.0 * shortcut->getWeakCosine() * shortcut->getWeakCosine() );
+      negativeTauLeftHandedness
+      = ( ( 1 - 2.0 * twiceSquareOfWeakCosine
+            + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
+          / ( 5.0 - 2.0 * twiceSquareOfWeakCosine
+              + 2.0 * twiceSquareOfWeakCosine * twiceSquareOfWeakCosine ) );
+      // negativeTauLeftHandedness is only used if intermediateDecayer is a Z.
+      vectorDirectMuonDistribution
+      = new Z_handed_muon( shortcut->get_readier(),
+                           shortcut->get_CppSLHA(),
+                           coloredDecayer,
+                           kinematics,
+                           electroweakDecayer,
+                           intermediateDecayer,
+                           shortcut->get_neutralino_one(),
+                           true,
+                           true );
+      sameHandedTauDistribution = new Z_handed_muon( shortcut->get_readier(),
+                                                     shortcut->get_CppSLHA(),
+                                                     coloredDecayer,
+                                                     kinematics,
+                                                     electroweakDecayer,
+                                                     intermediateDecayer,
+                                                  shortcut->get_neutralino_one(),
+                                                     true,
+                                                     false );
+      oppositeHandedTauDistribution = new Z_handed_muon( shortcut->get_readier(),
+                                                         shortcut->get_CppSLHA(),
+                                                         coloredDecayer,
+                                                         kinematics,
+                                                         electroweakDecayer,
+                                                         intermediateDecayer,
+                                                  shortcut->get_neutralino_one(),
+                                                         false,
+                                                         false );
+    }
     sameHardMuonDistribution
     = new visible_tau_decay_product( shortcut->get_readier(),
                                      sameHandedTauDistribution,
@@ -1211,14 +1253,14 @@ namespace LHC_FASER
     activeDistributions.push_back( oppositeSoftPionDistribution );
   }
 
-  neutralinoToZCascade::~neutralinoToZCascade()
+  neutralinoToZOrScalarCascade::~neutralinoToZOrScalarCascade()
   {
     // does nothing.
   }
 
 
   bool
-  neutralinoToZCascade::validSignal( int const numberOfJets,
+  neutralinoToZOrScalarCascade::validSignal( int const numberOfJets,
                                      int const numberOfNegativeElectrons,
                                      int const numberOfPositiveElectrons,
                                      int const numberOfNegativeMuons,
@@ -1278,7 +1320,8 @@ namespace LHC_FASER
   }
 
   void
-  neutralinoToZCascade::calculateAcceptance( acceptanceCutSet* const cuts,
+  neutralinoToZOrScalarCascade::calculateAcceptance(
+                                                  acceptanceCutSet* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the stau to the LSP.
@@ -1366,15 +1409,16 @@ namespace LHC_FASER
                                           electroweakDecayer->get_PDG_code() );
       // left-handed quark, left-handed negative tau lepton:
       configurationBr
-      = ( cascadeBr * jetLeftHandedness * negativeTauLeftHandedness );
+      = ( cascadeBr * toHadronsBr
+          * jetLeftHandedness * negativeTauLeftHandedness );
       currentMuonDistribution = sameHardMuonDistribution;
       currentPionDistribution = sameSoftPionDistribution;
       calculateForCurrentConfiguration();
 
       // left-handed quark, right-handed negative tau lepton:
       configurationBr
-      = ( cascadeBr * jetLeftHandedness
-                    * ( 1.0 - negativeTauLeftHandedness ) );
+      = ( cascadeBr * toHadronsBr
+          * jetLeftHandedness * ( 1.0 - negativeTauLeftHandedness ) );
       currentMuonDistribution = oppositeSoftMuonDistribution;
       currentPionDistribution = oppositeHardPionDistribution;
       calculateForCurrentConfiguration();
@@ -1403,7 +1447,7 @@ namespace LHC_FASER
   }
 
   void
-  neutralinoToZCascade::calculateForCurrentConfiguration()
+  neutralinoToZOrScalarCascade::calculateForCurrentConfiguration()
   {
     tauMuonPass = integrateAcceptance( currentMuonDistribution,
                                        currentCuts->getPrimaryLeptonCut() );

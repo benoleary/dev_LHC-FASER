@@ -353,22 +353,32 @@ namespace LHC_FASER
   };
 
   // this is a derived class that implements the channel
-  // decaying neutralino -> Z -> lightest neutralino
-  class neutralinoToZCascade : public electroweakCascade
+  // decaying neutralino -> Z or neutral (pseudo)scalar -> lightest neutralino
+  class neutralinoToZOrScalarCascade : public electroweakCascade
   {
   public:
-    neutralinoToZCascade( leptonAcceptanceParameterSet* const kinematics,
+    neutralinoToZOrScalarCascade( leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
+               CppSLHA::particle_property_set const* const intermediateDecayer,
                           input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~neutralinoToZCascade()
+    ~neutralinoToZOrScalarCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    leptonEnergyDistribution* directMuonDistribution;
+    double toHadronsBr;
+    double toTausBr;
+    double toMuonsBr;
+    double toElectronsBr;
+    leptonEnergyDistribution* scalarDirectMuonDistribution;
+    leptonEnergyDistribution* vectorDirectMuonDistribution;
     leptonEnergyDistribution* sameHandedTauDistribution;
     leptonEnergyDistribution* oppositeHandedTauDistribution;
+    leptonEnergyDistribution* scalarHardMuonDistribution;
+    leptonEnergyDistribution* scalarSoftMuonDistribution;
+    leptonEnergyDistribution* scalarHardPionDistribution;
+    leptonEnergyDistribution* scalarSoftPionDistribution;
     leptonEnergyDistribution* sameHardMuonDistribution;
     leptonEnergyDistribution* sameSoftMuonDistribution;
     leptonEnergyDistribution* sameHardPionDistribution;
