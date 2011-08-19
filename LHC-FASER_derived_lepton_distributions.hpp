@@ -988,9 +988,13 @@ namespace LHC_FASER
   };
 
 
+
   /* this needs to know the 2 sfermions which appear off-shell in the process.
    * they are given as "left" & "right", but the code checks for 3rd-generation
-   * sfermions & treats them accordingly.
+   * sfermions & treats them accordingly. it combines the contribution from the
+   * off-shell sfermions with the contributions from off-shell Z & spin-0
+   * bosons, though without doing interference between the channels properly.
+   *
    * currently this is a placeholder guess of a flat distribution from 0.0 GeV
    * to the neutralino mass difference.
    */
@@ -1034,7 +1038,10 @@ namespace LHC_FASER
 
   /* this needs to know the 2 sfermions which appear off-shell in the process.
    * they are given as "left" & "right", but the code checks for 3rd-generation
-   * sfermions & treats them accordingly.
+   * sfermions & treats them accordingly. it combines the contribution from the
+   * off-shell sfermions with the contributions from off-shell W & spin-0
+   * bosons, though without doing interference between the channels properly.
+   *
    * currently this is a placeholder guess of a flat distribution from 0.0 GeV
    * to the mass difference between the chargino & the neutralino.
    */

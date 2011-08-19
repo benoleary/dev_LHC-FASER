@@ -28,6 +28,12 @@ straightforward, though maybe time-consuming:
   (not sure how trustworthy Prospino is for this though)
 - more accurate K-factor grids
   (NNLO or NLL or whatever)
+- decoupling of transverse & longitudinal modes of electroweakino cascade
+  decays through on-shell vector bosons
+  (should be straightforward breakdown in terms of squared couplings, but
+  currently the longitudinal parts are assumed to be negligible because of the
+  m_fermion / m_Z suppression - BOL is not sure if this is ever compensated by
+  small enough Higgsino components suppressing the transverse contribution)
   
 
 here's a list of things that are quite necessary, but are just placeholder
@@ -36,10 +42,4 @@ because we're trying to just get a half-working version as soon as we can:
 - proper 3-body electroweakino decays
   (at the very least in some limit of just off-shell Z or just off-shell
   selectron, maybe with 1/m^2-type propagators)
-- decoupling of transverse & longitudinal modes of electroweakino cascade
-  decays through on-shell vector bosons
-  (should be straightforward breakdown in terms of squared couplings, but
-  currently the longitudinal parts are assumed to be negligible because Ben is
-  really confused about unitary & Feynman-'t Hooft gauges, & 2-Higgs-Doublet
-  models)
 
