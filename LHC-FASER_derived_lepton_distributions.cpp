@@ -3397,6 +3397,81 @@ namespace LHC_FASER
 
 
 
+  vector_from_squark_to_muon::vector_from_squark_to_muon(
+                                    readier_for_new_point* const given_readier,
+                                 CppSLHA::CppSLHA0 const* const given_spectrum,
+              CppSLHA::particle_property_set const* const given_first_particle,
+                          effectiveSquarkMassHolder* const effectiveSquarkMass,
+             CppSLHA::particle_property_set const* const given_second_particle,
+           CppSLHA::particle_property_set const* const given_third_particle ) :
+    leptonEnergyDistribution( given_readier,
+                              given_spectrum,
+                              given_first_particle,
+                              effectiveSquarkMass,
+                              given_second_particle,
+                              given_third_particle,
+                              given_fourth_particle ),
+    MINtoMAX_const( 0,
+                    0,
+                    CppSLHA::CppSLHA_global::really_wrong_value ),
+    MINtoMAX_lin( 1,
+                  0,
+                  CppSLHA::CppSLHA_global::really_wrong_value ),
+    MINtoMAX_sq( 2,
+                 0,
+                 CppSLHA::CppSLHA_global::really_wrong_value )
+  {
+
+    MINtoMAX_segment.add_term( &MINtoMAX_const );
+    MINtoMAX_segment.add_term( &MINtoMAX_lin );
+    MINtoMAX_segment.add_term( &MINtoMAX_sq );
+
+    segments.push_back( &MINtoMAX_segment );
+
+  }
+
+  virtual
+  vector_from_squark_to_muon::~vector_from_squark_to_muon()
+  {
+
+    // does nothing.
+
+  }
+
+  void
+  vector_from_squark_to_muon::calculateCoefficients()
+  {
+
+    mQhSq = ( firstMass * firstMass );
+    mVSq = ( secondMass * secondMass );
+    mQlSq = ( thirdMass * thirdMass );
+    gammaV = ( ( mQhSq - mQlSq + mVSq ) / ( firstMass * secondMass ) );
+    betaV = sqrt( ( 1.0 - ( 1.0 / ( gammaV * gammaV ) ) ) );
+    productionFrameEnergy = ( 0.5 * secondMass );
+    minimumEnergy = ( gammaV * ( 1.0 - betaV ) * productionFrameEnergy );
+    maximumEnergy = ( gammaV * ( 1.0 + betaV ) * productionFrameEnergy );
+    energyDifference = ( maximumEnergy - minimumEnergy );
+
+
+    // now we set up the coefficients of various terms, & use them to determine
+    // the normalization:
+
+    // MIN to MAX segment:
+    MINtoMAX_segment.set_segment_range( minimumEnergy,
+                                        maximumEnergy );
+
+    MINtoMAX_const.set_coefficient( -minimumEnergy * maximumEnergy );
+    MINtoMAX_lin.set_coefficient( minimumEnergy + maximumEnergy );
+    MINtoMAX_lin.set_coefficient( -1.0 );
+
+    normalization
+    = ( ( energyDifference * energyDifference * energyDifference ) / 6.0 );
+    normalizeCoefficients();
+
+  }
+
+
+
   Z_direct_jet::Z_direct_jet( readier_for_new_point* const given_readier,
                               CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
@@ -3592,17 +3667,21 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
              CppSLHA::particle_property_set const* const given_second_particle,
               CppSLHA::particle_property_set const* const given_third_particle,
-               CppSLHA::particle_property_set const* const given_left_sfermion,
-           CppSLHA::particle_property_set const* const given_right_sfermion ) :
+             CppSLHA::particle_property_set const* const leftUpIsospinSfermion,
+            CppSLHA::particle_property_set const* const rightUpIsospinSfermion,
+           CppSLHA::particle_property_set const* const leftDownIsospinSfermion,
+       CppSLHA::particle_property_set const* const rightDownIsospinSfermion ) :
     leptonEnergyDistribution( given_readier,
-                                given_spectrum,
-                                given_first_particle,
-                                effectiveSquarkMass,
-                                given_second_particle,
-                                given_third_particle,
-                                NULL ),
-    left_sfermion( given_left_sfermion ),
-    right_sfermion( given_right_sfermion ),
+                              given_spectrum,
+                              given_first_particle,
+                              effectiveSquarkMass,
+                              given_second_particle,
+                              given_third_particle,
+                              NULL ),
+    leftUpIsospinSfermion( leftUpIsospinSfermion ),
+    rightUpIsospinSfermion( rightUpIsospinSfermion ),
+    leftDownIsospinSfermion( leftDownIsospinSfermion ),
+    rightDownIsospinSfermion( rightDownIsospinSfermion ),
     MINtoMAX_const( 0,
                     0,
                     CppSLHA::CppSLHA_global::really_wrong_value )

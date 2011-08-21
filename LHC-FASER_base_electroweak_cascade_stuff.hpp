@@ -908,7 +908,8 @@ namespace LHC_FASER
       currentAcceptance = acceptances.getPointer( cuts );
       if( currentAcceptance->notAlreadyCalculated() )
       {
-        calculateAcceptance( currentAcceptance );
+        calculateAcceptance( cuts,
+                             currentAcceptance );
         currentAcceptance->flagAsAlreadyCalculated();
       }
       return currentAcceptance->getOssfMinusOsdf();

@@ -636,7 +636,7 @@ namespace LHC_FASER
              CppSLHA::particle_property_set const* const given_second_particle,
               CppSLHA::particle_property_set const* const given_third_particle,
             CppSLHA::particle_property_set const* const given_fourth_particle,
-                         bool const jet_is_left_handed )
+                         bool const given_jet_is_left_handed )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual
@@ -794,19 +794,16 @@ namespace LHC_FASER
   };
 
   /* this derived class sets up the energy distribution for a light lepton
-   * which is from the decay of an on-shell negatively-charged W boson from the
-   * cascade decay of a down-type squark to an up-type squark plus a
-   * negatively-charged light lepton plus an antineutrino.  it is also the same
-   * for an up-type squark decaying into a down-type squark plus a
-   * positively-charged light antilepton plus a neutrino.
+   * which is from the decay of an on-shell gauge vector boson from the
+   * cascade decay of a squark to a lighter squark.
    */
-  class W_minus_plus_squark_to_muon : public leptonEnergyDistribution
+  class vector_from_squark_to_muon : public leptonEnergyDistribution
   {
 
   public:
 
-    W_minus_plus_squark_to_muon( readier_for_new_point* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
+    vector_from_squark_to_muon( readier_for_new_point* const given_readier,
+                                CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
              CppSLHA::particle_property_set const* const given_second_particle,
@@ -814,7 +811,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual
-    ~W_minus_plus_squark_to_muon()
+    ~vector_from_squark_to_muon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
@@ -823,15 +820,18 @@ namespace LHC_FASER
     // these are for ease of calculating the coefficients (referring to the
     // decaying squark as Qh & the product squark as Ql):
     double mQhSq;
-    // mQh^2
+    // the square of the mass of the heavier squark.
     double mQlSq;
-    // mQl^2
-    double mWSq;
-    // mW^2
-    double gammaW;
-    // the gamma factor of the boost from the Qh rest frame to the W boson rest
-    // frame.
-    double energy_difference;
+    // the square of the mass of the lighter squark.
+    double mVSq;
+    // the square of the mass of the vector boson.
+    double gammaV;
+    // the gamma factor of the boost from the Qh rest frame to the vector boson
+    // rest frame.
+    double betaV;
+    // the beta factor of the boost from the Qh rest frame to the vector boson
+    // rest frame.
+    double energyDifference;
     // maximum_energy - minimum_energy
 
     segment_term_set MINtoMAX_segment;
@@ -1056,8 +1056,10 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
              CppSLHA::particle_property_set const* const given_second_particle,
               CppSLHA::particle_property_set const* const given_third_particle,
-               CppSLHA::particle_property_set const* const given_left_sfermion,
-             CppSLHA::particle_property_set const* const given_right_sfermion )
+             CppSLHA::particle_property_set const* const leftUpIsospinSfermion,
+            CppSLHA::particle_property_set const* const rightUpIsospinSfermion,
+           CppSLHA::particle_property_set const* const leftDownIsospinSfermion,
+         CppSLHA::particle_property_set const* const rightDownIsospinSfermion )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual
@@ -1067,8 +1069,10 @@ namespace LHC_FASER
 
   protected:
 
-    CppSLHA::particle_property_set const* const left_sfermion;
-    CppSLHA::particle_property_set const* const right_sfermion;
+    CppSLHA::particle_property_set const* const leftUpIsospinSfermion;
+    CppSLHA::particle_property_set const* const rightUpIsospinSfermion;
+    CppSLHA::particle_property_set const* const leftDownIsospinSfermion;
+    CppSLHA::particle_property_set const* const rightDownIsospinSfermion;
 
     segment_term_set MINtoMAX_segment;
     // the terms between minimum_energy & maximum_energy.
