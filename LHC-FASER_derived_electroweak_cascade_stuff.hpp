@@ -352,6 +352,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
+
   // this is a derived class that implements the channel
   // decaying neutralino -> Z + lightest neutralino
   class neutralinoToZCascade : public electroweakCascade
@@ -666,157 +667,207 @@ namespace LHC_FASER
   };
 
 
-  // this is a derived class that implements the channel
-  // decaying chargino -> smuon or selectron -> lightest neutralino
-  class chargino_to_semu : public channel_calculator
+  /* this is a derived class that implements the channel
+   * chargino -> smuon or selectron or electron snuetrino or muon sneutrino
+   * -> lightest neutralino.
+   */
+  class charginoToSemuOrEmuSnuCascade : public electroweakCascade
   {
-
   public:
-
-    chargino_to_semu( double const given_primary_cut,
-                      double const given_secondary_cut,
-                      lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                      bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                      bool const given_EWino_is_not_antiparticle,
-          CppSLHA::particle_property_set const* const given_mediating_particle,
-                      input_handler const* const given_shortcuts,
-                      double* const given_no_jets_one_lepton,
-                      double* const given_no_jets_no_leptons )
+    charginoToSemuOrEmuSnuCascade(
+                                leptonAcceptanceParameterSet* const kinematics,
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+                CppSLHA::particle_property_set const* const electroweakDecayer,
+               CppSLHA::particle_property_set const* const intermediateDecayer,
+                                   input_handler const* const shortcut,
+                                   bool const sneutrinoVersion )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~chargino_to_semu()
+    virtual
+    ~charginoToSemuOrEmuSnuCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
+    bool muonsNotElectrons;
+    bool const sneutrinoVersion;
+    leptonEnergyDistribution* sameDistribution;
+    leptonEnergyDistribution* oppositeDistribution;
+    double jetLeftHandedness;
+    double nearLeptonLeftHandedness;
+    double nearLeptonSameHandednessTimesBr;
+    /* the above are for the case of a positively-charged up-type quark or
+     * positively-charged down-type antiquark as the jet, since the chargino
+     * assumed is that with the positive PDG code, hence in this case the
+     * positive charge.
+     */
 
-    double* const no_jets_one_lepton;
+    double samePass;
+    double sameFail;
+    double oppositePass;
+    double oppositeFail;
+    // these are for holding the pass & fail rates for whichever configuration
+    // is being calculated.
 
-    double* const no_jets_no_leptons;
-
-    void
-    calculate()
+    virtual bool
+    validSignal( int const numberOfJets,
+                 int const numberOfNegativeElectrons,
+                 int const numberOfPositiveElectrons,
+                 int const numberOfNegativeMuons,
+                 int const numberOfPositiveMuons )
+    // this returns true if numberOfJets == 0, & either 1 of or both signs of
+    // electron OR muon are asked for.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+    virtual void
+    calculateAcceptance( acceptanceCutSet* const cuts,
+                         acceptanceValues* const currentAcceptance )
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through the selectron or smuon to the LSP.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
+
   // this is a derived class that implements the channel
-  // decaying chargino -> stau -> lightest neutralino
-  class chargino_to_stau : public channel_calculator
+  // chargino -> stau or tau snuetrino -> lightest neutralino
+  class charginoToStauOrTauSnuCascade : public electroweakCascade
   {
-
   public:
-
-    chargino_to_stau( double const given_primary_cut,
-                      double const given_secondary_cut,
-                      double const given_jet_cut,
-                      lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                      bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                      bool const given_EWino_is_not_antiparticle,
-          CppSLHA::particle_property_set const* const given_mediating_particle,
-                      input_handler const* const given_shortcuts,
-                      double* const given_one_jet_no_leptons,
-                      double* const given_no_jets_one_muon,
-                      double* const given_no_jets_one_electron,
-                      double* const given_no_jets_no_leptons )
+    charginoToStauOrTauSnuCascade(
+                                leptonAcceptanceParameterSet* const kinematics,
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+                CppSLHA::particle_property_set const* const electroweakDecayer,
+               CppSLHA::particle_property_set const* const intermediateDecayer,
+                                   input_handler const* const shortcut,
+                                   bool const sneutrinoVersion )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~chargino_to_stau()
+    virtual
+    ~charginoToStauOrTauSnuCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
+    bool const sneutrinoVersion;
+    leptonEnergyDistribution* sameTauDistribution;
+    leptonEnergyDistribution* oppositeTauDistribution;
+    leptonEnergyDistribution* sameHardMuonDistribution;
+    leptonEnergyDistribution* sameSoftMuonDistribution;
+    leptonEnergyDistribution* sameHardPionDistribution;
+    leptonEnergyDistribution* sameSoftPionDistribution;
+    leptonEnergyDistribution* oppositeHardMuonDistribution;
+    leptonEnergyDistribution* oppositeSoftMuonDistribution;
+    leptonEnergyDistribution* oppositeHardPionDistribution;
+    leptonEnergyDistribution* oppositeSoftPionDistribution;
+    double jetLeftHandedness;
+    double nearLeptonLeftHandedness;
+    double antitauRightHandedness;
+    /* the above are for the case of a positively-charged up-type quark or
+     * positively-charged down-type antiquark as the jet, since the chargino
+     * assumed is that with the positive PDG code, hence in this case the
+     * positive charge.
+     */
 
-    double* const one_jet_no_leptons;
-    double* const no_jets_one_muon;
-    double* const no_jets_one_electron;
+    double muonPass;
+    double muonFail;
+    double pionPass;
+    double pionFail;
+    // these are for holding the pass & fail rates for whichever configuration
+    // is being calculated.
 
-    double* const no_jets_no_leptons;
-
-
-    void
-    calculate()
+    virtual bool
+    validSignal( int const numberOfJets,
+                 int const numberOfNegativeElectrons,
+                 int const numberOfPositiveElectrons,
+                 int const numberOfNegativeMuons,
+                 int const numberOfPositiveMuons )
+    // this returns true if numberOfJets == 0, & either 1 of or both signs of
+    // electron OR muon are asked for.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+    virtual void
+    calculateAcceptance( acceptanceCutSet* const cuts,
+                         acceptanceValues* const currentAcceptance )
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through the selectron or smuon to the LSP.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
+
+
+
   // this is a derived class that implements the channel
-  // decaying chargino -> muon or electron sneutrino -> lightest neutralino
-  class chargino_to_emu_sneutrino : public channel_calculator
+  // chargino -> W + lightest neutralino
+  class charginoToWCascade : public electroweakCascade
   {
-
   public:
-
-    chargino_to_emu_sneutrino( double const given_primary_cut,
-                               double const given_secondary_cut,
-                               lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                               bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                               bool const given_EWino_is_not_antiparticle,
-          CppSLHA::particle_property_set const* const given_mediating_particle,
-                               input_handler const* const given_shortcuts,
-                               double* const given_no_jets_one_lepton,
-                               double* const given_no_jets_no_leptons )
+    charginoToWCascade( leptonAcceptanceParameterSet* const kinematics,
+                    CppSLHA::particle_property_set const* const coloredDecayer,
+                CppSLHA::particle_property_set const* const electroweakDecayer,
+                          input_handler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~chargino_to_emu_sneutrino()
+    ~charginoToWCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
+    leptonEnergyDistribution* directJetDistribution;
+    leptonEnergyDistribution* directMuonDistribution;
+    leptonEnergyDistribution* sameHandedTauDistribution;
+    leptonEnergyDistribution* oppositeHandedTauDistribution;
+    leptonEnergyDistribution* sameHardMuonDistribution;
+    leptonEnergyDistribution* sameSoftMuonDistribution;
+    leptonEnergyDistribution* sameHardPionDistribution;
+    leptonEnergyDistribution* sameSoftPionDistribution;
+    leptonEnergyDistribution* oppositeHardMuonDistribution;
+    leptonEnergyDistribution* oppositeSoftMuonDistribution;
+    leptonEnergyDistribution* oppositeHardPionDistribution;
+    leptonEnergyDistribution* oppositeSoftPionDistribution;
+    leptonEnergyDistribution* currentNegativeMuonDistribution;
+    leptonEnergyDistribution* currentPositivePionDistribution;
+    leptonEnergyDistribution* currentPositiveMuonDistribution;
+    leptonEnergyDistribution* currentNegativePionDistribution;
+    double jetLeftHandedness;
+    double directMuonPass;
+    double directMuonFail;
+    double directJetPass;
+    double directJetFail;
+    double antitauAntimuonPass;
+    double antitauAntimuonFail;
+    double antitauPionPass;
+    double antitauPionFail;
+    double currentPass;
+    // these are for holding the pass & fail rates for whichever configuration
+    // is being calculated.
+    double configurationBr;
+    // this is the branching ratio for the particular polarization & charge
+    // configuration of the tau leptons being calculated.
 
-    double* const no_jets_one_lepton;
+    virtual bool
+    validSignal( int const numberOfJets,
+                 int const numberOfNegativeElectrons,
+                 int const numberOfPositiveElectrons,
+                 int const numberOfNegativeMuons,
+                 int const numberOfPositiveMuons )
+    /* this returns true if a configuration where each of the signs of tau
+     * lepton decayed either into a detected jet, detected lepton, or
+     * undetected particle, & false otherwise.
+     */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    double* const no_jets_no_leptons;
+    virtual void
+    calculateAcceptance( acceptanceCutSet* const cuts,
+                         acceptanceValues* const currentAcceptance )
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through the selectron or smuon to the LSP.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     void
-    calculate()
+    calculateForCurrentConfiguration()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
-  // this is a derived class that implements the channel
-  // decaying chargino -> tau sneutrino -> lightest neutralino
-  class chargino_to_tau_sneutrino : public channel_calculator
-  {
-
-  public:
-
-    chargino_to_tau_sneutrino( double const given_primary_cut,
-                               double const given_secondary_cut,
-                               double const given_jet_cut,
-                               lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
-                               bool const given_scolored_is_not_antiparticle,
-              CppSLHA::particle_property_set const* const given_decaying_EWino,
-                               bool const given_EWino_is_not_antiparticle,
-          CppSLHA::particle_property_set const* const given_mediating_particle,
-                               input_handler const* const given_shortcuts,
-                               double* const given_one_jet_no_leptons,
-                               double* const given_no_jets_one_muon,
-                               double* const given_no_jets_one_electron,
-                               double* const given_no_jets_no_leptons )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~chargino_to_tau_sneutrino()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-
-    double* const one_jet_no_leptons;
-    double* const no_jets_one_muon;
-    double* const no_jets_one_electron;
-
-    double* const no_jets_no_leptons;
 
 
-    void
-    calculate()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-  };
+
+
+
 
   // this is a derived class that implements the channel
   // decaying chargino -> W -> lightest neutralino
@@ -993,70 +1044,6 @@ namespace LHC_FASER
     // once the cascade has reached the LSP, it stays as the LSP 100% of the
     // time, never triggering any jets or leptons.
   }
-
-
-  inline bool
-  neutralinoToSemuCascade::validSignal( int const numberOfJets,
-                                        int const numberOfNegativeElectrons,
-                                        int const numberOfPositiveElectrons,
-                                        int const numberOfNegativeMuons,
-                                        int const numberOfPositiveMuons )
-  // this returns true if numberOfJets == 0, & either 1 of or both signs of
-  // electron OR muon are asked for.
-  {
-    if( ( 0 == numberOfJets )
-        // if we are asked for no jets...
-        &&
-        ( ( ( 0 == numberOfNegativeElectrons )
-            &&
-            ( 0 == numberOfPositiveElectrons ) )
-          ||
-          ( ( 0 == numberOfNegativeMuons )
-              &&
-              ( 0 == numberOfPositiveMuons ) ) ) )
-        // AND if we are asked for EITHER electrons OR muons but NOT both...
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-
-
-
-  inline bool
-  chargeSummedNeutralinoToSemuCascade::validSignal( int const numberOfJets,
-                                           int const numberOfNegativeElectrons,
-                                           int const numberOfPositiveElectrons,
-                                               int const numberOfNegativeMuons,
-                                              int const numberOfPositiveMuons )
-  // this returns true if numberOfJets == 0, & either 1 of or both signs of
-  // electron OR muon are asked for.
-  {
-    if( ( 0 == numberOfJets )
-        // if we are asked for no jets...
-        &&
-        ( ( ( 0 == numberOfNegativeElectrons )
-            &&
-            ( 0 == numberOfPositiveElectrons ) )
-          ||
-          ( ( 0 == numberOfNegativeMuons )
-              &&
-              ( 0 == numberOfPositiveMuons ) ) ) )
-        // AND if we are asked for EITHER electrons OR muons but NOT both...
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-
-
-
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_DERIVED_ELECTROWEAK_CASCADE_STUFF_HPP_ */
