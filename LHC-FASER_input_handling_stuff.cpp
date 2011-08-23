@@ -57,6 +57,77 @@
 
 namespace LHC_FASER
 {
+  updateDependentGaugeInputs::updateDependentGaugeInputs(
+                                           CppSLHA::SLHA_BLOCK const* smInputs,
+                      CppSLHA::particle_property_set const* const wPlusPointer,
+                          CppSLHA::particle_property_set const* const zPointer,
+                                          readierForNewPoint* const readier ) :
+    getsReadiedForNewPoint( readier ),
+    smInputs( smInputs ),
+    wPlusPointer( wPlusPointer ),
+    zPointer( zPointer )
+  {
+    // just an initialization list.
+  }
+
+  updateDependentGaugeInputs::~updateDependentGaugeInputs()
+  {
+    // does nothing.
+  }
+
+
+  void
+  updateDependentGaugeInputs::calculateGaugeCouplings()
+  {
+    // we work out the gauge couplings from the SMINPUTS BLOCK:
+    if( NULL != smInputs )
+    {
+      electromagneticFineStructureConstant
+      = sqrt( ( ( 4.0 * M_PI ) / smInputs->get_entry( 1 ) ) );
+      weakCosine = ( wPlusPointer->get_absolute_mass()
+                     / zPointer->get_absolute_mass() );
+      weakSine = sqrt( ( 1.0 - weakCosine * weakCosine ) );
+      hyperchargeGaugeCoupling
+      = ( electromagneticFineStructureConstant / weakCosine );
+      weakGaugeCoupling = ( electromagneticFineStructureConstant / weakSine );
+      colorGaugeCoupling = sqrt( ( 4.0 * M_PI * smInputs->get_entry( 3 ) ) );
+    }
+    else
+    {
+      std::cout
+      << std::endl
+      << "LHC-FASER::warning! input_handler::input_handler() did not"
+      <<" provide a valid pointer to SMINPUTS. gauge couplings are set to "
+      << CppSLHA::CppSLHA_global::really_wrong_value_string;
+      std::cout << std::endl;
+
+      electromagneticFineStructureConstant
+      = CppSLHA::CppSLHA_global::really_wrong_value;
+      weakSine = CppSLHA::CppSLHA_global::really_wrong_value;
+      weakCosine = CppSLHA::CppSLHA_global::really_wrong_value;
+      hyperchargeGaugeCoupling = CppSLHA::CppSLHA_global::really_wrong_value;
+      weakGaugeCoupling = CppSLHA::CppSLHA_global::really_wrong_value;
+      colorGaugeCoupling = CppSLHA::CppSLHA_global::really_wrong_value;
+    }
+  }
+
+
+
+  updateDependentAbsoluteMasses::updateDependentAbsoluteMasses(
+                   CppSLHA::particle_property_set const* const gluinoPointer,
+                                 readierForNewPoint* const readier ) :
+    getsReadiedForNewPoint( readier ),
+    gluinoPointer( gluinoPointer )
+  {
+    // just an initialization list.
+  }
+
+  updateDependentAbsoluteMasses::~updateDependentAbsoluteMasses()
+  {
+    // does nothing.
+  }
+
+
 
   input_handler::input_handler(
                           CppSLHA::CppSLHA0 const* const given_CppSLHA_pointer,

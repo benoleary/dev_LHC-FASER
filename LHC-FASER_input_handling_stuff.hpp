@@ -74,86 +74,36 @@ namespace LHC_FASER
     updateDependentGaugeInputs( CppSLHA::SLHA_BLOCK const* smInputs,
                       CppSLHA::particle_property_set const* const wPlusPointer,
                           CppSLHA::particle_property_set const* const zPointer,
-                                readierForNewPoint* const readier ) :
-      getsReadiedForNewPoint( readier ),
-      smInputs( smInputs ),
-      wPlusPointer( wPlusPointer ),
-      zPointer( zPointer )
-    {
-      // just an initialization list.
-    }
+                                readierForNewPoint* const readier )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~updateDependentGaugeInputs()
-    {
-      // does nothing.
-    }
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
-    inline double
-    get_electromagnetic_coupling()
-    {
-      if( needsToPrepareForThisPoint() )
-        {
-          calculateGaugeCouplings();
-          finishPreparingForThisPoint();
-        }
-      return electromagneticCoupling;
-    }
+    double
+    getElectromagneticFineStructureConstant()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    inline double
-    getGOne()
-    {
-      if( needsToPrepareForThisPoint() )
-        {
-          calculateGaugeCouplings();
-          finishPreparingForThisPoint();
-        }
-      return gOne;
-    }
+    double
+    getHyperchargeGaugeCoupling()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    inline double
-    getGTwo()
-    {
-      if( needsToPrepareForThisPoint() )
-        {
-          calculateGaugeCouplings();
-          finishPreparingForThisPoint();
-        }
-      return gTwo;
-    }
+    double
+    getWeakGaugeCoupling()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    inline double
-    getGThree()
-    {
-      if( needsToPrepareForThisPoint() )
-        {
-          calculateGaugeCouplings();
-          finishPreparingForThisPoint();
-        }
-      return gThree;
-    }
+    double
+    getColorGaugeCoupling()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    inline double
+    double
     getWeakSine()
-    {
-      if( needsToPrepareForThisPoint() )
-        {
-          calculateGaugeCouplings();
-          finishPreparingForThisPoint();
-        }
-      return weakSine;
-    }
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    inline double
+    double
     getWeakCosine()
-    {
-      if( needsToPrepareForThisPoint() )
-        {
-          calculateGaugeCouplings();
-          finishPreparingForThisPoint();
-        }
-      return weakCosine;
-    }
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
   protected:
@@ -161,51 +111,21 @@ namespace LHC_FASER
     CppSLHA::particle_property_set const* const wPlusPointer;
     CppSLHA::particle_property_set const* const zPointer;
     // the gauge couplings:
-    double electromagneticCoupling;
-    double gOne;
+    double electromagneticFineStructureConstant;
+    double hyperchargeGaugeCoupling;
     // the gauge coupling for U(1) at m_Z.
-    double gTwo;
+    double weakGaugeCoupling;
     // the gauge coupling for SU(2) at m_Z.
-    double gThree;
+    double colorGaugeCoupling;
     // the gauge coupling for SU(3) at m_Z.
     double weakSine;
     // the sine of the weak mixing angle.
     double weakCosine;
     // the cosine of the weak mixing angle.
 
-    inline void
+    void
     calculateGaugeCouplings()
-    {
-      // we work out the gauge couplings from the SMINPUTS BLOCK:
-      if( NULL != smInputs )
-        {
-          electromagneticCoupling
-          = sqrt( ( ( 4.0 * M_PI ) / smInputs->get_entry( 1 ) ) );
-          weakCosine = ( wPlusPointer->get_absolute_mass()
-                          / zPointer->get_absolute_mass() );
-          weakSine = sqrt( ( 1.0 - weakCosine * weakCosine ) );
-          gOne = ( electromagneticCoupling / weakCosine );
-          gTwo = ( electromagneticCoupling / weakSine );
-          gThree = sqrt( ( 4.0 * M_PI * smInputs->get_entry( 3 ) ) );
-        }
-      else
-        {
-          std::cout
-          << std::endl
-          << "LHC-FASER::warning! input_handler::input_handler() did not"
-          <<" provide a valid pointer to SMINPUTS. gauge couplings are set to "
-          << CppSLHA::CppSLHA_global::really_wrong_value_string;
-          std::cout << std::endl;
-
-          electromagneticCoupling
-          = CppSLHA::CppSLHA_global::really_wrong_value;
-          weakSine = CppSLHA::CppSLHA_global::really_wrong_value;
-          weakCosine = CppSLHA::CppSLHA_global::really_wrong_value;
-          gOne = CppSLHA::CppSLHA_global::really_wrong_value;
-          gTwo = CppSLHA::CppSLHA_global::really_wrong_value;
-          gThree = CppSLHA::CppSLHA_global::really_wrong_value;
-        }
-    }
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
 
@@ -218,28 +138,14 @@ namespace LHC_FASER
   public:
     updateDependentAbsoluteMasses(
                      CppSLHA::particle_property_set const* const gluinoPointer,
-                                   readierForNewPoint* const readier ) :
-      getsReadiedForNewPoint( readier ),
-      gluinoPointer( gluinoPointer )
-    {
-      // just an initialization list.
-    }
-
+                                   readierForNewPoint* const readier )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~updateDependentAbsoluteMasses()
-    {
-      // does nothing.
-    }
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    inline double
+    double
     getGluinoMass()
-    {
-      if( needsToPrepareForThisPoint() )
-        {
-          gluinoMass = gluinoPointer->get_absolute_mass();
-          finishPreparingForThisPoint();
-        }
-      return gluinoMass;
-    }
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     CppSLHA::particle_property_set const* const gluinoPointer;
@@ -258,10 +164,11 @@ namespace LHC_FASER
                 CppSLHA::EW_scale_spectrum const* const given_spectrum_pointer,
                    std::string const given_path_to_grids,
                    readierForNewPoint* const given_readier )
-    /* code in .cpp file. */;
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+    virtual
     ~input_handler()
-    /* code in .cpp file. */;
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
     void
@@ -271,7 +178,7 @@ namespace LHC_FASER
      * sparticles, & also adds its relevant production combinations (with
      * a gluino, with its antisquark, with itself) to the list.
      */
-    /* code in .cpp file. */;
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
     inline bool
@@ -380,7 +287,7 @@ namespace LHC_FASER
     const
     {
 
-      return update_dependent_input_values->get_electromagnetic_coupling();
+      return update_dependent_input_values->getElectromagneticFineStructureConstant();
 
     }
 
@@ -389,7 +296,7 @@ namespace LHC_FASER
     const
     {
 
-      return update_dependent_input_values->getGOne();
+      return update_dependent_input_values->getHyperchargeGaugeCoupling();
 
     }
 
@@ -398,7 +305,7 @@ namespace LHC_FASER
     const
     {
 
-      return update_dependent_input_values->getGTwo();
+      return update_dependent_input_values->getWeakGaugeCoupling();
 
     }
 
@@ -407,7 +314,7 @@ namespace LHC_FASER
     const
     {
 
-      return update_dependent_input_values->getGThree();
+      return update_dependent_input_values->getColorGaugeCoupling();
 
     }
 
@@ -1383,6 +1290,86 @@ namespace LHC_FASER
 
 
   // inline functions:
+
+  inline double
+  updateDependentGaugeInputs::getElectromagneticFineStructureConstant()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      calculateGaugeCouplings();
+      finishPreparingForThisPoint();
+    }
+    return electromagneticFineStructureConstant;
+  }
+
+  inline double
+  updateDependentGaugeInputs::getHyperchargeGaugeCoupling()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      calculateGaugeCouplings();
+      finishPreparingForThisPoint();
+    }
+    return hyperchargeGaugeCoupling;
+  }
+
+  inline double
+  updateDependentGaugeInputs::getWeakGaugeCoupling()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      calculateGaugeCouplings();
+      finishPreparingForThisPoint();
+    }
+    return weakGaugeCoupling;
+  }
+
+  inline double
+  updateDependentGaugeInputs::getColorGaugeCoupling()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      calculateGaugeCouplings();
+      finishPreparingForThisPoint();
+    }
+    return colorGaugeCoupling;
+  }
+
+  inline double
+  updateDependentGaugeInputs::getWeakSine()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      calculateGaugeCouplings();
+      finishPreparingForThisPoint();
+    }
+    return weakSine;
+  }
+
+  inline double
+  updateDependentGaugeInputs::getWeakCosine()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      calculateGaugeCouplings();
+      finishPreparingForThisPoint();
+    }
+    return weakCosine;
+  }
+
+
+
+  inline double
+  updateDependentAbsoluteMasses::getGluinoMass()
+  {
+    if( needsToPrepareForThisPoint() )
+      {
+        gluinoMass = gluinoPointer->get_absolute_mass();
+        finishPreparingForThisPoint();
+      }
+    return gluinoMass;
+  }
+
 
 
   inline CppSLHA::particle_property_set const*
