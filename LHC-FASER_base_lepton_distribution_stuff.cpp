@@ -2331,14 +2331,14 @@ namespace LHC_FASER
 
 
   leptonEnergyDistribution::leptonEnergyDistribution(
-                                          readier_for_new_point* const readier,
+                                          readierForNewPoint* const readier,
                                        CppSLHA::CppSLHA0 const* const spectrum,
                      CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
                  CppSLHA::particle_property_set const* const fourthParticle ) :
-    readied_for_new_point( readier ),
+    getsReadiedForNewPoint( readier ),
     spectrum( spectrum ),
     firstParticle( firstParticle ),
     effectiveSquarkMass( effectiveSquarkMass ),
@@ -2418,7 +2418,7 @@ namespace LHC_FASER
 
 
   visible_tau_decay_product::visible_tau_decay_product(
-                                    readier_for_new_point* const given_readier,
+                                    readierForNewPoint* const given_readier,
                       leptonEnergyDistribution* const given_tau_distribution,
                                tau_decay_coefficient const* const tau_decay ) :
     leptonEnergyDistribution( given_readier,

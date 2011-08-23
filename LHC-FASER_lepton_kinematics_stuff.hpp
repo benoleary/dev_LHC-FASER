@@ -227,7 +227,7 @@ namespace LHC_FASER
    * it also stores the effective squark mass & the pseudorapidity cut
    * acceptance.
    */
-  class leptonAcceptanceParameterSet : public readied_for_new_point,
+  class leptonAcceptanceParameterSet : public getsReadiedForNewPoint,
                                               effectiveSquarkMassHolder
   {
   public:
@@ -515,7 +515,7 @@ namespace LHC_FASER
     << " called.";
     std::cout << std::endl;**/
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       resetValues();
     }
@@ -540,7 +540,7 @@ namespace LHC_FASER
     << ", " << givenCut << " ) called.";
     std::cout << std::endl;**/
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       resetValues();
     }

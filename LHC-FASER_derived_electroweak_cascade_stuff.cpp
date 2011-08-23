@@ -154,7 +154,7 @@ namespace LHC_FASER
   // from the electroweakino through the selectron or smuon to the LSP.
   {
     cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       jetLeftHandedness
@@ -353,7 +353,7 @@ namespace LHC_FASER
     cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
     // this is just for *1* of the possibilities (e.g. negatively-charged
     // slepton) - the charge-conjugate is accounted for with factors of 2.
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       nearPass = integrateAcceptance( nearDistribution,
@@ -624,7 +624,7 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
     cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       currentCuts = cuts;
@@ -1006,7 +1006,7 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
     cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       currentCuts = cuts;
@@ -1374,7 +1374,7 @@ namespace LHC_FASER
                                          CppSLHA::PDG_code::neutralino_one ) );
     // the branching ratios of the Z into the various SM fermions are covered
     // by the following code.
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       /* at some point, it'd be nice to break this down into transverse
@@ -1738,7 +1738,7 @@ namespace LHC_FASER
                                          CppSLHA::PDG_code::neutralino_one ) );
     // the branching ratios of the Z into the various SM fermions are covered
     // by the following code.
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       /* at some point, it'd be nice to break this down into transverse
@@ -2024,7 +2024,7 @@ namespace LHC_FASER
                                          CppSLHA::PDG_code::neutralino_one ) );
     // the branching ratios of the scalar/pseudoscalar into the various SM
     // fermions are covered by the following code.
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       currentBrToHadrons
@@ -2453,7 +2453,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                        CppSLHA::PDG_code::down,
                                                   -(CppSLHA::PDG_code::down) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       currentJetDistribution = directDownDistribution;
@@ -2464,7 +2464,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                          CppSLHA::PDG_code::up,
                                                     -(CppSLHA::PDG_code::up) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       currentJetDistribution = directUpDistribution;
@@ -2475,7 +2475,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                     CppSLHA::PDG_code::strange,
                                                -(CppSLHA::PDG_code::strange) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       currentJetDistribution = directStrangeDistribution;
@@ -2486,7 +2486,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                       CppSLHA::PDG_code::charm,
                                                  -(CppSLHA::PDG_code::charm) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       currentJetDistribution = directCharmDistribution;
@@ -2497,7 +2497,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                      CppSLHA::PDG_code::bottom,
                                                 -(CppSLHA::PDG_code::bottom) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       currentJetDistribution = directBottomDistribution;
@@ -2508,7 +2508,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                    CppSLHA::PDG_code::electron,
                                               -(CppSLHA::PDG_code::electron) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       directPass = integrateAcceptance( directElectronDistribution,
@@ -2529,7 +2529,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                        CppSLHA::PDG_code::muon,
                                                   -(CppSLHA::PDG_code::muon) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       directPass = integrateAcceptance( directMuonDistribution,
@@ -2550,7 +2550,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                  CppSLHA::PDG_code::tau_lepton,
                                             -(CppSLHA::PDG_code::tau_lepton) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       hardMuonPass = integrateAcceptance( hardMuonDistribution,
@@ -2804,7 +2804,7 @@ namespace LHC_FASER
   // from the electroweakino through the slepton to the LSP.
   {
     cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       jetLeftHandedness
@@ -3050,7 +3050,7 @@ namespace LHC_FASER
   // from the electroweakino through the slepton to the LSP.
   {
     cascadeBr = ( first_BR->get_BR() * second_BR->get_BR() );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       jetLeftHandedness
@@ -3372,7 +3372,7 @@ namespace LHC_FASER
                                          CppSLHA::PDG_code::neutralino_one ) );
     // the branching ratios of the W into the various SM fermions are covered
     // by the following code.
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       /* at some point, it'd be nice to break this down into transverse
@@ -3600,7 +3600,7 @@ namespace LHC_FASER
                                          CppSLHA::PDG_code::neutralino_one ) );
     // the branching ratios of the W into the various SM fermions are covered
     // by the following code.
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       currentBrToHadrons
@@ -3881,7 +3881,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                          CppSLHA::PDG_code::up,
                                                   -(CppSLHA::PDG_code::down) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       directPass = integrateAcceptance( directDownUpDistribution,
@@ -3897,7 +3897,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                       CppSLHA::PDG_code::charm,
                                                -(CppSLHA::PDG_code::strange) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       directPass = integrateAcceptance( directStrangeCharmDistribution,
@@ -3914,7 +3914,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                           CppSLHA::PDG_code::electron_neutrino,
                                               -(CppSLHA::PDG_code::electron) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       directPass = integrateAcceptance( directElectronDistribution,
@@ -3930,7 +3930,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                               CppSLHA::PDG_code::muon_neutrino,
                                                   -(CppSLHA::PDG_code::muon) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       directPass = integrateAcceptance( directMuonDistribution,
@@ -3947,7 +3947,7 @@ namespace LHC_FASER
                                              CppSLHA::PDG_code::neutralino_one,
                                                CppSLHA::PDG_code::tau_neutrino,
                                             -(CppSLHA::PDG_code::tau_lepton) );
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       hardMuonPass = integrateAcceptance( hardMuonDistribution,
@@ -4142,7 +4142,7 @@ namespace LHC_FASER
          * boson got put into intermediateDecayer. */ ) );
     // the branching ratios of the Z into the various SM fermions are covered
     // by the following code.
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       /* at some point, it'd be nice to break this down into transverse
@@ -4396,7 +4396,7 @@ namespace LHC_FASER
        * boson got put into intermediateDecayer. */ ) );
     // the branching ratios of the W into the various SM fermions are covered
     // by the following code.
-    if( LHC_FASER_global::negligible_BR < cascadeBr )
+    if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
       /* at some point, it'd be nice to break this down into transverse

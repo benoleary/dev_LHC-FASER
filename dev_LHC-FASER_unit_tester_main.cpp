@@ -21,7 +21,7 @@
  *                           (framework works though, being the point!).
  *                         - @Carsten: please check that the new W & Z
  *                           distributions work.
- * 2: readied_for_new_point + readier_for_new_point - not yet redone, but
+ * 2: getsReadiedForNewPoint + readierForNewPoint - not yet redone, but
  *                                                    should not be a problem,
  *                                                    since I don't *think*
  *                                                    that I changed anything
@@ -58,7 +58,7 @@ class distribution_set
 
 public:
 
-  distribution_set( LHC_FASER::readier_for_new_point* const readier ) :
+  distribution_set( LHC_FASER::readierForNewPoint* const readier ) :
     readier( readier ),
     hard_muon( new LHC_FASER::hard_muon_from_tau() ),
     soft_muon( new LHC_FASER::soft_muon_from_tau() ),
@@ -163,7 +163,7 @@ public:
 
 
 protected:
-  LHC_FASER::readier_for_new_point* readier;
+  LHC_FASER::readierForNewPoint* readier;
   LHC_FASER::tau_decay_coefficient const* const hard_muon;
   LHC_FASER::tau_decay_coefficient const* const soft_muon;
   LHC_FASER::tau_decay_coefficient const* const hard_pion;
@@ -231,7 +231,7 @@ int main( int argument_count,
 
   CppSLHA::CppSLHA2 SLHA_data( "SPS1a_spectrum.out" );
   SLHA_data.read_file();
-  LHC_FASER::readier_for_new_point test_readier;
+  LHC_FASER::readierForNewPoint test_readier;
   LHC_FASER::input_handler test_input_handler( &SLHA_data,
                                          SLHA_data.get_particle_spectrum(),
                                          "./grids",
@@ -1129,7 +1129,7 @@ int main( int argument_count,
 
 
   SLHA_data.read_file( "SPS2_spectrum.out" );
-  test_readier.ready_for_new_point();
+  test_readier.readyObserversForNewPoint();
   std::cout
   << std::endl
   << "SPS2 MASS:"
@@ -1251,7 +1251,7 @@ int main( int argument_count,
 
 
   SLHA_data.read_file( "SPS1a_spectrum.out" );
-  test_readier.ready_for_new_point();
+  test_readier.readyObserversForNewPoint();
   std::cout
   << std::endl
   << "SPS1a MASS:"
@@ -1372,7 +1372,7 @@ int main( int argument_count,
   << std::endl;
 
   SLHA_data.read_file( "SPS2_spectrum.out" );
-  test_readier.ready_for_new_point();
+  test_readier.readyObserversForNewPoint();
   std::cout
   << std::endl
   << "exclusive BR checker: gluino -> sdown_L"
@@ -1392,7 +1392,7 @@ int main( int argument_count,
   << " has BR " << gluino_to_sdown_L_BR->get_BR()
   << std::endl;
   SLHA_data.read_file( "SPS1a_spectrum.out" );
-  test_readier.ready_for_new_point();
+  test_readier.readyObserversForNewPoint();
   std::cout
   << std::endl
   << "exclusive BR checker: gluino -> sdown_L"
@@ -1422,8 +1422,8 @@ int main( int argument_count,
   << "sdown_R pointer = " << test_input_handler.get_sdown_R()
   << std::endl;
 
-  LHC_FASER::readier_for_new_point*
-  test_readier2 = new LHC_FASER::readier_for_new_point();
+  LHC_FASER::readierForNewPoint*
+  test_readier2 = new LHC_FASER::readierForNewPoint();
   LHC_FASER::exclusive_BR_calculator*
   sdown_L_chargino_one_minus
   = new LHC_FASER::exclusive_BR_calculator( test_input_handler.get_sdown_L(),
@@ -1443,12 +1443,12 @@ int main( int argument_count,
   << sdown_L_chargino_one_minus->get_BR()
   << std::endl << "sdown_L_chargino_one_plus BR = "
   << sdown_L_chargino_one_plus->get_BR();
-  test_readier2->ready_for_new_point();
+  test_readier2->readyObserversForNewPoint();
   delete sdown_L_chargino_one_plus;
   std::cout
   << std::endl << "sdown_L_chargino_one_minus BR = "
   << sdown_L_chargino_one_minus->get_BR();
-  test_readier2->ready_for_new_point();
+  test_readier2->readyObserversForNewPoint();
   delete test_readier2;
   std::cout
   << std::endl << "sdown_L_chargino_one_minus BR = "
@@ -3236,7 +3236,7 @@ int main( int argument_count,
   << test_Atlas_signal.getValue();
   std::cout << std::endl;
 
-  test_readier.ready_for_new_point();
+  test_readier.readyObserversForNewPoint();
   std::cout
   << std::endl << "after updating for new point, "
   << *(cross_section_breakdown_test.getName()) << " has signal value "
@@ -3371,7 +3371,7 @@ int main( int argument_count,
       << std::endl << "count = " << reload_count;
 
       SLHA_data.read_file( "SPS1a_spectrum.out" );
-      test_readier.ready_for_new_point();
+      test_readier.readyObserversForNewPoint();
       std::cout
       << std::endl << "SPS1a: "
       << *(test_Atlas_signal.getName()) << " has signal value "
@@ -3393,7 +3393,7 @@ int main( int argument_count,
       gettimeofday( &starting_time,
                     NULL );
 
-      test_readier.ready_for_new_point();
+      test_readier.readyObserversForNewPoint();
       std::cout
       << std::endl << "SPS2: "
       << *(test_Atlas_signal.getName()) << " has signal value "

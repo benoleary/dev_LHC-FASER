@@ -68,14 +68,14 @@ namespace LHC_FASER
    * every new point. it is kept separate from the input_handler class for ease
    * of (abusing) const correctness.
    */
-  class updateDependentGaugeInputs : public readied_for_new_point
+  class updateDependentGaugeInputs : public getsReadiedForNewPoint
   {
   public:
     updateDependentGaugeInputs( CppSLHA::SLHA_BLOCK const* smInputs,
                       CppSLHA::particle_property_set const* const wPlusPointer,
                           CppSLHA::particle_property_set const* const zPointer,
-                                readier_for_new_point* const readier ) :
-      readied_for_new_point( readier ),
+                                readierForNewPoint* const readier ) :
+      getsReadiedForNewPoint( readier ),
       smInputs( smInputs ),
       wPlusPointer( wPlusPointer ),
       zPointer( zPointer )
@@ -92,10 +92,10 @@ namespace LHC_FASER
     inline double
     get_electromagnetic_coupling()
     {
-      if( needs_to_prepare_for_this_point() )
+      if( needsToPrepareForThisPoint() )
         {
           calculateGaugeCouplings();
-          finish_preparing_for_this_point();
+          finishPreparingForThisPoint();
         }
       return electromagneticCoupling;
     }
@@ -103,10 +103,10 @@ namespace LHC_FASER
     inline double
     getGOne()
     {
-      if( needs_to_prepare_for_this_point() )
+      if( needsToPrepareForThisPoint() )
         {
           calculateGaugeCouplings();
-          finish_preparing_for_this_point();
+          finishPreparingForThisPoint();
         }
       return gOne;
     }
@@ -114,10 +114,10 @@ namespace LHC_FASER
     inline double
     getGTwo()
     {
-      if( needs_to_prepare_for_this_point() )
+      if( needsToPrepareForThisPoint() )
         {
           calculateGaugeCouplings();
-          finish_preparing_for_this_point();
+          finishPreparingForThisPoint();
         }
       return gTwo;
     }
@@ -125,10 +125,10 @@ namespace LHC_FASER
     inline double
     getGThree()
     {
-      if( needs_to_prepare_for_this_point() )
+      if( needsToPrepareForThisPoint() )
         {
           calculateGaugeCouplings();
-          finish_preparing_for_this_point();
+          finishPreparingForThisPoint();
         }
       return gThree;
     }
@@ -136,10 +136,10 @@ namespace LHC_FASER
     inline double
     getWeakSine()
     {
-      if( needs_to_prepare_for_this_point() )
+      if( needsToPrepareForThisPoint() )
         {
           calculateGaugeCouplings();
-          finish_preparing_for_this_point();
+          finishPreparingForThisPoint();
         }
       return weakSine;
     }
@@ -147,10 +147,10 @@ namespace LHC_FASER
     inline double
     getWeakCosine()
     {
-      if( needs_to_prepare_for_this_point() )
+      if( needsToPrepareForThisPoint() )
         {
           calculateGaugeCouplings();
-          finish_preparing_for_this_point();
+          finishPreparingForThisPoint();
         }
       return weakCosine;
     }
@@ -213,13 +213,13 @@ namespace LHC_FASER
    * re-calculated for every new point. it is kept separate from the
    * input_handler class for ease of (abusing) const correctness.
    */
-  class updateDependentAbsoluteMasses : public readied_for_new_point
+  class updateDependentAbsoluteMasses : public getsReadiedForNewPoint
   {
   public:
     updateDependentAbsoluteMasses(
                      CppSLHA::particle_property_set const* const gluinoPointer,
-                                   readier_for_new_point* const readier ) :
-      readied_for_new_point( readier ),
+                                   readierForNewPoint* const readier ) :
+      getsReadiedForNewPoint( readier ),
       gluinoPointer( gluinoPointer )
     {
       // just an initialization list.
@@ -233,10 +233,10 @@ namespace LHC_FASER
     inline double
     getGluinoMass()
     {
-      if( needs_to_prepare_for_this_point() )
+      if( needsToPrepareForThisPoint() )
         {
           gluinoMass = gluinoPointer->get_absolute_mass();
-          finish_preparing_for_this_point();
+          finishPreparingForThisPoint();
         }
       return gluinoMass;
     }
@@ -257,7 +257,7 @@ namespace LHC_FASER
     input_handler( CppSLHA::CppSLHA0 const* const given_CppSLHA_pointer,
                 CppSLHA::EW_scale_spectrum const* const given_spectrum_pointer,
                    std::string const given_path_to_grids,
-                   readier_for_new_point* const given_readier )
+                   readierForNewPoint* const given_readier )
     /* code in .cpp file. */;
 
     ~input_handler()
@@ -430,7 +430,7 @@ namespace LHC_FASER
     }
 
 
-    inline readier_for_new_point*
+    inline readierForNewPoint*
     get_readier()
     const
     {
@@ -1234,7 +1234,7 @@ namespace LHC_FASER
     bool verbosity_flag;
     bool using_NLO_flag;
 
-    readier_for_new_point* const readier;
+    readierForNewPoint* const readier;
 
     CppSLHA::CppSLHA0 const* const CppSLHA_pointer;
     CppSLHA::EW_scale_spectrum const* const spectrum_pointer;

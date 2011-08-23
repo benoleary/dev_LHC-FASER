@@ -169,7 +169,7 @@ namespace LHC_FASER
    * particle.
    */
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       acceptances.clear();
     }
@@ -605,7 +605,7 @@ namespace LHC_FASER
                                             mediating_particle->get_PDG_code(),
                                            CppSLHA::PDG_code::neutralino_one );
 
-    if( LHC_FASER_global::negligible_BR < to_Higgs_BR )
+    if( lhcFaserGlobal::negligibleBr < to_Higgs_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -637,7 +637,7 @@ namespace LHC_FASER
 
         double tau_muon_pass = 0.0;
         double tau_muon_fail = 0.0;
-        if( LHC_FASER_global::negligible_BR
+        if( lhcFaserGlobal::negligibleBr
             < ( to_taus_BR
                 * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) )
           {
@@ -666,7 +666,7 @@ namespace LHC_FASER
 
           }
         double tau_pion_pass = 0.0;
-        if( LHC_FASER_global::negligible_BR
+        if( lhcFaserGlobal::negligibleBr
             < ( to_taus_BR
                 * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR ) )
           {
@@ -896,7 +896,7 @@ namespace LHC_FASER
 
     double direct_electron_pass = 0.0;
     double direct_electron_fail = 0.0;
-    if( LHC_FASER_global::negligible_BR < to_electrons_BR )
+    if( lhcFaserGlobal::negligibleBr < to_electrons_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -918,7 +918,7 @@ namespace LHC_FASER
 
     double direct_muon_pass = 0.0;
     double direct_muon_fail = 0.0;
-    if( LHC_FASER_global::negligible_BR < to_muons_BR )
+    if( lhcFaserGlobal::negligibleBr < to_muons_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -938,7 +938,7 @@ namespace LHC_FASER
       }
 
     double direct_jet_pass = 0.0;
-    if( LHC_FASER_global::negligible_BR < to_jets_BR )
+    if( lhcFaserGlobal::negligibleBr < to_jets_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -961,7 +961,7 @@ namespace LHC_FASER
     double tau_muon_pass = 0.0;
     double tau_muon_fail = 0.0;
     double tau_pion_pass = 0.0;
-    if( LHC_FASER_global::negligible_BR < to_taus_BR )
+    if( lhcFaserGlobal::negligibleBr < to_taus_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -1151,7 +1151,7 @@ namespace LHC_FASER
                                              shortcut->get_empty_list() );
     double cascade_BR = ( first_BR->get_BR() * second_BR->get_BR() );
 
-    if( LHC_FASER_global::negligible_BR < cascade_BR )
+    if( lhcFaserGlobal::negligibleBr < cascade_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -1254,7 +1254,7 @@ namespace LHC_FASER
                                              shortcut->get_empty_list() );
     double cascade_BR = ( first_BR->get_BR() * second_BR->get_BR() );
 
-    if( LHC_FASER_global::negligible_BR < cascade_BR )
+    if( lhcFaserGlobal::negligibleBr < cascade_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -1290,7 +1290,7 @@ namespace LHC_FASER
         double pion_pass = 0.0;
         double pion_fail = 0.0;
         double pion_acceptance;
-        if( LHC_FASER_global::negligible_BR
+        if( lhcFaserGlobal::negligibleBr
             < ( cascade_BR
                 * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) )
           {
@@ -1440,7 +1440,7 @@ namespace LHC_FASER
                                              shortcut->get_empty_list() );
     double cascade_BR = ( first_BR->get_BR() * second_BR->get_BR() );
 
-    if( LHC_FASER_global::negligible_BR < cascade_BR )
+    if( lhcFaserGlobal::negligibleBr < cascade_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -1531,7 +1531,7 @@ namespace LHC_FASER
                                              shortcut->get_empty_list() );
     double cascade_BR = ( first_BR->get_BR() * second_BR->get_BR() );
 
-    if( LHC_FASER_global::negligible_BR < cascade_BR )
+    if( lhcFaserGlobal::negligibleBr < cascade_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -1565,7 +1565,7 @@ namespace LHC_FASER
         double pion_pass = 0.0;
         double pion_fail = 0.0;
         double pion_acceptance;
-        if( LHC_FASER_global::negligible_BR
+        if( lhcFaserGlobal::negligibleBr
             < ( cascade_BR
                 * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) )
           {
@@ -1706,7 +1706,7 @@ namespace LHC_FASER
     << "to_W_BR = " << to_W_BR;
     std::cout << std::endl;**/
 
-    if( LHC_FASER_global::negligible_BR < to_W_BR )
+    if( lhcFaserGlobal::negligibleBr < to_W_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -1793,7 +1793,7 @@ namespace LHC_FASER
 
         double tau_muon_pass = 0.0;
         double tau_muon_fail = 0.0;
-        if( LHC_FASER_global::negligible_BR
+        if( lhcFaserGlobal::negligibleBr
             < ( to_tau_BR
                 * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) )
           {
@@ -1823,7 +1823,7 @@ namespace LHC_FASER
 
           }
         double tau_pion_pass = 0.0;
-        if( LHC_FASER_global::negligible_BR
+        if( lhcFaserGlobal::negligibleBr
             < ( to_tau_BR
                 * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR ) )
           {
@@ -1942,7 +1942,7 @@ namespace LHC_FASER
                                             mediating_particle->get_PDG_code(),
                                            CppSLHA::PDG_code::neutralino_one );
 
-    if( LHC_FASER_global::negligible_BR < to_Higgs_BR )
+    if( lhcFaserGlobal::negligibleBr < to_Higgs_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -1986,7 +1986,7 @@ namespace LHC_FASER
 
         double tau_muon_pass = 0.0;
         double tau_muon_fail = 0.0;
-        if( LHC_FASER_global::negligible_BR
+        if( lhcFaserGlobal::negligibleBr
             < ( to_tau_BR
                 * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) )
           {
@@ -2004,7 +2004,7 @@ namespace LHC_FASER
 
           }
         double tau_pion_pass = 0.0;
-        if( LHC_FASER_global::negligible_BR
+        if( lhcFaserGlobal::negligibleBr
             < ( to_tau_BR
                 * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR ) )
           {
@@ -2129,7 +2129,7 @@ namespace LHC_FASER
 
     double direct_electron_pass = 0.0;
     double direct_electron_fail = 0.0;
-    if( LHC_FASER_global::negligible_BR < to_electron_BR )
+    if( lhcFaserGlobal::negligibleBr < to_electron_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -2153,7 +2153,7 @@ namespace LHC_FASER
 
     double direct_muon_pass = 0.0;
     double direct_muon_fail = 0.0;
-    if( LHC_FASER_global::negligible_BR < to_muon_BR )
+    if( lhcFaserGlobal::negligibleBr < to_muon_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -2175,7 +2175,7 @@ namespace LHC_FASER
       }
 
     double direct_jet_pass = 0.0;
-    if( LHC_FASER_global::negligible_BR < to_jets_BR )
+    if( lhcFaserGlobal::negligibleBr < to_jets_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
@@ -2200,7 +2200,7 @@ namespace LHC_FASER
     double tau_muon_pass = 0.0;
     double tau_muon_fail = 0.0;
     double tau_pion_pass = 0.0;
-    if( LHC_FASER_global::negligible_BR < to_tau_BR )
+    if( lhcFaserGlobal::negligibleBr < to_tau_BR )
       // if the branching ratio into this channel is not negligible...
       {
 

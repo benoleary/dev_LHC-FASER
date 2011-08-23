@@ -557,7 +557,7 @@ namespace LHC_FASER
         if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
         {
-          return LHC_FASER_global::square_bilinear_interpolation(
+          return lhcFaserGlobal::squareBilinearInterpolation(
                                                        ( xSteps - lowerLeftX ),
                                                        ( ySteps - lowerLeftY ),
                                         values.at( lowerLeftX )->at( lowerLeftY
@@ -579,7 +579,7 @@ namespace LHC_FASER
                  ( (double)lowerLeftY == ySteps ) )
           // otherwise, if it's on the maximal y edge...
         {
-          return LHC_FASER_global::unit_linear_interpolation(
+          return lhcFaserGlobal::unitLinearInterpolation(
                                                        ( xSteps - lowerLeftX ),
                                         values.at( lowerLeftX )->at( lowerLeftY
                                                        )->at( neutralinoElement
@@ -613,7 +613,7 @@ namespace LHC_FASER
         if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
         {
-          return LHC_FASER_global::unit_linear_interpolation(
+          return lhcFaserGlobal::unitLinearInterpolation(
                                                        ( ySteps - lowerLeftY ),
                                         values.at( lowerLeftX )->at( lowerLeftY
                                                        )->at( neutralinoElement
@@ -686,7 +686,7 @@ namespace LHC_FASER
                            bool const heavyNeutralinoAreaIsConstant )
   const
   /* this finds the grid square which the given point is in, & then uses
-   * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
+   * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
    * value, assuming that the heavy neutralino edge goes to 0.0 as the
    * heavier neutralino mass approaches the lighter scolored mass unless
    * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
@@ -779,7 +779,7 @@ namespace LHC_FASER
           }
           else if( middleNeutralinoMassRatio > heavierNeutralino )
           {
-            return LHC_FASER_global::unit_linear_interpolation(
+            return lhcFaserGlobal::unitLinearInterpolation(
                                ( ( heavierNeutralino - lowNeutralinoMassRatio )
                     / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
@@ -797,7 +797,7 @@ namespace LHC_FASER
           }
           else if( highNeutralinoMassRatio > heavierNeutralino )
           {
-            return LHC_FASER_global::unit_linear_interpolation(
+            return lhcFaserGlobal::unitLinearInterpolation(
                             ( ( heavierNeutralino - middleNeutralinoMassRatio )
                    / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
@@ -837,7 +837,7 @@ namespace LHC_FASER
                   heavyEdgeValue = squarkMass;
                 }
               }
-            return LHC_FASER_global::unit_linear_interpolation(
+            return lhcFaserGlobal::unitLinearInterpolation(
                               ( ( heavierNeutralino - highNeutralinoMassRatio )
                                          / ( 1.0 - highNeutralinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
@@ -872,7 +872,7 @@ namespace LHC_FASER
                                       + upperRightValue
                                       - upperLeftValue ) );
 
-            return LHC_FASER_global::square_bilinear_interpolation(
+            return lhcFaserGlobal::squareBilinearInterpolation(
                                ( ( lighterNeutralino - lowNeutralinoMassRatio )
                     / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
                         ( ( heavierNeutralino - lowNeutralinoMassRatio )
@@ -888,7 +888,7 @@ namespace LHC_FASER
           }
           else if( highNeutralinoMassRatio > heavierNeutralino )
           {
-            return LHC_FASER_global::square_bilinear_interpolation(
+            return lhcFaserGlobal::squareBilinearInterpolation(
                                ( ( lighterNeutralino - lowNeutralinoMassRatio )
                     / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
                             ( ( heavierNeutralino - middleNeutralinoMassRatio )
@@ -935,7 +935,7 @@ namespace LHC_FASER
                                                 3,
                                                 acceptanceElement );
             }
-            return LHC_FASER_global::square_bilinear_interpolation(
+            return lhcFaserGlobal::squareBilinearInterpolation(
                                ( ( lighterNeutralino - lowNeutralinoMassRatio )
                     / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
                               ( ( heavierNeutralino - highNeutralinoMassRatio )
@@ -1010,7 +1010,7 @@ namespace LHC_FASER
                     << "lower_right_value = " << lower_right_value;
                     std::cout << std::endl;**/
 
-            return LHC_FASER_global::square_bilinear_interpolation(
+            return lhcFaserGlobal::squareBilinearInterpolation(
                             ( ( lighterNeutralino - middleNeutralinoMassRatio )
                    / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
                             ( ( heavierNeutralino - middleNeutralinoMassRatio )
@@ -1045,7 +1045,7 @@ namespace LHC_FASER
                                                 3,
                                                 acceptanceElement );
             }
-            return LHC_FASER_global::square_bilinear_interpolation(
+            return lhcFaserGlobal::squareBilinearInterpolation(
                             ( ( lighterNeutralino - middleNeutralinoMassRatio )
                    / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
                               ( ( heavierNeutralino - highNeutralinoMassRatio )
@@ -1088,7 +1088,7 @@ namespace LHC_FASER
                                                 acceptanceElement );
           }
 
-          return LHC_FASER_global::unit_linear_interpolation(
+          return lhcFaserGlobal::unitLinearInterpolation(
                               ( ( lighterNeutralino - highNeutralinoMassRatio )
                                 / ( 1.0 - highNeutralinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
@@ -1122,7 +1122,7 @@ namespace LHC_FASER
                            bool const heavyNeutralinoAreaIsConstant )
   const
   /* this finds the grid square which the given point is in, & then uses
-   * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
+   * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
    * value, assuming that the heavy neutralino edge goes to 0.0 as the
    * heavier neutralino mass approaches the lighter scolored mass unless
    * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
@@ -1217,7 +1217,7 @@ namespace LHC_FASER
                                                    gluinoMass,
                                                    4,
                                                    acceptanceElement ) );
-          return LHC_FASER_global::unit_linear_interpolation(
+          return lhcFaserGlobal::unitLinearInterpolation(
                                  ( ( neutralinoRatio - lowNeutralinoMassRatio )
                     / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
                                                               lowerLeftValue,
@@ -1238,7 +1238,7 @@ namespace LHC_FASER
                                                    5,
                                                    acceptanceElement ) );
 
-          return LHC_FASER_global::unit_linear_interpolation(
+          return lhcFaserGlobal::unitLinearInterpolation(
                               ( ( neutralinoRatio - middleNeutralinoMassRatio )
                    / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
                                                               lowerLeftValue,
@@ -1271,7 +1271,7 @@ namespace LHC_FASER
                 heavyEdgeValue = squarkMass;
               }
             }
-            return LHC_FASER_global::unit_linear_interpolation(
+            return lhcFaserGlobal::unitLinearInterpolation(
                              ( ( lighter_neutralino - highNeutralinoMassRatio )
                                / ( 1.0 - highNeutralinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,

@@ -212,7 +212,7 @@ namespace LHC_FASER
              bool const heavyNeutralinoAreaIsConstant )
     const
     /* this finds the grid square which the given point is in, & then uses
-     * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
+     * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
      * value, assuming that the heavy neutralino edge goes to 0.0 as the
      * heavier neutralino mass approaches the lighter scolored mass unless
      * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
@@ -230,7 +230,7 @@ namespace LHC_FASER
              bool const heavyNeutralinoAreaIsConstant )
     const
     /* this finds the grid square which the given point is in, & then uses
-     * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
+     * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
      * value, assuming that the heavy neutralino edge goes to 0.0 as the
      * heavier neutralino mass approaches the lighter scolored mass unless
      * heavyNeutralinoEdgeIsLighterScoloredMass is true, in which case it

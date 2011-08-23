@@ -62,7 +62,7 @@ namespace LHC_FASER
                           CppSLHA::CppSLHA0 const* const given_CppSLHA_pointer,
                 CppSLHA::EW_scale_spectrum const* const given_spectrum_pointer,
                                 std::string const given_path_to_grids,
-                                readier_for_new_point* const given_readier ) :
+                                readierForNewPoint* const given_readier ) :
     readier( given_readier ),
     verbosity_flag( false ),
     using_NLO_flag( true ),

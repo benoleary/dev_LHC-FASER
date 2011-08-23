@@ -63,7 +63,7 @@ namespace LHC_FASER
                                 input_handler const* const given_shortcuts,
                                std::list< int > const* const given_jets_to_tag,
                          std::list< int > const* const given_jets_to_reject ) :
-    readied_for_new_point( given_shortcuts->get_readier() ),
+    getsReadiedForNewPoint( given_shortcuts->get_readier() ),
     shortcut( given_shortcuts ),
     scolored_pair( given_scolored_pair ),
     jets_to_tag( given_jets_to_tag ),
@@ -341,7 +341,7 @@ namespace LHC_FASER
     << ", 00: " << second_by_antiscolored_to_antiEWino_BR;
     std::cout << std::endl;**/
 
-    if( LHC_FASER_global::negligible_BR
+    if( lhcFaserGlobal::negligibleBr
         < ( first_sQCD_BR * second_by_scolored_to_EWino_BR ) )
       // if the squark to electroweakino combination is not negligible...
       {
@@ -367,7 +367,7 @@ namespace LHC_FASER
 
       }
 
-    if( LHC_FASER_global::negligible_BR
+    if( lhcFaserGlobal::negligibleBr
         < ( first_sQCD_BR * second_by_scolored_to_antiEWino_BR ) )
       // if the squark to antielectroweakino combination is not negligible...
       {
@@ -394,7 +394,7 @@ namespace LHC_FASER
       }
 
 
-    if( LHC_FASER_global::negligible_BR
+    if( lhcFaserGlobal::negligibleBr
         < ( first_sQCD_BR * second_by_antiscolored_to_EWino_BR ) )
       // if the antisquark to electroweakino combination is not negligible...
       {
@@ -421,7 +421,7 @@ namespace LHC_FASER
       }
 
 
-    if( LHC_FASER_global::negligible_BR
+    if( lhcFaserGlobal::negligibleBr
         < ( first_sQCD_BR * second_by_antiscolored_to_antiEWino_BR ) )
       // if the antisquark to antielectroweakino combination is not
       // negligible...
@@ -505,7 +505,7 @@ namespace LHC_FASER
 
             BR_to_record = scolored_to_EWino->get_BR();
 
-            if( LHC_FASER_global::negligible_BR < BR_to_record )
+            if( lhcFaserGlobal::negligibleBr < BR_to_record )
               {
 
                 if( scolored_is_not_antiparticle )
@@ -544,7 +544,7 @@ namespace LHC_FASER
 
             BR_to_record = scolored_to_antiEWino->get_BR();
 
-            if( LHC_FASER_global::negligible_BR < BR_to_record )
+            if( lhcFaserGlobal::negligibleBr < BR_to_record )
               {
 
                 if( scolored_is_not_antiparticle )
@@ -582,7 +582,7 @@ namespace LHC_FASER
 
             BR_to_record = scolored_to_EWino->get_BR();
 
-            if( LHC_FASER_global::negligible_BR < BR_to_record )
+            if( lhcFaserGlobal::negligibleBr < BR_to_record )
               {
 
                 *sc_ew_BR = BR_to_record;
@@ -625,7 +625,7 @@ namespace LHC_FASER
             BR_to_record
             = ( scolored_to_gluino->get_BR() * gluino_to_EWino->get_BR() );
 
-            if( LHC_FASER_global::negligible_BR
+            if( lhcFaserGlobal::negligibleBr
                 < BR_to_record )
               {
 
@@ -677,7 +677,7 @@ namespace LHC_FASER
                 << product_to_EWino->get_BR();
                 std::cout << std::endl;**/
 
-                if( LHC_FASER_global::negligible_BR < BR_to_record )
+                if( lhcFaserGlobal::negligibleBr < BR_to_record )
                   {
 
                     *sc_ew_BR = BR_to_record;
@@ -714,7 +714,7 @@ namespace LHC_FASER
                 BR_to_record = ( gluino_to_product->get_BR()
                                  * product_to_antiEWino->get_BR() );
 
-                if( LHC_FASER_global::negligible_BR < BR_to_record )
+                if( lhcFaserGlobal::negligibleBr < BR_to_record )
                   {
 
                     *sc_aew_BR = BR_to_record;
@@ -756,7 +756,7 @@ namespace LHC_FASER
                                  * gluino_to_product->get_BR()
                                  * product_to_EWino->get_BR() );
 
-                if( LHC_FASER_global::negligible_BR < BR_to_record )
+                if( lhcFaserGlobal::negligibleBr < BR_to_record )
                   {
 
                     *sc_ew_BR = BR_to_record;
@@ -785,7 +785,7 @@ namespace LHC_FASER
                                  * gluino_to_product->get_BR()
                                  * product_to_antiEWino->get_BR() );
 
-                if( LHC_FASER_global::negligible_BR < BR_to_record )
+                if( lhcFaserGlobal::negligibleBr < BR_to_record )
                   {
 
                     *sc_aew_BR = BR_to_record;
@@ -949,7 +949,7 @@ namespace LHC_FASER
                 identical_cascade_BR_product
                 = ( first_by_scolored_to_EWino_BR
                     * first_by_scolored_to_EWino_BR );
-                if( LHC_FASER_global::negligible_BR
+                if( lhcFaserGlobal::negligibleBr
                     < identical_cascade_BR_product )
                   {
 
@@ -998,7 +998,7 @@ namespace LHC_FASER
                 = ( 2.0 * first_by_scolored_to_EWino_BR
                         * first_by_antiscolored_to_EWino_BR );
                 // first_by_antiscolored_to_EWino_BR is 0.0 for gx.
-                if( LHC_FASER_global::negligible_BR
+                if( lhcFaserGlobal::negligibleBr
                     < identical_cascade_BR_product )
                   {
 
@@ -1034,7 +1034,7 @@ namespace LHC_FASER
                 = ( first_by_antiscolored_to_EWino_BR
                     * first_by_antiscolored_to_EWino_BR );
                 // first_by_antiscolored_to_EWino_BR is 0.0 for gx.
-                if( LHC_FASER_global::negligible_BR
+                if( lhcFaserGlobal::negligibleBr
                     < identical_cascade_BR_product )
                   {
 
@@ -1075,7 +1075,7 @@ namespace LHC_FASER
                     identical_cascade_BR_product
                     = ( 2.0 * first_by_scolored_to_EWino_BR
                             * first_by_scolored_to_antiEWino_BR );
-                    if( LHC_FASER_global::negligible_BR
+                    if( lhcFaserGlobal::negligibleBr
                         < identical_cascade_BR_product )
                       {
 
@@ -1111,7 +1111,7 @@ namespace LHC_FASER
                     identical_cascade_BR_product
                     = ( first_by_scolored_to_antiEWino_BR
                         * first_by_scolored_to_antiEWino_BR );
-                    if( LHC_FASER_global::negligible_BR
+                    if( lhcFaserGlobal::negligibleBr
                         < identical_cascade_BR_product )
                       {
 
@@ -1147,7 +1147,7 @@ namespace LHC_FASER
                     identical_cascade_BR_product
                     = ( 2.0 * first_by_scolored_to_antiEWino_BR
                             * first_by_antiscolored_to_EWino_BR );
-                    if( LHC_FASER_global::negligible_BR
+                    if( lhcFaserGlobal::negligibleBr
                         < identical_cascade_BR_product )
                       {
 
@@ -1183,7 +1183,7 @@ namespace LHC_FASER
                     identical_cascade_BR_product
                     = ( 2.0 * first_by_scolored_to_EWino_BR
                             * first_by_antiscolored_to_antiEWino_BR );
-                    if( LHC_FASER_global::negligible_BR
+                    if( lhcFaserGlobal::negligibleBr
                         < identical_cascade_BR_product )
                       {
 
@@ -1219,7 +1219,7 @@ namespace LHC_FASER
                     identical_cascade_BR_product
                     = ( 2.0 * first_by_scolored_to_antiEWino_BR
                             * first_by_antiscolored_to_antiEWino_BR );
-                    if( LHC_FASER_global::negligible_BR
+                    if( lhcFaserGlobal::negligibleBr
                         < identical_cascade_BR_product )
                       {
 
@@ -1255,7 +1255,7 @@ namespace LHC_FASER
                     identical_cascade_BR_product
                     = ( 2.0 * first_by_antiscolored_to_EWino_BR
                             * first_by_antiscolored_to_antiEWino_BR );
-                    if( LHC_FASER_global::negligible_BR
+                    if( lhcFaserGlobal::negligibleBr
                         < identical_cascade_BR_product )
                       {
 
@@ -1291,7 +1291,7 @@ namespace LHC_FASER
                     identical_cascade_BR_product
                     = ( first_by_antiscolored_to_antiEWino_BR
                         * first_by_antiscolored_to_antiEWino_BR );
-                    if( LHC_FASER_global::negligible_BR
+                    if( lhcFaserGlobal::negligibleBr
                         < identical_cascade_BR_product )
                       {
 

@@ -99,8 +99,8 @@ namespace LHC_FASER
                      CppSLHA::particle_property_set const* const given_decayer,
               std::vector< CppSLHA::particle_property_set const* > const* const
                                               given_products,
-                                 readier_for_new_point* const given_readier ) :
-    readied_for_new_point( given_readier ),
+                                 readierForNewPoint* const given_readier ) :
+    getsReadiedForNewPoint( given_readier ),
     decayer( given_decayer ),
     products( given_products ),
     decayer_does_decay_to_at_least_one_product( false )
@@ -154,7 +154,7 @@ namespace LHC_FASER
 
 
   decay_checker_handler::decay_checker_handler(
-                                 readier_for_new_point* const given_readier ) :
+                                 readierForNewPoint* const given_readier ) :
     readier( given_readier )
   {
 
@@ -229,8 +229,8 @@ namespace LHC_FASER
                      CppSLHA::particle_property_set const* const given_product,
                                    bool const product_is_not_antiparticle_flag,
                                   std::list< int > const* const given_excluded,
-                                 readier_for_new_point* const given_readier ) :
-    readied_for_new_point( given_readier ),
+                                 readierForNewPoint* const given_readier ) :
+    getsReadiedForNewPoint( given_readier ),
     decayer( given_decayer ),
     product( given_product ),
     exclusion_list( given_excluded ),
@@ -295,7 +295,7 @@ namespace LHC_FASER
   exclusive_BR_handler::exclusive_BR_handler(
       std::vector< CppSLHA::particle_property_set const* > const* const sdowns,
         std::vector< CppSLHA::particle_property_set const* > const* const sups,
-                                 readier_for_new_point* const given_readier ) :
+                                 readierForNewPoint* const given_readier ) :
     readier( given_readier )
   {
 
@@ -531,8 +531,8 @@ namespace LHC_FASER
                                             given_scoloreds,
               std::vector< CppSLHA::particle_property_set const* > const* const
                                             given_EWinos,
-                                 readier_for_new_point* const given_readier ) :
-    readied_for_new_point( given_readier ),
+                                 readierForNewPoint* const given_readier ) :
+    getsReadiedForNewPoint( given_readier ),
     decayer( given_decayer ),
     gluino_pointer( given_gluino ),
     scoloreds( given_scoloreds ),
@@ -661,7 +661,7 @@ namespace LHC_FASER
                                                     given_scoloreds,
             std::vector< CppSLHA::particle_property_set const* > const* const
                                                     given_EWinos,
-                                 readier_for_new_point* const given_readier ) :
+                                 readierForNewPoint* const given_readier ) :
     gluino_pointer( given_gluino ),
     scoloreds( given_scoloreds ),
     EWinos( given_EWinos ),

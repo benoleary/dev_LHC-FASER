@@ -106,7 +106,7 @@ namespace LHC_FASER
              double const yCoordinate )
     const
     /* this finds the grid square which the given point is in, & then uses
-     * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
+     * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
      * value.
      * N.B.: cross-section grids use
      * xCoordinate == SQUARK mass, yCoordinate == GLUINO mass!
@@ -155,7 +155,7 @@ namespace LHC_FASER
    * at the accuracy we work at unless there are large splittings among the
    * sdown & sup mass eigenstates.
    */
-  class crossSectionTable : public readied_for_new_point
+  class crossSectionTable : public getsReadiedForNewPoint
   {
 
   public:

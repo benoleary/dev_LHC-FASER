@@ -491,10 +491,10 @@ namespace LHC_FASER
    * classes. However, it does do most of the work, the derived classes just
    * set up the lepton_distribution_expansion_term objects properly.
    */
-  class leptonEnergyDistribution : public readied_for_new_point
+  class leptonEnergyDistribution : public getsReadiedForNewPoint
   {
   public:
-    leptonEnergyDistribution( readier_for_new_point* const readier,
+    leptonEnergyDistribution( readierForNewPoint* const readier,
                               CppSLHA::CppSLHA0 const* const spectrum,
                      CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -594,7 +594,7 @@ namespace LHC_FASER
 
   public:
 
-    visible_tau_decay_product( readier_for_new_point* const given_readier,
+    visible_tau_decay_product( readierForNewPoint* const given_readier,
                       leptonEnergyDistribution* const given_tau_distribution,
                                tau_decay_coefficient const* const tau_decay )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -779,11 +779,11 @@ namespace LHC_FASER
   // arbitrary normalization (different for each distribution).
   {
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
       {
 
         reset();
-        finish_preparing_for_this_point();
+        finishPreparingForThisPoint();
 
       }
 
@@ -807,11 +807,11 @@ namespace LHC_FASER
   leptonEnergyDistribution::getMinimumEnergy()
   {
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
       {
 
         reset();
-        finish_preparing_for_this_point();
+        finishPreparingForThisPoint();
 
       }
 
@@ -823,11 +823,11 @@ namespace LHC_FASER
   leptonEnergyDistribution::getMaximumEnergy()
   {
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
       {
 
         reset();
-        finish_preparing_for_this_point();
+        finishPreparingForThisPoint();
 
       }
 

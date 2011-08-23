@@ -257,7 +257,7 @@ namespace LHC_FASER
 
       }
 
-    readier_instance = new readier_for_new_point();
+    readier_instance = new readierForNewPoint();
 
     input_handler_object = new input_handler( spectrum_data,
                                         spectrum_data->get_particle_spectrum(),

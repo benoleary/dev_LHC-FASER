@@ -196,7 +196,7 @@ namespace LHC_FASER
                                   leptonAcceptanceTable const* acceptanceTable,
                           CppSLHA::particle_property_set const* const scolored,
                           CppSLHA::particle_property_set const* const ewino ) :
-    readied_for_new_point( shortcut->get_readier() ),
+    getsReadiedForNewPoint( shortcut->get_readier() ),
     effectiveSquarkMassHolder(),
     shortcut( shortcut ),
     acceptanceTable( acceptanceTable ),
@@ -219,7 +219,7 @@ namespace LHC_FASER
                              CppSLHA::particle_property_set const* const ewino,
                                                           double const binSize,
                                          double const transverseMomentumCut ) :
-    readied_for_new_point( shortcut->get_readier() ),
+    getsReadiedForNewPoint( shortcut->get_readier() ),
     effectiveSquarkMassHolder(),
     shortcut( shortcut ),
     acceptanceTable( acceptanceTable ),

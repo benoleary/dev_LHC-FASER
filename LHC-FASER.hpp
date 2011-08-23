@@ -230,7 +230,7 @@ namespace LHC_FASER
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
 
-    readier_for_new_point* readier_instance;
+    readierForNewPoint* readier_instance;
 
 
     void
@@ -304,7 +304,7 @@ namespace LHC_FASER
    */
   {
 
-    readier_instance->ready_for_new_point();
+    readier_instance->readyObserversForNewPoint();
 
   }
 

@@ -2160,7 +2160,7 @@ namespace LHC_FASER
                    electroweakCascadeHandler* const electroweakCascadeHandling,
                       std::list< fullCascadeSet* >* const squarkCascadeSetList,
                                   double const beamEnergy ) :
-    readied_for_new_point( shortcut->get_readier() ),
+    getsReadiedForNewPoint( shortcut->get_readier() ),
     initialScolored( initialScolored ),
     shortcut( shortcut ),
     squarkCascadeSetList( squarkCascadeSetList ),
@@ -2318,11 +2318,11 @@ namespace LHC_FASER
               > ( shortcut->getGluinoMass()
                   + (*ewIterator)->get_absolute_mass() ) )
             &&
-            ( ( LHC_FASER_global::negligible_BR
+            ( ( lhcFaserGlobal::negligibleBr
                 < initialScolored->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                  &soughtPositivePdgCodeList ) )
-              || ( LHC_FASER_global::negligible_BR
+              || ( lhcFaserGlobal::negligibleBr
                                < initialScolored->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                              &soughtNegativePdgCodeList ) ) ) )
@@ -2389,11 +2389,11 @@ namespace LHC_FASER
               > ( (*cascadeIterator)->initialScolored->get_absolute_mass()
                   + (*ewIterator)->get_absolute_mass() ) )
             &&
-            ( ( LHC_FASER_global::negligible_BR
+            ( ( lhcFaserGlobal::negligibleBr
                 < initialScolored->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                  &soughtPositivePdgCodeList ) )
-              || ( LHC_FASER_global::negligible_BR
+              || ( lhcFaserGlobal::negligibleBr
                                < initialScolored->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                              &soughtNegativePdgCodeList ) ) ) )
@@ -2537,11 +2537,11 @@ namespace LHC_FASER
               > ( (*cascadeIterator)->initialScolored->get_absolute_mass()
                   + (*ewIterator)->get_absolute_mass() ) )
             &&
-            ( ( LHC_FASER_global::negligible_BR
+            ( ( lhcFaserGlobal::negligibleBr
                 < initialScolored->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                  &soughtPositivePdgCodeList ) )
-              || ( LHC_FASER_global::negligible_BR
+              || ( lhcFaserGlobal::negligibleBr
                                < initialScolored->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                              &soughtNegativePdgCodeList ) ) ) )

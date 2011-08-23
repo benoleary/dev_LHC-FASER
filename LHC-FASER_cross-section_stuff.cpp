@@ -297,7 +297,7 @@ namespace LHC_FASER
                        double const yCoordinate )
   const
   /* this finds the grid square which the given point is in, & then uses
-   * LHC_FASER_global::square_bilinear_interpolation to get an interpolated
+   * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
    * value. if the requested co-ordinates are outside the grid, or on the
    * edges of the grid corresponding to the maximum x or y values,
    * CppSLHA::CppSLHA_global::really_wrong_value is returned.
@@ -322,7 +322,7 @@ namespace LHC_FASER
         if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
         {
-          return LHC_FASER_global::square_bilinear_interpolation(
+          return lhcFaserGlobal::squareBilinearInterpolation(
                                                        ( xSteps - lowerLeftX ),
                                                        ( ySteps - lowerLeftY ),
                                      values.at( lowerLeftX )->at( lowerLeftY ),
@@ -335,7 +335,7 @@ namespace LHC_FASER
                  ( (double)lowerLeftY == ySteps ) )
           // otherwise, if it's on the maximal y edge...
         {
-          return LHC_FASER_global::unit_linear_interpolation(
+          return lhcFaserGlobal::unitLinearInterpolation(
                                                        ( xSteps - lowerLeftX ),
                                      values.at( lowerLeftX )->at( lowerLeftY ),
                            values.at( ( lowerLeftX + 1 ) )->at( lowerLeftY ) );
@@ -357,7 +357,7 @@ namespace LHC_FASER
         if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
         {
-          return LHC_FASER_global::unit_linear_interpolation(
+          return lhcFaserGlobal::unitLinearInterpolation(
                                                        ( ySteps - lowerLeftY ),
                                      values.at( lowerLeftX )->at( lowerLeftY ),
                            values.at( lowerLeftX )->at( ( lowerLeftY + 1 ) ) );
@@ -395,7 +395,7 @@ namespace LHC_FASER
                        signed_particle_shortcut_pair const* const scoloredPair,
                                         double const flavorFactor,
                                         input_handler const* const shortcut ) :
-    readied_for_new_point( shortcut->get_readier() ),
+    getsReadiedForNewPoint( shortcut->get_readier() ),
     shortcut( shortcut ),
     scoloredPair( scoloredPair ),
     lookupTable( lookupTable ),
@@ -449,12 +449,12 @@ namespace LHC_FASER
     /**std::cout
     << std::endl
     << "debugging: crossSectionTable::getValue() called."
-    << " needs_to_prepare_for_this_point() = "
-    << needs_to_prepare_for_this_point() << ", "
+    << " needsToPrepareForThisPoint() = "
+    << needsToPrepareForThisPoint() << ", "
     << "flavorFactor = " << flavorFactor;
     std::cout << std::endl;**/
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       if( 0.0 < flavorFactor )
       {
@@ -533,7 +533,7 @@ namespace LHC_FASER
       {
         storedValue = 0.0;
       }
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return storedValue;
   }

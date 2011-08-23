@@ -154,7 +154,7 @@ namespace LHC_FASER
    * given handlers. it also takes care of updating the signal & storing its
    * value & estimated uncertainty.
    */
-  class signalHandler : public readied_for_new_point
+  class signalHandler : public getsReadiedForNewPoint
   {
   public:
     signalHandler( std::string const signalName,
@@ -381,18 +381,18 @@ namespace LHC_FASER
     /**std::cout
     << std::endl
     << "debugging: signalHandler::getValue() called."
-    << " needs_to_prepare_for_this_point() = "
-    << needs_to_prepare_for_this_point();
+    << " needsToPrepareForThisPoint() = "
+    << needsToPrepareForThisPoint();
     std::cout << std::endl;**/
 
     // if the signal has not been calculated for this point, update
     // signal_value before returning it:
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
       {
         rateCalculator->calculate( &signalValue,
                                    &uncertaintyFactor );
         signalValue *= crossSectionUnitFactor;
-        finish_preparing_for_this_point();
+        finishPreparingForThisPoint();
       }
     return signalValue;
   }
@@ -426,11 +426,11 @@ namespace LHC_FASER
   {
     // if the signal has not been calculated for this point, update
     // uncertainty_factor before returning it:
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
       {
         rateCalculator->calculate( &signalValue,
                                    &uncertaintyFactor );
-        finish_preparing_for_this_point();
+        finishPreparingForThisPoint();
       }
     return log( uncertaintyFactor );
   }

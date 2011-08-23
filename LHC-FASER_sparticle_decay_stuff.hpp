@@ -118,7 +118,7 @@ namespace LHC_FASER
 
   // this class just checks whether the given particle can decay directly to
   // any of the particles in the given vector, or their antiparticles.
-  class direct_decay_checker : public readied_for_new_point
+  class direct_decay_checker : public getsReadiedForNewPoint
   {
 
   public:
@@ -127,7 +127,7 @@ namespace LHC_FASER
                      CppSLHA::particle_property_set const* const given_decayer,
               std::vector< CppSLHA::particle_property_set const* > const* const
                           given_products,
-                          readier_for_new_point* const given_readier )
+                          readierForNewPoint* const given_readier )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~direct_decay_checker()
@@ -170,7 +170,7 @@ namespace LHC_FASER
 
   public:
 
-    decay_checker_handler( readier_for_new_point* const given_readier )
+    decay_checker_handler( readierForNewPoint* const given_readier )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~decay_checker_handler()
@@ -188,7 +188,7 @@ namespace LHC_FASER
   protected:
 
     std::vector< direct_decay_checker* > decay_checkers;
-    readier_for_new_point* readier;
+    readierForNewPoint* readier;
 
     direct_decay_checker*
     add( CppSLHA::particle_property_set const* const given_decayer,
@@ -203,7 +203,7 @@ namespace LHC_FASER
    * given product for all channels *excluding* those which also have any of
    * the particles in the exclusion list.
    */
-  class exclusive_BR_calculator : public readied_for_new_point
+  class exclusive_BR_calculator : public getsReadiedForNewPoint
   {
 
   public:
@@ -213,7 +213,7 @@ namespace LHC_FASER
                      CppSLHA::particle_property_set const* const given_product,
                              bool const product_is_not_antiparticle_flag,
                              std::list< int > const* const given_excluded,
-                             readier_for_new_point* const given_readier )
+                             readierForNewPoint* const given_readier )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~exclusive_BR_calculator()
@@ -268,7 +268,7 @@ namespace LHC_FASER
     exclusive_BR_handler(
       std::vector< CppSLHA::particle_property_set const* > const* const sdowns,
         std::vector< CppSLHA::particle_property_set const* > const* const sups,
-                          readier_for_new_point* const given_readier )
+                          readierForNewPoint* const given_readier )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~exclusive_BR_handler()
@@ -287,7 +287,7 @@ namespace LHC_FASER
   protected:
 
     std::vector< exclusive_BR_calculator* > exclusive_BRs;
-    readier_for_new_point* readier;
+    readierForNewPoint* readier;
 
     std::vector< std::pair< int,
                             int >* > always_neglected_decays;
@@ -402,7 +402,7 @@ namespace LHC_FASER
 
   // this class holds a set of colored_cascades & passes out a vector of
   // pointers to those which are kinematically allowed.
-  class colored_cascade_set : public readied_for_new_point
+  class colored_cascade_set : public getsReadiedForNewPoint
   {
 
   public:
@@ -414,7 +414,7 @@ namespace LHC_FASER
                          given_scoloreds,
               std::vector< CppSLHA::particle_property_set const* > const* const
                          given_EWinos,
-                         readier_for_new_point* const given_readier )
+                         readierForNewPoint* const given_readier )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~colored_cascade_set()
@@ -440,7 +440,7 @@ namespace LHC_FASER
     scoloreds;
     std::vector< CppSLHA::particle_property_set const* > const* const EWinos;
     std::vector< colored_cascade* > colored_cascades;
-    readier_for_new_point* readier;
+    readierForNewPoint* readier;
 
 
     void
@@ -462,7 +462,7 @@ namespace LHC_FASER
                              given_scoloreds,
               std::vector< CppSLHA::particle_property_set const* > const* const
                              given_EWinos,
-                             readier_for_new_point* const given_readier )
+                             readierForNewPoint* const given_readier )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~colored_cascade_handler()
@@ -482,7 +482,7 @@ namespace LHC_FASER
     scoloreds;
     std::vector< CppSLHA::particle_property_set const* > const* const EWinos;
     std::vector< colored_cascade_set* > colored_cascade_sets;
-    readier_for_new_point* readier;
+    readierForNewPoint* readier;
 
   };  // end of colored_cascade_handler class.
 
@@ -608,11 +608,11 @@ namespace LHC_FASER
   direct_decay_checker::has_direct_decay()
   {
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
       {
 
         decayer_does_decay_to_at_least_one_product = check_for_decay();
-        finish_preparing_for_this_point();
+        finishPreparingForThisPoint();
 
       }
 
@@ -674,7 +674,7 @@ namespace LHC_FASER
   exclusive_BR_calculator::get_BR()
   {
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
       {
 
         if( decayer->get_absolute_mass() > product->get_absolute_mass() )
@@ -691,7 +691,7 @@ namespace LHC_FASER
 
           }
 
-        finish_preparing_for_this_point();
+        finishPreparingForThisPoint();
 
       }
 
@@ -897,11 +897,11 @@ namespace LHC_FASER
   colored_cascade_set::get_colored_cascades()
   {
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
       {
 
         prepare_open_channels();
-        finish_preparing_for_this_point();
+        finishPreparingForThisPoint();
 
       }
 

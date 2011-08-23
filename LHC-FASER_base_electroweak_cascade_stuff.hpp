@@ -280,7 +280,7 @@ namespace LHC_FASER
    * different derived classes to all appear the same to other objects, more
    * just as a convenient way to avoid reproducing common code.
    */
-  class electroweakCascade : public readied_for_new_point
+  class electroweakCascade : public getsReadiedForNewPoint
   {
   public:
     electroweakCascade( leptonAcceptanceParameterSet* const kinematics,
@@ -901,7 +901,7 @@ namespace LHC_FASER
   {
     if( canDoOssfMinusOsdf )
     {
-      if( needs_to_prepare_for_this_point() )
+      if( needsToPrepareForThisPoint() )
       {
         acceptances.clear();
       }

@@ -92,7 +92,7 @@ namespace LHC_FASER
   signalHandler::signalHandler( std::string const signalName,
                                 signal_shortcuts* const shortcut,
                                 double const crossSectionUnitFactor ) :
-    readied_for_new_point( shortcut->get_input_shortcuts()->get_readier() ),
+    getsReadiedForNewPoint( shortcut->get_input_shortcuts()->get_readier() ),
     signalName( signalName ),
     shortcut( shortcut ),
     crossSectionUnitFactor( crossSectionUnitFactor )
@@ -239,7 +239,7 @@ namespace LHC_FASER
          channels.end() > channelIterator;
          ++channelIterator )
     {
-      if( LHC_FASER_global::negligible_sigma
+      if( lhcFaserGlobal::negligibleSigma
           < (*channelIterator)->getCrossSection() )
         // if it's worth looking at this channel...
       {
@@ -273,22 +273,22 @@ namespace LHC_FASER
              firstCascades->end() > firstCascadeIterator;
              ++firstCascadeIterator )
         {
-          if( ( LHC_FASER_global::negligible_BR
+          if( ( lhcFaserGlobal::negligibleBr
               * 2.0 * (double)(firstCascades->size()) )
               < (*firstCascadeIterator)->getBrToEwino() )
             // this should mean we never throw away more than
-            // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
+            // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
           {
             for( std::vector< fullCascade* >::iterator
                  secondCascadeIterator = secondCascades->begin();
                  secondCascades->end() > secondCascadeIterator;
                  ++secondCascadeIterator )
             {
-              if( ( LHC_FASER_global::negligible_BR
+              if( ( lhcFaserGlobal::negligibleBr
                   * 2.0 * (double)(secondCascades->size()) )
                   < (*secondCascadeIterator)->getBrToEwino() )
                 // this should mean we never throw away more than
-                // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
+                // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
               {
                 channelBrTotal += ( (*firstCascadeIterator)->getBrToEwino()
                                   * (*secondCascadeIterator)->getBrToEwino() );
@@ -444,7 +444,7 @@ namespace LHC_FASER
          channels.end() > channelIterator;
          ++channelIterator )
     {
-      if( LHC_FASER_global::negligible_sigma
+      if( lhcFaserGlobal::negligibleSigma
           < (*channelIterator)->getCrossSection() )
         // if it's worth looking at this channel...
       {
@@ -461,11 +461,11 @@ namespace LHC_FASER
         {
           firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
-          if( ( LHC_FASER_global::negligible_BR
+          if( ( lhcFaserGlobal::negligibleBr
               * 2.0 * (double)(firstCascades->size()) )
               < firstCascadeBrToEwino )
             // this should mean we never throw away more than
-            // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
+            // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
           {
             for( std::vector< fullCascade* >::iterator
                  secondCascadeIterator = secondCascades->begin();
@@ -474,11 +474,11 @@ namespace LHC_FASER
             {
               secondCascadeBrToEwino = (*secondCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
-              if( ( LHC_FASER_global::negligible_BR
+              if( ( lhcFaserGlobal::negligibleBr
                   * 2.0 * (double)(secondCascades->size()) )
                   < secondCascadeBrToEwino )
                 // this should mean we never throw away more than
-                // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
+                // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
               {
                 subchannelCrossSectionTimesBrToEwinos
                 = ( (*channelIterator)->getCrossSection()
@@ -509,7 +509,7 @@ namespace LHC_FASER
                 // chance of no lepton rejection removing the portion without
                 // any extra jet passing the cut.
 
-                if( LHC_FASER_global::negligible_BR
+                if( lhcFaserGlobal::negligibleBr
                     < subchannelZeroOrMoreJetsZeroLeptons )
                 {
                   fourJetAcceptance
@@ -524,7 +524,7 @@ namespace LHC_FASER
 
                   // it's not going to ever be the case where the acceptance
                   // for 1+ jets is greater than 0+ jets...
-                  if( LHC_FASER_global::negligible_BR
+                  if( lhcFaserGlobal::negligibleBr
                       < subchannelOneOrMoreJetsZeroLeptons )
                   {
                     subchannelValue
@@ -709,7 +709,7 @@ namespace LHC_FASER
          channels.end() > channelIterator;
          ++channelIterator )
     {
-      if( LHC_FASER_global::negligible_sigma
+      if( lhcFaserGlobal::negligibleSigma
           < (*channelIterator)->getCrossSection() )
         // if it's worth looking at this channel...
       {
@@ -726,11 +726,11 @@ namespace LHC_FASER
         {
           firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
-          if( ( LHC_FASER_global::negligible_BR
+          if( ( lhcFaserGlobal::negligibleBr
               * 2.0 * (double)(firstCascades->size()) )
               < firstCascadeBrToEwino )
             // this should mean we never throw away more than
-            // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
+            // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
           {
             for( std::vector< fullCascade* >::iterator
                  secondCascadeIterator = secondCascades->begin();
@@ -739,11 +739,11 @@ namespace LHC_FASER
             {
               secondCascadeBrToEwino = (*secondCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
-              if( ( LHC_FASER_global::negligible_BR
+              if( ( lhcFaserGlobal::negligibleBr
                   * 2.0 * (double)(secondCascades->size()) )
                   < secondCascadeBrToEwino )
                 // this should mean we never throw away more than
-                // 0.5 * LHC_FASER_global::negligible_BR of acceptance.
+                // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
               {
                 subchannelCrossSectionTimesBrToEwinos
                 = ( (*channelIterator)->getCrossSection()
@@ -771,7 +771,7 @@ namespace LHC_FASER
                  * 2nd cascade * chance of no lepton from 1st cascade.
                  */
 
-                if( LHC_FASER_global::negligible_BR
+                if( lhcFaserGlobal::negligibleBr
                     < subchannelZeroOrMoreJetsOneLepton )
                 {
                   // here is where we update *signal_value to account for this

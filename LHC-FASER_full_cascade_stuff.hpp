@@ -181,9 +181,9 @@ namespace LHC_FASER
     /* this sets branchingRatioNeedsToBeReCalculated to true, so that
      * cachedBranchingRatio will be re-calculated next time the branching ratio
      * is requested. I'd prefer to do this with inheritance from
-     * readied_for_new_point, but I'd have to write a variant of
+     * getsReadiedForNewPoint, but I'd have to write a variant of
      * minimalAllocationVector to allow for arguments to be given to
-     * constructors so that the appropriate readier_for_new_point can be given
+     * constructors so that the appropriate readierForNewPoint can be given
      * to the fullCascade constructor.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -868,7 +868,7 @@ namespace LHC_FASER
    * ordered by mass of initial colored sparticle by whichever fullCascadeSet
    * is called 1st.
    */
-  class fullCascadeSet : public readied_for_new_point
+  class fullCascadeSet : public getsReadiedForNewPoint
   {
   public:
     static bool
@@ -1234,9 +1234,9 @@ namespace LHC_FASER
   /* this sets branchingRatioNeedsToBeReCalculated to true, so that
    * cachedBranchingRatio will be re-calculated next time the branching ratio
    * is requested. I'd prefer to do this with inheritance from
-   * readied_for_new_point, but I'd have to write a variant of
+   * getsReadiedForNewPoint, but I'd have to write a variant of
    * minimalAllocationVector to allow for arguments to be given to
-   * constructors so that the appropriate readier_for_new_point can be given
+   * constructors so that the appropriate readierForNewPoint can be given
    * to the fullCascade constructor.
    */
   {
@@ -1969,10 +1969,10 @@ namespace LHC_FASER
   fullCascadeSet::getOpenCascades()
   // this calls setUpCascades() if it needs to be readied for this point.
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &openCascades;
   }
@@ -1980,10 +1980,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< sxFullCascade >*
   fullCascadeSet::getSxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &openSxCascades;
   }
@@ -1991,10 +1991,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< gxFullCascade >*
   fullCascadeSet::getGxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &openGxCascades;
   }
@@ -2002,10 +2002,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< sjgxFullCascade >*
   fullCascadeSet::getSjgxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &sjgxCascades;
   }
@@ -2013,10 +2013,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< gjsxFullCascade >*
   fullCascadeSet::getGjsxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &gjsxCascades;
   }
@@ -2024,10 +2024,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< sjgjsxFullCascade >*
   fullCascadeSet::getSjgjsxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &sjgjsxCascades;
   }
@@ -2035,10 +2035,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< svsxFullCascade >*
   fullCascadeSet::getSvsxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &svsxCascades;
   }
@@ -2046,10 +2046,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< gvsxFullCascade >*
   fullCascadeSet::getGvsxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &gvsxCascades;
   }
@@ -2057,10 +2057,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< gjsvsxFullCascade >*
   fullCascadeSet::getGjsvsxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &gjsvsxCascades;
   }
@@ -2068,10 +2068,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< svgxFullCascade >*
   fullCascadeSet::getSvgxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &svgxCascades;
   }
@@ -2079,10 +2079,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< svsjgxFullCascade >*
   fullCascadeSet::getSvsjgxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &svsjgxCascades;
   }
@@ -2090,10 +2090,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< svsjgjsxFullCascade >*
   fullCascadeSet::getSvsjgjsxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &svsjgjsxCascades;
   }
@@ -2101,10 +2101,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< svgjsxFullCascade >*
   fullCascadeSet::getSvgjsxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &svgjsxCascades;
   }
@@ -2112,10 +2112,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< sjgvsxFullCascade >*
   fullCascadeSet::getSjgvsxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &sjgvsxCascades;
   }
@@ -2123,10 +2123,10 @@ namespace LHC_FASER
   inline minimalAllocationVector< sjgjsvsxFullCascade >*
   fullCascadeSet::getSjgjsvsxCascades()
   {
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finish_preparing_for_this_point();
+      finishPreparingForThisPoint();
     }
     return &sjgjsvsxCascades;
   }

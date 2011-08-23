@@ -69,7 +69,7 @@ namespace LHC_FASER
    * decay product, & the electroweakino end products of each colored sparticle
    * decay, along with the product of the branching ratios for the decay set.
    */
-  class sQCD_to_EWino : public readied_for_new_point
+  class sQCD_to_EWino : public getsReadiedForNewPoint
   {
 
   public:
@@ -421,11 +421,11 @@ namespace LHC_FASER
   sQCD_to_EWino::get_sQCD_end()
   {
 
-    if( needs_to_prepare_for_this_point() )
+    if( needsToPrepareForThisPoint() )
       {
 
         prepare_channels();
-        finish_preparing_for_this_point();
+        finishPreparingForThisPoint();
 
       }
 

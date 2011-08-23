@@ -75,7 +75,7 @@ namespace LHC_FASER
 
   public:
 
-    flat_near_muon_plus_antimuon( readier_for_new_point* const given_readier,
+    flat_near_muon_plus_antimuon( readierForNewPoint* const given_readier,
                                  CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -115,7 +115,7 @@ namespace LHC_FASER
 
   public:
 
-    same_chirality_near_muon( readier_for_new_point* const given_readier,
+    same_chirality_near_muon( readierForNewPoint* const given_readier,
                               CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -158,7 +158,7 @@ namespace LHC_FASER
 
   public:
 
-    opposite_chirality_near_muon( readier_for_new_point* const given_readier,
+    opposite_chirality_near_muon( readierForNewPoint* const given_readier,
                                  CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -198,7 +198,7 @@ namespace LHC_FASER
 
   public:
 
-    flat_far_muon_plus_antimuon( readier_for_new_point* const given_readier,
+    flat_far_muon_plus_antimuon( readierForNewPoint* const given_readier,
                                  CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -262,7 +262,7 @@ namespace LHC_FASER
 
   public:
 
-    same_chirality_far_muon( readier_for_new_point* const given_readier,
+    same_chirality_far_muon( readierForNewPoint* const given_readier,
                              CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -339,7 +339,7 @@ namespace LHC_FASER
 
   public:
 
-    opposite_chirality_far_muon( readier_for_new_point* const given_readier,
+    opposite_chirality_far_muon( readierForNewPoint* const given_readier,
                                  CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -418,7 +418,7 @@ namespace LHC_FASER
 
   public:
 
-      Higgs_muon_plus_antimuon( readier_for_new_point* const given_readier,
+      Higgs_muon_plus_antimuon( readierForNewPoint* const given_readier,
                                 CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -482,7 +482,7 @@ namespace LHC_FASER
 
   public:
 
-    Z_handed_muon( readier_for_new_point* const given_readier,
+    Z_handed_muon( readierForNewPoint* const given_readier,
                    CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                    effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -629,7 +629,7 @@ namespace LHC_FASER
 
   public:
 
-    W_minus_handed_muon( readier_for_new_point* const given_readier,
+    W_minus_handed_muon( readierForNewPoint* const given_readier,
                          CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                          effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -802,7 +802,7 @@ namespace LHC_FASER
 
   public:
 
-    vector_from_squark_to_muon( readier_for_new_point* const given_readier,
+    vector_from_squark_to_muon( readierForNewPoint* const given_readier,
                                 CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -858,7 +858,7 @@ namespace LHC_FASER
 
   public:
 
-    Z_direct_jet( readier_for_new_point* const given_readier,
+    Z_direct_jet( readierForNewPoint* const given_readier,
                   CppSLHA::CppSLHA0 const* const given_spectrum,
             CppSLHA::particle_property_set const* const given_first_particle,
                   effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -886,7 +886,7 @@ namespace LHC_FASER
 
   public:
 
-    W_minus_direct_jet( readier_for_new_point* const given_readier,
+    W_minus_direct_jet( readierForNewPoint* const given_readier,
                         CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                         effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -935,7 +935,7 @@ namespace LHC_FASER
 
   public:
 
-    negatively_charged_Higgs_muon( readier_for_new_point* const given_readier,
+    negatively_charged_Higgs_muon( readierForNewPoint* const given_readier,
                                  CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -967,7 +967,7 @@ namespace LHC_FASER
 
   public:
 
-    negatively_charged_Higgs_jet( readier_for_new_point* const given_readier,
+    negatively_charged_Higgs_jet( readierForNewPoint* const given_readier,
                                  CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -1003,7 +1003,7 @@ namespace LHC_FASER
 
   public:
 
-    neutralino_three_body_decay( readier_for_new_point* const given_readier,
+    neutralino_three_body_decay( readierForNewPoint* const given_readier,
                                  CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -1050,7 +1050,7 @@ namespace LHC_FASER
 
   public:
 
-    chargino_three_body_decay( readier_for_new_point* const given_readier,
+    chargino_three_body_decay( readierForNewPoint* const given_readier,
                                CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
