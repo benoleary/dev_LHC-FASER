@@ -72,7 +72,7 @@
 
 /* the method of calculation is as laid out in the publication
  * "SUSY parameter determination at the LHC using cross sections and kinematic
- * edges" by Herbi Dreiner, Michael Kr√§mer, Jonas Lindert and Ben O'Leary,
+ * edges" by Herbi Dreiner, Michael Krämer, Jonas Lindert and Ben O'Leary,
  * published in JHEP 1004 (2010) 109 available on the arXiv as number
  * 1003.2648 as well.
  * other publications *should* follow, I hope.
@@ -211,7 +211,7 @@ namespace LHC_FASER
     bool NLO_to_be_used;
     // this is to allow the user to use LO or NLO cross-sections.
 
-    input_handler* input_handler_object;
+    inputHandler* input_handler_object;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
     crossSectionHandler* cross_section_handler_object;
@@ -226,7 +226,7 @@ namespace LHC_FASER
     // this tracks the various signals of LHC supersymmetric events & their
     // rates.
 
-    signal_shortcuts* shortcut;
+    signalShortcuts* shortcut;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
 

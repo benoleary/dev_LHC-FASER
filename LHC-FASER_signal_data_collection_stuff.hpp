@@ -63,234 +63,60 @@
 
 namespace LHC_FASER
 {
-
-  /* this holds each production channel for a combination of colored sparticles
-   * as a set of pointers to the signed_particle_shortcut_pair, the gluino
-   * decay product, & the electroweakino end products of each colored sparticle
-   * decay, along with the product of the branching ratios for the decay set.
-   */
-  class sQCD_to_EWino : public getsReadiedForNewPoint
-  {
-
-  public:
-
-    sQCD_to_EWino(
-                signed_particle_shortcut_pair const* const given_scolored_pair,
-                   input_handler const* const given_shortcuts,
-                   std::list< int > const* const given_jets_to_tag,
-                   std::list< int > const* const given_jets_to_reject )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~sQCD_to_EWino()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    bool
-    is_requested(
-                signed_particle_shortcut_pair const* const given_scolored_pair,
-                  std::list< int > const* const given_jets_to_tag,
-                  std::list< int > const* const given_jets_to_reject )
-    const
-    /* this checks to see if the pointers are the same: the assumption is that
-     * the lists of jets to tag or reject are kept unique, with pointers to
-     * them being kept by all the objects which use them.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    std::vector< scoloreds_to_EWinos* > const*
-    get_sQCD_end()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    signed_particle_shortcut_pair const*
-    get_scolored_pair()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-
-    enum basic_channel
-    { gg,
-      sg,
-      ss }
-    channel_type;
-
-    input_handler const* const shortcut;
-    signed_particle_shortcut_pair const* const scolored_pair;
-
-    std::vector< scoloreds_to_EWinos* > sQCD_end;
-    int number_of_sQCD_steps_in_first_channel;
-    int number_of_sQCD_steps_in_second_channel;
-    bool channel_is_valid_flag;
-    std::list< int > const* const jets_to_tag;
-    std::list< int > const* const jets_to_reject;
-
-    colored_cascade_set* first_scolored_cascade;
-    colored_cascade_set* second_scolored_cascade;
-    std::vector< exclusive_BR_calculator* > gluino_to_scolored_BRs;
-    std::vector< std::vector< exclusive_BR_calculator* >* >
-    scolored_to_EWino_BRs;
-    // scolored_to_EWino_BRs.at( i )->at( j ) is the BR for scolored i to decay
-    // to EWino j.
-    std::vector< std::vector< exclusive_BR_calculator* >* >
-    scolored_to_antiEWino_BRs;
-    // scolored_to_antiEWino_BRs.at( i )->at( j ) is the BR for scolored i to
-    // decay to antiEWino j.
-    exclusive_BR_calculator* first_scolored_to_gluino_BR;
-    exclusive_BR_calculator* second_scolored_to_gluino_BR;
-    std::vector< exclusive_BR_calculator* >* gluino_to_EWino_BRs;
-    std::vector< exclusive_BR_calculator* >* first_scolored_to_EWino_BRs;
-    std::vector< exclusive_BR_calculator* >* first_scolored_to_antiEWino_BRs;
-    std::vector< exclusive_BR_calculator* >* second_scolored_to_EWino_BRs;
-    std::vector< exclusive_BR_calculator* >* second_scolored_to_antiEWino_BRs;
-
-
-    bool
-    cascade_is_not_negligible( colored_cascade const* const cascade,
-                               bool const scolored_is_not_antiparticle,
-                               double* const sc_ew_BR,
-                               double* const sc_aew_BR,
-                               double* const asc_ew_BR,
-                               double* const asc_aew_BR,
-                              exclusive_BR_calculator* const scolored_to_EWino,
-                          exclusive_BR_calculator* const scolored_to_antiEWino,
-                               exclusive_BR_calculator* const gluino_to_EWino,
-                             exclusive_BR_calculator* const scolored_to_gluino,
-                              exclusive_BR_calculator* const gluino_to_product,
-                               exclusive_BR_calculator* const product_to_EWino,
-                          exclusive_BR_calculator* const product_to_antiEWino )
-    /* this checks to see if the colored_cascade is not negligible given the
-     * provided branching ratio calculators. it returns true if at least 1 of
-     * the final possibilities (whether the squark before the electroweakino is
-     * a particle or antiparticle, & whether the electroweakino is a particle
-     * or antiparticle) is not negligible, as well as assigning the relevant
-     * values to the given doubles.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    void
-    add_EWinos_to_sQCD_end( colored_cascade const* const first_cascade,
-                            bool const first_end_scolored_is_not_antiparticle,
-                            bool const first_EWino_is_not_antiparticle,
-                            colored_cascade const* const second_cascade,
-                            double const second_end_scolored_to_EWino_BR,
-                            double const second_end_scolored_to_antiEWino_BR,
-                            double const second_end_antiscolored_to_EWino_BR,
-                          double const second_end_antiscolored_to_antiEWino_BR,
-                            double const first_sQCD_BR )
-    // this adds the appropriate combinations of squarks &/or antisquarks with
-    // electroweakinos &/or antielectroweakinos to sQCD_end.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    void
-    prepare_channels()
-    /* this checks to see if any of the kinematically-allowed cascade
-     * combinations following from the channel survive being multiplied by
-     * their branching ratios. those that do survive get put into sQCD_end for
-     * later processing by the cascade handler.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  };  // end of sQCD_to_EWino class.
-
-  // this class holds a set of direct_decay_checkers & passes out pointers
-  // to them.
-  class sQCD_to_EWino_handler
-  {
-
-  public:
-
-    sQCD_to_EWino_handler( input_handler const* const given_shortcuts )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~sQCD_to_EWino_handler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    sQCD_to_EWino*
-    get_sQCD_to_EWino(
-                signed_particle_shortcut_pair const* const given_scolored_pair,
-                       std::list< int > const* const given_jets_to_tag,
-                       std::list< int > const* const given_jets_to_reject )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-  protected:
-
-    std::vector< sQCD_to_EWino* > sQCD_to_EWinos;
-    input_handler const* const shortcut;
-
-  };  // end of decay_checker_handler class.
-
-
-  /* this class holds a pointer to an input_handler instance along with
+  /* this class holds a pointer to an inputHandler instance along with
    * various pointers to cross-section, kinematics, & cascade handlers, for
    * ease of reference. it also keeps an instance of the sQCD_to_EWino_handler
    * class.
    */
-  class signal_shortcuts
+  class signalShortcuts
   {
-
   public:
-
-    signal_shortcuts( input_handler const* const given_input_shortcuts,
-                      crossSectionHandler* const given_cross_section_pointer,
-                      kinematics_handler* const given_kinematics_pointer,
-                      cascade_handler* const given_cascade_pointer )
+    signalShortcuts( inputHandler const* const inputShortcuts,
+                     crossSectionHandler* const crossSections,
+                     jetPlusMetAcceptanceHandler* const jetPlusMetAcceptances,
+                     leptonAcceptanceHandler* const leptonAcceptances,
+                     fullCascadeSetFactory* const cascadeSets )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    ~signal_shortcuts()
+    ~signalShortcuts()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
-
-    input_handler const*
-    get_input_shortcuts()
+    inputHandler const*
+    getInputShortcuts()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
     crossSectionHandler*
-    get_cross_section_handler()
+    getCrossSections()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    kinematics_handler*
-    get_kinematics_handler()
+    jetPlusMetAcceptanceHandler*
+    getJetPlusMetAcceptances()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    cascade_handler*
-    get_cascade_handler()
+    leptonAcceptanceHandler*
+    getLeptonAcceptances()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    sQCD_to_EWino*
-    get_sQCD_to_EWinos(
-                signed_particle_shortcut_pair const* const given_scolored_pair,
-                        std::list< int > const* const given_jets_to_tag,
-                        std::list< int > const* const given_jets_to_reject )
+    fullCascadeSetFactory*
+    getCascadeSets()
+    const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     double
-    get_uncertainty()
+    getUncertainty()
     /* this looks at the various mass differences in the hierarchy & then
      * guesses how uncertain the signal value is (as a multiplicative factor
      * > 1.0).
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   protected:
-
-    input_handler const* const input_shortcuts;
-    sQCD_to_EWino_handler sQCD_to_EWinos;
-    crossSectionHandler* const cross_section_pointer;
-    kinematics_handler* const kinematics_pointer;
-    cascade_handler* const cascade_pointer;
-
-  };  // end of signal_shortcuts class.
+    inputHandler const* const inputShortcuts;
+    crossSectionHandler* const crossSections;
+    jetPlusMetAcceptanceHandler* const jetPlusMetAcceptances;
+    leptonAcceptanceHandler* const leptonAcceptances;
+    fullCascadeSetFactory* const cascadeSets;
+  };  // end of signalShortcuts class.
 
 
   /* this holds together the various doubles & pointers that store information
@@ -304,7 +130,7 @@ namespace LHC_FASER
   {
 
   public:
-    signalDefinitionSet( signal_shortcuts* const shortcut )
+    signalDefinitionSet( signalShortcuts* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     signalDefinitionSet( signalDefinitionSet* const copySource )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -312,53 +138,53 @@ namespace LHC_FASER
     ~signalDefinitionSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    signal_shortcuts*
+    signalShortcuts*
     getShortcuts()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    setBeamEnergy( double const inputValue )
+    setBeamEnergy( int const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     crossSectionTableSet*
     getCrossSections()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    lepton_acceptance_table*
-    getLeptonKinematics()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    jet_acceptance_table*
+    jetAcceptanceTable*
     getJetPlusMetAcceptance()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    setJetPlusMetAcceptance( jet_acceptance_table* const inputTable )
+    setJetPlusMetAcceptance( jetAcceptanceTable* const inputTable )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    fullCascadeSetsForOneBeamEnergy*
+    getCascadeSets()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    signal_shortcuts* const shortcut;
+    signalShortcuts* const shortcut;
 
     // each signal needs to look up specific tables, based on the beam energy:
     crossSectionTableSet* crossSections;
-    lepton_acceptance_table* leptonKinematics;
-    jet_acceptance_table* jetPlusMetAcceptance;
+    jetAcceptanceTable* jetPlusMetAcceptance;
     // by default each signal has only a single jet+MET table to look up; if a
     // signal needs to look up more tables, it should store the extras itself.
+    fullCascadeSetsForOneBeamEnergy* cascadeSets;
   };  // end of signal_definitions class.
 
 
   /* this holds each production channel for a combination of colored sparticles
    * as a set of pointers to the crossSectionTable (which holds a pointer to
-   * the signed_particle_shortcut_pair) & the relevant cascade_sets for the
+   * the signedParticleShortcutPair) & the relevant fullCascadeSets for the
    * sparticles.
    */
   class productionChannelPointerSet
   {
   public:
     productionChannelPointerSet( signalDefinitionSet* const signalDefinitions,
-                      signed_particle_shortcut_pair const* const scoloredPair )
+                         signedParticleShortcutPair const* const scoloredPair )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~productionChannelPointerSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    signed_particle_shortcut_pair const*
+    signedParticleShortcutPair const*
     getScoloredPair()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -373,7 +199,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    //signal_shortcuts* const shortcut;
+    //signalShortcuts* const shortcut;
     crossSectionTable* crossSection;
     fullCascadeSet* firstCascadeSet;
     fullCascadeSet* secondCascadeSet;
@@ -386,131 +212,56 @@ namespace LHC_FASER
   // inline functions:
 
 
-  inline bool
-  sQCD_to_EWino::is_requested(
-                signed_particle_shortcut_pair const* const given_scolored_pair,
-                               std::list< int > const* const given_jets_to_tag,
-                           std::list< int > const* const given_jets_to_reject )
-  const
-  /* this checks to see if the pointers are the same: the assumption is that
-   * the lists of jets to tag or reject are kept unique, with pointers to them
-   * being kept by all the objects which use them.
-   */
-  {
-
-    if( ( scolored_pair == given_scolored_pair )
-        &&
-        ( jets_to_tag == given_jets_to_tag )
-        &&
-        ( jets_to_reject == given_jets_to_reject ) )
-      {
-
-        return true;
-
-      }
-    else
-      {
-
-        return false;
-
-      }
-
-  }
-
-  inline std::vector< scoloreds_to_EWinos* > const*
-  sQCD_to_EWino::get_sQCD_end()
-  {
-
-    if( needsToPrepareForThisPoint() )
-      {
-
-        prepare_channels();
-        finishPreparingForThisPoint();
-
-      }
-
-    return &sQCD_end;
-
-  }
-
-  inline signed_particle_shortcut_pair const*
-  sQCD_to_EWino::get_scolored_pair()
+  inline inputHandler const*
+  signalShortcuts::getInputShortcuts()
   const
   {
-
-    return scolored_pair;
-
+    return inputShortcuts;
   }
-
-
-
-  inline input_handler const*
-  signal_shortcuts::get_input_shortcuts()
-  const
-  {
-
-    return input_shortcuts;
-
-  }
-
 
   inline crossSectionHandler*
-  signal_shortcuts::get_cross_section_handler()
+  signalShortcuts::getCrossSections()
   const
   {
-
-    return cross_section_pointer;
-
+    return crossSections;
   }
 
-  inline kinematics_handler*
-  signal_shortcuts::get_kinematics_handler()
+  inline jetPlusMetAcceptanceHandler*
+  signalShortcuts::getJetPlusMetAcceptances()
   const
   {
-
-    return kinematics_pointer;
-
+    return jetPlusMetAcceptances;
   }
 
-  inline cascade_handler*
-  signal_shortcuts::get_cascade_handler()
+  inline leptonAcceptanceHandler*
+  signalShortcuts::getLeptonAcceptances()
   const
   {
-
-    return cascade_pointer;
-
+    return leptonAcceptances;
   }
 
-
-  inline sQCD_to_EWino*
-  signal_shortcuts::get_sQCD_to_EWinos(
-              signed_particle_shortcut_pair const* const given_scolored_pair,
-                      std::list< int > const* const given_jets_to_tag,
-                      std::list< int > const* const given_jets_to_reject )
+  inline fullCascadeSetFactory*
+  signalShortcuts::getCascadeSets()
+  const
   {
-
-    return sQCD_to_EWinos.get_sQCD_to_EWino( given_scolored_pair,
-                                             given_jets_to_tag,
-                                             given_jets_to_reject );
-
+    return cascadeSets;
   }
 
 
 
-  inline signal_shortcuts*
+  inline signalShortcuts*
   signalDefinitionSet::getShortcuts()
   {
     return shortcut;
   }
 
   inline void
-  signalDefinitionSet::setBeamEnergy( double const inputValue )
+  signalDefinitionSet::setBeamEnergy( int const inputValue )
   {
     beamEnergy = inputValue;
-    crossSections
-    = shortcut->get_cross_section_handler()->getTableSet( inputValue );
-    leptonKinematics
-    = shortcut->get_kinematics_handler()->get_lepton_acceptance_table(
+    crossSections = shortcut->getCrossSections()->getTableSet( inputValue );
+    cascadeSets
+    = shortcut->getCascadeSets()->getFullCascadeSetsForOneBeamEnergy(
                                                                   inputValue );
   }
 
@@ -520,38 +271,32 @@ namespace LHC_FASER
     return crossSections;
   }
 
-  inline lepton_acceptance_table*
-  signalDefinitionSet::getLeptonKinematics()
-  {
-    return leptonKinematics;
-  }
-
-  inline jet_acceptance_table*
+  inline jetAcceptanceTable*
   signalDefinitionSet::getJetPlusMetAcceptance()
-  // this returns the 1st element of the vector. it is intended for when the
-  // vector has only 1 entry.
   {
     return jetPlusMetAcceptance;
   }
 
   inline void
   signalDefinitionSet::setJetPlusMetAcceptance(
-                                      jet_acceptance_table* const inputTable )
-  // this sets the 1st element of the vector. it is intended for when the
-  // vector has only 1 entry.
+                                         jetAcceptanceTable* const inputTable )
   {
     jetPlusMetAcceptance = inputTable;
   }
 
+  inline fullCascadeSetsForOneBeamEnergy*
+  signalDefinitionSet::getCascadeSets()
+  {
+    return cascadeSets;
+  }
 
 
-  inline signed_particle_shortcut_pair const*
+
+  inline signedParticleShortcutPair const*
   productionChannelPointerSet::getScoloredPair()
   const
   {
-
     return crossSection->getPair();
-
   }
 
   inline double

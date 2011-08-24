@@ -392,10 +392,10 @@ namespace LHC_FASER
 
 
   crossSectionTable::crossSectionTable( squareGrid const* const lookupTable,
-                       signed_particle_shortcut_pair const* const scoloredPair,
+                       signedParticleShortcutPair const* const scoloredPair,
                                         double const flavorFactor,
-                                        input_handler const* const shortcut ) :
-    getsReadiedForNewPoint( shortcut->get_readier() ),
+                                        inputHandler const* const shortcut ) :
+    getsReadiedForNewPoint( shortcut->getReadier() ),
     shortcut( shortcut ),
     scoloredPair( scoloredPair ),
     lookupTable( lookupTable ),
@@ -406,25 +406,25 @@ namespace LHC_FASER
     << std::endl
     << "debugging: crossSectionTable( "
     << given_lookup_table << ", { "
-    << given_pair->get_first_pointer()->getName() << ": "
+    << given_pair->getFirstParticle()->getName() << ": "
     << given_pair->is_first_particle() << "; "
-    << given_pair->get_second_pointer()->getName() << ": "
+    << given_pair->getSecondParticle()->getName() << ": "
     << given_pair->is_second_particle() << " }, "
     << given_flavor_factor << ", " << given_shortcuts << " ) called";
     std::cout << std::endl;**/
 
     // we take the 1st squark found to ask for its mass in looking up the
     // cross-section. if no squark was provided, we keep the pointer as NULL.
-    if( shortcut->is_in( scoloredPair->get_first_pointer()->get_PDG_code(),
-                         shortcut->get_squarks() ) )
+    if( shortcut->isIn( scoloredPair->getFirstParticle()->get_PDG_code(),
+                         shortcut->getSquarks() ) )
     {
-      directlyProducedSquark = scoloredPair->get_first_pointer();
+      directlyProducedSquark = scoloredPair->getFirstParticle();
     }
-    else if( shortcut->is_in(
-                            scoloredPair->get_second_pointer()->get_PDG_code(),
-                              shortcut->get_squarks() ) )
+    else if( shortcut->isIn(
+                            scoloredPair->getSecondParticle()->get_PDG_code(),
+                              shortcut->getSquarks() ) )
     {
-      directlyProducedSquark = scoloredPair->get_second_pointer();
+      directlyProducedSquark = scoloredPair->getSecondParticle();
     }
     else
     {
@@ -467,7 +467,7 @@ namespace LHC_FASER
         else
           // otherwise, we use the average squark mass...
         {
-          squarkMassToUse = shortcut->get_average_squarks4_mass();
+          squarkMassToUse = shortcut->getAverageSquarks4Mass();
         }
         if( squarkMassToUse < lookupTable->getLowestX() )
         {
@@ -543,7 +543,7 @@ namespace LHC_FASER
   crossSectionTableSet::crossSectionTableSet(
                                         std::string const* const gridDirectory,
                                               int const beamEnergy,
-                                        input_handler const* const shortcut ) :
+                                        inputHandler const* const shortcut ) :
     gridDirectory( *gridDirectory ),
     beamEnergy( beamEnergy ),
     shortcut( shortcut )
@@ -572,7 +572,7 @@ namespace LHC_FASER
 
   double
   crossSectionTableSet::prepareGridName( std::string* const gridName,
-                      signed_particle_shortcut_pair const* const scoloredPair )
+                      signedParticleShortcutPair const* const scoloredPair )
   // this returns the flavor factor for the requested pair while putting the
   // squareGrid's associated string in gridName.
   {
@@ -607,39 +607,39 @@ namespace LHC_FASER
      * particles) = 4:12:16 = 1:3:4
      */
     if( ( CppSLHA::PDG_code::gluino
-          == scoloredPair->get_first_pointer()->get_PDG_code() )
+          == scoloredPair->getFirstParticle()->get_PDG_code() )
         &&
         ( CppSLHA::PDG_code::gluino
-          == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+          == scoloredPair->getSecondParticle()->get_PDG_code() ) )
     {
       gridName->assign( "gluino+gluino" );
       return 1.0;
     }
     else if(
-            shortcut->is_in( scoloredPair->get_first_pointer()->get_PDG_code(),
-                             shortcut->get_squarks() )
+            shortcut->isIn( scoloredPair->getFirstParticle()->get_PDG_code(),
+                             shortcut->getSquarks() )
              &&
              ( CppSLHA::PDG_code::gluino
-               == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+               == scoloredPair->getSecondParticle()->get_PDG_code() ) )
     {
       gridName->assign( "sdown_L+gluino" );
       if( CppSLHA::PDG_code::sdown_L
-          == scoloredPair->get_first_pointer()->get_PDG_code() )
+          == scoloredPair->getFirstParticle()->get_PDG_code() )
       {
         return 1.0;
       }
       else if( CppSLHA::PDG_code::sdown_R
-               == scoloredPair->get_first_pointer()->get_PDG_code() )
+               == scoloredPair->getFirstParticle()->get_PDG_code() )
       {
         return 1.0;
       }
       else if( CppSLHA::PDG_code::sup_L
-               == scoloredPair->get_first_pointer()->get_PDG_code() )
+               == scoloredPair->getFirstParticle()->get_PDG_code() )
       {
         return 2.0;
       }
       else if( CppSLHA::PDG_code::sup_R
-               ==  scoloredPair->get_first_pointer()->get_PDG_code() )
+               ==  scoloredPair->getFirstParticle()->get_PDG_code() )
       {
         return 2.0;
       }
@@ -649,30 +649,30 @@ namespace LHC_FASER
       }
     }
     else if(
-           shortcut->is_in( scoloredPair->get_second_pointer()->get_PDG_code(),
-                            shortcut->get_squarks() )
+           shortcut->isIn( scoloredPair->getSecondParticle()->get_PDG_code(),
+                            shortcut->getSquarks() )
              &&
              ( CppSLHA::PDG_code::gluino
-               == scoloredPair->get_first_pointer()->get_PDG_code() ) )
+               == scoloredPair->getFirstParticle()->get_PDG_code() ) )
     {
       gridName->assign( "sdown_L+gluino" );
       if( CppSLHA::PDG_code::sdown_L
-          == scoloredPair->get_second_pointer()->get_PDG_code() )
+          == scoloredPair->getSecondParticle()->get_PDG_code() )
       {
         return 1.0;
       }
       else if( CppSLHA::PDG_code::sdown_R
-               == scoloredPair->get_second_pointer()->get_PDG_code() )
+               == scoloredPair->getSecondParticle()->get_PDG_code() )
       {
         return 1.0;
       }
       else if( CppSLHA::PDG_code::sup_L
-               == scoloredPair->get_second_pointer()->get_PDG_code() )
+               == scoloredPair->getSecondParticle()->get_PDG_code() )
       {
         return 2.0;
       }
       else if( CppSLHA::PDG_code::sup_R
-               ==  scoloredPair->get_second_pointer()->get_PDG_code() )
+               ==  scoloredPair->getSecondParticle()->get_PDG_code() )
       {
         return 2.0;
       }
@@ -682,196 +682,196 @@ namespace LHC_FASER
       }
     }
     else if(
-            shortcut->is_in( scoloredPair->get_first_pointer()->get_PDG_code(),
-                             shortcut->get_squarks() )
+            shortcut->isIn( scoloredPair->getFirstParticle()->get_PDG_code(),
+                             shortcut->getSquarks() )
             &&
-           shortcut->is_in( scoloredPair->get_second_pointer()->get_PDG_code(),
-                            shortcut->get_squarks() ) )
+           shortcut->isIn( scoloredPair->getSecondParticle()->get_PDG_code(),
+                            shortcut->getSquarks() ) )
     {
-      if( ( scoloredPair->first_is_not_antiparticle()
+      if( ( scoloredPair->firstIsNotAntiparticle()
           &&
-          !scoloredPair->second_is_not_antiparticle() )
+          !scoloredPair->secondIsNotAntiparticle() )
           ||
-          ( !scoloredPair->first_is_not_antiparticle()
+          ( !scoloredPair->firstIsNotAntiparticle()
               &&
-              scoloredPair->second_is_not_antiparticle() ) )
+              scoloredPair->secondIsNotAntiparticle() ) )
       {
         if( ( CppSLHA::PDG_code::sdown_L
-              == scoloredPair->get_first_pointer()->get_PDG_code() )
+              == scoloredPair->getFirstParticle()->get_PDG_code() )
             &&
             ( CppSLHA::PDG_code::sdown_L
-              == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+              == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sdown_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_R" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sdown_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_R" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sdown_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_R" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_R" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_R" );
           return 2.0;
         }
         else if( ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sdown_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_R" );
           return 2.0;
         }
         else if( ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_R" );
           return 2.0;
         }
         else if( ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_R" );
           return 2.0;
         }
         else if( ( CppSLHA::PDG_code::sstrange_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sstrange_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sstrange_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sstrange_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::scharm_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::scharm_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::scharm_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::scharm_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sbottom_one
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sbottom_one
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sbottom_two
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sbottom_two
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::stop_one
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::stop_one
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::stop_two
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::stop_two
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+antisdown_L" );
           return 1.0;
@@ -881,78 +881,78 @@ namespace LHC_FASER
           return 0.0;
         }
       }
-      else if( scoloredPair->first_is_not_antiparticle()
+      else if( scoloredPair->firstIsNotAntiparticle()
                &&
-               scoloredPair->second_is_not_antiparticle() )
+               scoloredPair->secondIsNotAntiparticle() )
       {
         if( ( CppSLHA::PDG_code::sdown_L
-              == scoloredPair->get_first_pointer()->get_PDG_code() )
+              == scoloredPair->getFirstParticle()->get_PDG_code() )
             &&
             ( CppSLHA::PDG_code::sdown_L
-              == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+              == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+sdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+sdown_L" );
           return 1.0;
         }
         else if( ( CppSLHA::PDG_code::sdown_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+sdown_L" );
           return 3.0;
         }
         else if( ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+sdown_L" );
           return 3.0;
         }
         else if( ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sdown_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+sdown_L" );
           return 3.0;
         }
         else if( ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sdown_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+sdown_L" );
           return 3.0;
         }
         else if( ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_L
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+sdown_L" );
           return 4.0;
         }
         else if( ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_first_pointer()->get_PDG_code() )
+                   == scoloredPair->getFirstParticle()->get_PDG_code() )
                  &&
                  ( CppSLHA::PDG_code::sup_R
-                   == scoloredPair->get_second_pointer()->get_PDG_code() ) )
+                   == scoloredPair->getSecondParticle()->get_PDG_code() ) )
         {
           gridName->assign( "sdown_L+sdown_L" );
           return 4.0;
@@ -1025,7 +1025,7 @@ namespace LHC_FASER
 
       // we check for whether we should use NLO K-factors:
       squareGrid* nloGrid = NULL;
-      if( shortcut->using_NLO() )
+      if( shortcut->usingNlo() )
       {
         std::string nloGridFileName( gridDirectory );
         nloGridFileName.append( "/" );
@@ -1082,18 +1082,18 @@ namespace LHC_FASER
 
   crossSectionTable*
   crossSectionTableSet::getTable(
-                  signed_particle_shortcut_pair const* const requestedChannel )
+                  signedParticleShortcutPair const* const requestedChannel )
   // this returns the crossSectionTable for the requested pair.
   {
     // debugging:
     /**std::cout
     << std::endl
     << "debugging: crossSectionTableSet::getTable( { "
-    << *(requested_channel->get_first_pointer()->get_name_or_antiname(
-                              requested_channel->first_is_not_antiparticle() ))
+    << *(requested_channel->getFirstParticle()->get_name_or_antiname(
+                              requested_channel->firstIsNotAntiparticle() ))
     << "; "
-    << *(requested_channel->get_second_pointer()->get_name_or_antiname(
-                             requested_channel->second_is_not_antiparticle() ))
+    << *(requested_channel->getSecondParticle()->get_name_or_antiname(
+                             requested_channel->secondIsNotAntiparticle() ))
     << " } ) called";
     std::cout << std::endl;**/
 
@@ -1178,7 +1178,7 @@ namespace LHC_FASER
 
 
   crossSectionHandler::crossSectionHandler(
-                                        input_handler const* const shortcut ) :
+                                        inputHandler const* const shortcut ) :
     shortcut( shortcut )
   {
     // just an initialization list
@@ -1221,7 +1221,7 @@ namespace LHC_FASER
       // it & return a pointer to it:
     {
       std::string
-      energyName( *(shortcut->inspect_path_to_cross_section_grids()) );
+      energyName( *(shortcut->inspectPathToCrossSectionGrids()) );
       std::stringstream energyStream( "" );
       energyStream << "/" << beamEnergyInTev << "TeV";
       energyName.append( energyStream.str() );

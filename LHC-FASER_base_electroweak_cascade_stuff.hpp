@@ -284,18 +284,19 @@ namespace LHC_FASER
   {
   public:
     electroweakCascade( leptonAcceptanceParameterSet* const kinematics,
+                        effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
                CppSLHA::particle_property_set const* const intermediateDecayer,
                         bool const canDoOssfMinusOsdf,
-                        input_handler const* const shortcut )
+                        inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual
     ~electroweakCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    input_handler const*
+    inputHandler const*
     getShortcut()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -364,18 +365,20 @@ namespace LHC_FASER
     static double const tauPairToElectronPairBr;
     static double const tauToElectronTimesTauToMuonBr;
     static double const tauPairToMuonPairBr;
+    static int const numberOfIntegrationBins;
 
     leptonAcceptanceParameterSet* const kinematics;
+    effectiveSquarkMassHolder* const effectiveSquarkMass;
     CppSLHA::particle_property_set const* const coloredDecayer;
     //bool const coloredDecayerIsNotAntiparticle;
     CppSLHA::particle_property_set const* const electroweakDecayer;
     //bool const electroweakDecayerIsNotAntiparticle;
     CppSLHA::particle_property_set const* const intermediateDecayer;
     bool const canDoOssfMinusOsdf;
-    exclusive_BR_calculator* firstBr;
-    exclusive_BR_calculator* secondBr;
+    exclusiveBrCalculator* firstBr;
+    exclusiveBrCalculator* secondBr;
     double cascadeBr;
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     acceptanceValues* currentAcceptance;
     minimalAllocationKeyedVector< acceptanceValues,
                                   acceptanceCutSet > acceptances;
@@ -400,9 +403,9 @@ namespace LHC_FASER
 
     double
     integrateAcceptance( leptonEnergyDistribution* const leptonDistribution,
-                          double const transverseMomentumCut )
-    /* this numerically integrates the product of leptonDistribution with the
-     * lepton acceptance histogram from kinematics, scaled to having
+                         double const transverseMomentumCut )
+    /* this numerically integrates leptonDistribution with the lepton
+     * acceptance histogram from kinematics, scaled to having
      * transverseMomentumCut as its transverse momentum cut.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -428,7 +431,7 @@ namespace LHC_FASER
     electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
-                           input_handler const* const shortcut )
+                           inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual
@@ -480,7 +483,7 @@ namespace LHC_FASER
 
   protected:
     leptonAcceptanceParameterSet* const kinematics;
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     CppSLHA::particle_property_set const* const coloredDecayer;
     CppSLHA::particle_property_set const* const electroweakDecayer;
     std::vector< electroweakCascade* > cascades;
@@ -495,7 +498,7 @@ namespace LHC_FASER
     electroweakCascadeHandler(
                       leptonAcceptancesForOneBeamEnergy* const kinematicsTable,
                                int const beamEnergy,
-                               input_handler const* const shortcut )
+                               inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~electroweakCascadeHandler()
@@ -514,7 +517,7 @@ namespace LHC_FASER
   protected:
     leptonAcceptancesForOneBeamEnergy* const kinematicsTable;
     int const beamEnergy;
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     std::vector< electroweakCascadeSet* > cascadeSets;
     electroweakCascadeSet* currentCascadeSet;
     // this is used for filling cascadeSets.
@@ -879,7 +882,7 @@ namespace LHC_FASER
 
 
 
-  inline input_handler const*
+  inline inputHandler const*
   electroweakCascade::getShortcut()
   const
   {

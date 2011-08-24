@@ -68,9 +68,9 @@
  * you'll have to go by the existing signals as examples.
  *
  * Things to remember:
- * - make sure that exclusive_BR_handler::always_neglected_decays doesn't
- *   interfere with the new signal. exclusive_BR_handler returns a NULL pointer
- *   if the decay is in always_neglected_decays.
+ * - make sure that exclusiveBrHandler::alwaysNeglectedDecays doesn't
+ *   interfere with the new signal. exclusiveBrHandler returns a NULL pointer
+ *   if the decay is in alwaysNeglectedDecays.
  * - remember to include antiparticles in jets_to_tag & jets_to_neglect.
  * - fire hot, hot hurt.
  */
@@ -158,7 +158,7 @@ namespace LHC_FASER
   {
   public:
     signalHandler( std::string const signalName,
-                   signal_shortcuts* const shortcut,
+                   signalShortcuts* const shortcut,
                    double const crossSectionUnitFactor )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -191,12 +191,12 @@ namespace LHC_FASER
   protected:
     std::string signalName;
     signalCalculator* rateCalculator;
-    signal_shortcuts* const shortcut;
+    signalShortcuts* const shortcut;
     double signalValue;
     double uncertaintyFactor;
     double crossSectionUnitFactor;
     // this is to allow for the user to specify event rates in fb, pb or nb.
-  };  // end of signal_handler class.
+  };  // end of signalHandler class.
 
 
   /* this is a derived class which just always returns
@@ -208,7 +208,7 @@ namespace LHC_FASER
 
   public:
 
-    reallyWrongCalculator( signal_shortcuts* const shortcut )
+    reallyWrongCalculator( signalShortcuts* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual

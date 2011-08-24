@@ -161,14 +161,14 @@ namespace LHC_FASER
   public:
 
     crossSectionTable( squareGrid const* const lookupTable,
-                       signed_particle_shortcut_pair const* const scoloredPair,
+                       signedParticleShortcutPair const* const scoloredPair,
                        double const flavorFactor,
-                       input_handler const* const shortcut )
+                       inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~crossSectionTable()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    signed_particle_shortcut_pair const*
+    signedParticleShortcutPair const*
     getPair()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -181,9 +181,9 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    signed_particle_shortcut_pair const* scoloredPair;
+    signedParticleShortcutPair const* scoloredPair;
     CppSLHA::particle_property_set const* directlyProducedSquark;
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     double storedValue;
     squareGrid const* const lookupTable;
     double const flavorFactor;
@@ -197,7 +197,7 @@ namespace LHC_FASER
 
   /* this class holds several squareGrid instances as cross-section lookup
    * tables for various colored sparticle combinations, & returns their
-   * interpolated values for given signed_particle_shortcut_pair pointers.
+   * interpolated values for given signedParticleShortcutPair pointers.
    */
   class crossSectionTableSet
   {
@@ -206,7 +206,7 @@ namespace LHC_FASER
 
     crossSectionTableSet( std::string const* const gridDirectory,
                           int const beamEnergy,
-                          input_handler const* const shortcut )
+                          inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~crossSectionTableSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -216,23 +216,23 @@ namespace LHC_FASER
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     crossSectionTable*
-    getTable( signed_particle_shortcut_pair const* const requestedChannel )
+    getTable( signedParticleShortcutPair const* const requestedChannel )
     // this returns the crossSectionTable for the requested pair.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     std::string const gridDirectory;
     int const beamEnergy;
     std::vector< squareGrid* > grids;
     // this holds squareGrid instances with unique names.
     std::vector< crossSectionTable* > tables;
     // this holds crossSectionTable instances with appropriate
-    // signed_particle_shortcut_pair pointers.
+    // signedParticleShortcutPair pointers.
 
     double
     prepareGridName( std::string* const gridName,
-                     signed_particle_shortcut_pair const* const scoloredPair )
+                     signedParticleShortcutPair const* const scoloredPair )
     // this returns the flavor factor for the requested pair while putting the
     // squareGrid's associated string in gridName.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -248,7 +248,7 @@ namespace LHC_FASER
   class crossSectionHandler
   {
   public:
-    crossSectionHandler( input_handler const* const shortcut )
+    crossSectionHandler( inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~crossSectionHandler()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -258,11 +258,11 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     crossSectionTable*
     getTable( int const beamEnergyInTev,
-              signed_particle_shortcut_pair const* const requestedChannel )
+              signedParticleShortcutPair const* const requestedChannel )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     std::vector< crossSectionTableSet* > tableSets;
     // this is for holding all the cross-sections which are looked up by the
     // signal handlers.
@@ -321,7 +321,7 @@ namespace LHC_FASER
 
 
 
-  inline signed_particle_shortcut_pair const*
+  inline signedParticleShortcutPair const*
   crossSectionTable::getPair()
   const
   {
@@ -345,7 +345,7 @@ namespace LHC_FASER
 
   inline crossSectionTable*
   crossSectionHandler::getTable( int const beamEnergyInTev,
-                  signed_particle_shortcut_pair const* const requestedChannel )
+                  signedParticleShortcutPair const* const requestedChannel )
   {
 
     return getTableSet( beamEnergyInTev )->getTable( requestedChannel );

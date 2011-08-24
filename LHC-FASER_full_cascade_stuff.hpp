@@ -161,7 +161,7 @@ namespace LHC_FASER
     ~fullCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    input_handler const*
+    inputHandler const*
     getShortcut()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -188,7 +188,7 @@ namespace LHC_FASER
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    std::vector< std::pair< CppSLHA::particle_property_set const*,
+    std::vector< std::pair< particlePointer,
                             int > > const*
     getCascadeDefiner()
     const
@@ -271,8 +271,8 @@ namespace LHC_FASER
     numberOfSmFermionsFromElectroweakDecaysPerPartialCascade = 2;
     static int const numberOfSmFermionsFromElectroweakDecaysPerFullCascade = 4;
 
-    input_handler const* shortcut;
-    CppSLHA::particle_property_set const* initialScolored;
+    inputHandler const* shortcut;
+    particlePointer initialScolored;
     double beamEnergy;
     colorfulCascadeType const typeOfColorfulCascade;
     int const firstDecayBodyNumber;
@@ -284,9 +284,9 @@ namespace LHC_FASER
      * charge-conjugate versions.
      */
     fullCascade const* subcascade;
-    minimalAllocationVector< std::pair< CppSLHA::particle_property_set const*,
+    minimalAllocationVector< std::pair< particlePointer,
                                         int > > cascadeDefiner;
-    std::pair< CppSLHA::particle_property_set const*,
+    std::pair< particlePointer,
                int >* cascadeSegment;
     // this is just used for setting up cascadeDefiner properly.
     electroweakCascadeSet* ewinoCascades;
@@ -345,8 +345,8 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( input_handler const* const shortcut,
-                   CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( inputHandler const* const shortcut,
+                   particlePointer const initialSquark,
                    double const beamEnergy,
                    electroweakCascadeSet* const ewinoCascades )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -396,7 +396,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( input_handler const* const shortcut,
+    setProperties( inputHandler const* const shortcut,
                    double const beamEnergy,
                    electroweakCascadeSet* const ewinoCascades )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -445,7 +445,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( particlePointer const initialSquark,
                    fullCascade* const gxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -513,7 +513,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( particlePointer const initialSquark,
                    fullCascade* const gjsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -548,7 +548,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( particlePointer const initialSquark,
                    electroweakCascadeSet* const vectorCascades,
                    fullCascade* const sxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -656,7 +656,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( particlePointer const initialSquark,
                    electroweakCascadeSet* const vectorCascades,
                    fullCascade* const gxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -692,7 +692,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( particlePointer const initialSquark,
                    electroweakCascadeSet* const vectorCascades,
                    fullCascade* const sjgxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -730,7 +730,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( particlePointer const initialSquark,
                    electroweakCascadeSet* const vectorCascades,
                    fullCascade* const sjgjsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -766,7 +766,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( particlePointer const initialSquark,
                    electroweakCascadeSet* const vectorCascades,
                    fullCascade* const gjsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -802,7 +802,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( particlePointer const initialSquark,
                    fullCascade* const gvsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -839,7 +839,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    setProperties( CppSLHA::particle_property_set const* const initialSquark,
+    setProperties( particlePointer const initialSquark,
                    fullCascade* const gjsvsxCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -876,8 +876,8 @@ namespace LHC_FASER
                  fullCascadeSet* secondSet )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    fullCascadeSet( input_handler const* const shortcut,
-                   CppSLHA::particle_property_set const* const initialScolored,
+    fullCascadeSet( inputHandler const* const shortcut,
+                   particlePointer const initialScolored,
                    electroweakCascadeHandler* const electroweakCascadeHandling,
                     std::list< fullCascadeSet* >* const squarkCascadeSetList,
                     double const beamEnergy )
@@ -934,14 +934,14 @@ namespace LHC_FASER
     getSjgjsvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    CppSLHA::particle_property_set const*
+    particlePointer
     getInitialScolored()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
   protected:
-    CppSLHA::particle_property_set const* const initialScolored;
+    particlePointer const initialScolored;
     electroweakCascadeHandler* const electroweakCascadeHandling;
     std::vector< fullCascade* > openCascades;
     // this holds pointers to all the open cascades.
@@ -970,7 +970,7 @@ namespace LHC_FASER
     minimalAllocationVector< sjgvsxFullCascade > sjgvsxCascades;
     minimalAllocationVector< sjgjsvsxFullCascade > sjgjsvsxCascades;
 
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     std::list< fullCascadeSet* >* const squarkCascadeSetList;
     //bool squarkCascadeSetListNotYetOrdered;
     double const beamEnergy;
@@ -1001,9 +1001,9 @@ namespace LHC_FASER
   class squarkFullCascadeSet : public fullCascadeSet
   {
   public:
-    squarkFullCascadeSet( input_handler const* const shortcut,
+    squarkFullCascadeSet( inputHandler const* const shortcut,
                           electroweakCascadeHandler* const ewCascadeHandler,
-                   CppSLHA::particle_property_set const* const initialScolored,
+                   particlePointer const initialScolored,
                       std::list< fullCascadeSet* >* const squarkCascadeSetList,
                           fullCascadeSet* const gluinoCascadeSet,
                           double const beamEnergy )
@@ -1027,7 +1027,7 @@ namespace LHC_FASER
   class gluinoFullCascadeSet : public fullCascadeSet
   {
   public:
-    gluinoFullCascadeSet( input_handler const* const shortcut,
+    gluinoFullCascadeSet( inputHandler const* const shortcut,
                           electroweakCascadeHandler* const ewCascadeHandler,
                       std::list< fullCascadeSet* >* const squarkCascadeSetList,
                           double const beamEnergy )
@@ -1050,7 +1050,7 @@ namespace LHC_FASER
   class fullCascadeSetsForOneBeamEnergy
   {
   public:
-    fullCascadeSetsForOneBeamEnergy( input_handler const* const shortcut,
+    fullCascadeSetsForOneBeamEnergy( inputHandler const* const shortcut,
                              electroweakCascadeHandler* const ewCascadeHandler,
                                      double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -1059,10 +1059,10 @@ namespace LHC_FASER
 
     fullCascadeSet*
     getFullCascadeSet(
-                  CppSLHA::particle_property_set const* const initialScolored )
+                  particlePointer const initialScolored )
     /* this returns the fullCascadeSet for the requested colored sparticle, or
      * NULL if we were asked for a sparticle that is not the gluino or in
-     * shortcut->get_squarks().
+     * shortcut->getSquarks().
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -1072,7 +1072,7 @@ namespace LHC_FASER
 
 
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     electroweakCascadeHandler* const ewCascadeHandler;
     double const beamEnergy;
     std::vector< squarkFullCascadeSet* > squarkCascadeSets;
@@ -1086,20 +1086,28 @@ namespace LHC_FASER
   class fullCascadeSetFactory
   {
   public:
-    fullCascadeSetFactory( input_handler const* const shortcut,
+    fullCascadeSetFactory( inputHandler const* const shortcut,
                            electroweakCascadeHandler* const ewCascadeHandler )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~fullCascadeSetFactory()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    fullCascadeSetsForOneBeamEnergy*
+    getFullCascadeSetsForOneBeamEnergy( int const beamEnergy )
+    /* this looks to see if there is an existing
+     * fullCascadeSetsForOneBeamEnergy with the requested values, & if not,
+     * makes 1, & returns the pointer.
+     */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
     fullCascadeSet*
     getFullCascadeSet(
-                   CppSLHA::particle_property_set const* const initialScolored,
+                   particlePointer const initialScolored,
                        int const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     electroweakCascadeHandler* const ewCascadeHandler;
     std::vector< fullCascadeSetsForOneBeamEnergy* > cascadeSetsPerEnergy;
   };
@@ -1110,14 +1118,14 @@ namespace LHC_FASER
 
   // inline functions:
 
-  input_handler const*
+  inputHandler const*
   fullCascade::getShortcut()
   const
   {
     return shortcut;
   }
 
-  inline std::vector< std::pair< CppSLHA::particle_property_set const*,
+  inline std::vector< std::pair< particlePointer,
                                  int > > const*
   fullCascade::getCascadeDefiner()
   const
@@ -1246,8 +1254,8 @@ namespace LHC_FASER
 
 
   inline void
-  sxFullCascade::setProperties( input_handler const* const shortcut,
-                     CppSLHA::particle_property_set const* const initialSquark,
+  sxFullCascade::setProperties( inputHandler const* const shortcut,
+                     particlePointer const initialSquark,
                                 double const beamEnergy,
                                 electroweakCascade* const ewinoCascade )
   {
@@ -1340,12 +1348,12 @@ namespace LHC_FASER
 
 
   inline void
-  gxFullCascade::setProperties( input_handler const* const shortcut,
+  gxFullCascade::setProperties( inputHandler const* const shortcut,
                                 double const beamEnergy,
                                 electroweakCascade* const ewinoCascade )
   {
     this->shortcut = shortcut;
-    this->initialScolored = shortcut->get_gluino();
+    this->initialScolored = shortcut->getGluino();
     this->beamEnergy = beamEnergy;
     this->ewinoCascades = ewinoCascade;
     soughtDecayProductList.front() =
@@ -1408,7 +1416,7 @@ namespace LHC_FASER
 
   inline void
   sjgxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
+                     particlePointer const initialSquark,
                                   fullCascade* const gxCascade )
   {
     initialScolored = initialSquark;
@@ -1444,7 +1452,7 @@ namespace LHC_FASER
   gjsxFullCascade::setProperties( fullCascade* const sxCascade )
   {
     buildOn( sxCascade );
-    initialScolored = shortcut->get_gluino();
+    initialScolored = shortcut->getGluino();
     branchingRatioNeedsToBeReCalculated = true;
   }
 
@@ -1485,7 +1493,7 @@ namespace LHC_FASER
 
   inline void
   sjgjsxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
+                     particlePointer const initialSquark,
                                     fullCascade* const gjsxCascade )
   {
     initialScolored = initialSquark;
@@ -1515,7 +1523,7 @@ namespace LHC_FASER
 
   inline void
   svsxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
+                     particlePointer const initialSquark,
                                   electroweakCascade* const vectorCascade,
                                   fullCascade* const sxCascade )
   {
@@ -1526,8 +1534,8 @@ namespace LHC_FASER
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
-        ( shortcut->is_in( initialSquark->get_PDG_code(),
-                           shortcut->get_sdown_types() ) ) )
+        ( shortcut->isIn( initialSquark->get_PDG_code(),
+                           shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
       soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
@@ -1572,13 +1580,13 @@ namespace LHC_FASER
   {
     buildOn( sxCascade );
     branchingRatioNeedsToBeReCalculated = true;
-    initialScolored = shortcut->get_gluino();
+    initialScolored = shortcut->getGluino();
     this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
-        ( shortcut->is_in( soughtDecayProductList.front(),
-                           shortcut->get_sup_types() ) ) )
+        ( shortcut->isIn( soughtDecayProductList.front(),
+                           shortcut->getSupTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
       soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
@@ -1630,7 +1638,7 @@ namespace LHC_FASER
   {
     buildOn( svsxCascade );
     branchingRatioNeedsToBeReCalculated = true;
-    initialScolored = shortcut->get_gluino();
+    initialScolored = shortcut->getGluino();
   }
 
   inline double
@@ -1670,7 +1678,7 @@ namespace LHC_FASER
 
   inline void
   svgxFullCascade::setProperties(
-                    CppSLHA::particle_property_set const* const initialSquark,
+                    particlePointer const initialSquark,
                                   electroweakCascade* const vectorCascade,
                                   fullCascade* const gxCascade )
   {
@@ -1682,8 +1690,8 @@ namespace LHC_FASER
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
-        ( shortcut->is_in( initialSquark->get_PDG_code(),
-                           shortcut->get_sdown_types() ) ) )
+        ( shortcut->isIn( initialSquark->get_PDG_code(),
+                           shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
       soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
@@ -1722,7 +1730,7 @@ namespace LHC_FASER
 
   inline void
   svsjgxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
+                     particlePointer const initialSquark,
                                     electroweakCascade* const vectorCascade,
                                     fullCascade* const sjgxCascade )
   {
@@ -1733,8 +1741,8 @@ namespace LHC_FASER
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
-        ( shortcut->is_in( initialSquark->get_PDG_code(),
-                           shortcut->get_sdown_types() ) ) )
+        ( shortcut->isIn( initialSquark->get_PDG_code(),
+                           shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
       soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
@@ -1775,7 +1783,7 @@ namespace LHC_FASER
 
   inline void
   svsjgjsxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
+                     particlePointer const initialSquark,
                                       electroweakCascade* const vectorCascade,
                                       fullCascade* const sjgjsxCascade )
   {
@@ -1786,8 +1794,8 @@ namespace LHC_FASER
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
-        ( shortcut->is_in( initialSquark->get_PDG_code(),
-                           shortcut->get_sdown_types() ) ) )
+        ( shortcut->isIn( initialSquark->get_PDG_code(),
+                           shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
       soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
@@ -1828,7 +1836,7 @@ namespace LHC_FASER
 
   inline void
   svgjsxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
+                     particlePointer const initialSquark,
                                     electroweakCascade* const vectorCascade,
                                     fullCascade* const gjsxCascade )
   {
@@ -1839,8 +1847,8 @@ namespace LHC_FASER
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
-        ( shortcut->is_in( initialSquark->get_PDG_code(),
-                           shortcut->get_sdown_types() ) ) )
+        ( shortcut->isIn( initialSquark->get_PDG_code(),
+                           shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
       soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
@@ -1879,7 +1887,7 @@ namespace LHC_FASER
 
   inline void
   sjgvsxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
+                     particlePointer const initialSquark,
                                     fullCascade* const gvsxCascade )
   {
     initialScolored = initialSquark;
@@ -1914,7 +1922,7 @@ namespace LHC_FASER
 
   inline void
   sjgjsvsxFullCascade::setProperties(
-                     CppSLHA::particle_property_set const* const initialSquark,
+                     particlePointer const initialSquark,
                                       fullCascade* const gjsvsxCascade )
   {
     initialScolored = initialSquark;
@@ -2131,7 +2139,7 @@ namespace LHC_FASER
     return &sjgjsvsxCascades;
   }
 
-  inline CppSLHA::particle_property_set const*
+  inline particlePointer
   fullCascadeSet::getInitialScolored()
   const
   {
@@ -2153,6 +2161,17 @@ namespace LHC_FASER
   fullCascadeSetsForOneBeamEnergy::getBeamEnergy()
   {
     return beamEnergy;
+  }
+
+
+
+  inline fullCascadeSet*
+  fullCascadeSetFactory::getFullCascadeSet(
+                   particlePointer const initialScolored,
+                                            int const beamEnergy )
+  {
+    return getFullCascadeSetsForOneBeamEnergy( beamEnergy
+                                       )->getFullCascadeSet( initialScolored );
   }
 }  // end of LHC_FASER namespace.
 

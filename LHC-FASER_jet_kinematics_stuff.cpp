@@ -58,7 +58,7 @@
 namespace LHC_FASER
 {
   squarkMassForGridDecider::squarkMassForGridDecider(
-                                        input_handler const* const shortcut ) :
+                                         inputHandler const* const shortcut ) :
     shortcut( shortcut )
   {
     // just an initialization list.
@@ -71,7 +71,7 @@ namespace LHC_FASER
 
 
   heavierThanGluinoSquarkMassForGrid::heavierThanGluinoSquarkMassForGrid(
-                                        input_handler const* const shortcut ) :
+                                         inputHandler const* const shortcut ) :
     squarkMassForGridDecider( shortcut )
   {
     // just an initialization list.
@@ -83,7 +83,7 @@ namespace LHC_FASER
   }
 
 
-  firstMassForGrid::firstMassForGrid( input_handler const* const shortcut ) :
+  firstMassForGrid::firstMassForGrid( inputHandler const* const shortcut ) :
     squarkMassForGridDecider( shortcut )
   {
     // just an initialization list.
@@ -95,7 +95,7 @@ namespace LHC_FASER
   }
 
 
-  secondMassForGrid::secondMassForGrid( input_handler const* const shortcut ) :
+  secondMassForGrid::secondMassForGrid( inputHandler const* const shortcut ) :
     squarkMassForGridDecider( shortcut )
   {
     // just an initialization list.
@@ -108,7 +108,7 @@ namespace LHC_FASER
 
 
   averageSquarkMassForGrid::averageSquarkMassForGrid(
-                                        input_handler const* const shortcut ) :
+                                         inputHandler const* const shortcut ) :
     squarkMassForGridDecider( shortcut )
   {
     // just an initialization list.
@@ -125,7 +125,7 @@ namespace LHC_FASER
                                     std::string const* const gridFilesLocation,
                                           std::string const* const jetCutName,
                                           int const acceptanceColumn,
-                                        input_handler const* const shortcut ) :
+                                         inputHandler const* const shortcut ) :
     jetCutName( *jetCutName ),
     acceptanceColumn( acceptanceColumn ),
     shortcut( shortcut )
@@ -227,7 +227,7 @@ namespace LHC_FASER
   int
   jetAcceptanceTable::getIntForCascadeType(
                                          fullCascade const* const givenCascade,
-               CppSLHA::particle_property_set const** const squarkFromCascade )
+                                     particlePointer* const squarkFromCascade )
   {
     usedCascades typeToCountAs;
     if( fullCascade::colorfulCascadeType::gx
@@ -270,7 +270,7 @@ namespace LHC_FASER
 
   double
   jetAcceptanceTable::getAcceptance(
-                        signed_particle_shortcut_pair const* const initialPair,
+                        signedParticleShortcutPair const* const initialPair,
                                      fullCascade const* const firstCascade,
                                      fullCascade const* const secondCascade )
   {
@@ -286,8 +286,8 @@ namespace LHC_FASER
     gridToUse = gridMatrixElement->first;
     if( ( squarkAntisquarkGrid == gridToUse )
         &&
-        ( initialPair->first_is_not_antiparticle()
-          == initialPair->second_is_not_antiparticle() ) )
+        ( initialPair->firstIsNotAntiparticle()
+          == initialPair->secondIsNotAntiparticle() ) )
     {
       gridToUse = squarkSquarkGrid;
     }
@@ -308,7 +308,7 @@ namespace LHC_FASER
 
 
   jetAcceptanceTablesForOneBeamEnergy::jetAcceptanceTablesForOneBeamEnergy(
-                                           input_handler const* const shortcut,
+                                           inputHandler const* const shortcut,
                                                           int const beamEnergy,
                                std::string const* const gridFileSetLocation ) :
     shortcut( shortcut ),
@@ -368,7 +368,7 @@ namespace LHC_FASER
 
 
   jetPlusMetAcceptanceHandler::jetPlusMetAcceptanceHandler(
-                                           input_handler const* const shortcut,
+                                           inputHandler const* const shortcut,
                                std::string const* const gridFileSetLocation ) :
     shortcut( shortcut ),
     gridFileSetLocation( *gridFileSetLocation )

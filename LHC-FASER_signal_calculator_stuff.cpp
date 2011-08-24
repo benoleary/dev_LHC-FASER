@@ -63,11 +63,11 @@ namespace LHC_FASER
     firstCascades( NULL ),
     secondCascades( NULL )
   {
-    for( std::vector< signed_particle_shortcut_pair* >::const_iterator
+    for( std::vector< signedParticleShortcutPair* >::const_iterator
          pairIterator = signalDefinitions->getShortcuts()->get_input_shortcuts(
-                           )->get_sparticle_production_combinations()->begin();
+                           )->getScoloredProductionCombinations()->begin();
          signalDefinitions->getShortcuts()->get_input_shortcuts(
-                              )->get_sparticle_production_combinations()->end()
+                              )->getScoloredProductionCombinations()->end()
          > pairIterator;
          ++pairIterator )
     {
@@ -90,9 +90,9 @@ namespace LHC_FASER
 
 
   signalHandler::signalHandler( std::string const signalName,
-                                signal_shortcuts* const shortcut,
+                                signalShortcuts* const shortcut,
                                 double const crossSectionUnitFactor ) :
-    getsReadiedForNewPoint( shortcut->get_input_shortcuts()->get_readier() ),
+    getsReadiedForNewPoint( shortcut->get_input_shortcuts()->getReadier() ),
     signalName( signalName ),
     shortcut( shortcut ),
     crossSectionUnitFactor( crossSectionUnitFactor )
@@ -155,7 +155,7 @@ namespace LHC_FASER
 
       rateCalculator
       = new sigmaBreakdownTestCalculator( shortcut,
-                                          shortcut->get_cross_section_handler(
+                                          shortcut->getCrossSections(
                                                        )->getTableSet( 7 ) );
 
     }
@@ -187,7 +187,7 @@ namespace LHC_FASER
 
 
   reallyWrongCalculator::reallyWrongCalculator(
-                                           signal_shortcuts* const shortcut ) :
+                                           signalShortcuts* const shortcut ) :
     signalCalculator( shortcut )
   {
     // just an initialization list.
@@ -206,7 +206,7 @@ namespace LHC_FASER
   {
     this->signalDefinitions->setExcludedStandardModelProducts(
                         signalDefinitions->getShortcuts()->get_input_shortcuts(
-                                                       )->get_not_in_jets5() );
+                                                       )->getNotInJets5() );
   }
 
   sigmaBreakdownTestCalculator::~sigmaBreakdownTestCalculator()
@@ -246,26 +246,26 @@ namespace LHC_FASER
         std::cout
         << std::endl
         << "channel: "
-        << *((*channelIterator)->getScoloredPair()->get_first_pointer(
+        << *((*channelIterator)->getScoloredPair()->getFirstParticle(
                                                        )->get_name_or_antiname(
                                            (*channelIterator)->getScoloredPair(
-                                              )->first_is_not_antiparticle() ))
+                                              )->firstIsNotAntiparticle() ))
         << " + "
-        << *((*channelIterator)->getScoloredPair()->get_second_pointer(
+        << *((*channelIterator)->getScoloredPair()->getSecondParticle(
                                                        )->get_name_or_antiname(
                                            (*channelIterator)->getScoloredPair(
-                                            )->second_is_not_antiparticle() ));
+                                            )->secondIsNotAntiparticle() ));
         std::cout << std::endl;
         channelBrTotal = 0.0;
 
         // we have to look at all the open cascade pairings:
         firstCascades
         = (*channelIterator)->getFirstCascadeSet()->getOpenCascades(
-          (*channelIterator)->getScoloredPair()->first_is_not_antiparticle(),
+          (*channelIterator)->getScoloredPair()->firstIsNotAntiparticle(),
                                                           &signalDefinitions );
         secondCascades
         = (*channelIterator)->getSecondCascadeSet()->getOpenCascades(
-           (*channelIterator)->getScoloredPair()->second_is_not_antiparticle(),
+           (*channelIterator)->getScoloredPair()->secondIsNotAntiparticle(),
                                                            &signalDefinitions);
 
         for( std::vector< fullCascade* >::iterator
@@ -318,7 +318,7 @@ namespace LHC_FASER
   {
     signalDefinitions->setExcludedStandardModelProducts(
                         signalDefinitions->getShortcuts()->get_input_shortcuts(
-                                                       )->get_not_in_jets5() );
+                                                       )->getNotInJets5() );
     signalCalculator* returnPointer = NULL;
     int characterSkipper;
     // this is used in interpreting the arguments string.
@@ -400,14 +400,14 @@ namespace LHC_FASER
   {
     std::string jetGridName( "Atlas4jMET" );
     fourJetKinematics
-    = signalDefinitions->getShortcuts()->get_kinematics_handler()->get_table(
+    = signalDefinitions->getShortcuts()->getJetPlusMetAcceptances()->get_table(
                                             signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
                                                 jetAcceptanceGridTableColumn );
 
     jetGridName.assign( "Atlas3jMET" );
     threeJetKinematics
-    = signalDefinitions->getShortcuts()->get_kinematics_handler()->get_table(
+    = signalDefinitions->getShortcuts()->getJetPlusMetAcceptances()->get_table(
                                             signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
                                                 jetAcceptanceGridTableColumn );
@@ -556,7 +556,7 @@ namespace LHC_FASER
     }  // end of loop over channels.
     // currently, we do the uncertainty very roughly:
     *uncertaintyFactor
-    = ( *signalValue * signalDefinitions->get_uncertainty() );
+    = ( *signalValue * signalDefinitions->getUncertainty() );
     return true;
   }
 
@@ -567,7 +567,7 @@ namespace LHC_FASER
   {
     signalDefinitions->setExcludedStandardModelProducts(
                         signalDefinitions->getShortcuts()->get_input_shortcuts(
-                                                       )->get_not_in_jets5() );
+                                                       )->getNotInJets5() );
     signalCalculator* returnPointer = NULL;
     int characterSkipper;
     // this is used in interpreting the arguments string.
@@ -672,7 +672,7 @@ namespace LHC_FASER
   {
     std::string jetGridName( "Atlas3jMET" );
     this->signalDefinitions.setJetPlusMetAcceptance(
-         signalDefinitions.getShortcuts()->get_kinematics_handler()->getTable(
+         signalDefinitions.getShortcuts()->getJetPlusMetAcceptances()->getTable(
                                             signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
                                               jetAcceptanceGridTableColumn ) );
@@ -797,7 +797,7 @@ namespace LHC_FASER
     }  // end of loop over channels.
     // currently, we do the uncertainty very roughly:
     *uncertaintyFactor
-    = ( *signalValue * signalDefinitions->get_uncertainty() );
+    = ( *signalValue * signalDefinitions->getUncertainty() );
     return true;
   }
 

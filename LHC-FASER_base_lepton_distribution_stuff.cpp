@@ -61,6 +61,31 @@
 
 namespace LHC_FASER
 {
+  effectiveSquarkMassHolder::effectiveSquarkMassHolder()
+  {
+    // does nothing.
+  }
+
+  ~effectiveSquarkMassHolder()
+  {
+    // does nothing.
+  }
+
+
+
+  onshellSquarkMassHolder::onshellSquarkMassHolder(
+                  CppSLHA::particle_property_set const* const onshellSquark ) :
+    onshellSquark( onshellSquark )
+  {
+    // just an initialization list.
+  }
+
+  onshellSquarkMassHolder::~onshellSquarkMassHolder()
+  {
+    // does nothing.
+  }
+
+
 
   lepton_distribution_expansion_term::lepton_distribution_expansion_term(
                                                int const given_power_of_energy,

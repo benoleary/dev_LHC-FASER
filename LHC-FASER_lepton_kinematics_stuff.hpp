@@ -110,7 +110,7 @@ namespace LHC_FASER
   {
   public:
     leptonAcceptanceGrid( std::string const* const gridFileLocation,
-                          input_handler const* const shortcut )
+                          inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~leptonAcceptanceGrid()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -140,7 +140,7 @@ namespace LHC_FASER
   protected:
     acceptanceGrid* gluinoTable;
     acceptanceGrid* squarkTable;
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
   };
 
 
@@ -153,7 +153,7 @@ namespace LHC_FASER
   public:
     leptonAcceptanceTable( leptonAcceptanceGrid const* const lookupGrid,
                           CppSLHA::particle_property_set const* const scolored,
-                           input_handler const* const shortcut )
+                           inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~leptonAcceptanceTable()
@@ -169,7 +169,7 @@ namespace LHC_FASER
   protected:
     leptonAcceptanceGrid const* const lookupGrid;
     CppSLHA::particle_property_set const* const scolored;
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
   };
 
   // this class is the class derived from leptonAcceptanceTable specifically
@@ -180,7 +180,7 @@ namespace LHC_FASER
     squarkBasedLeptonAcceptanceTable(
                                   leptonAcceptanceGrid const* const lookupGrid,
                             CppSLHA::particle_property_set const* const squark,
-                                      input_handler const* const shortcut )
+                                      inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~squarkBasedLeptonAcceptanceTable()
@@ -204,7 +204,7 @@ namespace LHC_FASER
   public:
     gluinoBasedLeptonAcceptanceTable(
                                   leptonAcceptanceGrid const* const lookupGrid,
-                                      input_handler const* const shortcut )
+                                      inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~gluinoBasedLeptonAcceptanceTable()
@@ -234,12 +234,12 @@ namespace LHC_FASER
     static double const defaultBinSize = 2.0;
     static double const defaultTransverseMomentumCut = 10.0;
 
-    leptonAcceptanceParameterSet( input_handler* const shortcut,
+    leptonAcceptanceParameterSet( inputHandler* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                           CppSLHA::particle_property_set const* const scolored,
                             CppSLHA::particle_property_set const* const ewino )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    leptonAcceptanceParameterSet( input_handler* const shortcut,
+    leptonAcceptanceParameterSet( inputHandler* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                           CppSLHA::particle_property_set const* const scolored,
                              CppSLHA::particle_property_set const* const ewino,
@@ -270,7 +270,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    input_handler* const shortcut;
+    inputHandler* const shortcut;
     leptonAcceptanceTable const* acceptanceTable;
     CppSLHA::particle_property_set const* const scolored;
     CppSLHA::particle_property_set const* const ewino;
@@ -313,7 +313,7 @@ namespace LHC_FASER
   class leptonAcceptancesForOneScolored
   {
   public:
-    leptonAcceptancesForOneScolored( input_handler const* const shortcut,
+    leptonAcceptancesForOneScolored( inputHandler const* const shortcut,
                           CppSLHA::particle_property_set const* const scolored,
                                  leptonAcceptanceGrid const* acceptanceGrid,
                                      double const binSize,
@@ -333,7 +333,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     CppSLHA::particle_property_set const* const scolored;
     leptonAcceptanceTable const* acceptanceTable;
     std::vector< leptonAcceptanceParameterSet* > parameterSets;
@@ -351,7 +351,7 @@ namespace LHC_FASER
   class leptonAcceptancesForOneBeamEnergy
   {
   public:
-    leptonAcceptancesForOneBeamEnergy( input_handler const* const shortcut,
+    leptonAcceptancesForOneBeamEnergy( inputHandler const* const shortcut,
                                        int const beamEnergy,
                                   std::string const* const gridFileSetLocation,
                                        double const binSize,
@@ -373,7 +373,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     int const beamEnergy;
     leptonAcceptanceGrid acceptanceGrid;
     std::vector< leptonAcceptancesForOneScolored* > acceptanceSets;
@@ -391,7 +391,7 @@ namespace LHC_FASER
   class leptonAcceptanceHandler
   {
   public:
-    leptonAcceptanceHandler( input_handler const* const shortcut,
+    leptonAcceptanceHandler( inputHandler const* const shortcut,
                              std::string const* const gridFileSetLocation )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~leptonAcceptanceHandler()
@@ -415,7 +415,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     std::string const gridFileSetLocation;
     std::vector< leptonAcceptancesForOneBeamEnergy* > acceptanceTables;
 

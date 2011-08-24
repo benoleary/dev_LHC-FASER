@@ -109,17 +109,21 @@ namespace LHC_FASER
   electroweakCascade::tauPairToMuonPairBr(
                            ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR
                       * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) );
+  int const
+  electroweakCascade::numberOfIntegrationBins( 10 );
 
   electroweakCascade::electroweakCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
+                          effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                                   //bool const coloredDecayerIsNotAntiparticle,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
                               //bool const electroweakDecayerIsNotAntiparticle,
                CppSLHA::particle_property_set const* const intermediateDecayer,
                                           bool const canDoOssfMinusOsdf,
-                                        input_handler const* const shortcut ) :
+                                        inputHandler const* const shortcut ) :
     kinematics( kinematics ),
+    effectiveSquarkMass( effectiveSquarkMass ),
     coloredDecayer( coloredDecayer ),
     //coloredDecayerIsNotAntiparticle( coloredDecayerIsNotAntiparticle ),
     electroweakDecayer( electroweakDecayer ),
@@ -285,75 +289,147 @@ namespace LHC_FASER
   }
 
 
+  double
+  electroweakCascade::integrateAcceptance(
+                            leptonEnergyDistribution* const leptonDistribution,
+                                           double const transverseMomentumCut )
+  /* this numerically integrates leptonDistribution with the lepton acceptance
+   * histogram from kinematics, scaled to having transverseMomentumCut as its
+   * transverse momentum cut.
+   */
+  {
+    if( 0.0 < transverseMomentumCut )
+    {
+      double binSize( ( ( leptonDistribution->getMaximumEnergy()
+                          - leptonDistribution->getMinimumEnergy() )
+                        / (double)numberOfIntegrationBins ) );
+      double binEnergy = leptonDistribution->getMinimumEnergy();
+
+      /* I could do it so that it works out the area of each trapezium & sums
+       * them, but it's equivalent to taking half a rectangle centered on the
+       * starting value with height of the function at the starting value &
+       * adding full rectangles for each bin value except the last, which
+       * also is a half rectangle.
+       */
+      double
+      returnValue = ( 0.5 * binSize
+                          * kinematics->acceptanceAt( binEnergy,
+                                                      transverseMomentumCut )
+                          * leptonDistribution->valueAt( binEnergy ) );
+      for( int binCounter( 1 );
+           numberOfIntegrationBins > binCounter;
+           ++binCounter )
+      {
+        binEnergy += binSize;
+        returnValue += ( binSize
+                         * kinematics->acceptanceAt( binEnergy,
+                                                     transverseMomentumCut )
+                         * leptonDistribution->valueAt( binEnergy ) );
+      }
+      binEnergy += binSize;
+      returnValue += ( 0.5 * binSize
+                           * kinematics->acceptanceAt( binEnergy,
+                                                       transverseMomentumCut )
+                           * lepton_distribution->value_at( binEnergy ) );
+      return returnValue;
+    }
+    else
+      // a cut of 0.0 GeV or a negative value is interpretted as no cut at all,
+      // so 1.0 is returned as the acceptance.
+    {
+      return 1.0;
+    }
+  }
+
+
 
   electroweakCascadeSet::electroweakCascadeSet(
                                 leptonAcceptanceParameterSet* const kinematics,
                     CppSLHA::particle_property_set const* const coloredDecayer,
                 CppSLHA::particle_property_set const* const electroweakDecayer,
-                                        input_handler const* const shortcut ) :
+                                        inputHandler const* const shortcut ) :
     kinematics( kinematics ),
     coloredDecayer( coloredDecayer ),
     electroweakDecayer( electroweakDecayer ),
     shortcut( shortcut )
   {
+    effectiveSquarkMassHolder* effectiveSquarkMassPointer;
+    if( shortcut->getGluino() == coloredDecayer )
+    {
+      effectiveSquarkMassPointer = kinematics;
+    }
+    else
+    {
+      effectiveSquarkMassPointer
+      = shortcut->getOnShellEffectiveSquarkMass( coloredDecayer );
+    }
+
     if( CppSLHA::PDG_code::neutralino_one
         == electroweakDecayer->get_PDG_code() )
     {
       currentCascade = new lightestNeutralinoCascade();
       cascades.push_back( currentCascade );
     }
-    else if( shortcut->is_in( electroweakDecayer->get_PDG_code(),
-                              shortcut->get_unstable_neutralinos() ) )
+    else if( shortcut->isIn( electroweakDecayer->get_PDG_code(),
+                              shortcut->getUnstableNeutralinos() ) )
     {
       currentCascade = new neutralinoToSemuCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                   shortcut->get_selectron_L(),
+                                                   shortcut->getSelectronL(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToSemuCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                   shortcut->get_selectron_R(),
+                                                   shortcut->getSelectronR(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToSemuCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->get_smuon_L(),
+                                                    shortcut->getSmuonL(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToSemuCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->get_smuon_R(),
+                                                    shortcut->getSmuonR(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->get_stau_one(),
+                                                    shortcut->getStauOne(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->get_stau_two(),
+                                                    shortcut->getStauTwo(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToZCascade( kinematics,
+                                                 effectiveSquarkMassPointer,
                                                  coloredDecayer,
                                                  electroweakDecayer,
                                                  shortcut );
       cascades.push_back( currentCascade );
       for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
            vevedBosonIterator
-           = shortcut->get_neutral_EWSB_scalars_and_pseudoscalars()->begin();
-           shortcut->get_neutral_EWSB_scalars_and_pseudoscalars()->end()
+           = shortcut->getNeutralEwsbScalarsAndPseudoscalars()->begin();
+           shortcut->getNeutralEwsbScalarsAndPseudoscalars()->end()
            > vevedBosonIterator;
            ++vevedBosonIterator )
       {
         currentCascade = new neutralinoToHiggsCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                        coloredDecayer,
                                                        electroweakDecayer,
                                                        *vevedBosonIterator,
@@ -361,65 +437,74 @@ namespace LHC_FASER
         cascades.push_back( currentCascade );
       }
       currentCascade = new neutralinoThreeBodyDecayCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                             coloredDecayer,
                                                             electroweakDecayer,
                                                             shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoThreeBodyToTausCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                              coloredDecayer,
                                                             electroweakDecayer,
                                                              shortcut );
       cascades.push_back( currentCascade );
     }
-    else if( shortcut->is_in( electroweakDecayer->get_PDG_code(),
-                              shortcut->get_charginos() ) )
+    else if( shortcut->isIn( electroweakDecayer->get_PDG_code(),
+                              shortcut->getCharginos() ) )
     {
       currentCascade = new charginoToSemuCascade( kinematics,
+                                                  effectiveSquarkMassPointer,
                                                   coloredDecayer,
                                                coloredDecayerIsNotAntiparticle,
                                                   electroweakDecayer,
                                            electroweakDecayerIsNotAntiparticle,
-                                                  shortcut->get_selectron_L(),
+                                                  shortcut->getSelectronL(),
                                                   shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToSemuCascade( kinematics,
+                                                  effectiveSquarkMassPointer,
                                                   coloredDecayer,
                                                   electroweakDecayer,
-                                                  shortcut->get_selectron_R(),
+                                                  shortcut->getSelectronR(),
                                                   shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToEmuSneutrinoCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                          shortcut->get_electron_sneutrino_L(),
+                                          shortcut->getElectronSneutrinoL(),
                                                           shortcut );
       cascades.push_back( currentCascade );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->get_stau_one(),
+                                                    shortcut->getStauOne(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->get_stau_two(),
+                                                    shortcut->getStauTwo(),
                                                     shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToZCascade( kinematics,
+                                                 effectiveSquarkMassPointer,
                                                  coloredDecayer,
                                                  electroweakDecayer,
                                                  shortcut );
       cascades.push_back( currentCascade );
       for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
            vevedBosonIterator
-           = shortcut->get_neutral_EWSB_scalars_and_pseudoscalars()->begin();
-           shortcut->get_neutral_EWSB_scalars_and_pseudoscalars()->end()
+           = shortcut->getNeutralEwsbScalarsAndPseudoscalars()->begin();
+           shortcut->getNeutralEwsbScalarsAndPseudoscalars()->end()
            > vevedBosonIterator;
            ++vevedBosonIterator )
       {
         currentCascade = new neutralinoToHiggsCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                        coloredDecayer,
                                                        electroweakDecayer,
                                                        *vevedBosonIterator,
@@ -427,11 +512,13 @@ namespace LHC_FASER
         cascades.push_back( currentCascade );
       }
       currentCascade = new neutralinoThreeBodyDecayCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                             coloredDecayer,
                                                             electroweakDecayer,
                                                             shortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoThreeBodyToTausCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
                                                              coloredDecayer,
                                                             electroweakDecayer,
                                                              shortcut );
@@ -466,7 +553,7 @@ namespace LHC_FASER
   electroweakCascadeHandler::electroweakCascadeHandler(
                       leptonAcceptancesForOneBeamEnergy* const kinematicsTable,
                                                         int const beamEnergy,
-                                        input_handler const* const shortcut ) :
+                                        inputHandler const* const shortcut ) :
     kinematicsTable( kinematicsTable ),
     beamEnergy( beamEnergy ),
     shortcut( shortcut )
@@ -610,12 +697,12 @@ namespace LHC_FASER
       {
 
         // we start with the direct distributions:
-        Higgs_muon_plus_antimuon direct_lepton( shortcut->get_CppSLHA(),
+        Higgs_muon_plus_antimuon direct_lepton( shortcut->getCppSlha(),
                                                 decaying_scolored,
                     leptonKinematics->getAcceptance()->getEffectiveSquarkMass(),
                                                 decaying_EWino,
                                                 mediating_particle,
-                                              shortcut->get_neutralino_one() );
+                                              shortcut->getNeutralinoOne() );
         current_distribution = &direct_lepton;
         double direct_muon_pass = integrate_acceptance( primary_cut,
                                                         current_distribution );
@@ -646,9 +733,9 @@ namespace LHC_FASER
             // for EWSB scalars, half the tau leptons are 1 chirality, the
             // other half are the other chirality.
             visible_tau_decay_product hard_tau_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
             visible_tau_decay_product soft_tau_muon( current_distribution,
-                                          shortcut->get_soft_muon_from_tau() );
+                                          shortcut->getSoftMuonFromTau() );
             current_distribution = &hard_tau_muon;
             tau_muon_pass
             += ( 0.5 * integrate_acceptance( primary_cut,
@@ -673,9 +760,9 @@ namespace LHC_FASER
 
             current_distribution = &direct_lepton;
             visible_tau_decay_product soft_tau_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
             visible_tau_decay_product hard_tau_pion( current_distribution,
-                                          shortcut->get_hard_pion_from_tau() );
+                                          shortcut->getHardPionFromTau() );
             current_distribution = &soft_tau_pion;
             tau_pion_pass
             += ( 0.5 * integrate_acceptance( jetCut,
@@ -900,13 +987,13 @@ namespace LHC_FASER
       // if the branching ratio into this channel is not negligible...
       {
 
-        neutralino_three_body_decay direct_lepton( shortcut->get_CppSLHA(),
+        neutralino_three_body_decay direct_lepton( shortcut->getCppSlha(),
                                                    decaying_scolored,
                     kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                    decaying_EWino,
-                                                shortcut->get_neutralino_one(),
-                                                   shortcut->get_selectron_L(),
-                                                 shortcut->get_selectron_R() );
+                                                shortcut->getNeutralinoOne(),
+                                                   shortcut->getSelectronL(),
+                                                 shortcut->getSelectronR() );
         current_distribution = &direct_lepton;
         direct_electron_pass = integrate_acceptance( primary_cut,
                                                      current_distribution );
@@ -922,13 +1009,13 @@ namespace LHC_FASER
       // if the branching ratio into this channel is not negligible...
       {
 
-        neutralino_three_body_decay direct_lepton( shortcut->get_CppSLHA(),
+        neutralino_three_body_decay direct_lepton( shortcut->getCppSlha(),
                                              decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                              decaying_EWino,
-                                             shortcut->get_neutralino_one(),
-                                             shortcut->get_smuon_L(),
-                                             shortcut->get_smuon_R() );
+                                             shortcut->getNeutralinoOne(),
+                                             shortcut->getSmuonL(),
+                                             shortcut->getSmuonR() );
         current_distribution = &direct_lepton;
         direct_muon_pass = integrate_acceptance( primary_cut,
                                                  current_distribution );
@@ -942,13 +1029,13 @@ namespace LHC_FASER
       // if the branching ratio into this channel is not negligible...
       {
 
-        neutralino_three_body_decay direct_jet( shortcut->get_CppSLHA(),
+        neutralino_three_body_decay direct_jet( shortcut->getCppSlha(),
                                                 decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                 decaying_EWino,
-                                                shortcut->get_neutralino_one(),
-                                                shortcut->get_sdown_L(),
-                                                shortcut->get_sdown_R() );
+                                                shortcut->getNeutralinoOne(),
+                                                shortcut->getSdownL(),
+                                                shortcut->getSdownR() );
         // actually, here I should use every nontop flavor of squark
         // separately, but it's unlikely to make any significant difference.
         current_distribution = &direct_jet;
@@ -965,22 +1052,22 @@ namespace LHC_FASER
       // if the branching ratio into this channel is not negligible...
       {
 
-        neutralino_three_body_decay direct_lepton( shortcut->get_CppSLHA(),
+        neutralino_three_body_decay direct_lepton( shortcut->getCppSlha(),
                                                    decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                    decaying_EWino,
-                                                shortcut->get_neutralino_one(),
-                                                   shortcut->get_stau_one(),
-                                                   shortcut->get_stau_two() );
+                                                shortcut->getNeutralinoOne(),
+                                                   shortcut->getStauOne(),
+                                                   shortcut->getStauTwo() );
         current_distribution = &direct_lepton;
         visible_tau_decay_product hard_tau_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
         visible_tau_decay_product soft_tau_muon( current_distribution,
-                                          shortcut->get_soft_muon_from_tau() );
+                                          shortcut->getSoftMuonFromTau() );
         visible_tau_decay_product hard_tau_pion( current_distribution,
-                                          shortcut->get_hard_pion_from_tau() );
+                                          shortcut->getHardPionFromTau() );
         visible_tau_decay_product soft_tau_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
 
         /* at the moment, I have no plans to provide a tau left-handedness
          * breakdown from a 3-body decay, so I assume that 50% of them are of
@@ -1137,42 +1224,42 @@ namespace LHC_FASER
         not_particle_antiparticle_flip = false;
 
       }
-    exclusive_BR_calculator*
+    exclusiveBrCalculator*
     first_BR
-    = shortcut->get_exclusive_BR_calculator( decaying_EWino,
+    = shortcut->getExclusiveBrCalculator( decaying_EWino,
                                              mediating_particle,
                                              not_particle_antiparticle_flip,
-                                             shortcut->get_empty_list() );
-    exclusive_BR_calculator*
+                                             shortcut->getEmptyList() );
+    exclusiveBrCalculator*
     second_BR
-    = shortcut->get_exclusive_BR_calculator( mediating_particle,
-                                             shortcut->get_neutralino_one(),
+    = shortcut->getExclusiveBrCalculator( mediating_particle,
+                                             shortcut->getNeutralinoOne(),
                                              true,
-                                             shortcut->get_empty_list() );
-    double cascade_BR = ( first_BR->get_BR() * second_BR->get_BR() );
+                                             shortcut->getEmptyList() );
+    double cascade_BR = ( first_BR->getBr() * second_BR->getBr() );
 
     if( lhcFaserGlobal::negligibleBr < cascade_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
         // we just have a far lepton:
-        same_chirality_far_muon same_lepton( shortcut->get_CppSLHA(),
+        same_chirality_far_muon same_lepton( shortcut->getCppSlha(),
                                              decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                              decaying_EWino,
                                              mediating_particle,
-                                             shortcut->get_neutralino_one() );
-        opposite_chirality_far_muon opposite_lepton( shortcut->get_CppSLHA(),
+                                             shortcut->getNeutralinoOne() );
+        opposite_chirality_far_muon opposite_lepton( shortcut->getCppSlha(),
                                                      decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                      decaying_EWino,
                                                      mediating_particle,
-                                              shortcut->get_neutralino_one() );
+                                              shortcut->getNeutralinoOne() );
         current_distribution = &same_lepton;
 
         double
         same_handedness
-        = shortcut->quark_or_lepton_left_handedness(
+        = shortcut->quarkOrLeptonLeftHandedness(
                                              decaying_scolored->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
         double
@@ -1240,47 +1327,47 @@ namespace LHC_FASER
         not_particle_antiparticle_flip = false;
 
       }
-    exclusive_BR_calculator*
+    exclusiveBrCalculator*
     first_BR
-    = shortcut->get_exclusive_BR_calculator( decaying_EWino,
+    = shortcut->getExclusiveBrCalculator( decaying_EWino,
                                              mediating_particle,
                                              not_particle_antiparticle_flip,
-                                             shortcut->get_empty_list() );
-    exclusive_BR_calculator*
+                                             shortcut->getEmptyList() );
+    exclusiveBrCalculator*
     second_BR
-    = shortcut->get_exclusive_BR_calculator( mediating_particle,
-                                             shortcut->get_neutralino_one(),
+    = shortcut->getExclusiveBrCalculator( mediating_particle,
+                                             shortcut->getNeutralinoOne(),
                                              true,
-                                             shortcut->get_empty_list() );
-    double cascade_BR = ( first_BR->get_BR() * second_BR->get_BR() );
+                                             shortcut->getEmptyList() );
+    double cascade_BR = ( first_BR->getBr() * second_BR->getBr() );
 
     if( lhcFaserGlobal::negligibleBr < cascade_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
         // we just have a far lepton:
-        same_chirality_far_muon same_tau( shortcut->get_CppSLHA(),
+        same_chirality_far_muon same_tau( shortcut->getCppSlha(),
                                           decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                           decaying_EWino,
                                           mediating_particle,
-                                          shortcut->get_neutralino_one() );
-        opposite_chirality_far_muon opposite_tau( shortcut->get_CppSLHA(),
+                                          shortcut->getNeutralinoOne() );
+        opposite_chirality_far_muon opposite_tau( shortcut->getCppSlha(),
                                                   decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                   decaying_EWino,
                                                   mediating_particle,
-                                              shortcut->get_neutralino_one() );
+                                              shortcut->getNeutralinoOne() );
 
         double
         quark_left_handedness
-        = shortcut->quark_or_lepton_left_handedness(
+        = shortcut->quarkOrLeptonLeftHandedness(
                                              decaying_scolored->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
         double quark_right_handedness = ( 1.0 - quark_left_handedness );
         double
         tau_left_handedness
-        = shortcut->quark_or_lepton_left_handedness(
+        = shortcut->quarkOrLeptonLeftHandedness(
                                             mediating_particle->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
         double tau_right_handedness = ( 1.0 - tau_left_handedness );
@@ -1297,7 +1384,7 @@ namespace LHC_FASER
 
             current_distribution = &same_tau;
             visible_tau_decay_product hard_same_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
             leptonEnergyDistribution* visible_distribution = &hard_same_muon;
             muon_pass += ( quark_left_handedness * tau_left_handedness
                            * integrate_acceptance( primary_cut,
@@ -1307,7 +1394,7 @@ namespace LHC_FASER
                  * ( 1.0 - integrate_acceptance( secondary_cut,
                                                  visible_distribution ) ) );
             visible_tau_decay_product soft_same_muon( current_distribution,
-                                          shortcut->get_soft_muon_from_tau() );
+                                          shortcut->getSoftMuonFromTau() );
             visible_distribution = &soft_same_muon;
             muon_pass += ( quark_right_handedness * tau_right_handedness
                            * integrate_acceptance( primary_cut,
@@ -1317,7 +1404,7 @@ namespace LHC_FASER
                  * ( 1.0 - integrate_acceptance( secondary_cut,
                                                  visible_distribution ) ) );
             visible_tau_decay_product soft_same_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
             visible_distribution = &soft_same_pion;
             pion_acceptance = integrate_acceptance( jet_cut,
                                                     visible_distribution );
@@ -1327,7 +1414,7 @@ namespace LHC_FASER
             += ( quark_left_handedness * tau_left_handedness
                  * ( 1.0 - pion_acceptance ) );
             visible_tau_decay_product hard_same_pion( current_distribution,
-                                          shortcut->get_hard_pion_from_tau() );
+                                          shortcut->getHardPionFromTau() );
             visible_distribution = &hard_same_pion;
             pion_acceptance = integrate_acceptance( jet_cut,
                                                     visible_distribution );
@@ -1339,7 +1426,7 @@ namespace LHC_FASER
 
             current_distribution = &opposite_tau;
             visible_tau_decay_product hard_opposite_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
             visible_distribution = &hard_opposite_muon;
             muon_pass += ( quark_right_handedness * tau_left_handedness
                            * integrate_acceptance( primary_cut,
@@ -1349,7 +1436,7 @@ namespace LHC_FASER
                  * ( 1.0 - integrate_acceptance( secondary_cut,
                                                  visible_distribution ) ) );
             visible_tau_decay_product soft_opposite_muon( current_distribution,
-                                          shortcut->get_soft_muon_from_tau() );
+                                          shortcut->getSoftMuonFromTau() );
             visible_distribution = &soft_opposite_muon;
             muon_pass += ( quark_left_handedness * tau_right_handedness
                            * integrate_acceptance( primary_cut,
@@ -1359,7 +1446,7 @@ namespace LHC_FASER
                  * ( 1.0 - integrate_acceptance( secondary_cut,
                                                  visible_distribution ) ) );
             visible_tau_decay_product soft_opposite_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
             visible_distribution = &soft_same_pion;
             pion_acceptance = integrate_acceptance( jet_cut,
                                                     visible_distribution );
@@ -1369,7 +1456,7 @@ namespace LHC_FASER
             += ( quark_right_handedness * tau_left_handedness
                  * ( 1.0 - pion_acceptance ) );
             visible_tau_decay_product hard_opposite_pion( current_distribution,
-                                          shortcut->get_hard_pion_from_tau() );
+                                          shortcut->getHardPionFromTau() );
             visible_distribution = &hard_same_pion;
             pion_acceptance = integrate_acceptance( jet_cut,
                                                     visible_distribution );
@@ -1426,31 +1513,31 @@ namespace LHC_FASER
         not_particle_antiparticle_flip = false;
 
       }
-    exclusive_BR_calculator*
+    exclusiveBrCalculator*
     first_BR
-    = shortcut->get_exclusive_BR_calculator( decaying_EWino,
+    = shortcut->getExclusiveBrCalculator( decaying_EWino,
                                              mediating_particle,
                                              not_particle_antiparticle_flip,
-                                             shortcut->get_empty_list() );
-    exclusive_BR_calculator*
+                                             shortcut->getEmptyList() );
+    exclusiveBrCalculator*
     second_BR
-    = shortcut->get_exclusive_BR_calculator( mediating_particle,
-                                             shortcut->get_neutralino_one(),
+    = shortcut->getExclusiveBrCalculator( mediating_particle,
+                                             shortcut->getNeutralinoOne(),
                                              true,
-                                             shortcut->get_empty_list() );
-    double cascade_BR = ( first_BR->get_BR() * second_BR->get_BR() );
+                                             shortcut->getEmptyList() );
+    double cascade_BR = ( first_BR->getBr() * second_BR->getBr() );
 
     if( lhcFaserGlobal::negligibleBr < cascade_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
         // we just have a near lepton:
-        same_chirality_near_muon same_lepton( shortcut->get_CppSLHA(),
+        same_chirality_near_muon same_lepton( shortcut->getCppSlha(),
                                               decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                               decaying_EWino,
                                               mediating_particle );
-        opposite_chirality_near_muon opposite_lepton( shortcut->get_CppSLHA(),
+        opposite_chirality_near_muon opposite_lepton( shortcut->getCppSlha(),
                                                       decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                       decaying_EWino,
@@ -1458,11 +1545,11 @@ namespace LHC_FASER
         current_distribution = &same_lepton;
 
         double
-        quark_left_handedness = shortcut->quark_or_lepton_left_handedness(
+        quark_left_handedness = shortcut->quarkOrLeptonLeftHandedness(
                                              decaying_scolored->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
         double
-        lepton_left_handedness = shortcut->quark_or_lepton_left_handedness(
+        lepton_left_handedness = shortcut->quarkOrLeptonLeftHandedness(
                                                 decaying_EWino->get_PDG_code(),
                                           mediating_particle->get_PDG_code() );
         double
@@ -1517,31 +1604,31 @@ namespace LHC_FASER
         not_particle_antiparticle_flip = false;
 
       }
-    exclusive_BR_calculator*
+    exclusiveBrCalculator*
     first_BR
-    = shortcut->get_exclusive_BR_calculator( decaying_EWino,
+    = shortcut->getExclusiveBrCalculator( decaying_EWino,
                                              mediating_particle,
                                              not_particle_antiparticle_flip,
-                                             shortcut->get_empty_list() );
-    exclusive_BR_calculator*
+                                             shortcut->getEmptyList() );
+    exclusiveBrCalculator*
     second_BR
-    = shortcut->get_exclusive_BR_calculator( mediating_particle,
-                                             shortcut->get_neutralino_one(),
+    = shortcut->getExclusiveBrCalculator( mediating_particle,
+                                             shortcut->getNeutralinoOne(),
                                              true,
-                                             shortcut->get_empty_list() );
-    double cascade_BR = ( first_BR->get_BR() * second_BR->get_BR() );
+                                             shortcut->getEmptyList() );
+    double cascade_BR = ( first_BR->getBr() * second_BR->getBr() );
 
     if( lhcFaserGlobal::negligibleBr < cascade_BR )
       // if the branching ratio into this channel is not negligible...
       {
 
         // we just have a near lepton:
-        same_chirality_near_muon same_tau( shortcut->get_CppSLHA(),
+        same_chirality_near_muon same_tau( shortcut->getCppSlha(),
                                            decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                            decaying_EWino,
                                            mediating_particle );
-        opposite_chirality_near_muon opposite_tau( shortcut->get_CppSLHA(),
+        opposite_chirality_near_muon opposite_tau( shortcut->getCppSlha(),
                                                    decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                    decaying_EWino,
@@ -1549,13 +1636,13 @@ namespace LHC_FASER
 
         double
         quark_left_handedness
-        = shortcut->quark_or_lepton_left_handedness(
+        = shortcut->quarkOrLeptonLeftHandedness(
                                              decaying_scolored->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
         double quark_right_handedness = ( 1.0 - quark_left_handedness );
         double
         tau_left_handedness
-        = shortcut->quark_or_lepton_left_handedness(
+        = shortcut->quarkOrLeptonLeftHandedness(
                                             mediating_particle->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
         double tau_right_handedness = ( 1.0 - tau_left_handedness );
@@ -1572,7 +1659,7 @@ namespace LHC_FASER
 
             current_distribution = &same_tau;
             visible_tau_decay_product hard_same_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
             leptonEnergyDistribution* visible_distribution = &hard_same_muon;
             muon_pass += ( quark_left_handedness * tau_left_handedness
                            * integrate_acceptance( primary_cut,
@@ -1582,7 +1669,7 @@ namespace LHC_FASER
                  * ( 1.0 - integrate_acceptance( secondary_cut,
                                                  visible_distribution ) ) );
             visible_tau_decay_product soft_same_muon( current_distribution,
-                                          shortcut->get_soft_muon_from_tau() );
+                                          shortcut->getSoftMuonFromTau() );
             visible_distribution = &soft_same_muon;
             muon_pass += ( quark_right_handedness * tau_right_handedness
                            * integrate_acceptance( primary_cut,
@@ -1592,7 +1679,7 @@ namespace LHC_FASER
                  * ( 1.0 - integrate_acceptance( secondary_cut,
                                                  visible_distribution ) ) );
             visible_tau_decay_product soft_same_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
             visible_distribution = &soft_same_pion;
             pion_acceptance = integrate_acceptance( jet_cut,
                                                     visible_distribution );
@@ -1602,7 +1689,7 @@ namespace LHC_FASER
             += ( quark_left_handedness * tau_left_handedness
                  * ( 1.0 - pion_acceptance ) );
             visible_tau_decay_product hard_same_pion( current_distribution,
-                                          shortcut->get_hard_pion_from_tau() );
+                                          shortcut->getHardPionFromTau() );
             visible_distribution = &hard_same_pion;
             pion_acceptance = integrate_acceptance( jet_cut,
                                                     visible_distribution );
@@ -1614,7 +1701,7 @@ namespace LHC_FASER
 
             current_distribution = &opposite_tau;
             visible_tau_decay_product hard_opposite_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
             visible_distribution = &hard_opposite_muon;
             muon_pass += ( quark_right_handedness * tau_left_handedness
                            * integrate_acceptance( primary_cut,
@@ -1624,7 +1711,7 @@ namespace LHC_FASER
                  * ( 1.0 - integrate_acceptance( secondary_cut,
                                                  visible_distribution ) ) );
             visible_tau_decay_product soft_opposite_muon( current_distribution,
-                                          shortcut->get_soft_muon_from_tau() );
+                                          shortcut->getSoftMuonFromTau() );
             visible_distribution = &soft_opposite_muon;
             muon_pass += ( quark_left_handedness * tau_right_handedness
                            * integrate_acceptance( primary_cut,
@@ -1634,7 +1721,7 @@ namespace LHC_FASER
                  * ( 1.0 - integrate_acceptance( secondary_cut,
                                                  visible_distribution ) ) );
             visible_tau_decay_product soft_opposite_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
             visible_distribution = &soft_same_pion;
             pion_acceptance = integrate_acceptance( jet_cut,
                                                     visible_distribution );
@@ -1644,7 +1731,7 @@ namespace LHC_FASER
             += ( quark_right_handedness * tau_left_handedness
                  * ( 1.0 - pion_acceptance ) );
             visible_tau_decay_product hard_opposite_pion( current_distribution,
-                                          shortcut->get_hard_pion_from_tau() );
+                                          shortcut->getHardPionFromTau() );
             visible_distribution = &hard_same_pion;
             pion_acceptance = integrate_acceptance( jet_cut,
                                                     visible_distribution );
@@ -1711,34 +1798,34 @@ namespace LHC_FASER
       {
 
         // we start with the direct distributions:
-        W_minus_direct_jet direct_jet( shortcut->get_CppSLHA(),
+        W_minus_direct_jet direct_jet( shortcut->getCppSlha(),
                                        decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                        decaying_EWino,
                                        mediating_particle,
-                                       shortcut->get_neutralino_one() );
+                                       shortcut->getNeutralinoOne() );
         // debugging:
         /**std::cout
         << std::endl
         << "&direct_jet = " << &direct_jet;
         std::cout << std::endl;**/
-        W_minus_plus_up_L_type_muon L_direct_lepton( shortcut->get_CppSLHA(),
+        W_minus_plus_up_L_type_muon L_direct_lepton( shortcut->getCppSlha(),
                                                      decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                      decaying_EWino,
                                                      mediating_particle,
-                                              shortcut->get_neutralino_one() );
+                                              shortcut->getNeutralinoOne() );
         // debugging:
         /**std::cout
         << std::endl
         << "&L_direct_lepton = " << &L_direct_lepton;
         std::cout << std::endl;**/
-        W_minus_plus_up_R_type_muon R_direct_lepton( shortcut->get_CppSLHA(),
+        W_minus_plus_up_R_type_muon R_direct_lepton( shortcut->getCppSlha(),
                                                      decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                      decaying_EWino,
                                                      mediating_particle,
-                                              shortcut->get_neutralino_one() );
+                                              shortcut->getNeutralinoOne() );
         // debugging:
         /**std::cout
         << std::endl
@@ -1756,7 +1843,7 @@ namespace LHC_FASER
 
         double
         quark_left_handedness
-        = shortcut->quark_or_lepton_left_handedness(
+        = shortcut->quarkOrLeptonLeftHandedness(
                                              decaying_scolored->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
         double quark_right_handedness = ( 1.0 - quark_left_handedness );
@@ -1800,7 +1887,7 @@ namespace LHC_FASER
 
             current_distribution = &L_direct_lepton;
             visible_tau_decay_product L_tau_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
             current_distribution = &L_tau_muon;
             tau_muon_pass
             += ( quark_left_handedness * integrate_acceptance( primary_cut,
@@ -1811,7 +1898,7 @@ namespace LHC_FASER
                                                 current_distribution ) ) );
             current_distribution = &R_direct_lepton;
             visible_tau_decay_product R_tau_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
             current_distribution = &R_tau_muon;
             tau_muon_pass
             += ( quark_right_handedness * integrate_acceptance( primary_cut,
@@ -1830,14 +1917,14 @@ namespace LHC_FASER
 
             current_distribution = &L_direct_lepton;
             visible_tau_decay_product L_tau_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
             current_distribution = &L_tau_pion;
             tau_pion_pass
             += ( quark_left_handedness * integrate_acceptance( jet_cut,
                                                       current_distribution ) );
             current_distribution = &R_direct_lepton;
             visible_tau_decay_product R_tau_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
             current_distribution = &R_tau_pion;
             tau_pion_pass
             += ( quark_right_handedness * integrate_acceptance( jet_cut,
@@ -1947,18 +2034,18 @@ namespace LHC_FASER
       {
 
         // we start with the direct distributions:
-        negatively_charged_Higgs_jet direct_jet( shortcut->get_CppSLHA(),
+        negatively_charged_Higgs_jet direct_jet( shortcut->getCppSlha(),
                                                  decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                  decaying_EWino,
                                                  mediating_particle,
-                                              shortcut->get_neutralino_one() );
-        negatively_charged_Higgs_muon direct_lepton( shortcut->get_CppSLHA(),
+                                              shortcut->getNeutralinoOne() );
+        negatively_charged_Higgs_muon direct_lepton( shortcut->getCppSlha(),
                                                      decaying_scolored,
                     kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                      decaying_EWino,
                                                      mediating_particle,
-                                              shortcut->get_neutralino_one() );
+                                              shortcut->getNeutralinoOne() );
         current_distribution = &direct_jet;
         double direct_jet_pass = integrate_acceptance( jet_cut,
                                                        current_distribution );
@@ -1993,7 +2080,7 @@ namespace LHC_FASER
 
             current_distribution = &direct_lepton;
             visible_tau_decay_product tau_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
             current_distribution = &tau_muon;
             tau_muon_pass
             += integrate_acceptance( primary_cut,
@@ -2011,7 +2098,7 @@ namespace LHC_FASER
 
             current_distribution = &direct_lepton;
             visible_tau_decay_product tau_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
             current_distribution = &tau_pion;
             tau_pion_pass
             += integrate_acceptance( jet_cut,
@@ -2133,15 +2220,15 @@ namespace LHC_FASER
       // if the branching ratio into this channel is not negligible...
       {
 
-        chargino_three_body_decay direct_lepton( shortcut->get_CppSLHA(),
+        chargino_three_body_decay direct_lepton( shortcut->getCppSlha(),
                                                  decaying_scolored,
                     kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                  decaying_EWino,
-                                                shortcut->get_neutralino_one(),
-                                                shortcut->get_selectron_L(),
-                                                shortcut->get_selectron_R(),
-                                          shortcut->get_electron_sneutrino_L(),
-                                        shortcut->get_electron_sneutrino_R() );
+                                                shortcut->getNeutralinoOne(),
+                                                shortcut->getSelectronL(),
+                                                shortcut->getSelectronR(),
+                                          shortcut->getElectronSneutrinoL(),
+                                        shortcut->getElectronSneutrinoR() );
         current_distribution = &direct_lepton;
         direct_electron_pass = integrate_acceptance( primary_cut,
                                                      current_distribution );
@@ -2157,15 +2244,15 @@ namespace LHC_FASER
       // if the branching ratio into this channel is not negligible...
       {
 
-        chargino_three_body_decay direct_lepton( shortcut->get_CppSLHA(),
+        chargino_three_body_decay direct_lepton( shortcut->getCppSlha(),
                                                  decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                  decaying_EWino,
-                                                shortcut->get_neutralino_one(),
-                                                 shortcut->get_smuon_L(),
-                                                 shortcut->get_smuon_R(),
-                                              shortcut->get_muon_sneutrino_L(),
-                                            shortcut->get_muon_sneutrino_R() );
+                                                shortcut->getNeutralinoOne(),
+                                                 shortcut->getSmuonL(),
+                                                 shortcut->getSmuonR(),
+                                              shortcut->getMuonSneutrinoL(),
+                                            shortcut->getMuonSneutrinoR() );
         current_distribution = &direct_lepton;
         direct_muon_pass = integrate_acceptance( primary_cut,
                                                  current_distribution );
@@ -2179,15 +2266,15 @@ namespace LHC_FASER
       // if the branching ratio into this channel is not negligible...
       {
 
-        chargino_three_body_decay direct_jet( shortcut->get_CppSLHA(),
+        chargino_three_body_decay direct_jet( shortcut->getCppSlha(),
                                               decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                               decaying_EWino,
-                                              shortcut->get_neutralino_one(),
-                                              shortcut->get_sdown_L(),
-                                              shortcut->get_sdown_R(),
-                                              shortcut->get_sup_L(),
-                                              shortcut->get_sup_R() );
+                                              shortcut->getNeutralinoOne(),
+                                              shortcut->getSdownL(),
+                                              shortcut->getSdownR(),
+                                              shortcut->getSupL(),
+                                              shortcut->getSupR() );
         // actually, here I should use every nontop flavor of squark
         // separately, but it's unlikely to make any significant difference.
         current_distribution = &direct_jet;
@@ -2204,24 +2291,24 @@ namespace LHC_FASER
       // if the branching ratio into this channel is not negligible...
       {
 
-        chargino_three_body_decay direct_lepton( shortcut->get_CppSLHA(),
+        chargino_three_body_decay direct_lepton( shortcut->getCppSlha(),
                                                  decaying_scolored,
                      kinematics->get_acceptance()->getEffectiveSquarkMass(),
                                                  decaying_EWino,
-                                                shortcut->get_neutralino_one(),
-                                                 shortcut->get_stau_one(),
-                                                 shortcut->get_stau_two(),
-                                               shortcut->get_tau_sneutrino_L(),
-                                             shortcut->get_tau_sneutrino_R() );
+                                                shortcut->getNeutralinoOne(),
+                                                 shortcut->getStauOne(),
+                                                 shortcut->getStauTwo(),
+                                               shortcut->getTauSneutrinoL(),
+                                             shortcut->getTauSneutrinoR() );
         current_distribution = &direct_lepton;
         visible_tau_decay_product hard_tau_muon( current_distribution,
-                                          shortcut->get_hard_muon_from_tau() );
+                                          shortcut->getHardMuonFromTau() );
         visible_tau_decay_product soft_tau_muon( current_distribution,
-                                          shortcut->get_soft_muon_from_tau() );
+                                          shortcut->getSoftMuonFromTau() );
         visible_tau_decay_product hard_tau_pion( current_distribution,
-                                          shortcut->get_hard_pion_from_tau() );
+                                          shortcut->getHardPionFromTau() );
         visible_tau_decay_product soft_tau_pion( current_distribution,
-                                          shortcut->get_soft_pion_from_tau() );
+                                          shortcut->getSoftPionFromTau() );
 
         /* at the moment, I have no plans to provide a tau left-handedness
          * breakdown from a 3-body decay, so I assume that 50% of them are of

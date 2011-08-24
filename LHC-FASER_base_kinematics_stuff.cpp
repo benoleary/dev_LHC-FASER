@@ -58,7 +58,7 @@
 namespace LHC_FASER
 {
   acceptanceCutSet::acceptanceCutSet() :
-    beamEnergy( -1.0 ),
+    beamEnergy( -1 ),
     primaryLeptonCut( -1.0 ),
     secondaryLeptonCut( -1.0 ),
     jetCut( -1.0 ),

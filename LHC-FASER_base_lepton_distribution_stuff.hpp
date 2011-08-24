@@ -80,11 +80,35 @@ namespace LHC_FASER
 
     virtual double
     getEffectiveSquarkMass()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    = 0;
 
   //protected:
     // nothing
   };
+
+  // this derived class is for the case of on-shell squarks:
+  class onshellSquarkMassHolder : public effectiveSquarkMassHolder
+  {
+  public:
+    onshellSquarkMassHolder(
+                    CppSLHA::particle_property_set const* const onshellSquark )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~onshellSquarkMassHolder()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual double
+    getEffectiveSquarkMass()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    CppSLHA::particle_property_set const*
+    getOnshellSquark()
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    CppSLHA::particle_property_set const* onshellSquark;
+  };
+
 
   // this class is for emulating doing minor symbolic algebra.
   class lepton_distribution_expansion_term
@@ -231,7 +255,7 @@ namespace LHC_FASER
 
 
   /* this class is the base abstract class for the functors for obtaining
-   * energy distributions for the visible decay products of tau leptons with
+   * energy distributions for the visible decay productSet of tau leptons with
    * given energy distributions.
    * (yes, left-handed tau leptons / right-handed tau antileptons give harder
    * muons / electrons but softer pions than the other helicity.)
@@ -250,9 +274,9 @@ namespace LHC_FASER
 
     virtual double
     operator()( int const visible_product_energy_power
-                /* the power of the visible product's energy for the term. */,
+                /* the power of the visible productParticle's energy for the term. */,
                 int const visible_product_log_power
-/* the power of the logarithm of the visible product's energy for the term. */,
+/* the power of the logarithm of the visible productParticle's energy for the term. */,
                 int const tau_lepton_energy_power
                 /* the power of the tau lepton's energy for the term. */,
                 int const tau_lepton_log_power
@@ -265,7 +289,7 @@ namespace LHC_FASER
     const
     = 0;
     /* this is overridden by functions which return the value of the
-     * coefficient for the specified term for the tauon decay product from the
+     * coefficient for the specified term for the tauon decay productParticle from the
      * specified term for the tauon.
      */
 
@@ -454,10 +478,10 @@ namespace LHC_FASER
 
 
   /* this holds together a pair of segment_term_set pointers for the 2 parts of
-   * of the distribution for the visible decay product of a tau lepton with
+   * of the distribution for the visible decay productParticle of a tau lepton with
    * distribution given by the 3rd segment_term_set pointer the
    * tau_segment_triple has. it performs the role of updating the visible decay
-   * product terms based on the reference terms.
+   * productParticle terms based on the reference terms.
    */
   class tau_segment_triple
   {
@@ -621,6 +645,21 @@ namespace LHC_FASER
 
 
   // inline functions
+
+
+  inline double
+  onshellSquarkMassHolder::getEffectiveSquarkMass()
+  {
+    return onshellSquark->get_absolute_mass();
+  }
+
+  inline CppSLHA::particle_property_set const*
+  onshellSquarkMassHolder::getOnshellSquark()
+  const
+  {
+    return onshellSquark;
+  }
+
 
 
   inline lepton_distribution_expansion_term const*

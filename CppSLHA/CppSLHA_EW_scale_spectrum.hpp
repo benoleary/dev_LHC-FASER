@@ -1651,7 +1651,7 @@ namespace CppSLHA
     /*std::cout
     << std::endl
     << "debugging: spectrum_drawer::add_particle( "
-    << particle_to_be_added->getName() << ", " << column_to_draw_in
+    << particle_to_be_added->get_name() << ", " << column_to_draw_in
     << ", " << color_to_draw_with << " ) has been called. prior to this,"
     << " drawing column 1 has ";
     if( 1 < column_set.size() )

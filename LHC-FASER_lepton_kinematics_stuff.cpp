@@ -72,7 +72,7 @@ namespace LHC_FASER
 
   leptonAcceptanceGrid::leptonAcceptanceGrid(
                                      std::string const* const gridFileLocation,
-                                        input_handler const* const shortcut ) :
+                                        inputHandler const* const shortcut ) :
     shortcut( shortcut )
   {
     std::string gridFileName( *gridFileLocation );
@@ -139,7 +139,7 @@ namespace LHC_FASER
     std::cout << std::endl;**/
 
     double appropriateGluinoMass = shortcut->getGluinoMass();
-    double appropriateSquarkMass = shortcut->get_average_squarks4_mass();
+    double appropriateSquarkMass = shortcut->getAverageSquarks4Mass();
     if( appropriateGluinoMass > appropriateSquarkMass )
     {
       appropriateSquarkMass = ( appropriateGluinoMass + 1.0 );
@@ -158,7 +158,7 @@ namespace LHC_FASER
   squarkBasedLeptonAcceptanceTable::squarkBasedLeptonAcceptanceTable(
                                   leptonAcceptanceGrid const* const lookupGrid,
                             CppSLHA::particle_property_set const* const squark,
-                                        input_handler const* const shortcut ) :
+                                        inputHandler const* const shortcut ) :
     leptonAcceptanceTable( lookupGrid,
                            squark,
                            shortcut )
@@ -175,9 +175,9 @@ namespace LHC_FASER
 
   gluinoBasedLeptonAcceptanceTable::gluinoBasedLeptonAcceptanceTable(
                                   leptonAcceptanceGrid const* const lookupGrid,
-                                        input_handler const* const shortcut ) :
+                                        inputHandler const* const shortcut ) :
     leptonAcceptanceTable( lookupGrid,
-                           shortcut->get_gluino(),
+                           shortcut->getGluino(),
                            shortcut )
   {
     // just an initialization list.
@@ -192,11 +192,11 @@ namespace LHC_FASER
 
 
   leptonAcceptanceParameterSet::leptonAcceptanceParameterSet(
-                                                 input_handler* const shortcut,
+                                                 inputHandler* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                           CppSLHA::particle_property_set const* const scolored,
                           CppSLHA::particle_property_set const* const ewino ) :
-    getsReadiedForNewPoint( shortcut->get_readier() ),
+    getsReadiedForNewPoint( shortcut->getReadier() ),
     effectiveSquarkMassHolder(),
     shortcut( shortcut ),
     acceptanceTable( acceptanceTable ),
@@ -213,13 +213,13 @@ namespace LHC_FASER
   }
 
   leptonAcceptanceParameterSet::leptonAcceptanceParameterSet(
-                                                 input_handler* const shortcut,
+                                                 inputHandler* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                           CppSLHA::particle_property_set const* const scolored,
                              CppSLHA::particle_property_set const* const ewino,
                                                           double const binSize,
                                          double const transverseMomentumCut ) :
-    getsReadiedForNewPoint( shortcut->get_readier() ),
+    getsReadiedForNewPoint( shortcut->getReadier() ),
     effectiveSquarkMassHolder(),
     shortcut( shortcut ),
     acceptanceTable( acceptanceTable ),
@@ -395,7 +395,7 @@ namespace LHC_FASER
 
 
   leptonAcceptancesForOneScolored::leptonAcceptancesForOneScolored(
-                                           input_handler const* const shortcut,
+                                           inputHandler const* const shortcut,
                           CppSLHA::particle_property_set const* const scolored,
                                     leptonAcceptanceGrid const* acceptanceGrid,
                                                           double const binSize,
@@ -466,7 +466,7 @@ namespace LHC_FASER
 
 
   leptonAcceptancesForOneBeamEnergy::leptonAcceptancesForOneBeamEnergy(
-                                           input_handler const* const shortcut,
+                                           inputHandler const* const shortcut,
                                                           int const beamEnergy,
                                   std::string const* const gridFileSetLocation,
                                                           double const binSize,
@@ -533,7 +533,7 @@ namespace LHC_FASER
 
 
   leptonAcceptanceHandler::leptonAcceptanceHandler(
-                                           input_handler const* const shortcut,
+                                           inputHandler const* const shortcut,
                                std::string const* const gridFileSetLocation ) :
     shortcut( shortcut ),
     gridFileSetLocation( *gridFileSetLocation )

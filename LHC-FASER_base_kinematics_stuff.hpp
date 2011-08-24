@@ -121,11 +121,11 @@ namespace LHC_FASER
     // this copies the values from a given acceptanceCutSet.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    double
+    int
     getBeamEnergy()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    // set_beam_energy is only defined in the signal_definitions derived class.
+    // setBeamEnergy is only defined in the signalDefinitions derived class.
     double
     getPrimaryLeptonCut()
     const
@@ -171,7 +171,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    double beamEnergy;
+    int beamEnergy;
     // the lepton transverse momentum cuts are easy enough to scale that we can
     // let the user specify them:
     double primaryLeptonCut;
@@ -373,90 +373,71 @@ namespace LHC_FASER
     return true;
   }
 
-  inline double
+  inline int
   acceptanceCutSet::getBeamEnergy()
   const
   {
-
     return beamEnergy;
-
   }
 
   inline double
   acceptanceCutSet::getPrimaryLeptonCut()
   const
   {
-
     return primaryLeptonCut;
-
   }
 
   inline void
   acceptanceCutSet::setPrimaryLeptonCut( double inputValue )
   {
-
     primaryLeptonCut = inputValue;
-
   }
 
   inline double
   acceptanceCutSet::getSecondaryLeptonCut()
   const
   {
-
     return secondaryLeptonCut;
-
   }
 
   inline void
   acceptanceCutSet::setSecondaryLeptonCut( double inputValue )
   {
-
     secondaryLeptonCut = inputValue;
-
   }
 
   inline double
   acceptanceCutSet::getLeptonCut()
   const
   {
-
     return getPrimaryLeptonCut();
-
   }
 
   inline void
   acceptanceCutSet::setLeptonCut( double inputValue )
   {
-
     setPrimaryLeptonCut( inputValue );
     setSecondaryLeptonCut( inputValue );
-
   }
 
   inline double
   acceptanceCutSet::getJetCut()
   const
   {
-
     return jetCut;
-
   }
 
   inline void
   acceptanceCutSet::setJetCut( double inputValue )
   {
-
     jetCut = inputValue;
-
   }
 
   inline bool
   acceptanceCutSet::isSameAcceptanceCutSet(
-                              acceptanceCutSet const* const comparisonCuts )
+                                 acceptanceCutSet const* const comparisonCuts )
   const
   {
-
     if( ( comparisonCuts->getBeamEnergy() == beamEnergy )
         &&
         ( comparisonCuts->getJetCut() == jetCut )
@@ -466,17 +447,12 @@ namespace LHC_FASER
         ( comparisonCuts->getSecondaryLeptonCut()
           == secondaryLeptonCut ) )
     {
-
       return true;
-
     }
     else
     {
-
       return false;
-
     }
-
   }
 
 
@@ -499,21 +475,21 @@ namespace LHC_FASER
   acceptanceGrid::getHighestSquarkMass()
   const
   {
-    return  highestSquarkMass;
+    return highestSquarkMass;
   }
 
   inline double
   acceptanceGrid::getLowestGluinoMass()
   const
   {
-    return  lowestGluinoMass;
+    return lowestGluinoMass;
   }
 
   inline double
   acceptanceGrid::getHighestGluinoMass()
   const
   {
-    return  highestGluinoMass;
+    return highestGluinoMass;
   }
 
   inline double
@@ -530,7 +506,7 @@ namespace LHC_FASER
                             acceptanceElement );
     // this is format-dependent, & corresponds to 2 being the index for
     // light-light neutralinos in the grid.
-;  }
+  }
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_BASE_KINEMATICS_STUFF_HPP_ */

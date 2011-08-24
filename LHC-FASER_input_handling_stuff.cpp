@@ -59,8 +59,8 @@ namespace LHC_FASER
 {
   updateDependentGaugeInputs::updateDependentGaugeInputs(
                                            CppSLHA::SLHA_BLOCK const* smInputs,
-                      CppSLHA::particle_property_set const* const wPlusPointer,
-                          CppSLHA::particle_property_set const* const zPointer,
+                                            particlePointer const wPlusPointer,
+                                                particlePointer const zPointer,
                                           readierForNewPoint* const readier ) :
     getsReadiedForNewPoint( readier ),
     smInputs( smInputs ),
@@ -114,8 +114,8 @@ namespace LHC_FASER
 
 
   updateDependentAbsoluteMasses::updateDependentAbsoluteMasses(
-                   CppSLHA::particle_property_set const* const gluinoPointer,
-                                 readierForNewPoint* const readier ) :
+                                           particlePointer const gluinoPointer,
+                                          readierForNewPoint* const readier ) :
     getsReadiedForNewPoint( readier ),
     gluinoPointer( gluinoPointer )
   {
@@ -129,523 +129,434 @@ namespace LHC_FASER
 
 
 
-  input_handler::input_handler(
-                          CppSLHA::CppSLHA0 const* const given_CppSLHA_pointer,
-                CppSLHA::EW_scale_spectrum const* const given_spectrum_pointer,
-                                std::string const given_path_to_grids,
-                                readierForNewPoint* const given_readier ) :
-    readier( given_readier ),
-    verbosity_flag( false ),
-    using_NLO_flag( true ),
-    CppSLHA_pointer( given_CppSLHA_pointer ),
-    spectrum_pointer( given_spectrum_pointer ),
-    path_to_grids( given_path_to_grids ),
-    path_to_cross_section_grids( given_path_to_grids ),
-    path_to_kinematics_grids( given_path_to_grids ),
-    down_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                   CppSLHA::PDG_code::down ) ),
-    up_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                     CppSLHA::PDG_code::up ) ),
-    strange_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                CppSLHA::PDG_code::strange ) ),
-    charm_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                  CppSLHA::PDG_code::charm ) ),
-    bottom_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                 CppSLHA::PDG_code::bottom ) ),
-    top_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                    CppSLHA::PDG_code::top ) ),
-    electron_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                               CppSLHA::PDG_code::electron ) ),
-    electron_neutrino_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                      CppSLHA::PDG_code::electron_neutrino ) ),
-    muon_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                   CppSLHA::PDG_code::muon ) ),
-    muon_neutrino_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                          CppSLHA::PDG_code::muon_neutrino ) ),
-    tau_lepton_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                             CppSLHA::PDG_code::tau_lepton ) ),
-    tau_neutrino_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                           CppSLHA::PDG_code::tau_neutrino ) ),
-    gluon_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                  CppSLHA::PDG_code::gluon ) ),
-    photon_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                 CppSLHA::PDG_code::photon ) ),
-    Z_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                      CppSLHA::PDG_code::Z ) ),
-    W_plus_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                 CppSLHA::PDG_code::W_plus ) ),
-    light_neutral_EWSB_scalar_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                              CppSLHA::PDG_code::light_neutral_EWSB_scalar ) ),
-    heavy_neutral_EWSB_scalar_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                              CppSLHA::PDG_code::heavy_neutral_EWSB_scalar ) ),
-    neutral_EWSB_pseudoscalar_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                              CppSLHA::PDG_code::neutral_EWSB_pseudoscalar ) ),
-    charged_EWSB_scalar_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                    CppSLHA::PDG_code::charged_EWSB_scalar ) ),
-    gluino_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                 CppSLHA::PDG_code::gluino ) ),
-    sdown_L_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                CppSLHA::PDG_code::sdown_L ) ),
-    sup_L_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                  CppSLHA::PDG_code::sup_L ) ),
-    sstrange_L_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                             CppSLHA::PDG_code::sstrange_L ) ),
-    scharm_L_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                               CppSLHA::PDG_code::scharm_L ) ),
-    sbottom_one_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                            CppSLHA::PDG_code::sbottom_one ) ),
-    stop_one_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                               CppSLHA::PDG_code::stop_one ) ),
-    sdown_R_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                CppSLHA::PDG_code::sdown_R ) ),
-    sup_R_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                  CppSLHA::PDG_code::sup_R ) ),
-    sstrange_R_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                             CppSLHA::PDG_code::sstrange_R ) ),
-    scharm_R_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                               CppSLHA::PDG_code::scharm_R ) ),
-    sbottom_two_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                            CppSLHA::PDG_code::sbottom_two ) ),
-    stop_two_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                               CppSLHA::PDG_code::stop_two ) ),
-    selectron_L_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                            CppSLHA::PDG_code::selectron_L ) ),
-    electron_sneutrino_L_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                   CppSLHA::PDG_code::electron_sneutrino_L ) ),
-    smuon_L_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                CppSLHA::PDG_code::smuon_L ) ),
-    muon_sneutrino_L_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                       CppSLHA::PDG_code::muon_sneutrino_L ) ),
-    stau_one_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                               CppSLHA::PDG_code::stau_one ) ),
-    tau_sneutrino_L_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                        CppSLHA::PDG_code::tau_sneutrino_L ) ),
-    selectron_R_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                            CppSLHA::PDG_code::selectron_R ) ),
-    electron_sneutrino_R_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                   CppSLHA::PDG_code::electron_sneutrino_R ) ),
-    smuon_R_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                                CppSLHA::PDG_code::smuon_R ) ),
-    muon_sneutrino_R_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                       CppSLHA::PDG_code::muon_sneutrino_R ) ),
-    stau_two_pointer( given_spectrum_pointer->inspect_particle_property_set(
-                                               CppSLHA::PDG_code::stau_two ) ),
-    tau_sneutrino_R_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                        CppSLHA::PDG_code::tau_sneutrino_R ) ),
-    neutralino_one_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                         CppSLHA::PDG_code::neutralino_one ) ),
-    neutralino_two_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                         CppSLHA::PDG_code::neutralino_two ) ),
-    neutralino_three_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                       CppSLHA::PDG_code::neutralino_three ) ),
-    neutralino_four_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                        CppSLHA::PDG_code::neutralino_four ) ),
-    chargino_one_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                           CppSLHA::PDG_code::chargino_one ) ),
-    chargino_two_pointer(
-                         given_spectrum_pointer->inspect_particle_property_set(
-                                           CppSLHA::PDG_code::chargino_two ) ),
-                  decay_checkers( new decay_checker_handler( given_readier ) ),
-    NMIX_pointer( given_CppSLHA_pointer->inspect_BLOCK( "NMIX" ) ),
-    UMIX_pointer( given_CppSLHA_pointer->inspect_BLOCK( "UMIX" ) ),
-    VMIX_pointer( given_CppSLHA_pointer->inspect_BLOCK( "VMIX" ) ),
-    SBOTMIX_pointer( given_CppSLHA_pointer->inspect_BLOCK( "SBOTMIX" ) ),
-    STOPMIX_pointer( given_CppSLHA_pointer->inspect_BLOCK( "STOPMIX" ) ),
-    STAUMIX_pointer( given_CppSLHA_pointer->inspect_BLOCK( "STAUMIX" ) ),
-    YD_pointer( given_CppSLHA_pointer->inspect_BLOCK( "YD" ) ),
-    YU_pointer( given_CppSLHA_pointer->inspect_BLOCK( "YU" ) ),
-    YE_pointer( given_CppSLHA_pointer->inspect_BLOCK( "YE" ) ),
-    hard_muon_from_tau_function(),
-    soft_muon_from_tau_function(),
-    hard_pion_from_tau_function(),
-    soft_pion_from_tau_function()
+  updateDependentAverageMass::updateDependentAverageMass(
+                                        particleVectorPointer const setPointer,
+                                          readierForNewPoint* const readier ) :
+    getsReadiedForNewPoint( readier ),
+    setPointer( setPointer )
   {
+    // just an initialization list.
+  }
 
-    update_dependent_input_values
-    = new updateDependentGaugeInputs( given_CppSLHA_pointer->inspect_BLOCK(
+  updateDependentAverageMass::~updateDependentAverageMass()
+  {
+    // does nothing.
+  }
+
+
+
+  inputHandler::inputHandler( CppSLHA::CppSLHA0 const* const cppSlhaPointer,
+                       CppSLHA::EW_scale_spectrum const* const spectrumPointer,
+                              std::string const pathToGrids,
+                              readierForNewPoint* const readier ) :
+    readier( readier ),
+    verbosity( false ),
+    usingNloFlag( true ),
+    cppSlhaPointer( cppSlhaPointer ),
+    spectrumPointer( spectrumPointer ),
+    pathToGrids( pathToGrids ),
+    pathToCrossSectionGrids( pathToGrids ),
+    pathToKinematicsGrids( pathToGrids ),
+    downPointer( spectrumPointer->inspect_particle_property_set(
+                                                   CppSLHA::PDG_code::down ) ),
+    upPointer( spectrumPointer->inspect_particle_property_set(
+                                                     CppSLHA::PDG_code::up ) ),
+    strangePointer( spectrumPointer->inspect_particle_property_set(
+                                                CppSLHA::PDG_code::strange ) ),
+    charmPointer( spectrumPointer->inspect_particle_property_set(
+                                                  CppSLHA::PDG_code::charm ) ),
+    bottomPointer( spectrumPointer->inspect_particle_property_set(
+                                                 CppSLHA::PDG_code::bottom ) ),
+    topPointer( spectrumPointer->inspect_particle_property_set(
+                                                    CppSLHA::PDG_code::top ) ),
+    electronPointer( spectrumPointer->inspect_particle_property_set(
+                                               CppSLHA::PDG_code::electron ) ),
+    electronNeutrinoPointer( spectrumPointer->inspect_particle_property_set(
+                                      CppSLHA::PDG_code::electron_neutrino ) ),
+    muonPointer( spectrumPointer->inspect_particle_property_set(
+                                                   CppSLHA::PDG_code::muon ) ),
+    muonNeutrinoPointer( spectrumPointer->inspect_particle_property_set(
+                                          CppSLHA::PDG_code::muon_neutrino ) ),
+    tauLeptonPointer( spectrumPointer->inspect_particle_property_set(
+                                             CppSLHA::PDG_code::tau_lepton ) ),
+    tauNeutrinoPointer( spectrumPointer->inspect_particle_property_set(
+                                           CppSLHA::PDG_code::tau_neutrino ) ),
+    gluonPointer( spectrumPointer->inspect_particle_property_set(
+                                                  CppSLHA::PDG_code::gluon ) ),
+    photonPointer( spectrumPointer->inspect_particle_property_set(
+                                                 CppSLHA::PDG_code::photon ) ),
+    zPointer( spectrumPointer->inspect_particle_property_set(
+                                                      CppSLHA::PDG_code::Z ) ),
+    wPlusPointer( spectrumPointer->inspect_particle_property_set(
+                                                 CppSLHA::PDG_code::W_plus ) ),
+    lightNeutralEwsbScalarPointer(
+                                spectrumPointer->inspect_particle_property_set(
+                              CppSLHA::PDG_code::light_neutral_EWSB_scalar ) ),
+    heavyNeutralEwsbScalarPointer(
+                                spectrumPointer->inspect_particle_property_set(
+                              CppSLHA::PDG_code::heavy_neutral_EWSB_scalar ) ),
+    neutralEwsbPseudoscalarPointer(
+                                spectrumPointer->inspect_particle_property_set(
+                              CppSLHA::PDG_code::neutral_EWSB_pseudoscalar ) ),
+    chargedEwsbScalarPointer( spectrumPointer->inspect_particle_property_set(
+                                    CppSLHA::PDG_code::charged_EWSB_scalar ) ),
+    gluinoPointer( spectrumPointer->inspect_particle_property_set(
+                                                 CppSLHA::PDG_code::gluino ) ),
+    sdownLPointer( spectrumPointer->inspect_particle_property_set(
+                                                CppSLHA::PDG_code::sdown_L ) ),
+    supLPointer( spectrumPointer->inspect_particle_property_set(
+                                                  CppSLHA::PDG_code::sup_L ) ),
+    sstrangeLPointer( spectrumPointer->inspect_particle_property_set(
+                                             CppSLHA::PDG_code::sstrange_L ) ),
+    scharmLPointer( spectrumPointer->inspect_particle_property_set(
+                                               CppSLHA::PDG_code::scharm_L ) ),
+    sbottomOnePointer( spectrumPointer->inspect_particle_property_set(
+                                            CppSLHA::PDG_code::sbottom_one ) ),
+    stopOnePointer( spectrumPointer->inspect_particle_property_set(
+                                               CppSLHA::PDG_code::stop_one ) ),
+    sdownRPointer( spectrumPointer->inspect_particle_property_set(
+                                                CppSLHA::PDG_code::sdown_R ) ),
+    supRPointer( spectrumPointer->inspect_particle_property_set(
+                                                  CppSLHA::PDG_code::sup_R ) ),
+    sstrangeRPointer( spectrumPointer->inspect_particle_property_set(
+                                             CppSLHA::PDG_code::sstrange_R ) ),
+    scharmRPointer( spectrumPointer->inspect_particle_property_set(
+                                               CppSLHA::PDG_code::scharm_R ) ),
+    sbottomTwoPointer( spectrumPointer->inspect_particle_property_set(
+                                            CppSLHA::PDG_code::sbottom_two ) ),
+    stopTwoPointer( spectrumPointer->inspect_particle_property_set(
+                                               CppSLHA::PDG_code::stop_two ) ),
+    selectronLPointer( spectrumPointer->inspect_particle_property_set(
+                                            CppSLHA::PDG_code::selectron_L ) ),
+    electronSneutrinoLPointer( spectrumPointer->inspect_particle_property_set(
+                                   CppSLHA::PDG_code::electron_sneutrino_L ) ),
+    smuonLPointer( spectrumPointer->inspect_particle_property_set(
+                                                CppSLHA::PDG_code::smuon_L ) ),
+    muonSneutrinoLPointer( spectrumPointer->inspect_particle_property_set(
+                                       CppSLHA::PDG_code::muon_sneutrino_L ) ),
+    stauOnePointer( spectrumPointer->inspect_particle_property_set(
+                                               CppSLHA::PDG_code::stau_one ) ),
+    tauSneutrinoLPointer( spectrumPointer->inspect_particle_property_set(
+                                        CppSLHA::PDG_code::tau_sneutrino_L ) ),
+    selectronRPointer( spectrumPointer->inspect_particle_property_set(
+                                            CppSLHA::PDG_code::selectron_R ) ),
+    electronSneutrinoRPointer( spectrumPointer->inspect_particle_property_set(
+                                   CppSLHA::PDG_code::electron_sneutrino_R ) ),
+    smuonRPointer( spectrumPointer->inspect_particle_property_set(
+                                                CppSLHA::PDG_code::smuon_R ) ),
+    muonSneutrinoRPointer( spectrumPointer->inspect_particle_property_set(
+                                       CppSLHA::PDG_code::muon_sneutrino_R ) ),
+    stauTwoPointer( spectrumPointer->inspect_particle_property_set(
+                                               CppSLHA::PDG_code::stau_two ) ),
+    tauSneutrinoRPointer( spectrumPointer->inspect_particle_property_set(
+                                        CppSLHA::PDG_code::tau_sneutrino_R ) ),
+    neutralinoOnePointer( spectrumPointer->inspect_particle_property_set(
+                                         CppSLHA::PDG_code::neutralino_one ) ),
+    neutralinoTwoPointer( spectrumPointer->inspect_particle_property_set(
+                                         CppSLHA::PDG_code::neutralino_two ) ),
+    neutralinoThreePointer( spectrumPointer->inspect_particle_property_set(
+                                       CppSLHA::PDG_code::neutralino_three ) ),
+    neutralinoFourPointer( spectrumPointer->inspect_particle_property_set(
+                                        CppSLHA::PDG_code::neutralino_four ) ),
+    charginoOnePointer( spectrumPointer->inspect_particle_property_set(
+                                           CppSLHA::PDG_code::chargino_one ) ),
+    charginoTwoPointer( spectrumPointer->inspect_particle_property_set(
+                                           CppSLHA::PDG_code::chargino_two ) ),
+    decayCheckers( new decayCheckerHandler( readier ) ),
+    nmixPointer( cppSlhaPointer->inspect_BLOCK( "NMIX" ) ),
+    umixPointer( cppSlhaPointer->inspect_BLOCK( "UMIX" ) ),
+    vmixPointer( cppSlhaPointer->inspect_BLOCK( "VMIX" ) ),
+    sbotmixPointer( cppSlhaPointer->inspect_BLOCK( "SBOTMIX" ) ),
+    stopmixPointer( cppSlhaPointer->inspect_BLOCK( "STOPMIX" ) ),
+    staumixPointer( cppSlhaPointer->inspect_BLOCK( "STAUMIX" ) ),
+    ydPointer( cppSlhaPointer->inspect_BLOCK( "YD" ) ),
+    yuPointer( cppSlhaPointer->inspect_BLOCK( "YU" ) ),
+    yePointer( cppSlhaPointer->inspect_BLOCK( "YE" ) ),
+    hardMuonFromTauFunction(),
+    softMuonFromTauFunction(),
+    hardPionFromTauFunction(),
+    softPionFromTauFunction()
+  {
+    updateDependentInputValues
+    = new updateDependentGaugeInputs( cppSlhaPointer->inspect_BLOCK(
                                                                   "SMINPUTS" ),
-                                   W_plus_pointer,
-                                   Z_pointer,
-                                   given_readier );
+                                      wPlusPointer,
+                                      zPointer,
+                                      readier );
 
-    updatedDependentMasses = new updateDependentAbsoluteMasses( gluino_pointer,
-                                                               given_readier );
+    updateDependentMasses = new updateDependentAbsoluteMasses( gluinoPointer,
+                                                               readier );
+    updateDependentAverageSquarks4Mass
+    = new updateDependentAverageMass( squarks4,
+                                      readier );
 
     // the default cross-sections are those generated with the MSTW2008 PDF
     // set, & the default kinematics grids are those from PYTHIA 8.0:
-    path_to_cross_section_grids.append( "/cross-sections/MSTW2008" );
-    path_to_kinematics_grids.append( "/kinematics/PYTHIA8" );
+    pathToCrossSectionGrids.append( "/cross-sections/MSTW2008" );
+    pathToKinematicsGrids.append( "/kinematics/PYTHIA8" );
 
 
     // find all the shortcut pointers to particles:
 
-    colored_sparticles.push_back( gluino_pointer );
-    sparticle_production_combinations.push_back(
-                             new signed_particle_shortcut_pair( gluino_pointer,
+    coloredSparticles.push_back( gluinoPointer );
+    sparticleProductionCombinations.push_back(
+                                 new signedParticleShortcutPair( gluinoPointer,
                                                                           true,
-                                                                gluino_pointer,
+                                                                 gluinoPointer,
                                                                       true ) );
-    add_squark_as_colored_sparticle_and_in_production( sdown_L_pointer );
-    squarks4.push_back( sdown_L_pointer );
-    squarks5.push_back( sdown_L_pointer );
-    sdown_types.push_back( sdown_L_pointer );
-    add_squark_as_colored_sparticle_and_in_production( sdown_R_pointer );
-    squarks4.push_back( sdown_R_pointer );
-    squarks5.push_back( sdown_R_pointer );
-    sdown_types.push_back( sdown_R_pointer );
-    add_squark_as_colored_sparticle_and_in_production( sup_L_pointer );
-    squarks4.push_back( sup_L_pointer );
-    squarks5.push_back( sup_L_pointer );
-    sup_types.push_back( sup_L_pointer );
-    add_squark_as_colored_sparticle_and_in_production( sup_R_pointer );
-    squarks4.push_back( sup_R_pointer );
-    squarks5.push_back( sup_R_pointer );
-    sup_types.push_back( sup_R_pointer );
-    add_squark_as_colored_sparticle_and_in_production( sstrange_L_pointer );
-    squarks4.push_back( sstrange_L_pointer );
-    squarks5.push_back( sstrange_L_pointer );
-    sdown_types.push_back( sstrange_L_pointer );
-    add_squark_as_colored_sparticle_and_in_production( sstrange_R_pointer );
-    squarks4.push_back( sstrange_R_pointer );
-    squarks5.push_back( sstrange_R_pointer );
-    sdown_types.push_back( sstrange_R_pointer );
-    add_squark_as_colored_sparticle_and_in_production( scharm_L_pointer );
-    squarks4.push_back( scharm_L_pointer );
-    squarks5.push_back( scharm_L_pointer );
-    sup_types.push_back( scharm_L_pointer );
-    add_squark_as_colored_sparticle_and_in_production( scharm_R_pointer );
-    squarks4.push_back( scharm_R_pointer );
-    squarks5.push_back( scharm_R_pointer );
-    sup_types.push_back( scharm_R_pointer );
-    add_squark_as_colored_sparticle_and_in_production( sbottom_one_pointer );
-    squarks5.push_back( sbottom_one_pointer );
-    sdown_types.push_back( sbottom_one_pointer );
-    add_squark_as_colored_sparticle_and_in_production( sbottom_two_pointer );
-    squarks5.push_back( sbottom_two_pointer );
-    sdown_types.push_back( sbottom_two_pointer );
-    add_squark_as_colored_sparticle_and_in_production( stop_one_pointer );
-    sup_types.push_back( stop_one_pointer );
-    add_squark_as_colored_sparticle_and_in_production( stop_two_pointer );
-    sup_types.push_back( stop_two_pointer );
+    addSquarkAsColoredSparticleAndInProduction( sdownLPointer );
+    squarks4.push_back( sdownLPointer );
+    squarks5.push_back( sdownLPointer );
+    sdownTypes.push_back( sdownLPointer );
+    addSquarkAsColoredSparticleAndInProduction( sdownRPointer );
+    squarks4.push_back( sdownRPointer );
+    squarks5.push_back( sdownRPointer );
+    sdownTypes.push_back( sdownRPointer );
+    addSquarkAsColoredSparticleAndInProduction( supLPointer );
+    squarks4.push_back( supLPointer );
+    squarks5.push_back( supLPointer );
+    supTypes.push_back( supLPointer );
+    addSquarkAsColoredSparticleAndInProduction( supRPointer );
+    squarks4.push_back( supRPointer );
+    squarks5.push_back( supRPointer );
+    supTypes.push_back( supRPointer );
+    addSquarkAsColoredSparticleAndInProduction( sstrangeLPointer );
+    squarks4.push_back( sstrangeLPointer );
+    squarks5.push_back( sstrangeLPointer );
+    sdownTypes.push_back( sstrangeLPointer );
+    addSquarkAsColoredSparticleAndInProduction( sstrangeRPointer );
+    squarks4.push_back( sstrangeRPointer );
+    squarks5.push_back( sstrangeRPointer );
+    sdownTypes.push_back( sstrangeRPointer );
+    addSquarkAsColoredSparticleAndInProduction( scharmLPointer );
+    squarks4.push_back( scharmLPointer );
+    squarks5.push_back( scharmLPointer );
+    supTypes.push_back( scharmLPointer );
+    addSquarkAsColoredSparticleAndInProduction( scharmRPointer );
+    squarks4.push_back( scharmRPointer );
+    squarks5.push_back( scharmRPointer );
+    supTypes.push_back( scharmRPointer );
+    addSquarkAsColoredSparticleAndInProduction( sbottomOnePointer );
+    squarks5.push_back( sbottomOnePointer );
+    sdownTypes.push_back( sbottomOnePointer );
+    addSquarkAsColoredSparticleAndInProduction( sbottomTwoPointer );
+    squarks5.push_back( sbottomTwoPointer );
+    sdownTypes.push_back( sbottomTwoPointer );
+    addSquarkAsColoredSparticleAndInProduction( stopOnePointer );
+    supTypes.push_back( stopOnePointer );
+    addSquarkAsColoredSparticleAndInProduction( stopTwoPointer );
+    supTypes.push_back( stopTwoPointer );
 
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sdown_L_pointer,
+    sparticleProductionCombinations.push_back(
+                                 new signedParticleShortcutPair( sdownLPointer,
+                                                                 true,
+                                                                 sdownRPointer,
+                                                                 false ) );
+    sparticleProductionCombinations.push_back(
+                                 new signedParticleShortcutPair( sdownRPointer,
+                                                                 true,
+                                                                 sdownLPointer,
+                                                                 false ) );
+    sparticleProductionCombinations.push_back(
+                                 new signedParticleShortcutPair( sdownLPointer,
+                                                                 true,
+                                                                 supRPointer,
+                                                                 false ) );
+    sparticleProductionCombinations.push_back(
+                              new signedParticleShortcutPair( sdownRPointer,
+                                                                 true,
+                                                                 supLPointer,
+                                                                 false ) );
+    sparticleProductionCombinations.push_back(
+                               new signedParticleShortcutPair( supLPointer,
                                                                true,
-                                                               sdown_R_pointer,
+                                                               sdownRPointer,
                                                                false ) );
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sdown_R_pointer,
-                                                               true,
-                                                               sdown_L_pointer,
-                                                               false ) );
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sdown_L_pointer,
-                                                               true,
-                                                               sup_R_pointer,
-                                                               false ) );
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sdown_R_pointer,
-                                                               true,
-                                                               sup_L_pointer,
-                                                               false ) );
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sup_L_pointer,
-                                                               true,
-                                                               sdown_R_pointer,
-                                                               false ) );
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sup_R_pointer,
-                                                               true,
-                                                               sdown_L_pointer,
-                                                               false ) );
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sup_L_pointer,
-                                                               true,
-                                                               sup_R_pointer,
-                                                               false ) );
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sup_R_pointer,
-                                                               true,
-                                                               sup_L_pointer,
-                                                               false ) );
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sdown_L_pointer,
-                                                               true,
-                                                               sup_L_pointer,
-                                                               true ) );
-    sparticle_production_combinations.push_back(
-                            new signed_particle_shortcut_pair( sdown_R_pointer,
-                                                               true,
-                                                               sup_R_pointer,
-                                                               true ) );
+    sparticleProductionCombinations.push_back(
+                                   new signedParticleShortcutPair( supRPointer,
+                                                                   true,
+                                                                 sdownLPointer,
+                                                                   false ) );
+    sparticleProductionCombinations.push_back(
+                                   new signedParticleShortcutPair( supLPointer,
+                                                                   true,
+                                                                   supRPointer,
+                                                                   false ) );
+    sparticleProductionCombinations.push_back(
+                                   new signedParticleShortcutPair( supRPointer,
+                                                                   true,
+                                                                   supLPointer,
+                                                                   false ) );
+    sparticleProductionCombinations.push_back(
+                                 new signedParticleShortcutPair( sdownLPointer,
+                                                                 true,
+                                                                 supLPointer,
+                                                                 true ) );
+    sparticleProductionCombinations.push_back(
+                                 new signedParticleShortcutPair( sdownRPointer,
+                                                                 true,
+                                                                 supRPointer,
+                                                                 true ) );
 
-    exclusive_BRs = new exclusive_BR_handler( &sdown_types,
-                                              &sup_types,
-                                              given_readier );
-
-    colored_cascades = new colored_cascade_handler( gluino_pointer,
-                                                    &colored_sparticles,
-                                                    &electroweakinos,
-                                                    given_readier );
+    exclusiveBrs = new exclusiveBrHandler( &sdownTypes,
+                                           &supTypes,
+                                           readier );
 
 
     // make all the shortcut sparticle lists:
 
-    electroweakinos.push_back( neutralino_one_pointer );
-    neutralinos.push_back( neutralino_one_pointer );
-    electroweakinos.push_back( neutralino_two_pointer );
-    unstable_electroweakinos.push_back( neutralino_two_pointer );
-    neutralinos.push_back( neutralino_two_pointer );
-    unstable_neutralinos.push_back( neutralino_two_pointer );
-    electroweakinos.push_back( neutralino_three_pointer );
-    unstable_electroweakinos.push_back( neutralino_three_pointer );
-    neutralinos.push_back( neutralino_three_pointer );
-    unstable_neutralinos.push_back( neutralino_three_pointer );
-    electroweakinos.push_back( neutralino_four_pointer );
-    unstable_electroweakinos.push_back( neutralino_four_pointer );
-    neutralinos.push_back( neutralino_four_pointer );
-    unstable_neutralinos.push_back( neutralino_four_pointer );
-    electroweakinos.push_back( chargino_one_pointer );
-    unstable_electroweakinos.push_back( chargino_one_pointer );
-    charginos.push_back( chargino_one_pointer );
-    electroweakinos.push_back( chargino_two_pointer );
-    unstable_electroweakinos.push_back( chargino_two_pointer );
-    charginos.push_back( chargino_two_pointer );
+    electroweakinos.push_back( neutralinoOnePointer );
+    neutralinos.push_back( neutralinoOnePointer );
+    electroweakinos.push_back( neutralinoTwoPointer );
+    unstableElectroweakinos.push_back( neutralinoTwoPointer );
+    neutralinos.push_back( neutralinoTwoPointer );
+    unstableNeutralinos.push_back( neutralinoTwoPointer );
+    electroweakinos.push_back( neutralinoThreePointer );
+    unstableElectroweakinos.push_back( neutralinoThreePointer );
+    neutralinos.push_back( neutralinoThreePointer );
+    unstableNeutralinos.push_back( neutralinoThreePointer );
+    electroweakinos.push_back( neutralinoFourPointer );
+    unstableElectroweakinos.push_back( neutralinoFourPointer );
+    neutralinos.push_back( neutralinoFourPointer );
+    unstableNeutralinos.push_back( neutralinoFourPointer );
+    electroweakinos.push_back( charginoOnePointer );
+    unstableElectroweakinos.push_back( charginoOnePointer );
+    charginos.push_back( charginoOnePointer );
+    electroweakinos.push_back( charginoTwoPointer );
+    unstableElectroweakinos.push_back( charginoTwoPointer );
+    charginos.push_back( charginoTwoPointer );
 
-    charged_sleptons.push_back( selectron_L_pointer );
-    charged_sleptons.push_back( selectron_R_pointer );
-    charged_sleptons.push_back( smuon_L_pointer );
-    charged_sleptons.push_back( smuon_R_pointer );
-    charged_sleptons.push_back( stau_one_pointer );
-    charged_sleptons.push_back( stau_two_pointer );
+    chargedSleptons.push_back( selectronLPointer );
+    chargedSleptons.push_back( selectronRPointer );
+    chargedSleptons.push_back( smuonLPointer );
+    chargedSleptons.push_back( smuonRPointer );
+    chargedSleptons.push_back( stauOnePointer );
+    chargedSleptons.push_back( stauTwoPointer );
 
-    sneutrinos.push_back( electron_sneutrino_L_pointer );
-    sneutrinos.push_back( electron_sneutrino_R_pointer );
-    sneutrinos.push_back( muon_sneutrino_L_pointer );
-    sneutrinos.push_back( muon_sneutrino_R_pointer );
-    sneutrinos.push_back( tau_sneutrino_L_pointer );
-    sneutrinos.push_back( tau_sneutrino_R_pointer );
+    sneutrinos.push_back( electronSneutrinoLPointer );
+    sneutrinos.push_back( electronSneutrinoRPointer );
+    sneutrinos.push_back( muonSneutrinoLPointer );
+    sneutrinos.push_back( muonSneutrinoRPointer );
+    sneutrinos.push_back( tauSneutrinoLPointer );
+    sneutrinos.push_back( tauSneutrinoRPointer );
 
-    neutral_EWSB_scalars_and_pseudoscalars.push_back(
-                                           light_neutral_EWSB_scalar_pointer );
-    neutral_EWSB_scalars_and_pseudoscalars.push_back(
-                                           heavy_neutral_EWSB_scalar_pointer );
-    neutral_EWSB_scalars_and_pseudoscalars.push_back(
-                                           neutral_EWSB_pseudoscalar_pointer );
+    neutralEwsbScalarsAndPseudoscalars.push_back(
+                                               lightNeutralEwsbScalarPointer );
+    neutralEwsbScalarsAndPseudoscalars.push_back(
+                                               heavyNeutralEwsbScalarPointer );
+    neutralEwsbScalarsAndPseudoscalars.push_back(
+                                              neutralEwsbPseudoscalarPointer );
 
-    EW_veved_and_vector_bosons.push_back( W_plus_pointer );
-    EW_veved_and_vector_bosons.push_back( Z_pointer );
-    EW_veved_and_vector_bosons.push_back( light_neutral_EWSB_scalar_pointer );
-    EW_veved_and_vector_bosons.push_back( heavy_neutral_EWSB_scalar_pointer );
-    EW_veved_and_vector_bosons.push_back( neutral_EWSB_pseudoscalar_pointer );
-    EW_veved_and_vector_bosons.push_back( charged_EWSB_scalar_pointer );
+    ewsbBosonsAndMassiveVectorBosons.push_back( wPlusPointer );
+    ewsbBosonsAndMassiveVectorBosons.push_back( zPointer );
+    ewsbBosonsAndMassiveVectorBosons.push_back(
+                                               lightNeutralEwsbScalarPointer );
+    ewsbBosonsAndMassiveVectorBosons.push_back(
+                                               heavyNeutralEwsbScalarPointer );
+    ewsbBosonsAndMassiveVectorBosons.push_back(
+                                              neutralEwsbPseudoscalarPointer );
+    ewsbBosonsAndMassiveVectorBosons.push_back( chargedEwsbScalarPointer );
 
     // make the jet particle code lists:
-
     for( std::vector< CppSLHA::particle_property_set* >::const_iterator
-           particle_iterator
-             = spectrum_pointer->get_particle_property_sets()->begin();
-         spectrum_pointer->get_particle_property_sets()->end()
-             > particle_iterator;
-         ++particle_iterator )
+         particleIterator
+         = spectrumPointer->get_particle_property_sets()->begin();
+         spectrumPointer->get_particle_property_sets()->end()
+         > particleIterator;
+         ++particleIterator )
       // go through each particle in the spectrum...
+    {
+      if( (*particleIterator)->counts_as_jet() )
+        // if we find a jet...
       {
-
-        if( (*particle_iterator)->counts_as_jet() )
-          // if we find a jet...
-          {
-
-            jets.push_back( (*particle_iterator)->get_PDG_code() );
-            // note the jet particle.
-
-            if( !((*particle_iterator)->counts_as_self_conjugate()) )
-              {
-
-                jets.push_back( -((*particle_iterator)->get_PDG_code()) );
-
-              }
-
-          }
-
+        jets.push_back( (*particleIterator)->get_PDG_code() );
+        // note the jet particle.
+        if( !((*particleIterator)->counts_as_self_conjugate()) )
+        {
+          jets.push_back( -((*particleIterator)->get_PDG_code()) );
+        }
       }
+    }
 
-    not_in_jets5.push_back( CppSLHA::PDG_code::top );
-    not_in_jets5.push_back( -CppSLHA::PDG_code::top );
-    not_in_jets4.assign( not_in_jets5.begin(), not_in_jets5.end() );
-    not_in_jets4.push_back( CppSLHA::PDG_code::bottom );
-    not_in_jets4.push_back( -CppSLHA::PDG_code::bottom );
+    notInJets5.push_back( CppSLHA::PDG_code::top );
+    notInJets5.push_back( -(CppSLHA::PDG_code::top) );
+    notInJets4.assign( notInJets5.begin(),
+                       notInJets5.end() );
+    notInJets4.push_back( CppSLHA::PDG_code::bottom );
+    notInJets4.push_back( -(CppSLHA::PDG_code::bottom) );
 
-    bool not_in_not_in_jets;
-
-    for( std::list< int >::iterator jet_iterator = jets.begin();
-         jets.end() != jet_iterator;
-         ++jet_iterator )
+    bool notInNotInJets;
+    for( std::list< int >::iterator jetIterator = jets.begin();
+         jets.end() != jetIterator;
+         ++jetIterator )
+    {
+      // assume that this jet is not in notInJets5:
+      notInNotInJets = true;
+      for( std::list< int >::const_iterator
+           notInJetsIterator = notInJets5.begin();
+           ( ( notInJets5.end() != notInJetsIterator )
+             &&
+             notInNotInJets );
+           ++notInJetsIterator )
       {
-
-        // assume that this jet is not in not_in_jets5:
-        not_in_not_in_jets = true;
-
-        for( std::list< int >::const_iterator
-               not_in_jets_iterator = not_in_jets5.begin();
-             ( ( not_in_jets5.end() != not_in_jets_iterator )
-               && not_in_not_in_jets );
-             ++not_in_jets_iterator )
-          {
-
-            if( *not_in_jets_iterator == *jet_iterator )
-              {
-
-                not_in_not_in_jets = false;
-
-              }
-
-          }
-
-        if( not_in_not_in_jets )
-          {
-
-            jets5.push_back( *jet_iterator );
-
-          }
-
-        // assume that this jet is not in not_in_jets4:
-        not_in_not_in_jets = true;
-
-        for( std::list< int >::const_iterator
-               not_in_jets_iterator = not_in_jets4.begin();
-             ( ( not_in_jets4.end() != not_in_jets_iterator )
-               && not_in_not_in_jets );
-             ++not_in_jets_iterator )
-          {
-
-            if( *not_in_jets_iterator == *jet_iterator )
-              {
-
-                not_in_not_in_jets = false;
-
-              }
-
-          }
-
-        if( not_in_not_in_jets )
-          {
-
-            jets4.push_back( *jet_iterator );
-
-          }
-
+        if( *notInJetsIterator == *jetIterator )
+        {
+          notInNotInJets = false;
+        }
       }
-
+      if( notInNotInJets )
+      {
+        jets5.push_back( *jetIterator );
+      }
+      // assume that this jet is not in notInJets4:
+      notInNotInJets = true;
+      for( std::list< int >::const_iterator
+           notInJetsIterator = notInJets4.begin();
+           ( ( notInJets4.end() != notInJetsIterator )
+             &&
+             notInNotInJets );
+           ++notInJetsIterator )
+      {
+        if( *notInJetsIterator == *jetIterator )
+        {
+          notInNotInJets = false;
+        }
+      }
+      if( notInNotInJets )
+      {
+        jets4.push_back( *jetIterator );
+      }
+    }
   }
 
-  input_handler::~input_handler()
+  inputHandler::~inputHandler()
   {
+    for( std::vector< signedParticleShortcutPair* >::iterator
+         deletionIterator = sparticleProductionCombinations.begin();
+         sparticleProductionCombinations.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+    for( std::vector< onshellSquarkMassHolder* >::iterator
+         deletionIterator = onshellSquarkEffectiveMasses.begin();
+         onshellSquarkEffectiveMasses.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
 
-    for( std::vector< signed_particle_shortcut_pair* >::iterator
-           deletion_iterator = sparticle_production_combinations.begin();
-         sparticle_production_combinations.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
-    delete decay_checkers;
-    delete exclusive_BRs;
-    delete colored_cascades;
-    delete update_dependent_input_values;
-
+    delete decayCheckers;
+    delete exclusiveBrs;
+    delete updateDependentInputValues;
+    delete updateDependentMasses;
+    delete updateDependentAverageSquarks4Mass;
   }
-
-
-  void
-  input_handler::add_squark_as_colored_sparticle_and_in_production(
-                     CppSLHA::particle_property_set const* const given_squark )
-  /* this adds the given squark to the list of squarks & the list of colored
-   * sparticles, & also adds its relevant production combinations (with a
-   * gluino, with its antisquark, with itself) to the list.
-   */
-  {
-
-    squarks.push_back( given_squark );
-    colored_sparticles.push_back( given_squark );
-
-    sparticle_production_combinations.push_back(
-                             new signed_particle_shortcut_pair( given_squark,
-                                                                true,
-                                                                gluino_pointer,
-                                                                true ) );
-    sparticle_production_combinations.push_back(
-                             new signed_particle_shortcut_pair( given_squark,
-                                                                true,
-                                                                given_squark,
-                                                                false ) );
-    sparticle_production_combinations.push_back(
-                             new signed_particle_shortcut_pair( given_squark,
-                                                                true,
-                                                                given_squark,
-                                                                true ) );
-
-  }
-
-
-  bool
-  input_handler::is_in( int const given_PDG_code,
-              std::vector< CppSLHA::particle_property_set const* > const* const
-                        given_collection )
-  const
-  /* this checks to see if the particle with the absolute value of the given
-   * PDG particle code is in the given collection. (hence it checks to see if
-   * the given particle or its antiparticle are in the collection.)
-   */
-   {
-
-    bool return_bool = false;
-
-    for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-           set_iterator = given_collection->begin();
-         given_collection->end() > set_iterator;
-         ++set_iterator )
-      {
-
-        if( ( given_PDG_code == (*set_iterator)->get_PDG_code() )
-            ||
-            ( given_PDG_code == -(*set_iterator)->get_PDG_code() ) )
-          {
-
-            return_bool = true;
-
-          }
-
-      }
-
-    return return_bool;
-
-   }
 
 
   double
-  input_handler::quark_or_lepton_left_handedness( int const sfermion_code,
-                                                  int const EWino_code )
+  inputHandler::quarkOrLeptonLeftHandedness( int const sfermionCode,
+                                              int const ewinoCode )
   const
   /* this returns the square of the coupling associated with the left-handed
    * projection operator of the Feynman rule for the vertex of the given
@@ -657,7 +568,6 @@ namespace LHC_FASER
    * right-handed neutrinos.
    */
   {
-
     /* I might as well keep some notes here:
      * Rosiek's paper with all the MSSM Feynman rules is great, but it has
      * a rather annoying convention on the mixing matrices, in that he uses
@@ -675,1021 +585,718 @@ namespace LHC_FASER
     // by the way, if we get a gluino, we assume it has the same handedness as
     // if we got a sbottom_1.
 
-    if( CppSLHA::PDG_code::gluino == sfermion_code )
+    if( CppSLHA::PDG_code::gluino == sfermionCode )
+    {
+      return quarkOrLeptonLeftHandedness( CppSLHA::PDG_code::sbottom_one,
+                                          ewinoCode );
+    }
+    else if( ( CppSLHA::PDG_code::chargino_one == ewinoCode )
+             ||
+             ( CppSLHA::PDG_code::chargino_one == -ewinoCode )
+             ||
+             ( CppSLHA::PDG_code::chargino_two == ewinoCode )
+             ||
+             ( CppSLHA::PDG_code::chargino_two == -ewinoCode ) )
+    {
+      // if it's an up-type squark, we assume that it's a positive chargino;
+      // if it's a down-type squark, we assume that it's a negative chargino:
+      if( ( CppSLHA::PDG_code::sup_R == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::scharm_R == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::sdown_R == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::sstrange_R == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::selectron_L == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::smuon_L == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::stau_one == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::selectron_R == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::smuon_R == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::stau_two == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::electron_sneutrino_R == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::muon_sneutrino_R == sfermionCode )
+          ||
+          ( CppSLHA::PDG_code::tau_sneutrino_R == sfermionCode ) )
       {
-
-        return quark_or_lepton_left_handedness( CppSLHA::PDG_code::sbottom_one,
-                                                EWino_code );
-
+        return 1.0;
+        /* the right-chiral squarks only interact with the Higgsino component
+         * of charginos, so produce only *left*-handed quarks, while charged
+         * sleptons produce only neutrinos in their interactions with
+         * charginos, which are assumed to always be left-handed. (right-chiral
+         * sneutrinos also only would interact with the Higgsino components.)
+         */
       }
-    else if( ( CppSLHA::PDG_code::chargino_one == EWino_code )
-             ||
-             ( CppSLHA::PDG_code::chargino_one == -EWino_code )
-             ||
-             ( CppSLHA::PDG_code::chargino_two == EWino_code )
-             ||
-             ( CppSLHA::PDG_code::chargino_two == -EWino_code ) )
+      else
       {
-
-        // if it's an up-type squark, we assume that it's a positive chargino;
-        // if it's a down-type squark, we assume that it's a negative chargino:
-        if( ( CppSLHA::PDG_code::sup_R == sfermion_code )
+        double leftCoupling;
+        double rightCoupling;
+        double leftSquared;
+        int whichChargino = 1;
+        if( CppSLHA::PDG_code::chargino_two == ewinoCode )
+        {
+          whichChargino = 2;
+        }
+        if( ( NULL == umixPointer )
             ||
-            ( CppSLHA::PDG_code::scharm_R == sfermion_code )
+            ( NULL == vmixPointer )
             ||
-            ( CppSLHA::PDG_code::sdown_R == sfermion_code )
+            ( NULL == ydPointer )
             ||
-            ( CppSLHA::PDG_code::sstrange_R == sfermion_code )
+            ( NULL == yuPointer )
             ||
-            ( CppSLHA::PDG_code::selectron_L == sfermion_code )
+            ( NULL == sbotmixPointer )
             ||
-            ( CppSLHA::PDG_code::smuon_L == sfermion_code )
+            ( NULL == stopmixPointer )
             ||
-            ( CppSLHA::PDG_code::stau_one == sfermion_code )
-            ||
-            ( CppSLHA::PDG_code::selectron_R == sfermion_code )
-            ||
-            ( CppSLHA::PDG_code::smuon_R == sfermion_code )
-            ||
-            ( CppSLHA::PDG_code::stau_two == sfermion_code )
-            ||
-            ( CppSLHA::PDG_code::electron_sneutrino_R == sfermion_code )
-            ||
-            ( CppSLHA::PDG_code::muon_sneutrino_R == sfermion_code )
-            ||
-            ( CppSLHA::PDG_code::tau_sneutrino_R == sfermion_code ) )
+            ( NULL == staumixPointer ) )
+        {
+          if( isVerbose() )
           {
-
-            return 1.0;
-            /* the right-chiral squarks only interact with the Higgsino
-             * component of charginos, so produce only *left*-handed quarks,
-             * while charged sleptons produce only neutrinos in their
-             * interactions with charginos, which are assumed to always be
-             * left-handed. (right-chiral sneutrinos also only would interact
-             * with the Higgsino components.)
-             */
-
+            std::cout
+            << std::endl << "LHC-FASER::warning!"
+            << " input_handler::quark_or_lepton_left_handedness"
+            << " couldn't find at least one of UMIX, VMIX, YD, YU,"
+            << " SBOTMIX, STOPMIX or STAUMIX. returning "
+            << CppSLHA::CppSLHA_global::really_wrong_value_string;
+            std::cout << std::endl;
           }
+          return CppSLHA::CppSLHA_global::really_wrong_value;
+        }
         else
+        {
+          if( CppSLHA::PDG_code::sup_L == sfermionCode )
           {
-
-            double left_coupling;
-            double right_coupling;
-            double left_squared;
-            int which_chargino = 1;
-            if( CppSLHA::PDG_code::chargino_two == EWino_code )
-              {
-
-                which_chargino = 2;
-
-              }
-            if( ( NULL == UMIX_pointer )
-                ||
-                ( NULL == VMIX_pointer )
-                ||
-                ( NULL == YD_pointer )
-                ||
-                ( NULL == YU_pointer )
-                ||
-                ( NULL == SBOTMIX_pointer )
-                ||
-                ( NULL == STOPMIX_pointer )
-                ||
-                ( NULL == STAUMIX_pointer ) )
-              {
-
-                if( is_verbose() )
-                  {
-
-                    std::cout
-                    << std::endl << "LHC-FASER::warning!"
-                    << " input_handler::quark_or_lepton_left_handedness"
-                    << " couldn't find at least one of UMIX, VMIX, YD, YU,"
-                    << " SBOTMIX, STOPMIX or STAUMIX. returning "
-                    << CppSLHA::CppSLHA_global::really_wrong_value_string;
-                    std::cout << std::endl;
-
-                  }
-
-                return CppSLHA::CppSLHA_global::really_wrong_value;
-
-              }
-            else if( CppSLHA::PDG_code::sup_L == sfermion_code )
-              {
-
-                left_coupling
-                = ( get_g_two() * VMIX_pointer->get_entry( which_chargino,
-                                                           1 ) );
-                // actually the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                right_coupling = ( YD_pointer->get_entry( 1,
-                                                          1 )
-                                   * UMIX_pointer->get_entry( which_chargino,
-                                                              2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::scharm_L == sfermion_code )
-              {
-
-                left_coupling
-                = ( get_g_two() * VMIX_pointer->get_entry( which_chargino,
-                                                           1 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                right_coupling = ( YD_pointer->get_entry( 2,
-                                                          2 )
-                                   * UMIX_pointer->get_entry( which_chargino,
-                                                              2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::stop_one == sfermion_code )
-              {
-
-                left_coupling
-                = ( YU_pointer->get_entry( 3,
-                                           3 )
-                    * STOPMIX_pointer->get_entry( 1,
-                                                  2 )
-                    * VMIX_pointer->get_entry( which_chargino,
-                                               2 )
-                    - get_g_two()
-                    * STOPMIX_pointer->get_entry( 1,
-                                                  1 )
-                    * VMIX_pointer->get_entry( which_chargino,
-                                               1 ) );
-                // the (relative) signs of the terms do matter in this case.
-
-                right_coupling
-                = ( YD_pointer->get_entry( 3,
-                                           3 )
-                    * STOPMIX_pointer->get_entry( 1,
-                                                  1 )
-                   * UMIX_pointer->get_entry( which_chargino,
-                                              2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::stop_two == sfermion_code )
-              {
-
-                left_coupling
-                = ( YU_pointer->get_entry( 3,
-                                           3 )
-                    * STOPMIX_pointer->get_entry( 2,
-                                                  2 )
-                    * VMIX_pointer->get_entry( which_chargino,
-                                               2 )
-                    - get_g_two()
-                      * STOPMIX_pointer->get_entry( 2,
+            leftCoupling
+            = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
+                                                      1 ) );
+            // actually the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+            rightCoupling = ( ydPointer->get_entry( 1,
                                                     1 )
-                      * VMIX_pointer->get_entry( which_chargino,
-                                                 1 ) );
-                // the (relative) signs of the terms do matter in this case.
-
-                right_coupling
-                = ( YD_pointer->get_entry( 3,
-                                           3 )
-                    * STOPMIX_pointer->get_entry( 2,
-                                                  1 )
-                    * UMIX_pointer->get_entry( which_chargino,
-                                               2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::sdown_L == sfermion_code )
-              {
-
-                left_coupling
-                = ( get_g_two() * UMIX_pointer->get_entry( which_chargino,
-                                                           1 ) );
-                // actually the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                right_coupling = ( YU_pointer->get_entry( 1,
-                                                          1 )
-                                   * VMIX_pointer->get_entry( which_chargino,
-                                                              2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::sstrange_L == sfermion_code )
-              {
-
-                left_coupling
-                = ( get_g_two() * UMIX_pointer->get_entry( which_chargino,
-                                                           1 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                right_coupling = ( YU_pointer->get_entry( 2,
+                              * umixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::scharm_L == sfermionCode )
+          {
+            leftCoupling
+            = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
+                                                      1 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+            rightCoupling = ( ydPointer->get_entry( 2,
+                                                    2 )
+                              * umixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::stop_one == sfermionCode )
+          {
+            leftCoupling = ( yuPointer->get_entry( 3,
+                                                   3 )
+                             * stopmixPointer->get_entry( 1,
                                                           2 )
-                                   * VMIX_pointer->get_entry( which_chargino,
-                                                              2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::sbottom_one == sfermion_code )
-              {
-
-                left_coupling
-                = ( YD_pointer->get_entry( 3,
-                                           3 )
-                    * SBOTMIX_pointer->get_entry( 1,
-                                                  2 )
-                    * UMIX_pointer->get_entry( which_chargino,
-                                               2 )
-                    - get_g_two()
-                      * SBOTMIX_pointer->get_entry( 1,
-                                                    1 )
-                      * UMIX_pointer->get_entry( which_chargino,
-                                                 1 ) );
-                // the (relative) signs of the terms do matter in this case.
-
-                right_coupling
-                = ( YU_pointer->get_entry( 3,
-                                           3 )
-                    * SBOTMIX_pointer->get_entry( 1,
-                                                  1 )
-                    * VMIX_pointer->get_entry( which_chargino,
-                                               2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::sbottom_two == sfermion_code )
-              {
-
-                left_coupling
-                = ( YD_pointer->get_entry( 3,
-                                           3 )
-                    * SBOTMIX_pointer->get_entry( 2,
-                                                  2 )
-                    * UMIX_pointer->get_entry( which_chargino,
-                                               2 )
-                    - get_g_two()
-                      * SBOTMIX_pointer->get_entry( 2,
-                                                    1 )
-                      * UMIX_pointer->get_entry( which_chargino,
-                                                 1 ) );
-                // the (relative) signs of the terms do matter in this case.
-
-                right_coupling
-                = ( YU_pointer->get_entry( 3,
-                                           3 )
-                    * SBOTMIX_pointer->get_entry( 2,
-                                                  1 )
-                    * VMIX_pointer->get_entry( which_chargino,
-                                               2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::electron_sneutrino_L == sfermion_code )
-              {
-
-                left_coupling
-                = ( get_g_two() * VMIX_pointer->get_entry( which_chargino,
-                                                           1 ) );
-                // actually the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                right_coupling = ( YE_pointer->get_entry( 1,
-                                                          1 )
-                                   * UMIX_pointer->get_entry( which_chargino,
-                                                              2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::muon_sneutrino_L == sfermion_code )
-              {
-
-                left_coupling
-                = ( get_g_two() * VMIX_pointer->get_entry( which_chargino,
-                                                           1 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                right_coupling = ( YE_pointer->get_entry( 2,
+                             * vmixPointer->get_entry( whichChargino,
+                                                       2 )
+                             - getWeakGaugeCoupling()
+                               * stopmixPointer->get_entry( 1,
+                                                            1 )
+                               * vmixPointer->get_entry( whichChargino,
+                                                         1 ) );
+            // the (relative) signs of the terms do matter in this case.
+            rightCoupling = ( ydPointer->get_entry( 3,
+                                                    3 )
+                              * stopmixPointer->get_entry( 1,
+                                                           1 )
+                              * umixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::stop_two == sfermionCode )
+          {
+            leftCoupling = ( yuPointer->get_entry( 3,
+                                                   3 )
+                             * stopmixPointer->get_entry( 2,
                                                           2 )
-                                   * UMIX_pointer->get_entry( which_chargino,
-                                                              2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else if( CppSLHA::PDG_code::tau_sneutrino_L == sfermion_code )
-              {
-
-                left_coupling
-                = ( get_g_two() * VMIX_pointer->get_entry( which_chargino,
-                                                           1 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                right_coupling = ( YE_pointer->get_entry( 3,
-                                                          3 )
-                                   * UMIX_pointer->get_entry( which_chargino,
-                                                              2 ) );
-                // actually, the Feynman rule has an additional minus sign, but
-                // it doesn't matter because this is getting squared.
-
-                left_squared = ( left_coupling * left_coupling );
-
-                return ( left_squared
-                         / ( left_squared
-                             + right_coupling * right_coupling ) );
-
-              }
-            else
-              {
-
-                if( is_verbose() )
-                  {
-
-                    std::cout
-                    << std::endl << "LHC-FASER::warning!"
-                    << " input_handler::quark_or_lepton_left_handedness"
-                    << " didn't recognize the sfermion PDG code \""
-                    << sfermion_code << "\". returning "
-                    << CppSLHA::CppSLHA_global::really_wrong_value_string;
-                    std::cout << std::endl;
-
-                  }
-
-                return CppSLHA::CppSLHA_global::really_wrong_value;
-
-              }
-
-          }  // end of if-else over the types of sfermion.
-
-      }  // end of if it's a chargino.
+                             * vmixPointer->get_entry( whichChargino,
+                                                       2 )
+                             - getWeakGaugeCoupling()
+                               * stopmixPointer->get_entry( 2,
+                                                            1 )
+                               * vmixPointer->get_entry( whichChargino,
+                                                         1 ) );
+            // the (relative) signs of the terms do matter in this case.
+            rightCoupling = ( ydPointer->get_entry( 3,
+                                                    3 )
+                              * stopmixPointer->get_entry( 2,
+                                                           1 )
+                              * umixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::sdown_L == sfermionCode )
+          {
+            leftCoupling
+            = ( getWeakGaugeCoupling() * umixPointer->get_entry( whichChargino,
+                                                      1 ) );
+            // actually the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+            rightCoupling = ( yuPointer->get_entry( 1,
+                                                    1 )
+                              * vmixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::sstrange_L == sfermionCode )
+          {
+            leftCoupling
+            = ( getWeakGaugeCoupling() * umixPointer->get_entry( whichChargino,
+                                                      1 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+            rightCoupling = ( yuPointer->get_entry( 2,
+                                                    2 )
+                              * vmixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::sbottom_one == sfermionCode )
+          {
+            leftCoupling = ( ydPointer->get_entry( 3,
+                                                   3 )
+                             * sbotmixPointer->get_entry( 1,
+                                                          2 )
+                             * umixPointer->get_entry( whichChargino,
+                                                       2 )
+                             - getWeakGaugeCoupling()
+                               * sbotmixPointer->get_entry( 1,
+                                                            1 )
+                               * umixPointer->get_entry( whichChargino,
+                                                         1 ) );
+            // the (relative) signs of the terms do matter in this case.
+            rightCoupling = ( yuPointer->get_entry( 3,
+                                                    3 )
+                              * sbotmixPointer->get_entry( 1,
+                                                           1 )
+                              * vmixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::sbottom_two == sfermionCode )
+          {
+            leftCoupling = ( ydPointer->get_entry( 3,
+                                                   3 )
+                             * sbotmixPointer->get_entry( 2,
+                                                          2 )
+                             * umixPointer->get_entry( whichChargino,
+                                                       2 )
+                             - getWeakGaugeCoupling()
+                               * sbotmixPointer->get_entry( 2,
+                                                            1 )
+                               * umixPointer->get_entry( whichChargino,
+                                                         1 ) );
+            // the (relative) signs of the terms do matter in this case.
+            rightCoupling = ( yuPointer->get_entry( 3,
+                                                    3 )
+                              * sbotmixPointer->get_entry( 2,
+                                                           1 )
+                              * vmixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::electron_sneutrino_L == sfermionCode )
+          {
+            leftCoupling
+            = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
+                                                      1 ) );
+            // actually the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+            rightCoupling = ( yePointer->get_entry( 1,
+                                                    1 )
+                              * umixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::muon_sneutrino_L == sfermionCode )
+          {
+            leftCoupling
+            = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
+                                                      1 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+            rightCoupling = ( yePointer->get_entry( 2,
+                                                    2 )
+                              * umixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else if( CppSLHA::PDG_code::tau_sneutrino_L == sfermionCode )
+          {
+            leftCoupling
+            = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
+                                                      1 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+            rightCoupling = ( yePointer->get_entry( 3,
+                                                    3 )
+                              * umixPointer->get_entry( whichChargino,
+                                                        2 ) );
+            // actually, the Feynman rule has an additional minus sign, but it
+            // doesn't matter because this is getting squared.
+          }
+          else
+          {
+            if( isVerbose() )
+            {
+              std::cout
+              << std::endl << "LHC-FASER::warning!"
+              << " input_handler::quark_or_lepton_left_handedness"
+              << " didn't recognize the sfermion PDG code \""
+              << sfermionCode << "\". returning "
+              << CppSLHA::CppSLHA_global::really_wrong_value_string;
+              std::cout << std::endl;
+            }
+            leftSquared = CppSLHA::CppSLHA_global::really_wrong_value;
+            rightSquared = CppSLHA::CppSLHA_global::really_wrong_value;
+          }
+          leftSquared = ( leftCoupling * leftCoupling );
+          return ( leftSquared
+                   / ( leftSquared + rightCoupling * rightCoupling ) );
+        }
+      }  // end of if-else over the types of sfermion.
+    }  // end of if it's a chargino.
     else
       // otherwise we assume that it's a neutralino...
+    {
+      int whichNeutralino = 1;
+      // we start by assuming that it's neutralino_1.
+      if( CppSLHA::PDG_code::neutralino_two == ewinoCode )
       {
-
-        int which_neutralino = 1;
-        // we start by assuming that it's neutralino_1.
-        if( CppSLHA::PDG_code::neutralino_two == EWino_code )
-          {
-
-            which_neutralino = 2;
-
-          }
-        else if( CppSLHA::PDG_code::neutralino_three == EWino_code )
-          {
-
-            which_neutralino = 3;
-
-          }
-        else if( CppSLHA::PDG_code::neutralino_three == EWino_code )
-          {
-
-            which_neutralino = 4;
-
-          }
-
-        double left_coupling;
-        double right_coupling;
-        double left_squared;
-        if( ( NULL == NMIX_pointer )
-            ||
-            ( NULL == YD_pointer )
-            ||
-            ( NULL == YU_pointer )
-            ||
-            ( NULL == SBOTMIX_pointer )
-            ||
-            ( NULL == STOPMIX_pointer )
-            ||
-            ( NULL == STAUMIX_pointer ) )
-          {
-
-            if( is_verbose() )
-              {
-
-                std::cout
-                << std::endl << "LHC-FASER::warning!"
-                << " input_handler::quark_or_lepton_left_handedness"
-                << " couldn't find at least one of NMIX, YD, YU,"
-                << " SBOTMIX, STOPMIX or STAUMIX. returning "
-                << CppSLHA::CppSLHA_global::really_wrong_value_string;
-                std::cout << std::endl;
-
-              }
-
-            return CppSLHA::CppSLHA_global::really_wrong_value;
-
-          }
-        else if( CppSLHA::PDG_code::sdown_L == sfermion_code )
-          {
-
-            left_coupling
-            = ( M_SQRT1_2 * ( get_g_two()
-                              * NMIX_pointer->get_entry( which_neutralino,
-                                                         2 )
-                              - ( get_g_one() / 3.0 )
-                                * NMIX_pointer->get_entry( which_neutralino,
-                                                           1 ) ) );
-            // by the way, M_SQRT1_2 is 1 over the square root of 2, defined in
-            // math.h.
-
-            right_coupling = ( YD_pointer->get_entry( 1,
-                                                      1 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          3 ) );
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::sdown_R == sfermion_code )
-          {
-
-            left_coupling
-            = ( YD_pointer->get_entry( 1,
-                                       1 )
-                * NMIX_pointer->get_entry( which_neutralino,
-                                           3 ) );
-
-            right_coupling = ( M_SQRT1_2 * ( get_g_one() / 1.5 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          1 ) );
-            // actually, the Feynman rule has an additional minus sign, but it
-            // doesn't matter because this is getting squared.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::sup_L == sfermion_code )
-          {
-
-            left_coupling
-            = ( M_SQRT1_2 * ( get_g_two()
-                              * NMIX_pointer->get_entry( which_neutralino,
-                                                         2 )
-                              - ( get_g_one() / 3.0 )
-                                * NMIX_pointer->get_entry( which_neutralino,
-                                                           1 ) ) );
-
-            right_coupling = ( YU_pointer->get_entry( 1,
-                                                      1 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          4 ) );
-            // actually, the Feynman rule has an additional minus sign, but it
-            // doesn't matter because this is getting squared.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::sup_R == sfermion_code )
-          {
-
-            left_coupling
-            = ( YU_pointer->get_entry( 1,
-                                       1 )
-                * NMIX_pointer->get_entry( which_neutralino,
-                                           4 ) );
-            // actually, the Feynman rule has an additional minus sign, but it
-            // doesn't matter because this is getting squared.
-
-            right_coupling = ( M_SQRT1_2 * ( get_g_one() / 0.75 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          1 ) );
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::sstrange_L == sfermion_code )
-          {
-
-            left_coupling
-            = ( M_SQRT1_2 * ( get_g_two()
-                              * NMIX_pointer->get_entry( which_neutralino,
-                                                         2 )
-                              - ( get_g_one() / 3.0 )
-                                * NMIX_pointer->get_entry( which_neutralino,
-                                                           1 ) ) );
-
-            right_coupling = ( YD_pointer->get_entry( 2,
+        whichNeutralino = 2;
+      }
+      else if( CppSLHA::PDG_code::neutralino_three == ewinoCode )
+      {
+        whichNeutralino = 3;
+      }
+      else if( CppSLHA::PDG_code::neutralino_three == ewinoCode )
+      {
+        whichNeutralino = 4;
+      }
+      double leftCoupling;
+      double rightCoupling;
+      double leftSquared;
+      if( ( NULL == nmixPointer )
+          ||
+          ( NULL == ydPointer )
+          ||
+          ( NULL == yuPointer )
+          ||
+          ( NULL == sbotmixPointer )
+          ||
+          ( NULL == stopmixPointer )
+          ||
+          ( NULL == staumixPointer ) )
+      {
+        if( isVerbose() )
+        {
+          std::cout
+          << std::endl << "LHC-FASER::warning!"
+          << " input_handler::quark_or_lepton_left_handedness"
+          << " couldn't find at least one of NMIX, YD, YU,"
+          << " SBOTMIX, STOPMIX or STAUMIX. returning "
+          << CppSLHA::CppSLHA_global::really_wrong_value_string;
+          std::cout << std::endl;
+        }
+        return CppSLHA::CppSLHA_global::really_wrong_value;
+      }
+      else
+      {
+        if( CppSLHA::PDG_code::sdown_L == sfermionCode )
+        {
+          leftCoupling
+          = ( M_SQRT1_2 * ( getWeakGaugeCoupling()
+                            * nmixPointer->get_entry( whichNeutralino,
                                                       2 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          3 ) );
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::sstrange_R == sfermion_code )
-          {
-
-            left_coupling
-            = ( YD_pointer->get_entry( 2,
-                                       2 )
-                * NMIX_pointer->get_entry( which_neutralino,
-                                           3 ) );
-
-            right_coupling = ( M_SQRT1_2 * ( get_g_one() / 1.5 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          1 ) );
-            // actually, the Feynman rule has an additional minus sign, but it
-            // doesn't matter because this is getting squared.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::scharm_L == sfermion_code )
-          {
-
-            left_coupling
-            = ( M_SQRT1_2 * ( get_g_two()
-                              * NMIX_pointer->get_entry( which_neutralino,
-                                                         2 )
-                              - ( get_g_one() / 3.0 )
-                                * NMIX_pointer->get_entry( which_neutralino,
-                                                           1 ) ) );
-
-            right_coupling = ( YU_pointer->get_entry( 2,
-                                                      2 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          4 ) );
-            // actually, the Feynman rule has an additional minus sign, but it
-            // doesn't matter because this is getting squared.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::scharm_R == sfermion_code )
-          {
-
-            left_coupling
-            = ( YU_pointer->get_entry( 2,
-                                       2 )
-                * NMIX_pointer->get_entry( which_neutralino,
-                                           4 ) );
-            // actually, the Feynman rule has an additional minus sign, but it
-            // doesn't matter because this is getting squared.
-
-            right_coupling = ( M_SQRT1_2 * ( get_g_one() / 0.75 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          1 ) );
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::sbottom_one == sfermion_code )
-          {
-
-            left_coupling
-            = ( ( M_SQRT1_2
-                  * ( get_g_two() * NMIX_pointer->get_entry( which_neutralino,
-                                                             2 )
-                      - ( get_g_one() / 3.0 )
-                        * NMIX_pointer->get_entry( which_neutralino,
-                                                   1 ) ) )
-                    * SBOTMIX_pointer->get_entry( 1,
+                            - ( getHyperchargeGaugeCoupling() / 3.0 )
+                                * nmixPointer->get_entry( whichNeutralino,
+                                                          1 ) ) );
+          // by the way, M_SQRT1_2 is 1 over the square root of 2, defined in
+          // math.h.
+          rightCoupling = ( ydPointer->get_entry( 1,
                                                   1 )
-                    + ( YD_pointer->get_entry( 3,
-                                               3 )
-                        * NMIX_pointer->get_entry( which_neutralino,
-                                                   3 ) )
-                      * SBOTMIX_pointer->get_entry( 1,
-                                                    2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            right_coupling = ( ( YD_pointer->get_entry( 3,
-                                                        3 )
-                                 * NMIX_pointer->get_entry( which_neutralino,
-                                                            3 ) )
-                               * SBOTMIX_pointer->get_entry( 1,
-                                                             1 )
-                               - ( M_SQRT1_2 * ( get_g_one() / 1.5 )
-                                   * NMIX_pointer->get_entry( which_neutralino,
-                                                              1 ) )
-                                 * SBOTMIX_pointer->get_entry( 1,
-                                                               2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::sbottom_two == sfermion_code )
-          {
-
-            left_coupling
-            = ( ( M_SQRT1_2
-                  * ( get_g_two() * NMIX_pointer->get_entry( which_neutralino,
-                                                             2 )
-                      - ( get_g_one()  / 3.0 )
-                        * NMIX_pointer->get_entry( which_neutralino,
-                                                   1 ) ) )
-                * SBOTMIX_pointer->get_entry( 2,
-                                              1 )
-                + ( YD_pointer->get_entry( 3,
-                                           3 )
-                    * NMIX_pointer->get_entry( which_neutralino,
-                                               3 ) )
-                  * SBOTMIX_pointer->get_entry( 2,
-                                                2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            right_coupling = ( ( YD_pointer->get_entry( 3,
-                                                        3 )
-                                 * NMIX_pointer->get_entry( which_neutralino,
-                                                            3 ) )
-                               * SBOTMIX_pointer->get_entry( 2,
-                                                             1 )
-                               - ( M_SQRT1_2 * ( get_g_one() / 1.5 )
-                                   * NMIX_pointer->get_entry( which_neutralino,
-                                                              1 ) )
-                                 * SBOTMIX_pointer->get_entry( 2,
-                                                               2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::stop_one == sfermion_code )
-          {
-
-            left_coupling
-            = ( ( M_SQRT1_2
-                  * ( get_g_two() * NMIX_pointer->get_entry( which_neutralino,
-                                                             2 )
-                      - ( get_g_one() / 3.0 )
-                        * NMIX_pointer->get_entry( which_neutralino,
-                                                   1 ) ) )
-                * STOPMIX_pointer->get_entry( 1,
-                                              1 )
-                - ( YU_pointer->get_entry( 3,
-                                           3 )
-                    * NMIX_pointer->get_entry( which_neutralino,
-                                               4 ) )
-                  * STOPMIX_pointer->get_entry( 1,
-                                                2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            right_coupling = ( ( M_SQRT1_2 * ( get_g_one() / 0.75 )
-                                 * NMIX_pointer->get_entry( which_neutralino,
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      3 ) );
+        }
+        else if( CppSLHA::PDG_code::sdown_R == sfermionCode )
+        {
+          leftCoupling = ( ydPointer->get_entry( 1,
+                                                 1 )
+                           * nmixPointer->get_entry( whichNeutralino,
+                                                     3 ) );
+          rightCoupling = ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 1.5 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      1 ) );
+          // actually, the Feynman rule has an additional minus sign, but it
+          // doesn't matter because this is getting squared.
+        }
+        else if( CppSLHA::PDG_code::sup_L == sfermionCode )
+        {
+          leftCoupling
+          = ( M_SQRT1_2 * ( getWeakGaugeCoupling()
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      2 )
+                            - ( getHyperchargeGaugeCoupling() / 3.0 )
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        1 ) ) );
+          rightCoupling = ( yuPointer->get_entry( 1,
+                                                  1 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      4 ) );
+          // actually, the Feynman rule has an additional minus sign, but it
+          // doesn't matter because this is getting squared.
+        }
+        else if( CppSLHA::PDG_code::sup_R == sfermionCode )
+        {
+          leftCoupling = ( yuPointer->get_entry( 1,
+                                                 1 )
+                           * nmixPointer->get_entry( whichNeutralino,
+                                                     4 ) );
+          // actually, the Feynman rule has an additional minus sign, but it
+          // doesn't matter because this is getting squared.
+          rightCoupling = ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 0.75 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      1 ) );
+        }
+        else if( CppSLHA::PDG_code::sstrange_L == sfermionCode )
+        {
+          leftCoupling
+          = ( M_SQRT1_2 * ( getWeakGaugeCoupling()
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      2 )
+                            - ( getHyperchargeGaugeCoupling() / 3.0 )
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        1 ) ) );
+          rightCoupling = ( ydPointer->get_entry( 2,
+                                                  2 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      3 ) );
+        }
+        else if( CppSLHA::PDG_code::sstrange_R == sfermionCode )
+        {
+          leftCoupling = ( ydPointer->get_entry( 2,
+                                                 2 )
+                           * nmixPointer->get_entry( whichNeutralino,
+                                                     3 ) );
+          rightCoupling = ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 1.5 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      1 ) );
+          // actually, the Feynman rule has an additional minus sign, but it
+          // doesn't matter because this is getting squared.
+        }
+        else if( CppSLHA::PDG_code::scharm_L == sfermionCode )
+        {
+          leftCoupling
+          = ( M_SQRT1_2 * ( getWeakGaugeCoupling()
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      2 )
+                            - ( getHyperchargeGaugeCoupling() / 3.0 )
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        1 ) ) );
+          rightCoupling = ( yuPointer->get_entry( 2,
+                                                  2 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      4 ) );
+          // actually, the Feynman rule has an additional minus sign, but it
+          // doesn't matter because this is getting squared.
+        }
+        else if( CppSLHA::PDG_code::scharm_R == sfermionCode )
+        {
+          leftCoupling = ( yuPointer->get_entry( 2,
+                                                 2 )
+                           * nmixPointer->get_entry( whichNeutralino,
+                                                     4 ) );
+          // actually, the Feynman rule has an additional minus sign, but it
+          // doesn't matter because this is getting squared.
+          rightCoupling = ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 0.75 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      1 ) );
+        }
+        else if( CppSLHA::PDG_code::sbottom_one == sfermionCode )
+        {
+          leftCoupling
+          = ( ( M_SQRT1_2
+                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
+                                                          2 )
+                    - ( getHyperchargeGaugeCoupling() / 3.0 )
+                      * nmixPointer->get_entry( whichNeutralino,
+                                                1 ) ) )
+                      * sbotmixPointer->get_entry( 1,
+                                                   1 )
+                    + ( ydPointer->get_entry( 3,
+                                              3 )
+                        * nmixPointer->get_entry( whichNeutralino,
+                                                  3 ) )
+                        * sbotmixPointer->get_entry( 1,
+                                                     2 ) );
+          // the (relative) signs of the terms do matter in this case.
+          rightCoupling = ( ( ydPointer->get_entry( 3,
+                                                    3 )
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        3 ) )
+                              * sbotmixPointer->get_entry( 1,
+                                                           1 )
+                              - ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 1.5 )
+                                  * nmixPointer->get_entry( whichNeutralino,
                                                             1 ) )
-                               * STOPMIX_pointer->get_entry( 1,
-                                                         2 )
-                                   - ( YU_pointer->get_entry( 3,
-                                                      3 )
-                                       * NMIX_pointer->get_entry( which_neutralino,
-                                                          4 ) )
-                                     * STOPMIX_pointer->get_entry( 1,
-                                                           1 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::stop_two == sfermion_code )
-          {
-
-            left_coupling
-            = ( ( M_SQRT1_2
-                  * ( get_g_two() * NMIX_pointer->get_entry( which_neutralino,
-                                                             2 )
-                      - ( get_g_one() / 3.0 )
-                        * NMIX_pointer->get_entry( which_neutralino,
-                                                   1 ) ) )
-                * STOPMIX_pointer->get_entry( 2,
-                                              1 )
-                - ( YU_pointer->get_entry( 3,
-                                           3 )
-                    * NMIX_pointer->get_entry( which_neutralino,
-                                               4 ) )
-                  * STOPMIX_pointer->get_entry( 2,
-                                                2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            right_coupling = ( ( M_SQRT1_2 * ( get_g_one() / 0.75 )
-                                 * NMIX_pointer->get_entry( which_neutralino,
+                                  * sbotmixPointer->get_entry( 1,
+                                                               2 ) );
+          // the (relative) signs of the terms do matter in this case.
+        }
+        else if( CppSLHA::PDG_code::sbottom_two == sfermionCode )
+        {
+          leftCoupling
+          = ( ( M_SQRT1_2
+                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
+                                                          2 )
+                    - ( getHyperchargeGaugeCoupling()  / 3.0 )
+                      * nmixPointer->get_entry( whichNeutralino,
+                                                1 ) ) )
+              * sbotmixPointer->get_entry( 2,
+                                           1 )
+              + ( ydPointer->get_entry( 3,
+                                        3 )
+                  * nmixPointer->get_entry( whichNeutralino,
+                                            3 ) )
+                  * sbotmixPointer->get_entry( 2,
+                                               2 ) );
+          // the (relative) signs of the terms do matter in this case.
+          rightCoupling = ( ( ydPointer->get_entry( 3,
+                                                    3 )
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        3 ) )
+                              * sbotmixPointer->get_entry( 2,
+                                                           1 )
+                              - ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 1.5 )
+                                  * nmixPointer->get_entry( whichNeutralino,
                                                             1 ) )
-                               * STOPMIX_pointer->get_entry( 2,
-                                                             2 )
-                              - ( YU_pointer->get_entry( 3,
-                                                         3 )
-                                  * NMIX_pointer->get_entry( which_neutralino,
-                                                             4 ) )
-                                * STOPMIX_pointer->get_entry( 2,
-                                                              1 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::selectron_L == sfermion_code )
-          {
-
-            left_coupling
-            = ( M_SQRT1_2 * ( get_g_two()
-                              * NMIX_pointer->get_entry( which_neutralino,
-                                                         2 )
-                              + get_g_one()
-                                * NMIX_pointer->get_entry( which_neutralino,
-                                                           1 ) ) );
-
-            right_coupling = ( YE_pointer->get_entry( 1,
-                                                      1 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          3 ) );
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::selectron_R == sfermion_code )
-          {
-
-            left_coupling
-            = ( YE_pointer->get_entry( 1,
-                                       1 )
-                * NMIX_pointer->get_entry( which_neutralino,
-                                           3 ) );
-
-            right_coupling = ( M_SQRT1_2 * ( get_g_one() * 2.0 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          1 ) );
-            // actually, the Feynman rule has an additional minus sign, but it
-            // doesn't matter because this is getting squared.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::smuon_L == sfermion_code )
-          {
-
-            left_coupling
-            = ( M_SQRT1_2 * ( get_g_two()
-                              * NMIX_pointer->get_entry( which_neutralino,
-                                                         2 )
-                              + get_g_one()
-                                * NMIX_pointer->get_entry( which_neutralino,
-                                                           1 ) ) );
-
-            right_coupling = ( YE_pointer->get_entry( 2,
+                                  * sbotmixPointer->get_entry( 2,
+                                                               2 ) );
+          // the (relative) signs of the terms do matter in this case.
+        }
+        else if( CppSLHA::PDG_code::stop_one == sfermionCode )
+        {
+          leftCoupling
+          = ( ( M_SQRT1_2
+                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
+                                                          2 )
+                    - ( getHyperchargeGaugeCoupling() / 3.0 )
+                      * nmixPointer->get_entry( whichNeutralino,
+                                                1 ) ) )
+              * stopmixPointer->get_entry( 1,
+                                           1 )
+              - ( yuPointer->get_entry( 3,
+                                        3 )
+                  * nmixPointer->get_entry( whichNeutralino,
+                                            4 ) )
+                  * stopmixPointer->get_entry( 1,
+                                               2 ) );
+          // the (relative) signs of the terms do matter in this case.
+          rightCoupling = ( ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 0.75 )
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        1 ) )
+                              * stopmixPointer->get_entry( 1,
+                                                           2 )
+                              - ( yuPointer->get_entry( 3,
+                                                        3 )
+                                  * nmixPointer->get_entry( whichNeutralino,
+                                                            4 ) )
+                                  * stopmixPointer->get_entry( 1,
+                                                               1 ) );
+          // the (relative) signs of the terms do matter in this case.
+        }
+        else if( CppSLHA::PDG_code::stop_two == sfermionCode )
+        {
+          leftCoupling
+          = ( ( M_SQRT1_2
+                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
+                                                          2 )
+                    - ( getHyperchargeGaugeCoupling() / 3.0 )
+                      * nmixPointer->get_entry( whichNeutralino,
+                                                1 ) ) )
+                * stopmixPointer->get_entry( 2,
+                                             1 )
+                - ( yuPointer->get_entry( 3,
+                                          3 )
+                    * nmixPointer->get_entry( whichNeutralino,
+                                              4 ) )
+                    * stopmixPointer->get_entry( 2,
+                                                 2 ) );
+          // the (relative) signs of the terms do matter in this case.
+          rightCoupling = ( ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 0.75 )
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        1 ) )
+                              * stopmixPointer->get_entry( 2,
+                                                           2 )
+                              - ( yuPointer->get_entry( 3,
+                                                        3 )
+                                  * nmixPointer->get_entry( whichNeutralino,
+                                                            4 ) )
+                                  * stopmixPointer->get_entry( 2,
+                                                               1 ) );
+          // the (relative) signs of the terms do matter in this case.
+        }
+        else if( CppSLHA::PDG_code::selectron_L == sfermionCode )
+        {
+          leftCoupling
+          = ( M_SQRT1_2 * ( getWeakGaugeCoupling()
+                            * nmixPointer->get_entry( whichNeutralino,
                                                       2 )
-                               * NMIX_pointer->get_entry( which_neutralino,
-                                                          3 ) );
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::smuon_R == sfermion_code )
-          {
-
-            left_coupling
-            = ( YE_pointer->get_entry( 2,
-                                       2 )
-                * NMIX_pointer->get_entry( which_neutralino,
-                                           3 ) );
-
-            right_coupling = ( M_SQRT1_2 * ( get_g_one() * 2.0 )
-                               * NMIX_pointer->get_entry( which_neutralino,
+                            + getHyperchargeGaugeCoupling()
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        1 ) ) );
+          rightCoupling = ( yePointer->get_entry( 1,
+                                                  1 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      3 ) );
+        }
+        else if( CppSLHA::PDG_code::selectron_R == sfermionCode )
+        {
+          leftCoupling = ( yePointer->get_entry( 1,
+                                                 1 )
+                           * nmixPointer->get_entry( whichNeutralino,
+                                                     3 ) );
+          rightCoupling = ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() * 2.0 )
+                            * nmixPointer->get_entry( whichNeutralino,
                                                           1 ) );
-            // actually, the Feynman rule has an additional minus sign, but it
-            // doesn't matter because this is getting squared.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::stau_one == sfermion_code )
-          {
-
-            left_coupling
-            = ( ( M_SQRT1_2
-                  * ( get_g_two() * NMIX_pointer->get_entry( which_neutralino,
-                                                       2 )
-                      + get_g_one()
-                        * NMIX_pointer->get_entry( which_neutralino,
-                                                   1 ) ) )
-                    * STAUMIX_pointer->get_entry( 1,
-                                                  1 )
-                    + ( YE_pointer->get_entry( 3,
-                                               3 )
-                        * NMIX_pointer->get_entry( which_neutralino,
-                                                   3 ) )
-                      * STAUMIX_pointer->get_entry( 1,
-                                                    2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            right_coupling = ( ( YE_pointer->get_entry( 3,
-                                                        3 )
-                                 * NMIX_pointer->get_entry( which_neutralino,
-                                                            3 ) )
-                               * STAUMIX_pointer->get_entry( 1,
-                                                             1 )
-                               - ( M_SQRT1_2 * ( get_g_one() * 2.0 )
-                                   * NMIX_pointer->get_entry( which_neutralino,
-                                                              1 ) )
-                                 * STAUMIX_pointer->get_entry( 1,
-                                                               2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
-        else if( CppSLHA::PDG_code::stau_two == sfermion_code )
-          {
-
-            left_coupling
-            = ( ( M_SQRT1_2
-                  * ( get_g_two() * NMIX_pointer->get_entry( which_neutralino,
-                                                             2 )
-                      + get_g_one()
-                        * NMIX_pointer->get_entry( which_neutralino,
-                                                   1 ) ) )
-                    * STAUMIX_pointer->get_entry( 2,
-                                                  1 )
-                    + ( YE_pointer->get_entry( 3,
-                                               3 )
-                        * NMIX_pointer->get_entry( which_neutralino,
-                                                   3 ) )
-                      * STAUMIX_pointer->get_entry( 2,
-                                                    2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            right_coupling = ( ( YE_pointer->get_entry( 3,
-                                                        3 )
-                                 * NMIX_pointer->get_entry( which_neutralino,
-                                                            3 ) )
-                               * STAUMIX_pointer->get_entry( 2,
-                                                             1 )
-                               - ( M_SQRT1_2 * ( get_g_one() * 2.0 )
-                                   * NMIX_pointer->get_entry( which_neutralino,
-                                                              1 ) )
-                                 * STAUMIX_pointer->get_entry( 2,
-                                                               2 ) );
-            // the (relative) signs of the terms do matter in this case.
-
-            left_squared = ( left_coupling * left_coupling );
-
-            return ( left_squared
-                     / ( left_squared
-                         + right_coupling * right_coupling ) );
-
-          }
+          // actually, the Feynman rule has an additional minus sign, but it
+          // doesn't matter because this is getting squared.
+        }
+        else if( CppSLHA::PDG_code::smuon_L == sfermionCode )
+        {
+          leftCoupling
+          = ( M_SQRT1_2 * ( getWeakGaugeCoupling()
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      2 )
+                            + getHyperchargeGaugeCoupling()
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        1 ) ) );
+          rightCoupling = ( yePointer->get_entry( 2,
+                                                  2 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      3 ) );
+        }
+        else if( CppSLHA::PDG_code::smuon_R == sfermionCode )
+        {
+          leftCoupling = ( yePointer->get_entry( 2,
+                                                 2 )
+                           * nmixPointer->get_entry( whichNeutralino,
+                                                     3 ) );
+          rightCoupling = ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() * 2.0 )
+                            * nmixPointer->get_entry( whichNeutralino,
+                                                      1 ) );
+          // actually, the Feynman rule has an additional minus sign, but it
+          // doesn't matter because this is getting squared.
+        }
+        else if( CppSLHA::PDG_code::stau_one == sfermionCode )
+        {
+          leftCoupling
+          = ( ( M_SQRT1_2
+                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
+                                                          2 )
+                    + getHyperchargeGaugeCoupling()
+                      * nmixPointer->get_entry( whichNeutralino,
+                                                1 ) ) )
+              * staumixPointer->get_entry( 1,
+                                           1 )
+              + ( yePointer->get_entry( 3,
+                                        3 )
+                  * nmixPointer->get_entry( whichNeutralino,
+                                            3 ) )
+                  * staumixPointer->get_entry( 1,
+                                               2 ) );
+          // the (relative) signs of the terms do matter in this case.
+          rightCoupling = ( ( yePointer->get_entry( 3,
+                                                    3 )
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        3 ) )
+                              * staumixPointer->get_entry( 1,
+                                                           1 )
+                            - ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() * 2.0 )
+                                * nmixPointer->get_entry( whichNeutralino,
+                                                          1 ) )
+                                * staumixPointer->get_entry( 1,
+                                                             2 ) );
+          // the (relative) signs of the terms do matter in this case.
+        }
+        else if( CppSLHA::PDG_code::stau_two == sfermionCode )
+        {
+          leftCoupling
+          = ( ( M_SQRT1_2
+                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
+                                                          2 )
+                    + getHyperchargeGaugeCoupling()
+                      * nmixPointer->get_entry( whichNeutralino,
+                                                1 ) ) )
+              * staumixPointer->get_entry( 2,
+                                           1 )
+              + ( yePointer->get_entry( 3,
+                                        3 )
+                  * nmixPointer->get_entry( whichNeutralino,
+                                            3 ) )
+                  * staumixPointer->get_entry( 2,
+                                               2 ) );
+          // the (relative) signs of the terms do matter in this case.
+          rightCoupling = ( ( yePointer->get_entry( 3,
+                                                    3 )
+                              * nmixPointer->get_entry( whichNeutralino,
+                                                        3 ) )
+                            * staumixPointer->get_entry( 2,
+                                                         1 )
+                            - ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() * 2.0 )
+                                * nmixPointer->get_entry( whichNeutralino,
+                                                          1 ) )
+                              * staumixPointer->get_entry( 2,
+                                                           2 ) );
+          // the (relative) signs of the terms do matter in this case.
+        }
         else
+        {
+          if( isVerbose() )
           {
-
-            if( is_verbose() )
-              {
-
-                std::cout
-                << std::endl << "LHC-FASER::warning!"
-                << " input_handler::quark_or_lepton_left_handedness"
-                << " didn't recognize the sfermion PDG code \""
-                << sfermion_code << "\". returning "
-                << CppSLHA::CppSLHA_global::really_wrong_value_string;
-                std::cout << std::endl;
-
-              }
-
-            return CppSLHA::CppSLHA_global::really_wrong_value;
-
+            std::cout
+            << std::endl << "LHC-FASER::warning!"
+            << " input_handler::quark_or_lepton_left_handedness"
+            << " didn't recognize the sfermion PDG code \""
+            << sfermionCode << "\". returning "
+            << CppSLHA::CppSLHA_global::really_wrong_value_string;
+            std::cout << std::endl;
           }
-
-      }  // end of if it's a neutralino.
-
+          leftSquared = CppSLHA::CppSLHA_global::really_wrong_value;
+          rightSquared = CppSLHA::CppSLHA_global::really_wrong_value;
+        }
+      }
+      leftSquared = ( leftCoupling * leftCoupling );
+      return ( leftSquared
+               / ( leftSquared + rightCoupling * rightCoupling ) );
+    }  // end of if it's a neutralino.
   }
-
 }  // end of LHC_FASER namespace.
 

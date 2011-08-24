@@ -65,11 +65,11 @@ namespace LHC_FASER
                                         double const given_secondary_cut,
                                         double const given_jet_cut,
                                lepton_acceptance_value* const given_kinematics,
-           CppSLHA::particle_property_set const* const given_decaying_scolored,
+           particlePointer const given_decaying_scolored,
                                  bool const given_scolored_is_not_antiparticle,
-                  CppSLHA::particle_property_set const* const given_EW_decayer,
+                  particlePointer const given_EW_decayer,
                                     bool const given_EWino_is_not_antiparticle,
-                                 input_handler const* const given_shortcuts ) :
+                                 inputHandler const* const given_shortcuts ) :
     should_sum_charges( given_should_sum_charges ),
     primary_cut( given_primary_cut ),
     secondary_cut( given_secondary_cut ),
@@ -131,7 +131,7 @@ namespace LHC_FASER
 
     channel_calculator* channel_adder;
 
-    if( given_decaying_EWino == given_shortcuts->get_neutralino_one() )
+    if( given_decaying_EWino == given_shortcuts->getNeutralinoOne() )
       // if the electroweakino is the lightest neutralino, & hence assumed
       // stable, we set up the appropriate calculator...
       {
@@ -148,8 +148,8 @@ namespace LHC_FASER
         EW_decay_channels.push_back( channel_adder );
 
       }
-    else if( given_shortcuts->is_in( given_decaying_EWino->get_PDG_code(),
-                                given_shortcuts->get_unstable_neutralinos() ) )
+    else if( given_shortcuts->isIn( given_decaying_EWino->get_PDG_code(),
+                                given_shortcuts->getUnstableNeutralinos() ) )
       {
 
         // debugging:
@@ -166,7 +166,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                            given_shortcuts->get_selectron_L(),
+                                            given_shortcuts->getSelectronL(),
                                                 given_shortcuts,
                                    OSSF_minus_OSDF_leptons.get_value_pointer(),
                                      no_jets_two_electrons.get_value_pointer(),
@@ -195,7 +195,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                            given_shortcuts->get_selectron_R(),
+                                            given_shortcuts->getSelectronR(),
                                                 given_shortcuts,
                                    OSSF_minus_OSDF_leptons.get_value_pointer(),
                                      no_jets_two_electrons.get_value_pointer(),
@@ -224,7 +224,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                                given_shortcuts->get_smuon_L(),
+                                                given_shortcuts->getSmuonL(),
                                                 given_shortcuts,
                                    OSSF_minus_OSDF_leptons.get_value_pointer(),
                                          no_jets_two_muons.get_value_pointer(),
@@ -253,7 +253,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                                given_shortcuts->get_smuon_R(),
+                                                given_shortcuts->getSmuonR(),
                                                 given_shortcuts,
                                    OSSF_minus_OSDF_leptons.get_value_pointer(),
                                          no_jets_two_muons.get_value_pointer(),
@@ -281,7 +281,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                    given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_one(),
+                                               given_shortcuts->getStauOne(),
                                                    given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                         one_jet_no_leptons.get_value_pointer(),
@@ -300,7 +300,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                    given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_one(),
+                                               given_shortcuts->getStauOne(),
                                                    given_shortcuts,
                              one_jet_one_negative_electron.get_value_pointer(),
                              one_jet_one_positive_electron.get_value_pointer(),
@@ -324,7 +324,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                    given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_one(),
+                                               given_shortcuts->getStauOne(),
                                                    given_shortcuts,
                                      no_jets_two_electrons.get_value_pointer(),
            no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
@@ -362,7 +362,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                    given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_two(),
+                                               given_shortcuts->getStauTwo(),
                                                    given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                         one_jet_no_leptons.get_value_pointer(),
@@ -381,7 +381,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                    given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_two(),
+                                               given_shortcuts->getStauTwo(),
                                                    given_shortcuts,
                              one_jet_one_negative_electron.get_value_pointer(),
                              one_jet_one_positive_electron.get_value_pointer(),
@@ -405,7 +405,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                    given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_two(),
+                                               given_shortcuts->getStauTwo(),
                                                    given_shortcuts,
                                      no_jets_two_electrons.get_value_pointer(),
            no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
@@ -444,7 +444,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                           given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                                      given_shortcuts->get_Z(),
+                                                      given_shortcuts->getZ(),
                                                           given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                    OSSF_minus_OSDF_leptons.get_value_pointer(),
@@ -476,7 +476,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                         given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                                      given_shortcuts->get_Z(),
+                                                      given_shortcuts->getZ(),
                                                         given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                         one_jet_no_leptons.get_value_pointer(),
@@ -494,7 +494,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                         given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                                      given_shortcuts->get_Z(),
+                                                      given_shortcuts->getZ(),
                                                         given_shortcuts,
                              one_jet_one_negative_electron.get_value_pointer(),
                              one_jet_one_positive_electron.get_value_pointer(),
@@ -518,7 +518,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                         given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                                      given_shortcuts->get_Z(),
+                                                      given_shortcuts->getZ(),
                                                         given_shortcuts,
                                      no_jets_two_electrons.get_value_pointer(),
            no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
@@ -558,7 +558,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_light_neutral_EWSB_scalar(),
+                              given_shortcuts->getLightNeutralEwsbScalar(),
                                                 given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                    OSSF_minus_OSDF_leptons.get_value_pointer(),
@@ -585,7 +585,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_light_neutral_EWSB_scalar(),
+                              given_shortcuts->getLightNeutralEwsbScalar(),
                                               given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                         one_jet_no_leptons.get_value_pointer(),
@@ -604,7 +604,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_light_neutral_EWSB_scalar(),
+                              given_shortcuts->getLightNeutralEwsbScalar(),
                                               given_shortcuts,
                              one_jet_one_negative_electron.get_value_pointer(),
                              one_jet_one_positive_electron.get_value_pointer(),
@@ -629,7 +629,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_light_neutral_EWSB_scalar(),
+                              given_shortcuts->getLightNeutralEwsbScalar(),
                                               given_shortcuts,
                                      no_jets_two_electrons.get_value_pointer(),
            no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
@@ -669,7 +669,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_heavy_neutral_EWSB_scalar(),
+                              given_shortcuts->getHeavyNeutralEwsbScalar(),
                                                 given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                    OSSF_minus_OSDF_leptons.get_value_pointer(),
@@ -696,7 +696,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_heavy_neutral_EWSB_scalar(),
+                              given_shortcuts->getHeavyNeutralEwsbScalar(),
                                               given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                         one_jet_no_leptons.get_value_pointer(),
@@ -715,7 +715,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_heavy_neutral_EWSB_scalar(),
+                              given_shortcuts->getHeavyNeutralEwsbScalar(),
                                               given_shortcuts,
                              one_jet_one_negative_electron.get_value_pointer(),
                              one_jet_one_positive_electron.get_value_pointer(),
@@ -740,7 +740,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_heavy_neutral_EWSB_scalar(),
+                              given_shortcuts->getHeavyNeutralEwsbScalar(),
                                               given_shortcuts,
                                      no_jets_two_electrons.get_value_pointer(),
            no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
@@ -780,7 +780,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_neutral_EWSB_pseudoscalar(),
+                              given_shortcuts->getNeutralEwsbPseudoscalar(),
                                                 given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                    OSSF_minus_OSDF_leptons.get_value_pointer(),
@@ -807,7 +807,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_neutral_EWSB_pseudoscalar(),
+                              given_shortcuts->getNeutralEwsbPseudoscalar(),
                                               given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                         one_jet_no_leptons.get_value_pointer(),
@@ -826,7 +826,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_neutral_EWSB_pseudoscalar(),
+                              given_shortcuts->getNeutralEwsbPseudoscalar(),
                                               given_shortcuts,
                              one_jet_one_negative_electron.get_value_pointer(),
                              one_jet_one_positive_electron.get_value_pointer(),
@@ -851,7 +851,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                              given_shortcuts->get_neutral_EWSB_pseudoscalar(),
+                              given_shortcuts->getNeutralEwsbPseudoscalar(),
                                               given_shortcuts,
                                      no_jets_two_electrons.get_value_pointer(),
            no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
@@ -989,8 +989,8 @@ namespace LHC_FASER
         EW_decay_channels.push_back( channel_adder );
 
       }
-    else if( given_shortcuts->is_in( given_decaying_EWino->get_PDG_code(),
-                                     given_shortcuts->get_charginos() ) )
+    else if( given_shortcuts->isIn( given_decaying_EWino->get_PDG_code(),
+                                     given_shortcuts->getCharginos() ) )
       {
 
         cascade_acceptance_value* no_jets_one_signed_electron;
@@ -1025,7 +1025,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                                            given_shortcuts->get_selectron_L(),
+                                            given_shortcuts->getSelectronL(),
                                               given_shortcuts,
                               no_jets_one_signed_electron->get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1047,7 +1047,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                                            given_shortcuts->get_selectron_R(),
+                                            given_shortcuts->getSelectronR(),
                                               given_shortcuts,
                               no_jets_one_signed_electron->get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1069,7 +1069,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                                              given_shortcuts->get_smuon_L(),
+                                              given_shortcuts->getSmuonL(),
                                               given_shortcuts,
                                   no_jets_one_signed_muon->get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1091,7 +1091,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                               given_decaying_EWino,
                                               given_EWino_is_not_antiparticle,
-                                              given_shortcuts->get_smuon_R(),
+                                              given_shortcuts->getSmuonR(),
                                               given_shortcuts,
                                   no_jets_one_signed_muon->get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1112,7 +1112,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_one(),
+                                               given_shortcuts->getStauOne(),
                                                 given_shortcuts,
                                         one_jet_no_leptons.get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1127,7 +1127,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_one(),
+                                               given_shortcuts->getStauOne(),
                                                 given_shortcuts,
                               no_jets_one_signed_electron->get_value_pointer(),
                                   no_jets_one_signed_muon->get_value_pointer(),
@@ -1150,7 +1150,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_two(),
+                                               given_shortcuts->getStauTwo(),
                                                 given_shortcuts,
                                         one_jet_no_leptons.get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1165,7 +1165,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                 given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                               given_shortcuts->get_stau_two(),
+                                               given_shortcuts->getStauTwo(),
                                                 given_shortcuts,
                               no_jets_one_signed_electron->get_value_pointer(),
                                   no_jets_one_signed_muon->get_value_pointer(),
@@ -1189,7 +1189,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                        given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                   given_shortcuts->get_electron_sneutrino_L(),
+                                   given_shortcuts->getElectronSneutrinoL(),
                                                        given_shortcuts,
                               no_jets_one_signed_electron->get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1211,7 +1211,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                        given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                   given_shortcuts->get_electron_sneutrino_R(),
+                                   given_shortcuts->getElectronSneutrinoR(),
                                                        given_shortcuts,
                               no_jets_one_signed_electron->get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1233,7 +1233,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                        given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                       given_shortcuts->get_muon_sneutrino_L(),
+                                       given_shortcuts->getMuonSneutrinoL(),
                                                        given_shortcuts,
                                   no_jets_one_signed_muon->get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1255,7 +1255,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                        given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                       given_shortcuts->get_muon_sneutrino_R(),
+                                       given_shortcuts->getMuonSneutrinoR(),
                                                        given_shortcuts,
                                   no_jets_one_signed_muon->get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1276,7 +1276,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                          given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                        given_shortcuts->get_tau_sneutrino_L(),
+                                        given_shortcuts->getTauSneutrinoL(),
                                                          given_shortcuts,
                                         one_jet_no_leptons.get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1291,7 +1291,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                          given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                        given_shortcuts->get_tau_sneutrino_L(),
+                                        given_shortcuts->getTauSneutrinoL(),
                                                          given_shortcuts,
                               no_jets_one_signed_electron->get_value_pointer(),
                                   no_jets_one_signed_muon->get_value_pointer(),
@@ -1314,7 +1314,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                          given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                        given_shortcuts->get_tau_sneutrino_R(),
+                                        given_shortcuts->getTauSneutrinoR(),
                                                          given_shortcuts,
                                         one_jet_no_leptons.get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1329,7 +1329,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                          given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                        given_shortcuts->get_tau_sneutrino_R(),
+                                        given_shortcuts->getTauSneutrinoR(),
                                                          given_shortcuts,
                               no_jets_one_signed_electron->get_value_pointer(),
                                   no_jets_one_signed_muon->get_value_pointer(),
@@ -1354,7 +1354,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                        given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                                 given_shortcuts->get_W_plus(),
+                                                 given_shortcuts->getWPlus(),
                                                        given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                         one_jet_no_leptons.get_value_pointer(),
@@ -1374,7 +1374,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                     given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                                 given_shortcuts->get_W_plus(),
+                                                 given_shortcuts->getWPlus(),
                                                     given_shortcuts,
                                         one_jet_no_leptons.get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1389,7 +1389,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                     given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                                 given_shortcuts->get_W_plus(),
+                                                 given_shortcuts->getWPlus(),
                                                     given_shortcuts,
                                         one_jet_no_leptons.get_value_pointer(),
                               no_jets_one_signed_electron->get_value_pointer(),
@@ -1415,7 +1415,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                           given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                    given_shortcuts->get_charged_EWSB_scalar(),
+                                    given_shortcuts->getChargedEwsbScalar(),
                                                            given_shortcuts,
                                        two_jets_no_leptons.get_value_pointer(),
                                         one_jet_no_leptons.get_value_pointer(),
@@ -1433,7 +1433,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                         given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                    given_shortcuts->get_charged_EWSB_scalar(),
+                                    given_shortcuts->getChargedEwsbScalar(),
                                                         given_shortcuts,
                                         one_jet_no_leptons.get_value_pointer(),
                                       no_jets_no_leptons.get_value_pointer() );
@@ -1448,7 +1448,7 @@ namespace LHC_FASER
                                             given_scolored_is_not_antiparticle,
                                                         given_decaying_EWino,
                                                given_EWino_is_not_antiparticle,
-                                    given_shortcuts->get_charged_EWSB_scalar(),
+                                    given_shortcuts->getChargedEwsbScalar(),
                                                         given_shortcuts,
                                         one_jet_no_leptons.get_value_pointer(),
                               no_jets_one_signed_electron->get_value_pointer(),
@@ -2015,7 +2015,7 @@ namespace LHC_FASER
   {
     soughtDecayProductList.push_back(
                                  CppSLHA::CppSLHA_global::really_wrong_value );
-    // a cascade beginning with sv needs to look for 2 specific decay products.
+    // a cascade beginning with sv needs to look for 2 specific decay productSet.
   }
 
   svsxFullCascade::~svsxFullCascade()
@@ -2033,7 +2033,7 @@ namespace LHC_FASER
   {
     soughtDecayProductList.push_back(
                                  CppSLHA::CppSLHA_global::really_wrong_value );
-    // a cascade beginning with gv needs to look for 2 specific decay products.
+    // a cascade beginning with gv needs to look for 2 specific decay productSet.
   }
 
   gvsxFullCascade::~gvsxFullCascade()
@@ -2155,12 +2155,12 @@ namespace LHC_FASER
 
 
 
-  fullCascadeSet::fullCascadeSet( input_handler const* const shortcut,
-                   CppSLHA::particle_property_set const* const initialScolored,
+  fullCascadeSet::fullCascadeSet( inputHandler const* const shortcut,
+                   particlePointer const initialScolored,
                    electroweakCascadeHandler* const electroweakCascadeHandling,
                       std::list< fullCascadeSet* >* const squarkCascadeSetList,
                                   double const beamEnergy ) :
-    getsReadiedForNewPoint( shortcut->get_readier() ),
+    getsReadiedForNewPoint( shortcut->getReadier() ),
     initialScolored( initialScolored ),
     shortcut( shortcut ),
     squarkCascadeSetList( squarkCascadeSetList ),
@@ -2211,9 +2211,9 @@ namespace LHC_FASER
 
 
   squarkFullCascadeSet::squarkFullCascadeSet(
-                                           input_handler const* const shortcut,
+                                           inputHandler const* const shortcut,
                    electroweakCascadeHandler* const electroweakCascadeHandling,
-                   CppSLHA::particle_property_set const* const initialScolored,
+                   particlePointer const initialScolored,
                       std::list< fullCascadeSet* >* const squarkCascadeSetList,
                                         fullCascadeSet* const gluinoCascadeSet,
                                               double const beamEnergy ) :
@@ -2225,9 +2225,9 @@ namespace LHC_FASER
     gluinoCascadeSet( gluinoCascadeSet )
   {
     // we have to set up sxCascades now:
-    for( std::vector< CppSLHA::particle_property_set const* >::iterator
-         ewinoIterator = shortcut->get_electroweakinos()->begin();
-         shortcut->get_unstable_electroweakinos()->end() > ewinoIterator;
+    for( std::vector< particlePointer >::iterator
+         ewinoIterator = shortcut->getElectroweakinos()->begin();
+         shortcut->getUnstableElectroweakinos()->end() > ewinoIterator;
          ++ewinoIterator )
     {
       sxCascades.addNewAtEnd()->setProperties( shortcut,
@@ -2302,9 +2302,9 @@ namespace LHC_FASER
                                                        *gjsvsxIterator );
         addOpenCascade( sjgjsvsxCascades.getBack() );
       }
-      for( std::vector< CppSLHA::particle_property_set const* >::iterator
-           ewIterator = shortcut->get_EW_veved_and_vector_bosons()->begin();
-           shortcut->get_EW_veved_and_vector_bosons()->end() > ewIterator;
+      for( std::vector< particlePointer >::iterator
+           ewIterator = shortcut->getEwsbBosonsAndMassiveVectorBosons()->begin();
+           shortcut->getEwsbBosonsAndMassiveVectorBosons()->end() > ewIterator;
            ++ewIterator )
       {
         soughtPositivePdgCodeList.clear();
@@ -2371,9 +2371,9 @@ namespace LHC_FASER
          // of the list provided that the list is as it should be.
          ++cascadeIterator )
     {
-      for( std::vector< CppSLHA::particle_property_set const* >::iterator
-           ewIterator = shortcut->get_EW_veved_and_vector_bosons()->begin();
-           shortcut->get_EW_veved_and_vector_bosons()->end() > ewIterator;
+      for( std::vector< particlePointer >::iterator
+           ewIterator = shortcut->getEwsbBosonsAndMassiveVectorBosons()->begin();
+           shortcut->getEwsbBosonsAndMassiveVectorBosons()->end() > ewIterator;
            ++ewIterator )
       {
         soughtPositivePdgCodeList.clear();
@@ -2448,20 +2448,20 @@ namespace LHC_FASER
 
 
   gluinoFullCascadeSet::gluinoFullCascadeSet(
-                                           input_handler const* const shortcut,
+                                           inputHandler const* const shortcut,
                    electroweakCascadeHandler* const electroweakCascadeHandling,
                       std::list< fullCascadeSet* >* const squarkCascadeSetList,
                                                double const beamEnergy ) :
     fullCascadeSet( shortcut,
-                    shortcut->get_gluino(),
+                    shortcut->getGluino(),
                     electroweakCascadeHandling,
                     squarkCascadeSetList,
                     beamEnergy )
   {
     // we have to set up gxCascades now:
-    for( std::vector< CppSLHA::particle_property_set const* >::iterator
-         ewinoIterator = shortcut->get_electroweakinos()->begin();
-         shortcut->get_unstable_electroweakinos()->end() > ewinoIterator;
+    for( std::vector< particlePointer >::iterator
+         ewinoIterator = shortcut->getElectroweakinos()->begin();
+         shortcut->getUnstableElectroweakinos()->end() > ewinoIterator;
          ++ewinoIterator )
     {
       gxCascades.addNewAtEnd()->setProperties( shortcut,
@@ -2519,9 +2519,9 @@ namespace LHC_FASER
       }
 
       // now we check for gvs:
-      for( std::vector< CppSLHA::particle_property_set const* >::iterator
-           ewIterator = shortcut->get_EW_veved_and_vector_bosons()->begin();
-           shortcut->get_EW_veved_and_vector_bosons()->end() > ewIterator;
+      for( std::vector< particlePointer >::iterator
+           ewIterator = shortcut->getEwsbBosonsAndMassiveVectorBosons()->begin();
+           shortcut->getEwsbBosonsAndMassiveVectorBosons()->end() > ewIterator;
            ++ewIterator )
       {
         soughtPositivePdgCodeList.clear();
@@ -2568,7 +2568,7 @@ namespace LHC_FASER
 
 
   fullCascadeSetsForOneBeamEnergy::fullCascadeSetsForOneBeamEnergy(
-                                           input_handler const* const shortcut,
+                                           inputHandler const* const shortcut,
                              electroweakCascadeHandler* const ewCascadeHandler,
                                                     double const beamEnergy ) :
     shortcut( shortcut ),
@@ -2579,9 +2579,9 @@ namespace LHC_FASER
                                                  ewCascadeHandler,
                                                  &squarkCascadeSetList,
                                                  beamEnergy );
-    for( std::vector< CppSLHA::particle_property_set const* const >::iterator
-         squarkIterator = shortcut->get_squarks()->begin();
-         shortcut->get_squarks()->end() > squarkIterator;
+    for( std::vector< particlePointer const >::iterator
+         squarkIterator = shortcut->getSquarks()->begin();
+         shortcut->getSquarks()->end() > squarkIterator;
          ++squarkIterator )
     {
       squarkCascadeSets.push_back( new squarkFullCascadeSet( shortcut,
@@ -2608,10 +2608,10 @@ namespace LHC_FASER
 
   fullCascadeSet*
   fullCascadeSetsForOneBeamEnergy::getFullCascadeSet(
-                  CppSLHA::particle_property_set const* const initialScolored )
+                  particlePointer const initialScolored )
   /* this returns the fullCascadeSet for the requested colored sparticle, or
    * NULL if we were asked for a sparticle that is not the gluino or in
-   * shortcut->get_squarks().
+   * shortcut->getSquarks().
    */
   {
     if( CppSLHA::PDG_code::gluino == initialScolored->get_PDG_code() )
@@ -2639,7 +2639,7 @@ namespace LHC_FASER
 
 
   fullCascadeSetFactory::fullCascadeSetFactory(
-                                           input_handler const* const shortcut,
+                                           inputHandler const* const shortcut,
                           electroweakCascadeHandler* const ewCascadeHandler ) :
     shortcut( shortcut ),
     ewCascadeHandler( ewCascadeHandler )
@@ -2659,15 +2659,14 @@ namespace LHC_FASER
   }
 
   fullCascadeSet*
-  fullCascadeSetFactory::getFullCascadeSet(
-                   CppSLHA::particle_property_set const* const initialScolored,
-                                            int const beamEnergy )
+  fullCascadeSetFactory::getFullCascadeSetsForOneBeamEnergy(
+                                                         int const beamEnergy )
   /* this looks to see if there is an existing
    * fullCascadeSetsForOneBeamEnergy with the requested values, & if not,
    * makes 1, & returns the pointer.
    */
   {
-    fullCascadeSetsForOneBeamEnergy* setForEnergyPointer( NULL );
+    fullCascadeSetsForOneBeamEnergy* returnPointer( NULL );
     // we look to see if we already have a fullCascadeSetsForOneBeamEnergy for
     // these values:
     for( std::vector< fullCascadeSetsForOneBeamEnergy* >::iterator
@@ -2678,20 +2677,19 @@ namespace LHC_FASER
       if( beamEnergy
           == (*searchIterator)->getBeamEnergy() )
       {
-        setForEnergyPointer = *searchIterator;
+        returnPointer = *searchIterator;
         searchIterator = cascadeSetsPerEnergy->end();
       }
     }
-    if( NULL == setForEnergyPointer )
+    if( NULL == returnPointer )
       // if we do not already have a fullCascadeSetsForOneBeamEnergy for this
       // beam energy, we make a new instance:
     {
-      setForEnergyPointer = new fullCascadeSetsForOneBeamEnergy( shortcut,
-                                                              ewCascadeHandler,
-                                                                 beamEnergy );
-      cascadeSetsPerEnergy.push_back( setForEnergyPointer );
+      returnPointer = new fullCascadeSetsForOneBeamEnergy( shortcut,
+                                                           ewCascadeHandler,
+                                                           beamEnergy );
+      cascadeSetsPerEnergy.push_back( returnPointer );
     }
-    return setForEnergyPointer->getFullCascadeSet( initialScolored );
+    return returnPointer;
   }
-
 }  // end of LHC_FASER namespace.

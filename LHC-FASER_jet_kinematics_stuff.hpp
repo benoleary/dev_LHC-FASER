@@ -78,19 +78,19 @@ namespace LHC_FASER
   class squarkMassForGridDecider
   {
   public:
-    squarkMassForGridDecider( input_handler const* const shortcut )
+    squarkMassForGridDecider( inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~squarkMassForGridDecider()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
-    operator()( CppSLHA::particle_property_set const* const firstScolored,
-                CppSLHA::particle_property_set const* const secondScolored )
+    operator()( particlePointer const firstScolored,
+                particlePointer const secondScolored )
     = 0;
 
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
   };
 
   /* this is a derived class returning the average mass of the non-stop,
@@ -100,15 +100,15 @@ namespace LHC_FASER
   class heavierThanGluinoSquarkMassForGrid : public squarkMassForGridDecider
   {
   public:
-    heavierThanGluinoSquarkMassForGrid( input_handler const* const shortcut )
+    heavierThanGluinoSquarkMassForGrid( inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~heavierThanGluinoSquarkMassForGrid()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    double
-    operator()( CppSLHA::particle_property_set const* const firstScolored,
-                CppSLHA::particle_property_set const* const secondScolored )
+    virtual double
+    operator()( particlePointer const firstScolored,
+                particlePointer const secondScolored )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   //protected:
@@ -120,15 +120,15 @@ namespace LHC_FASER
   class firstMassForGrid : public squarkMassForGridDecider
   {
   public:
-    firstMassForGrid( input_handler const* const shortcut )
+    firstMassForGrid( inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~firstMassForGrid()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    double
-    operator()( CppSLHA::particle_property_set const* const firstScolored,
-                CppSLHA::particle_property_set const* const secondScolored )
+    virtual double
+    operator()( particlePointer const firstScolored,
+                particlePointer const secondScolored )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   //protected:
@@ -140,15 +140,15 @@ namespace LHC_FASER
   class secondMassForGrid : public squarkMassForGridDecider
   {
   public:
-    secondMassForGrid( input_handler const* const shortcut )
+    secondMassForGrid( inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~secondMassForGrid()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    double
-    operator()( CppSLHA::particle_property_set const* const firstScolored,
-                CppSLHA::particle_property_set const* const secondScolored )
+    virtual double
+    operator()( particlePointer const firstScolored,
+                particlePointer const secondScolored )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   //protected:
@@ -160,15 +160,15 @@ namespace LHC_FASER
   class averageSquarkMassForGrid : public squarkMassForGridDecider
   {
   public:
-    averageSquarkMassForGrid( input_handler const* const shortcut )
+    averageSquarkMassForGrid( inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~averageSquarkMassForGrid()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    double
-    operator()( CppSLHA::particle_property_set const* const firstScolored,
-                CppSLHA::particle_property_set const* const secondScolored )
+    virtual double
+    operator()( particlePointer const firstScolored,
+                particlePointer const secondScolored )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   //protected:
@@ -190,11 +190,10 @@ namespace LHC_FASER
     };
     // this could be expanded, provided grids that account for multiple squark
     // flavors are provided.
-
     jetAcceptanceTable( std::string const* const gridFilesLocation,
                         std::string const* const jetCutName,
                         int const acceptanceColumn,
-                        input_handler const* const shortcut )
+                        inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~jetAcceptanceTable()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -205,7 +204,7 @@ namespace LHC_FASER
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
-    getAcceptance( signed_particle_shortcut_pair const* const initialPair,
+    getAcceptance( signedParticleShortcutPair const* const initialPair,
                    fullCascade const* const firstCascade,
                    fullCascade const* const secondCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -213,7 +212,7 @@ namespace LHC_FASER
   protected:
     std::string const jetCutName;
     int const acceptanceColumn;
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     acceptanceGrid* gluinoGluinoGrid;
     acceptanceGrid* squarkGluinoGrid;
     acceptanceGrid* squarkAntisquarkGrid;
@@ -233,10 +232,10 @@ namespace LHC_FASER
     secondMassForGrid useSecondMass;
     averageSquarkMassForGrid useAverageMass;
     usedCascades firstCascadeType;
-    CppSLHA::particle_property_set const* firstCascadeSquark;
+    particlePointer firstCascadeSquark;
     // this is NULL if there is no squark in the cascade.
     usedCascades secondCascadeType;
-    CppSLHA::particle_property_set const* secondCascadeSquark;
+    particlePointer secondCascadeSquark;
     // this is NULL if there is no squark in the cascade.
 
     int
@@ -251,7 +250,7 @@ namespace LHC_FASER
   class jetAcceptanceTablesForOneBeamEnergy
   {
   public:
-    jetAcceptanceTablesForOneBeamEnergy( input_handler const* const shortcut,
+    jetAcceptanceTablesForOneBeamEnergy( inputHandler const* const shortcut,
                                          int const beamEnergy,
                                  std::string const* const gridFileSetLocation )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -270,7 +269,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     int const beamEnergy;
     std::string const gridFileSetLocation;
     std::vector< jetAcceptanceTable* > jetTables;
@@ -282,8 +281,8 @@ namespace LHC_FASER
   class jetPlusMetAcceptanceHandler
   {
   public:
-    jetPlusMetAcceptanceHandler( input_handler const* const shortcut,
-                             std::string const* const gridFileSetLocation )
+    jetPlusMetAcceptanceHandler( inputHandler const* const shortcut,
+                                 std::string const* const gridFileSetLocation )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~jetPlusMetAcceptanceHandler()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -297,7 +296,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    input_handler const* const shortcut;
+    inputHandler const* const shortcut;
     std::string const gridFileSetLocation;
     std::vector< jetAcceptanceTablesForOneBeamEnergy* > acceptanceTables;
 
@@ -316,12 +315,13 @@ namespace LHC_FASER
 
   // inline functions:
 
+
   inline double
   heavierThanGluinoSquarkMassForGrid::operator()(
-                     CppSLHA::particle_property_set const* const firstScolored,
-                   CppSLHA::particle_property_set const* const secondScolored )
+                                           particlePointer const firstScolored,
+                                         particlePointer const secondScolored )
   {
-    double returnValue( shortcut->get_average_squarks4_mass() );
+    double returnValue( shortcut->getAverageSquarks4Mass() );
     if( shortcut->getGluinoMass() > returnValue )
     {
       returnValue = ( shortcut->getGluinoMass() + 1.0 );
@@ -331,27 +331,24 @@ namespace LHC_FASER
 
 
   inline double
-  firstMassForGrid::operator()(
-                     CppSLHA::particle_property_set const* const firstScolored,
-                   CppSLHA::particle_property_set const* const secondScolored )
+  firstMassForGrid::operator()( particlePointer const firstScolored,
+                                particlePointer const secondScolored )
   {
     return firstScolored->get_absolute_mass();
   }
 
 
   inline double
-  secondMassForGrid::operator()(
-                     CppSLHA::particle_property_set const* const firstScolored,
-                   CppSLHA::particle_property_set const* const secondScolored )
+  secondMassForGrid::operator()( particlePointer const firstScolored,
+                                 particlePointer const secondScolored )
   {
     return secondScolored->get_absolute_mass();
   }
 
 
   inline double
-  averageSquarkMassForGrid::operator()(
-                     CppSLHA::particle_property_set const* const firstScolored,
-                   CppSLHA::particle_property_set const* const secondScolored )
+  averageSquarkMassForGrid::operator()( particlePointer const firstScolored,
+                                        particlePointer const secondScolored )
   {
     return ( 0.5 * ( firstScolored->get_absolute_mass()
                      + secondScolored->get_absolute_mass() ) );

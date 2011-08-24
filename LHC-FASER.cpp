@@ -259,7 +259,7 @@ namespace LHC_FASER
 
     readier_instance = new readierForNewPoint();
 
-    input_handler_object = new input_handler( spectrum_data,
+    input_handler_object = new inputHandler( spectrum_data,
                                         spectrum_data->get_particle_spectrum(),
                                               path_to_grids,
                                               readier_instance );
@@ -269,7 +269,7 @@ namespace LHC_FASER
     kinematics_handler_object = new kinematics_handler( input_handler_object );
     cascade_handler_object = new cascade_handler( input_handler_object );
 
-    shortcut = new signal_shortcuts( input_handler_object,
+    shortcut = new signalShortcuts( input_handler_object,
                                      cross_section_handler_object,
                                      kinematics_handler_object,
                                      cascade_handler_object );
