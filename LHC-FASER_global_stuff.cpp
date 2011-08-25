@@ -220,5 +220,19 @@ namespace LHC_FASER
                            &needsToPrepare );
       }
   }
+
+
+
+  publicGetsReadiedForNewPoint::publicGetsReadiedForNewPoint(
+                                          readierForNewPoint* const readier ) :
+    getsReadiedForNewPoint( readier )
+  {
+    // just an initialization of the base class.
+  }
+
+  publicGetsReadiedForNewPoint::~publicGetsReadiedForNewPoint()
+  {
+    // does nothing.
+  }
 }  // end of LHC_FASER namespace.
 

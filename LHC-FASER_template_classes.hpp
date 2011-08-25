@@ -111,6 +111,13 @@ namespace LHC_FASER
     // storedClass instances which are deemed current.
     /* code after the classes in this .hpp file. */;
 
+    std::vector< storedClass* > const*
+    inspectVector()
+    const
+    // this returns a pointer to the std::vector holding pointers to the
+    // storedClass instances which are deemed current.
+    /* code after the classes in this .hpp file. */;
+
     void
     clear()
     // this notes that all current storedClass instances are now to be treated
@@ -316,9 +323,9 @@ namespace LHC_FASER
   template< class storedClass >
   inline storedClass const*
   minimalAllocationVector< storedClass >::inspectFront()
+  const
   // this returns the 1st element deemed current. if there is none, this
   // returns NULL.
-  const
   {
     return getFront();
   }
@@ -371,6 +378,16 @@ namespace LHC_FASER
   template< class storedClass >
   inline std::vector< storedClass* >*
   minimalAllocationVector< storedClass >::getVector()
+  // this returns a pointer to the std::vector holding pointers to the
+  // storedClass instances which are deemed current.
+  {
+    return &currentPointers;
+  }
+
+  template< class storedClass >
+  inline std::vector< storedClass* > const*
+  minimalAllocationVector< storedClass >::inspectVector()
+  const
   // this returns a pointer to the std::vector holding pointers to the
   // storedClass instances which are deemed current.
   {

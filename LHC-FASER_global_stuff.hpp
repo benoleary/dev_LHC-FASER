@@ -170,6 +170,7 @@ namespace LHC_FASER
      * destructor is called.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
     ~getsReadiedForNewPoint()
     // the destructor tells readier, if it still exists, to stop modifying its
     // bool pointers.
@@ -189,6 +190,31 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };  // end of getsReadiedForNewPoint class.
 
+
+  // this class is a wrapper to allow for a getsReadiedForNewPoint that is
+  // publically manipulable.
+  class publicGetsReadiedForNewPoint : public getsReadiedForNewPoint
+  {
+  public:
+    publicGetsReadiedForNewPoint( readierForNewPoint* const readier )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~publicGetsReadiedForNewPoint()
+    // the destructor tells readier, if it still exists, to stop modifying its
+    // bool pointers.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    bool
+    publicNeedsToPrepareForThisPoint()
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    publicFinishPreparingForThisPoint()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  //protected:
+    // nothing.
+  };
 
 
 
@@ -259,6 +285,21 @@ namespace LHC_FASER
   {
     needsToPrepare = false;
     readier->resetMeOnNextUpdate( &needsToPrepare );
+  }
+
+
+
+  inline bool
+  publicGetsReadiedForNewPoint::publicNeedsToPrepareForThisPoint()
+  const
+  {
+    return needsToPrepareForThisPoint();
+  }
+
+  inline void
+  publicGetsReadiedForNewPoint::publicFinishPreparingForThisPoint()
+  {
+    finishPreparingForThisPoint();
   }
 }  // end of LHC_FASER namespace.
 

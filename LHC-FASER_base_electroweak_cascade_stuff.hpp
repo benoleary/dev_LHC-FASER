@@ -61,7 +61,6 @@
 
 namespace LHC_FASER
 {
-
   /* this is a class to hold the various acceptances that can come from a
    * cascade decay (not necessarily ending with the LSP) which results in 2 SM
    * fermions.
@@ -250,7 +249,6 @@ namespace LHC_FASER
     addToZeroJetsZeroLeptons( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   protected:
     bool notAlreadyCalculatedFlag;
     double twoJets;
@@ -285,9 +283,9 @@ namespace LHC_FASER
   public:
     electroweakCascade( leptonAcceptanceParameterSet* const kinematics,
                         effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
+                        particlePointer const coloredDecayer,
+                        particlePointer const electroweakDecayer,
+                        particlePointer const intermediateDecayer,
                         bool const canDoOssfMinusOsdf,
                         inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -369,11 +367,11 @@ namespace LHC_FASER
 
     leptonAcceptanceParameterSet* const kinematics;
     effectiveSquarkMassHolder* const effectiveSquarkMass;
-    CppSLHA::particle_property_set const* const coloredDecayer;
+    particlePointer const coloredDecayer;
     //bool const coloredDecayerIsNotAntiparticle;
-    CppSLHA::particle_property_set const* const electroweakDecayer;
+    particlePointer const electroweakDecayer;
     //bool const electroweakDecayerIsNotAntiparticle;
-    CppSLHA::particle_property_set const* const intermediateDecayer;
+    particlePointer const intermediateDecayer;
     bool const canDoOssfMinusOsdf;
     exclusiveBrCalculator* firstBr;
     exclusiveBrCalculator* secondBr;
@@ -411,7 +409,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
-  /* this is a class to hold a set of electroweakCascades associated with a
+  /* this is a class to hold a set of electroweakCascadeSource associated with a
    * single decaying electroweakino or vector boson (from the decay of a single
    * colored sparticle). the decaying colored sparticle is assumed to be the
    * version with a PDG code which is POSITIVE, rather than the antiparticle
@@ -429,8 +427,8 @@ namespace LHC_FASER
   {
   public:
     electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
+                           particlePointer const coloredDecayer,
+                           particlePointer const electroweakDecayer,
                            inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -439,11 +437,18 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     bool
-    isEquivalent( CppSLHA::particle_property_set const* const coloredDecayer,
-               CppSLHA::particle_property_set const* const electroweakDecayer )
+    isEquivalent( particlePointer const coloredDecayer,
+                  particlePointer const electroweakDecayer )
     // this returns true if the coloredDecayers & electroweakDecayers match.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
+    particlePointer
+    getColoredDecayer()
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    particlePointer
+    getElectroweakDecayer()
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getAcceptance( acceptanceCutSet const* const cuts,
                    int const numberOfAdditionalJets,
@@ -466,7 +471,6 @@ namespace LHC_FASER
      * particle.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
     getOssfMinusOsdf( acceptanceCutSet* const cuts )
     /* this does the common job of checking to see if the point has been
@@ -484,8 +488,8 @@ namespace LHC_FASER
   protected:
     leptonAcceptanceParameterSet* const kinematics;
     inputHandler const* const shortcut;
-    CppSLHA::particle_property_set const* const coloredDecayer;
-    CppSLHA::particle_property_set const* const electroweakDecayer;
+    particlePointer const coloredDecayer;
+    particlePointer const electroweakDecayer;
     std::vector< electroweakCascade* > cascades;
     electroweakCascade* currentCascade; // this is used for filling cascades.
   };
@@ -505,8 +509,8 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     electroweakCascadeSet*
-    getCascadeSet( CppSLHA::particle_property_set const* const coloredDecayer,
-               CppSLHA::particle_property_set const* const electroweakDecayer )
+    getCascadeSet( particlePointer const coloredDecayer,
+                   particlePointer const electroweakDecayer )
     /* this looks to see if it already has an electroweakCascadeSet
      * corresponding to the requested pairing, & if it does, it returns a
      * pointer to it, & if it doesn't, it constructs a new
@@ -953,9 +957,8 @@ namespace LHC_FASER
 
 
   inline bool
-  electroweakCascadeSet::isEquivalent(
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-               CppSLHA::particle_property_set const* const electroweakDecayer )
+  electroweakCascadeSet::isEquivalent( particlePointer const coloredDecayer,
+                                       particlePointer const electroweakDecayer )
   // this returns true if the coloredDecayers & electroweakDecayers match.
   {
     if( ( coloredDecayer == this->coloredDecayer )
@@ -970,6 +973,20 @@ namespace LHC_FASER
     }
   }
 
+  inline particlePointer
+  electroweakCascadeSet::getColoredDecayer()
+  const
+  {
+    return coloredDecayer;
+  }
+
+  inline particlePointer
+  electroweakCascadeSet::getElectroweakDecayer()
+  const
+  {
+    return electroweakDecayer;
+  }
+
   inline double
   electroweakCascadeSet::getAcceptance( acceptanceCutSet const* const cuts,
                                         int const numberOfAdditionalJets,
@@ -977,11 +994,11 @@ namespace LHC_FASER
                                         int const numberOfPositiveElectrons,
                                         int const numberOfNegativeMuons,
                                         int const numberOfPositiveMuons )
-  // this adds up the acceptances from the stored electroweakCascades.
+  // this adds up the acceptances from the stored electroweakCascadeSource.
   {
     double returnValue( 0.0 );
     for( std::vector< electroweakCascade* >::iterator
-         cascadeIterator = cascades.begin();
+         cascadeIterator( cascades.begin() );
          cascades.end() > cascadeIterator;
          ++cascadeIterator )
     {

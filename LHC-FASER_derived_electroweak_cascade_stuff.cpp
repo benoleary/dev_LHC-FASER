@@ -9,6 +9,1470 @@
 
 namespace LHC_FASER
 {
+  // this is here just for reference! it will be deleted later, when I am sure
+  // that I have covered all the decays it covers.
+  EW_decayer_values::EW_decayer_values( bool const given_should_sum_charges,
+                                        double const given_primary_cut,
+                                        double const given_secondary_cut,
+                                        double const given_jet_cut,
+                               lepton_acceptance_value* const given_kinematics,
+           particlePointer const given_decaying_scolored,
+                                 bool const given_scolored_is_not_antiparticle,
+                  particlePointer const given_EW_decayer,
+                                    bool const given_EWino_is_not_antiparticle,
+                                 inputHandler const* const given_shortcuts ) :
+    should_sum_charges( given_should_sum_charges ),
+    primary_cut( given_primary_cut ),
+    secondary_cut( given_secondary_cut ),
+    jetCut( given_jet_cut ),
+    leptonKinematics( given_kinematics ),
+    decaying_scolored( given_decaying_scolored ),
+    EW_decayer( given_EW_decayer ),
+    OSSF_minus_OSDF_leptons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    two_jets_no_leptons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    oneJetOneNegativeElectron(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    oneJetOnePositiveElectron(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    oneJetOneNegativeMuon( CppSLHA::CppSLHA_global::really_wrong_value ),
+    oneJetOnePositiveMuon( CppSLHA::CppSLHA_global::really_wrong_value ),
+    no_jets_two_electrons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    no_jets_one_positive_electron_one_negative_muon(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    no_jets_one_negative_electron_one_positive_muon(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    no_jets_two_muons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    oneJetZeroLeptons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    zeroJetsOneNegativeElectron(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    zeroJetsOnePositiveElectron(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    zeroJetsOneNegativeMuon( CppSLHA::CppSLHA_global::really_wrong_value ),
+    zeroJetsOnePositiveMuon( CppSLHA::CppSLHA_global::really_wrong_value ),
+    zeroJetsZeroLeptons( CppSLHA::CppSLHA_global::really_wrong_value )
+  {
+
+    // debugging:
+    /**std::cout
+    << std::endl
+    << "debugging: EW_decayer_values::EW_decayer_values( "
+    << given_primary_cut << ", "
+    << given_secondary_cut << ", "
+    << given_jet_cut << ", ..."
+    << *(given_decaying_scolored->getName())
+    << ", "
+    << *(given_decaying_EWino->getName())
+    << ", ... ) called.";
+    std::cout << std::endl;
+    std::cout << std::endl;**/
+
+
+    if( given_should_sum_charges )
+      {
+
+        charge_summing_factor = 2.0;
+
+      }
+    else
+      {
+
+        charge_summing_factor = 1.0;
+
+      }
+
+    channel_calculator* channel_adder;
+
+    if( given_decaying_EWino == given_shortcuts->getNeutralinoOne() )
+      // if the electroweakino is the lightest neutralino, & hence assumed
+      // stable, we set up the appropriate calculator...
+      {
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding neutralino_1 channel";
+        std::cout << std::endl;**/
+
+        channel_adder
+        = new lightestNeutralinoCascade( no_jets_no_leptons.get_value_pointer() );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+      }
+    else if( given_shortcuts->isIn( given_decaying_EWino->get_PDG_code(),
+                                given_shortcuts->getUnstableNeutralinos() ) )
+      {
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding selectron_L channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new neutralinoToSemuCascade( should_sum_charges,
+                                                given_primary_cut,
+                                                given_secondary_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                            given_shortcuts->getSelectronL(),
+                                                given_shortcuts,
+                                   OSSF_minus_OSDF_leptons.get_value_pointer(),
+                                     no_jets_two_electrons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        OSSF_minus_OSDF_leptons.add_channel( channel_adder );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding selectron_R channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new neutralinoToSemuCascade( should_sum_charges,
+                                                given_primary_cut,
+                                                given_secondary_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                            given_shortcuts->getSelectronR(),
+                                                given_shortcuts,
+                                   OSSF_minus_OSDF_leptons.get_value_pointer(),
+                                     no_jets_two_electrons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        OSSF_minus_OSDF_leptons.add_channel( channel_adder );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding smuon_L channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new neutralinoToSemuCascade( should_sum_charges,
+                                                given_primary_cut,
+                                                given_secondary_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                given_shortcuts->getSmuonL(),
+                                                given_shortcuts,
+                                   OSSF_minus_OSDF_leptons.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        OSSF_minus_OSDF_leptons.add_channel( channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding smuon_R channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new neutralinoToSemuCascade( should_sum_charges,
+                                                given_primary_cut,
+                                                given_secondary_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                given_shortcuts->getSmuonR(),
+                                                given_shortcuts,
+                                   OSSF_minus_OSDF_leptons.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        OSSF_minus_OSDF_leptons.add_channel( channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding stau_one channels";
+        std::cout << std::endl;**/
+
+        channel_adder = new neutralino_to_stau_jj( should_sum_charges,
+                                                   given_jet_cut,
+                                                   given_kinematics,
+                                                   given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                   given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauOne(),
+                                                   given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new neutralino_to_stau_jl( should_sum_charges,
+                                                   given_primary_cut,
+                                                   given_secondary_cut,
+                                                   given_jet_cut,
+                                                   given_kinematics,
+                                                   given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                   given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauOne(),
+                                                   given_shortcuts,
+                             one_jet_one_negative_electron.get_value_pointer(),
+                             one_jet_one_positive_electron.get_value_pointer(),
+                                 one_jet_one_negative_muon.get_value_pointer(),
+                                 one_jet_one_positive_muon.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_one_negative_electron.add_channel( channel_adder );
+        one_jet_one_positive_electron.add_channel( channel_adder );
+        one_jet_one_negative_muon.add_channel( channel_adder );
+        one_jet_one_positive_muon.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new neutralino_to_stau_ll( should_sum_charges,
+                                                   given_primary_cut,
+                                                   given_secondary_cut,
+                                                   given_kinematics,
+                                                   given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                   given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauOne(),
+                                                   given_shortcuts,
+                                     no_jets_two_electrons.get_value_pointer(),
+           no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
+           no_jets_one_positive_electron_one_negative_muon.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_one_negative_electron_one_positive_muon.add_channel(
+                                                               channel_adder );
+        no_jets_one_positive_electron_one_negative_muon.add_channel(
+                                                               channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding stau_two channels";
+        std::cout << std::endl;**/
+
+        channel_adder = new neutralino_to_stau_jj( should_sum_charges,
+                                                   given_jet_cut,
+                                                   given_kinematics,
+                                                   given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                   given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauTwo(),
+                                                   given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new neutralino_to_stau_jl( should_sum_charges,
+                                                   given_primary_cut,
+                                                   given_secondary_cut,
+                                                   given_jet_cut,
+                                                   given_kinematics,
+                                                   given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                   given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauTwo(),
+                                                   given_shortcuts,
+                             one_jet_one_negative_electron.get_value_pointer(),
+                             one_jet_one_positive_electron.get_value_pointer(),
+                                 one_jet_one_negative_muon.get_value_pointer(),
+                                 one_jet_one_positive_muon.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_one_negative_electron.add_channel( channel_adder );
+        one_jet_one_positive_electron.add_channel( channel_adder );
+        one_jet_one_negative_muon.add_channel( channel_adder );
+        one_jet_one_positive_muon.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new neutralino_to_stau_ll( should_sum_charges,
+                                                   given_primary_cut,
+                                                   given_secondary_cut,
+                                                   given_kinematics,
+                                                   given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                   given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauTwo(),
+                                                   given_shortcuts,
+                                     no_jets_two_electrons.get_value_pointer(),
+           no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
+           no_jets_one_positive_electron_one_negative_muon.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_one_negative_electron_one_positive_muon.add_channel(
+                                                               channel_adder );
+        no_jets_one_positive_electron_one_negative_muon.add_channel(
+                                                               channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding Z channels";
+        std::cout << std::endl;**/
+
+        channel_adder = new neutralino_to_Z_without_taus( given_primary_cut,
+                                                          given_secondary_cut,
+                                                          given_jet_cut,
+                                                          given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                          given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                      given_shortcuts->getZ(),
+                                                          given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                   OSSF_minus_OSDF_leptons.get_value_pointer(),
+                                     no_jets_two_electrons.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        OSSF_minus_OSDF_leptons.add_channel( channel_adder );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new neutralino_to_Z_to_taus_jj( given_primary_cut,
+                                                        given_secondary_cut,
+                                                        given_jet_cut,
+                                                        given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                        given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                      given_shortcuts->getZ(),
+                                                        given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new neutralino_to_Z_to_taus_jl( given_primary_cut,
+                                                        given_secondary_cut,
+                                                        given_jet_cut,
+                                                        given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                        given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                      given_shortcuts->getZ(),
+                                                        given_shortcuts,
+                             one_jet_one_negative_electron.get_value_pointer(),
+                             one_jet_one_positive_electron.get_value_pointer(),
+                                 one_jet_one_negative_muon.get_value_pointer(),
+                                 one_jet_one_positive_muon.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_one_negative_electron.add_channel( channel_adder );
+        one_jet_one_positive_electron.add_channel( channel_adder );
+        one_jet_one_negative_muon.add_channel( channel_adder );
+        one_jet_one_positive_muon.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new neutralino_to_Z_to_taus_ll( given_primary_cut,
+                                                        given_secondary_cut,
+                                                        given_jet_cut,
+                                                        given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                        given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                      given_shortcuts->getZ(),
+                                                        given_shortcuts,
+                                     no_jets_two_electrons.get_value_pointer(),
+           no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
+           no_jets_one_positive_electron_one_negative_muon.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_one_negative_electron_one_positive_muon.add_channel(
+                                                               channel_adder );
+        no_jets_one_positive_electron_one_negative_muon.add_channel(
+                                                               channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding h channels";
+        std::cout << std::endl;**/
+
+        channel_adder
+        = new neutralino_to_Higgs_without_taus( given_primary_cut,
+                                                given_secondary_cut,
+                                                given_jet_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                              given_shortcuts->getLightNeutralEwsbScalar(),
+                                                given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                   OSSF_minus_OSDF_leptons.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        OSSF_minus_OSDF_leptons.add_channel( channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_to_Higgs_to_taus_jj( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_jet_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                              given_shortcuts->getLightNeutralEwsbScalar(),
+                                              given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_to_Higgs_to_taus_jl( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_jet_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                              given_shortcuts->getLightNeutralEwsbScalar(),
+                                              given_shortcuts,
+                             one_jet_one_negative_electron.get_value_pointer(),
+                             one_jet_one_positive_electron.get_value_pointer(),
+                                 one_jet_one_negative_muon.get_value_pointer(),
+                                 one_jet_one_positive_muon.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_one_negative_electron.add_channel( channel_adder );
+        one_jet_one_positive_electron.add_channel( channel_adder );
+        one_jet_one_negative_muon.add_channel( channel_adder );
+        one_jet_one_positive_muon.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_to_Higgs_to_taus_ll( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_jet_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                              given_shortcuts->getLightNeutralEwsbScalar(),
+                                              given_shortcuts,
+                                     no_jets_two_electrons.get_value_pointer(),
+           no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
+           no_jets_one_positive_electron_one_negative_muon.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_one_negative_electron_one_positive_muon.add_channel(
+                                                               channel_adder );
+        no_jets_one_positive_electron_one_negative_muon.add_channel(
+                                                               channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding H channels";
+        std::cout << std::endl;**/
+
+        channel_adder
+        = new neutralino_to_Higgs_without_taus( given_primary_cut,
+                                                given_secondary_cut,
+                                                given_jet_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                              given_shortcuts->getHeavyNeutralEwsbScalar(),
+                                                given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                   OSSF_minus_OSDF_leptons.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        OSSF_minus_OSDF_leptons.add_channel( channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_to_Higgs_to_taus_jj( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_jet_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                              given_shortcuts->getHeavyNeutralEwsbScalar(),
+                                              given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_to_Higgs_to_taus_jl( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_jet_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                              given_shortcuts->getHeavyNeutralEwsbScalar(),
+                                              given_shortcuts,
+                             one_jet_one_negative_electron.get_value_pointer(),
+                             one_jet_one_positive_electron.get_value_pointer(),
+                                 one_jet_one_negative_muon.get_value_pointer(),
+                                 one_jet_one_positive_muon.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_one_negative_electron.add_channel( channel_adder );
+        one_jet_one_positive_electron.add_channel( channel_adder );
+        one_jet_one_negative_muon.add_channel( channel_adder );
+        one_jet_one_positive_muon.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_to_Higgs_to_taus_ll( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_jet_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                              given_shortcuts->getHeavyNeutralEwsbScalar(),
+                                              given_shortcuts,
+                                     no_jets_two_electrons.get_value_pointer(),
+           no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
+           no_jets_one_positive_electron_one_negative_muon.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_one_negative_electron_one_positive_muon.add_channel(
+                                                               channel_adder );
+        no_jets_one_positive_electron_one_negative_muon.add_channel(
+                                                               channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding A channels";
+        std::cout << std::endl;**/
+
+        channel_adder
+        = new neutralino_to_Higgs_without_taus( given_primary_cut,
+                                                given_secondary_cut,
+                                                given_jet_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                              given_shortcuts->getNeutralEwsbPseudoscalar(),
+                                                given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                   OSSF_minus_OSDF_leptons.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        OSSF_minus_OSDF_leptons.add_channel( channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_to_Higgs_to_taus_jj( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_jet_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                              given_shortcuts->getNeutralEwsbPseudoscalar(),
+                                              given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_to_Higgs_to_taus_jl( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_jet_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                              given_shortcuts->getNeutralEwsbPseudoscalar(),
+                                              given_shortcuts,
+                             one_jet_one_negative_electron.get_value_pointer(),
+                             one_jet_one_positive_electron.get_value_pointer(),
+                                 one_jet_one_negative_muon.get_value_pointer(),
+                                 one_jet_one_positive_muon.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_one_negative_electron.add_channel( channel_adder );
+        one_jet_one_positive_electron.add_channel( channel_adder );
+        one_jet_one_negative_muon.add_channel( channel_adder );
+        one_jet_one_positive_muon.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_to_Higgs_to_taus_ll( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_jet_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                              given_shortcuts->getNeutralEwsbPseudoscalar(),
+                                              given_shortcuts,
+                                     no_jets_two_electrons.get_value_pointer(),
+           no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
+           no_jets_one_positive_electron_one_negative_muon.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_one_negative_electron_one_positive_muon.add_channel(
+                                                               channel_adder );
+        no_jets_one_positive_electron_one_negative_muon.add_channel(
+                                                               channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding 3-body channel";
+        std::cout << std::endl;**/
+
+        channel_adder
+        = new neutralino_three_body_without_taus( given_primary_cut,
+                                                  given_secondary_cut,
+                                                  given_jet_cut,
+                                                  given_kinematics,
+                                                  given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                  given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                  given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                   OSSF_minus_OSDF_leptons.get_value_pointer(),
+                                     no_jets_two_electrons.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        OSSF_minus_OSDF_leptons.add_channel( channel_adder );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_three_body_to_taus_jj( given_primary_cut,
+                                                given_secondary_cut,
+                                                given_jet_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_three_body_to_taus_jl( given_primary_cut,
+                                                given_secondary_cut,
+                                                given_jet_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                given_shortcuts,
+                             one_jet_one_negative_electron.get_value_pointer(),
+                             one_jet_one_positive_electron.get_value_pointer(),
+                                 one_jet_one_negative_muon.get_value_pointer(),
+                                 one_jet_one_positive_muon.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_one_negative_electron.add_channel( channel_adder );
+        one_jet_one_positive_electron.add_channel( channel_adder );
+        one_jet_one_negative_muon.add_channel( channel_adder );
+        one_jet_one_positive_muon.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder
+        = new neutralino_three_body_to_taus_ll( given_primary_cut,
+                                                given_secondary_cut,
+                                                given_jet_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                given_shortcuts,
+                                     no_jets_two_electrons.get_value_pointer(),
+           no_jets_one_negative_electron_one_positive_muon.get_value_pointer(),
+           no_jets_one_positive_electron_one_negative_muon.get_value_pointer(),
+                                         no_jets_two_muons.get_value_pointer(),
+                             no_jets_one_negative_electron.get_value_pointer(),
+                             no_jets_one_positive_electron.get_value_pointer(),
+                                 no_jets_one_negative_muon.get_value_pointer(),
+                                 no_jets_one_positive_muon.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_two_electrons.add_channel( channel_adder );
+        no_jets_one_negative_electron_one_positive_muon.add_channel(
+                                                               channel_adder );
+        no_jets_one_positive_electron_one_negative_muon.add_channel(
+                                                               channel_adder );
+        no_jets_two_muons.add_channel( channel_adder );
+        no_jets_one_negative_electron.add_channel( channel_adder );
+        no_jets_one_positive_electron.add_channel( channel_adder );
+        no_jets_one_negative_muon.add_channel( channel_adder );
+        no_jets_one_positive_muon.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+      }
+    else if( given_shortcuts->isIn( given_decaying_EWino->get_PDG_code(),
+                                     given_shortcuts->getCharginos() ) )
+      {
+
+        cascade_acceptance_value* no_jets_one_signed_electron;
+        cascade_acceptance_value* no_jets_one_signed_muon;
+
+        if( given_EWino_is_not_antiparticle )
+          {
+
+            no_jets_one_signed_electron = no_jets_one_positive_electron;
+            no_jets_one_signed_muon = no_jets_one_positive_muon;
+
+          }
+        else
+          {
+
+            no_jets_one_signed_electron = no_jets_one_negative_electron;
+            no_jets_one_signed_muon = no_jets_one_negative_muon;
+
+          }
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding selectron_L channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_semu( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                                            given_shortcuts->getSelectronL(),
+                                              given_shortcuts,
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding selectron_R channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_semu( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                                            given_shortcuts->getSelectronR(),
+                                              given_shortcuts,
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding smuon_L channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_semu( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                                              given_shortcuts->getSmuonL(),
+                                              given_shortcuts,
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding smuon_R channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_semu( given_primary_cut,
+                                              given_secondary_cut,
+                                              given_kinematics,
+                                              given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                              given_decaying_EWino,
+                                              given_EWino_is_not_antiparticle,
+                                              given_shortcuts->getSmuonR(),
+                                              given_shortcuts,
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding stau_1 channels";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_stau_j( given_jet_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauOne(),
+                                                given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_to_stau_l( given_primary_cut,
+                                                given_secondary_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauOne(),
+                                                given_shortcuts,
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding stau_2 channels";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_stau_j( given_jet_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauTwo(),
+                                                given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_to_stau_l( given_primary_cut,
+                                                given_secondary_cut,
+                                                given_kinematics,
+                                                given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                               given_shortcuts->getStauTwo(),
+                                                given_shortcuts,
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding e_sneutrino_L channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_emu_sneutrino( given_primary_cut,
+                                                       given_secondary_cut,
+                                                       given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                       given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                   given_shortcuts->getElectronSneutrinoL(),
+                                                       given_shortcuts,
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding e_sneutrino_R channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_emu_sneutrino( given_primary_cut,
+                                                       given_secondary_cut,
+                                                       given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                       given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                   given_shortcuts->getElectronSneutrinoR(),
+                                                       given_shortcuts,
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding mu_sneutrino_L channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_emu_sneutrino( given_primary_cut,
+                                                       given_secondary_cut,
+                                                       given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                       given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                       given_shortcuts->getMuonSneutrinoL(),
+                                                       given_shortcuts,
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding mu_sneutrino_R channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_emu_sneutrino( given_primary_cut,
+                                                       given_secondary_cut,
+                                                       given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                       given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                       given_shortcuts->getMuonSneutrinoR(),
+                                                       given_shortcuts,
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding tau_sneutrino_L channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_tau_sneutrino_j( given_jet_cut,
+                                                         given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                         given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                        given_shortcuts->getTauSneutrinoL(),
+                                                         given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_to_tau_sneutrino_l( given_primary_cut,
+                                                         given_secondary_cut,
+                                                         given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                         given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                        given_shortcuts->getTauSneutrinoL(),
+                                                         given_shortcuts,
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding tau_sneutrino_R channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_tau_sneutrino_j( given_jet_cut,
+                                                         given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                         given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                        given_shortcuts->getTauSneutrinoR(),
+                                                         given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_to_tau_sneutrino_l( given_primary_cut,
+                                                         given_secondary_cut,
+                                                         given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                         given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                        given_shortcuts->getTauSneutrinoR(),
+                                                         given_shortcuts,
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding W channels";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_W_without_tau( given_primary_cut,
+                                                       given_secondary_cut,
+                                                       given_jet_cut,
+                                                       given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                       given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                 given_shortcuts->getWPlus(),
+                                                       given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_to_W_to_tau_j( given_jet_cut,
+                                                    given_kinematics,
+                                                    given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                    given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                 given_shortcuts->getWPlus(),
+                                                    given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_to_W_to_tau_l( given_primary_cut,
+                                                    given_secondary_cut,
+                                                    given_kinematics,
+                                                    given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                    given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                 given_shortcuts->getWPlus(),
+                                                    given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding H channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_to_Higgs_without_tau( given_primary_cut,
+                                                           given_secondary_cut,
+                                                           given_jet_cut,
+                                                           given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                          given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                    given_shortcuts->getChargedEwsbScalar(),
+                                                           given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_to_Higgs_to_tau_j( given_jet_cut,
+                                                        given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                        given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                    given_shortcuts->getChargedEwsbScalar(),
+                                                        given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_to_Higgs_to_tau_l( given_primary_cut,
+                                                        given_secondary_cut,
+                                                        given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                        given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                    given_shortcuts->getChargedEwsbScalar(),
+                                                        given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+
+        // debugging:
+        /**std::cout
+        << std::endl
+        << "adding 3-body channel";
+        std::cout << std::endl;**/
+
+        channel_adder = new chargino_three_body_without_tau( given_primary_cut,
+                                                           given_secondary_cut,
+                                                             given_jet_cut,
+                                                             given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                          given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                             given_shortcuts,
+                                       two_jets_no_leptons.get_value_pointer(),
+                                        one_jet_no_leptons.get_value_pointer(),
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        two_jets_no_leptons.add_channel( channel_adder );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_three_body_to_tau_j( given_jet_cut,
+                                                          given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                          given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                          given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        one_jet_no_leptons.add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+        channel_adder = new chargino_three_body_to_tau_l( given_primary_cut,
+                                                          given_secondary_cut,
+                                                          given_kinematics,
+                                                       given_decaying_scolored,
+                                            given_scolored_is_not_antiparticle,
+                                                          given_decaying_EWino,
+                                               given_EWino_is_not_antiparticle,
+                                                          given_shortcuts,
+                                        one_jet_no_leptons.get_value_pointer(),
+                              no_jets_one_signed_electron->get_value_pointer(),
+                                  no_jets_one_signed_muon->get_value_pointer(),
+                                      no_jets_no_leptons.get_value_pointer() );
+        no_jets_one_signed_electron->add_channel( channel_adder );
+        no_jets_one_signed_muon->add_channel( channel_adder );
+        no_jets_no_leptons.add_channel( channel_adder );
+        EW_decay_channels.push_back( channel_adder );
+
+      }
+
+  }
+
+
 
   lightestNeutralinoCascade::lightestNeutralinoCascade() :
     electroweakCascade( NULL,

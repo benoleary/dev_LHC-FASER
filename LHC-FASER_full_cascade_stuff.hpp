@@ -105,6 +105,8 @@ namespace LHC_FASER
   class fullCascade
   {
   public:
+    typedef std::pair< particlePointer,
+                       int > particleWithInt;
     enum colorfulCascadeType
     {
       /* we do not take into account multiple decays to vector bosons plus
@@ -161,19 +163,9 @@ namespace LHC_FASER
     ~fullCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    inputHandler const*
-    getShortcut()
+    particlePointer
+    getInitialScolored()
     const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    virtual double
-    getBrToEwino( std::list< int > const* excludedSmParticles )
-    const
-    /* this works out the branching ratio for the decays of colored sparticles
-     * down to the 1st electroweakino in the cascade (including any decays to
-     * vector bosons + squarks), using the given list of excluded SM particles
-     * to exclude unwanted parts of the BR. by default, it calls
-     */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     void
@@ -188,8 +180,17 @@ namespace LHC_FASER
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    std::vector< std::pair< particlePointer,
-                            int > > const*
+    virtual double
+    getBrToEwino( std::list< int > const* excludedSmParticles )
+    /* this works out the branching ratio for the decays of colored sparticles
+     * down to the 1st electroweakino in the cascade (including any decays to
+     * vector bosons + squarks), using the given list of excluded SM particles
+     * to exclude unwanted parts of the BR. by default, it multiplies the BR
+     * for the initial decay by subcascade->getBrToEwino.
+     */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    std::vector< particleWithInt* > const*
     getCascadeDefiner()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -267,9 +268,8 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    static int const
-    numberOfSmFermionsFromElectroweakDecaysPerPartialCascade = 2;
-    static int const numberOfSmFermionsFromElectroweakDecaysPerFullCascade = 4;
+    static int const numberOfSmFermionsFromElectroweakDecaysPerPartialCascade;
+    static int const numberOfSmFermionsFromElectroweakDecaysPerFullCascade;
 
     inputHandler const* shortcut;
     particlePointer initialScolored;
@@ -283,11 +283,9 @@ namespace LHC_FASER
      * cascade beginning with a gluino, to cover decays through
      * charge-conjugate versions.
      */
-    fullCascade const* subcascade;
-    minimalAllocationVector< std::pair< particlePointer,
-                                        int > > cascadeDefiner;
-    std::pair< particlePointer,
-               int >* cascadeSegment;
+    fullCascade* subcascade;
+    minimalAllocationVector< particleWithInt > cascadeDefiner;
+    particleWithInt* cascadeSegment;
     // this is just used for setting up cascadeDefiner properly.
     electroweakCascadeSet* ewinoCascades;
     electroweakCascadeSet* vectorCascades;
@@ -308,13 +306,14 @@ namespace LHC_FASER
     // faster than declaring the doubles in functions when they're needed.
 
     void
-    buildOn( fullCascade const* const copySource )
+    buildOn( fullCascade* const copySource )
     /* this copies the basic stuff (shortcut, beamEnergy, cascadeDefiner,
      * ewinoCascade, vectorCascade) from copySource, though not
      * typeOfColorfulCascade (which is always set by constructors) or
      * initialScolored (which depends on the type of derived class), & also it
      * sets up soughtDecayProductList to look for copySource->initialScolored,
-     * & adds copySource->initialScolored at the end of cascadeDefiner, with.
+     * & adds copySource->initialScolored at the end of cascadeDefiner, with
+     * firstDecayBodyNumber.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -425,8 +424,8 @@ namespace LHC_FASER
                    int const numberOfNegativeMuons,
                    int const numberOfPositiveMuons )
     /* this calls the appropriate functions on ewinoCascade, summing over the 2
-     * charge versions if the electroweakino is a chargino. it ignores the value
-     * of scoloredIsNotAntiparticle.
+     * charge versions if the electroweakino is a chargino. it ignores the
+     * value of scoloredIsNotAntiparticle.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -871,14 +870,17 @@ namespace LHC_FASER
   class fullCascadeSet : public getsReadiedForNewPoint
   {
   public:
+    typedef std::pair< std::list< fullCascadeSet* >*,
+                       publicGetsReadiedForNewPoint* > readiableCascadeSetList;
+
     static bool
     massOrdered( fullCascadeSet* firstSet,
                  fullCascadeSet* secondSet )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     fullCascadeSet( inputHandler const* const shortcut,
-                   particlePointer const initialScolored,
-                   electroweakCascadeHandler* const electroweakCascadeHandling,
+                    particlePointer const initialScolored,
+                    electroweakCascadeHandler* const electroweakCascades,
                     std::list< fullCascadeSet* >* const squarkCascadeSetList,
                     double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -890,59 +892,57 @@ namespace LHC_FASER
     getOpenCascades()
     // this calls setUpCascades() if it needs to be readied for this point.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    minimalAllocationVector< sxFullCascade >*
+    std::vector< sxFullCascade* > const*
     getSxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< gxFullCascade >*
+    std::vector< gxFullCascade* > const*
     getGxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< sjgxFullCascade >*
+    std::vector< sjgxFullCascade* > const*
     getSjgxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< gjsxFullCascade >*
+    std::vector< gjsxFullCascade* > const*
     getGjsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< sjgjsxFullCascade >*
+    std::vector< sjgjsxFullCascade* > const*
     getSjgjsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< svsxFullCascade >*
+    std::vector< svsxFullCascade* > const*
     getSvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< gvsxFullCascade >*
+    std::vector< gvsxFullCascade* > const*
     getGvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< gjsvsxFullCascade >*
+    std::vector< gjsvsxFullCascade* > const*
     getGjsvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< svgxFullCascade >*
+    std::vector< svgxFullCascade* > const*
     getSvgxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< svsjgxFullCascade >*
+    std::vector< svsjgxFullCascade* > const*
     getSvsjgxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< svsjgjsxFullCascade >*
+    std::vector< svsjgjsxFullCascade* > const*
     getSvsjgjsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< svgjsxFullCascade >*
+    std::vector< svgjsxFullCascade* > const*
     getSvgjsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< sjgvsxFullCascade >*
+    std::vector< sjgvsxFullCascade* > const*
     getSjgvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    minimalAllocationVector< sjgjsvsxFullCascade >*
+    std::vector< sjgjsvsxFullCascade* > const*
     getSjgjsvsxCascades()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     particlePointer
     getInitialScolored()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   protected:
+    inputHandler const* const shortcut;
     particlePointer const initialScolored;
-    electroweakCascadeHandler* const electroweakCascadeHandling;
+    electroweakCascadeHandler* const electroweakCascadeSource;
     std::vector< fullCascade* > openCascades;
     // this holds pointers to all the open cascades.
 
@@ -950,8 +950,8 @@ namespace LHC_FASER
     // direct decays of initialScolored to electroweakinos:
     minimalAllocationVector< sxFullCascade > sxCascades;
     minimalAllocationVector< gxFullCascade > gxCascades;
-    std::vector< sxFullCascade > openSxCascades;
-    std::vector< gxFullCascade > openGxCascades;
+    std::vector< sxFullCascade* > openSxCascades;
+    std::vector< gxFullCascade* > openGxCascades;
 
     /* all of these minimalAllocationVectors hold the cascades built upon
      * cascades from the other fullCascadeSets, & the bools note if they have
@@ -970,12 +970,15 @@ namespace LHC_FASER
     minimalAllocationVector< sjgvsxFullCascade > sjgvsxCascades;
     minimalAllocationVector< sjgjsvsxFullCascade > sjgjsvsxCascades;
 
-    inputHandler const* const shortcut;
-    std::list< fullCascadeSet* >* const squarkCascadeSetList;
-    //bool squarkCascadeSetListNotYetOrdered;
+    readiableCascadeSetList* const squarkCascadeSetList;
     double const beamEnergy;
     std::list< int > soughtPositivePdgCodeList;
     std::list< int > soughtNegativePdgCodeList;
+
+    void
+    ensureCascadesAreUpToDate()
+    // this calls setUpCascades() if needsToPrepareForThisPoint() is true.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     void
     setUpCascades()
@@ -1003,8 +1006,8 @@ namespace LHC_FASER
   public:
     squarkFullCascadeSet( inputHandler const* const shortcut,
                           electroweakCascadeHandler* const ewCascadeHandler,
-                   particlePointer const initialScolored,
-                      std::list< fullCascadeSet* >* const squarkCascadeSetList,
+                          particlePointer const initialScolored,
+                          readiableCascadeSetList* const squarkCascadeSetList,
                           fullCascadeSet* const gluinoCascadeSet,
                           double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -1029,7 +1032,7 @@ namespace LHC_FASER
   public:
     gluinoFullCascadeSet( inputHandler const* const shortcut,
                           electroweakCascadeHandler* const ewCascadeHandler,
-                      std::list< fullCascadeSet* >* const squarkCascadeSetList,
+                          readiableCascadeSetList* const squarkCascadeSetList,
                           double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
@@ -1051,7 +1054,7 @@ namespace LHC_FASER
   {
   public:
     fullCascadeSetsForOneBeamEnergy( inputHandler const* const shortcut,
-                             electroweakCascadeHandler* const ewCascadeHandler,
+                     electroweakCascadeHandler* const electroweakCascadeSource,
                                      double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~fullCascadeSetsForOneBeamEnergy()
@@ -1073,11 +1076,11 @@ namespace LHC_FASER
 
   protected:
     inputHandler const* const shortcut;
-    electroweakCascadeHandler* const ewCascadeHandler;
+    electroweakCascadeHandler* const electroweakCascadeSource;
     double const beamEnergy;
     std::vector< squarkFullCascadeSet* > squarkCascadeSets;
     gluinoFullCascadeSet* gluinoCascadeSet;
-    std::list< fullCascadeSet* > squarkCascadeSetList;
+    fullCascadeSet::readiableCascadeSetList squarkCascadeSetList;
   };
 
 
@@ -1101,14 +1104,13 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     fullCascadeSet*
-    getFullCascadeSet(
-                   particlePointer const initialScolored,
+    getFullCascadeSet( particlePointer const initialScolored,
                        int const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     inputHandler const* const shortcut;
-    electroweakCascadeHandler* const ewCascadeHandler;
+    electroweakCascadeHandler* const electroweakCascadeSource;
     std::vector< fullCascadeSetsForOneBeamEnergy* > cascadeSetsPerEnergy;
   };
 
@@ -1118,22 +1120,62 @@ namespace LHC_FASER
 
   // inline functions:
 
-  inputHandler const*
-  fullCascade::getShortcut()
+
+  particlePointer
+  fullCascade::getInitialScolored()
   const
   {
-    return shortcut;
+    return initialScolored;
   }
 
-  inline std::vector< std::pair< particlePointer,
-                                 int > > const*
+  inline void
+  fullCascade::resetCachedBranchingRatio()
+  /* this sets branchingRatioNeedsToBeReCalculated to true, so that
+   * cachedBranchingRatio will be re-calculated next time the branching ratio
+   * is requested. I'd prefer to do this with inheritance from
+   * getsReadiedForNewPoint, but I'd have to write a variant of
+   * minimalAllocationVector to allow for arguments to be given to
+   * constructors so that the appropriate readierForNewPoint can be given
+   * to the fullCascade constructor.
+   */
+  {
+    resetCachedBranchingRatio();
+  }
+
+  inline double
+  fullCascade::getBrToEwino( std::list< int > const* excludedSmParticles )
+  /* this works out the branching ratio for the decays of colored sparticles
+   * down to the 1st electroweakino in the cascade (including any decays to
+   * vector bosons + squarks), using the given list of excluded SM particles
+   * to exclude unwanted parts of the BR. by default, it multiplies the BR for
+   * the initial decay by subcascade->getBrToEwino.
+   */
+  {
+    /* if initialScolored is a gluino & the electroweakino is a chargino, we
+     * return the sum of BRs to both charges of chargino, provided that
+     * chargeConjugateSumFactor has been set correctly.
+     */
+    if( branchingRatioNeedsToBeReCalculated )
+    {
+      cachedBranchingRatio =
+      ( initialScolored->inspect_direct_decay_handler(
+                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
+                                                       excludedSmParticles )
+        * chargeConjugateSumFactor
+        * subcascade->getBrToEwino( excludedSmParticles ) );
+      resetCachedBranchingRatio();
+    }
+    return cachedBranchingRatio;
+  }
+
+  inline std::vector< fullCascade::particleWithInt* > const*
   fullCascade::getCascadeDefiner()
   const
   {
-    return cascadeDefiner.getVector();
+    return cascadeDefiner.inspectVector();
   }
 
-  inline colorfulCascadeType
+  inline fullCascade::colorfulCascadeType
   fullCascade::getColofulCascadeType()
   const
   {
@@ -1158,11 +1200,13 @@ namespace LHC_FASER
    *      - numberOfPositiveMuons )
    */
   {
-    double returnDouble = 0.0;
-    for( int numberOfJets
-         = ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
-             - numberOfNegativeElectrons - numberOfPositiveElectrons
-             - numberOfNegativeMuons - numberOfPositiveMuons );
+    double returnDouble( 0.0 );
+    for( int
+         numberOfJets( ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+                         - numberOfNegativeElectrons
+                         - numberOfPositiveElectrons
+                         - numberOfNegativeMuons
+                         - numberOfPositiveMuons ) );
          minimumNumberOfAdditionalJets <= numberOfJets;
          --numberOfJets )
     {
@@ -1178,13 +1222,14 @@ namespace LHC_FASER
   }
 
   inline void
-  fullCascade::buildOn( fullCascade const* const copySource )
+  fullCascade::buildOn( fullCascade* const copySource )
   /* this copies the basic stuff (shortcut, beamEnergy, cascadeDefiner,
    * ewinoCascade, vectorCascade) from copySource, though not
    * typeOfColorfulCascade (which is always set by constructors) or
    * initialScolored (which depends on the type of derived class), & also it
    * sets up soughtDecayProductList to look for copySource->initialScolored,
-   * & adds copySource->initialScolored at the end of cascadeDefiner, with.
+   * & adds copySource->initialScolored at the end of cascadeDefiner, with
+   * firstDecayBodyNumber.
    */
   {
     shortcut = copySource->shortcut;
@@ -1193,71 +1238,30 @@ namespace LHC_FASER
     vectorCascades = copySource->vectorCascades;
     subcascade = copySource;
     soughtDecayProductList.front()
-    = copySource->getInitialScolored()->get_PDG_code();
+    = copySource->initialScolored->get_PDG_code();
     cascadeDefiner.clear();
-    for( int cascadeFiller = 0;
-         copySource->cascadeDefiner->getSize() > cascadeFiller;
+    for( int cascadeFiller( 0 );
+         copySource->cascadeDefiner.getSize() > cascadeFiller;
          ++cascadeFiller )
     {
       cascadeSegment = cascadeDefiner.addNewAtEnd();
       cascadeSegment->first
-      = copySource->cascadeDefiner->getPointer( cascadeFiller )->first;
+      = copySource->cascadeDefiner.getPointer( cascadeFiller )->first;
       cascadeSegment->second
-      = copySource->cascadeDefiner->getPointer( cascadeFiller )->second;
+      = copySource->cascadeDefiner.getPointer( cascadeFiller )->second;
     }
     cascadeSegment = cascadeDefiner.addNewAtEnd();
-    cascadeSegment->first = copySource->getInitialScolored();
+    cascadeSegment->first = copySource->initialScolored;
     cascadeSegment->second = firstDecayBodyNumber;
-  }
-
-  inline double
-  fullCascade::getBrToEwino( std::list< int > const* excludedSmParticles )
-  const
-  /* this works out the branching ratio for the decays of colored sparticles
-   * down to the 1st electroweakino in the cascade (including any decays to
-   * vector bosons + squarks), using the given list of excluded SM particles
-   * to exclude unwanted parts of the BR. by default, it multiplies the BR for
-   * the initial decay by subcascade->getBrToEwino.
-   */
-  {
-    /* if initialScolored is a gluino & the electroweakino is a chargino, we
-     * return the sum of BRs to both charges of chargino, provided that
-     * chargeConjugateSumFactor has been set correctly.
-     */
-    if( branchingRatioNeedsToBeReCalculated )
-    {
-      cachedBranchingRatio =
-      ( initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles )
-             * chargeConjugateSumFactor
-             * subcascade->getBrToEwino( excludedSmParticles ) );
-      branchingRatioNeedsToBeReCalculated = false;
-    }
-    return cachedBranchingRatio;
-  }
-
-  inline void
-  fullCascade::resetCachedBranchingRatio()
-  /* this sets branchingRatioNeedsToBeReCalculated to true, so that
-   * cachedBranchingRatio will be re-calculated next time the branching ratio
-   * is requested. I'd prefer to do this with inheritance from
-   * getsReadiedForNewPoint, but I'd have to write a variant of
-   * minimalAllocationVector to allow for arguments to be given to
-   * constructors so that the appropriate readierForNewPoint can be given
-   * to the fullCascade constructor.
-   */
-  {
-    branchingRatioNeedsToBeReCalculated = true;
   }
 
 
 
   inline void
   sxFullCascade::setProperties( inputHandler const* const shortcut,
-                     particlePointer const initialSquark,
+                                particlePointer const initialSquark,
                                 double const beamEnergy,
-                                electroweakCascade* const ewinoCascade )
+                                electroweakCascadeSet* const ewinoCascade )
   {
     this->shortcut = shortcut;
     this->initialScolored = initialSquark;
@@ -1265,7 +1269,7 @@ namespace LHC_FASER
     this->ewinoCascades = ewinoCascade;
     soughtDecayProductList.front() =
                          ewinoCascade->getElectroweakDecayer()->get_PDG_code();
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
     cascadeDefiner.clear();
     // reset cascadeDefiner.
     cascadeSegment = cascadeDefiner.addNewAtEnd();
@@ -1273,6 +1277,22 @@ namespace LHC_FASER
     // sx means only 1 decay to be recorded.
     cascadeSegment->second = firstDecayBodyNumber;
     // sx also means that the decay is 2-body.
+  }
+
+  inline bool
+  sxFullCascade::isOpen()
+  // this returns true if the squark is heavy enough to decay into the
+  // electroweakino, false otherwise.
+  {
+    if( initialScolored->get_absolute_mass()
+        > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   inline double
@@ -1288,8 +1308,8 @@ namespace LHC_FASER
       cachedBranchingRatio =
       initialScolored->inspect_direct_decay_handler(
                     )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                         excludedSmParticles );
-      branchingRatioNeedsToBeReCalculated = false;
+                                                       excludedSmParticles );
+      resetCachedBranchingRatio();
     }
     return cachedBranchingRatio;
   }
@@ -1312,45 +1332,30 @@ namespace LHC_FASER
       // if we have a particle, we return the acceptance for the particle.
     {
       return ewinoCascades->getAcceptance( cuts,
-                                          numberOfAdditionalJets,
-                                          numberOfNegativeElectrons,
-                                          numberOfPositiveElectrons,
-                                          numberOfNegativeMuons,
-                                          numberOfPositiveMuons );
+                                           numberOfAdditionalJets,
+                                           numberOfNegativeElectrons,
+                                           numberOfPositiveElectrons,
+                                           numberOfNegativeMuons,
+                                           numberOfPositiveMuons );
     }
     else
       // if we have an antiparticle, we swap the charges.
     {
       return ewinoCascades->getAcceptance( cuts,
-                                          numberOfAdditionalJets,
-                                          numberOfPositiveElectrons,
-                                          numberOfNegativeElectrons,
-                                          numberOfPositiveMuons,
-                                          numberOfNegativeMuons );
+                                           numberOfAdditionalJets,
+                                           numberOfPositiveElectrons,
+                                           numberOfNegativeElectrons,
+                                           numberOfPositiveMuons,
+                                           numberOfNegativeMuons );
     }
   }
 
-  inline bool
-  sxFullCascade::isOpen()
-  // this returns true if the squark is heavy enough to decay into the
-  // electroweakino, false otherwise.
-  {
-    if( initialScolored->get_absolute_mass()
-        > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
 
 
   inline void
   gxFullCascade::setProperties( inputHandler const* const shortcut,
                                 double const beamEnergy,
-                                electroweakCascade* const ewinoCascade )
+                                electroweakCascadeSet* const ewinoCascade )
   {
     this->shortcut = shortcut;
     this->initialScolored = shortcut->getGluino();
@@ -1358,7 +1363,7 @@ namespace LHC_FASER
     this->ewinoCascades = ewinoCascade;
     soughtDecayProductList.front() =
                          ewinoCascade->getElectroweakDecayer()->get_PDG_code();
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
     cascadeDefiner.clear();
     // reset cascadeDefiner.
     cascadeSegment = cascadeDefiner.addNewAtEnd();
@@ -1366,35 +1371,6 @@ namespace LHC_FASER
     // gx means only 1 decay to be recorded.
     cascadeSegment->second = firstDecayBodyNumber;
     // gx also means that the decay is 2-body.
-  }
-
-  inline double
-  gxFullCascade::getBrToEwino( std::list< int > const* excludedSmParticles )
-  /* this works out the branching ratio for the decays of colored sparticles
-   * down to the 1st electroweakino in the cascade (including any decays to
-   * vector bosons + squarks), using the given list of excluded SM particles
-   * to exclude unwanted parts of the BR.
-   */
-  {
-    if( branchingRatioNeedsToBeReCalculated )
-    {
-      if( ewinoCascades->getElectroweakDecayer()->counts_as_self_conjugate() )
-        // if the gluino has only 1 charge version of this decay...
-      {
-        cachedBranchingRatio = initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles );
-      }
-      else
-      {
-        cachedBranchingRatio
-        = ( 2.0 * initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles ) );
-      }
-      branchingRatioNeedsToBeReCalculated = false;
-    }
-    return cachedBranchingRatio;
   }
 
   inline bool
@@ -1413,15 +1389,45 @@ namespace LHC_FASER
     }
   }
 
+  inline double
+  gxFullCascade::getBrToEwino( std::list< int > const* excludedSmParticles )
+  /* this works out the branching ratio for the decays of colored sparticles
+   * down to the 1st electroweakino in the cascade (including any decays to
+   * vector bosons + squarks), using the given list of excluded SM particles
+   * to exclude unwanted parts of the BR.
+   */
+  {
+    if( branchingRatioNeedsToBeReCalculated )
+    {
+      if( ewinoCascades->getElectroweakDecayer()->counts_as_self_conjugate() )
+        // if the gluino has only 1 charge version of this decay...
+      {
+        cachedBranchingRatio
+        = initialScolored->inspect_direct_decay_handler(
+                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
+                                                       excludedSmParticles );
+      }
+      else
+      {
+        cachedBranchingRatio
+        = ( 2.0 * initialScolored->inspect_direct_decay_handler(
+                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
+                                                       excludedSmParticles ) );
+      }
+      resetCachedBranchingRatio();
+    }
+    return cachedBranchingRatio;
+  }
+
+
 
   inline void
-  sjgxFullCascade::setProperties(
-                     particlePointer const initialSquark,
+  sjgxFullCascade::setProperties( particlePointer const initialSquark,
                                   fullCascade* const gxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
   }
 
   inline double
@@ -1448,12 +1454,13 @@ namespace LHC_FASER
   }
 
 
+
   inline void
   gjsxFullCascade::setProperties( fullCascade* const sxCascade )
   {
     buildOn( sxCascade );
     initialScolored = shortcut->getGluino();
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
   }
 
   inline double
@@ -1491,14 +1498,14 @@ namespace LHC_FASER
   }
 
 
+
   inline void
-  sjgjsxFullCascade::setProperties(
-                     particlePointer const initialSquark,
+  sjgjsxFullCascade::setProperties( particlePointer const initialSquark,
                                     fullCascade* const gjsxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gjsxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
   }
 
   inline double
@@ -1521,24 +1528,24 @@ namespace LHC_FASER
   }
 
 
+
   inline void
-  svsxFullCascade::setProperties(
-                     particlePointer const initialSquark,
-                                  electroweakCascade* const vectorCascade,
+  svsxFullCascade::setProperties( particlePointer const initialSquark,
+                                  electroweakCascadeSet* const vectorCascade,
                                   fullCascade* const sxCascade )
   {
     initialScolored = initialSquark;
     buildOn( sxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
     this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
         ( shortcut->isIn( initialSquark->get_PDG_code(),
-                           shortcut->getSdownTypes() ) ) )
+                          shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
-      soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
+      soughtDecayProductList.back() = -(CppSLHA::PDG_code::W_plus);
     }
     else
     {
@@ -1574,22 +1581,23 @@ namespace LHC_FASER
   }
 
 
+
   inline void
-  gvsxFullCascade::setProperties( electroweakCascade* const vectorCascade,
+  gvsxFullCascade::setProperties( electroweakCascadeSet* const vectorCascade,
                                   fullCascade* const sxCascade )
   {
     buildOn( sxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
     initialScolored = shortcut->getGluino();
     this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
         ( shortcut->isIn( soughtDecayProductList.front(),
-                           shortcut->getSupTypes() ) ) )
+                          shortcut->getSupTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
-      soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
+      soughtDecayProductList.back() = -(CppSLHA::PDG_code::W_plus);
     }
     else
     {
@@ -1633,11 +1641,12 @@ namespace LHC_FASER
   }
 
 
+
   inline void
   gjsvsxFullCascade::setProperties( fullCascade* const svsxCascade )
   {
     buildOn( svsxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
     initialScolored = shortcut->getGluino();
   }
 
@@ -1676,25 +1685,24 @@ namespace LHC_FASER
   }
 
 
+
   inline void
-  svgxFullCascade::setProperties(
-                    particlePointer const initialSquark,
-                                  electroweakCascade* const vectorCascade,
+  svgxFullCascade::setProperties( particlePointer const initialSquark,
+                                  electroweakCascadeSet* const vectorCascade,
                                   fullCascade* const gxCascade )
   {
     initialScolored = initialSquark;
-    buildOn( gxCascade,
-             3 );
-    branchingRatioNeedsToBeReCalculated = true;
+    buildOn( gxCascade );
+    resetCachedBranchingRatio();
     this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
         ( shortcut->isIn( initialSquark->get_PDG_code(),
-                           shortcut->getSdownTypes() ) ) )
+                          shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
-      soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
+      soughtDecayProductList.back() = -(CppSLHA::PDG_code::W_plus);
     }
     else
     {
@@ -1728,24 +1736,24 @@ namespace LHC_FASER
   }
 
 
+
   inline void
-  svsjgxFullCascade::setProperties(
-                     particlePointer const initialSquark,
-                                    electroweakCascade* const vectorCascade,
+  svsjgxFullCascade::setProperties( particlePointer const initialSquark,
+                                    electroweakCascadeSet* const vectorCascade,
                                     fullCascade* const sjgxCascade )
   {
     initialScolored = initialSquark;
     buildOn( sjgxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
     this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
         ( shortcut->isIn( initialSquark->get_PDG_code(),
-                           shortcut->getSdownTypes() ) ) )
+                          shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
-      soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
+      soughtDecayProductList.back() = -(CppSLHA::PDG_code::W_plus);
     }
     else
     {
@@ -1781,24 +1789,24 @@ namespace LHC_FASER
   }
 
 
+
   inline void
-  svsjgjsxFullCascade::setProperties(
-                     particlePointer const initialSquark,
-                                      electroweakCascade* const vectorCascade,
+  svsjgjsxFullCascade::setProperties( particlePointer const initialSquark,
+                                    electroweakCascadeSet* const vectorCascade,
                                       fullCascade* const sjgjsxCascade )
   {
     initialScolored = initialSquark;
     buildOn( sjgjsxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
     this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
         ( shortcut->isIn( initialSquark->get_PDG_code(),
-                           shortcut->getSdownTypes() ) ) )
+                          shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
-      soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
+      soughtDecayProductList.back() = -(CppSLHA::PDG_code::W_plus);
     }
     else
     {
@@ -1834,24 +1842,24 @@ namespace LHC_FASER
   }
 
 
+
   inline void
-  svgjsxFullCascade::setProperties(
-                     particlePointer const initialSquark,
-                                    electroweakCascade* const vectorCascade,
+  svgjsxFullCascade::setProperties( particlePointer const initialSquark,
+                                    electroweakCascadeSet* const vectorCascade,
                                     fullCascade* const gjsxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gjsxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
     this->vectorCascades = vectorCascade;
     if( ( CppSLHA::PDG_code::W_plus
           == vectorCascade->getElectroweakDecayer()->get_PDG_code() )
         &&
         ( shortcut->isIn( initialSquark->get_PDG_code(),
-                           shortcut->getSdownTypes() ) ) )
+                          shortcut->getSdownTypes() ) ) )
       // if we have to worry about which sign of PDG code to use...
     {
-      soughtDecayProductList.back() = -CppSLHA::PDG_code::W_plus;
+      soughtDecayProductList.back() = -(CppSLHA::PDG_code::W_plus);
     }
     else
     {
@@ -1885,14 +1893,14 @@ namespace LHC_FASER
   }
 
 
+
   inline void
-  sjgvsxFullCascade::setProperties(
-                     particlePointer const initialSquark,
+  sjgvsxFullCascade::setProperties( particlePointer const initialSquark,
                                     fullCascade* const gvsxCascade )
   {
     initialScolored = initialSquark;
     buildOn( gvsxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    resetCachedBranchingRatio();
   }
 
   inline double
@@ -1920,14 +1928,14 @@ namespace LHC_FASER
   }
 
 
+
   inline void
-  sjgjsvsxFullCascade::setProperties(
-                     particlePointer const initialSquark,
+  sjgjsvsxFullCascade::setProperties( particlePointer const initialSquark,
                                       fullCascade* const gjsvsxCascade )
   {
     initialScolored = initialSquark;
-    buildOn( gvsxCascade );
-    branchingRatioNeedsToBeReCalculated = true;
+    buildOn( gjsvsxCascade );
+    resetCachedBranchingRatio();
   }
 
   inline double
@@ -1977,166 +1985,106 @@ namespace LHC_FASER
   fullCascadeSet::getOpenCascades()
   // this calls setUpCascades() if it needs to be readied for this point.
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
+    ensureCascadesAreUpToDate();
     return &openCascades;
   }
 
-  inline minimalAllocationVector< sxFullCascade >*
+  inline std::vector< sxFullCascade* > const*
   fullCascadeSet::getSxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
+    ensureCascadesAreUpToDate();
     return &openSxCascades;
   }
 
-  inline minimalAllocationVector< gxFullCascade >*
+  inline std::vector< gxFullCascade* > const*
   fullCascadeSet::getGxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
+    ensureCascadesAreUpToDate();
     return &openGxCascades;
   }
 
-  inline minimalAllocationVector< sjgxFullCascade >*
+  inline std::vector< sjgxFullCascade* > const*
   fullCascadeSet::getSjgxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &sjgxCascades;
+    ensureCascadesAreUpToDate();
+    return sjgxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< gjsxFullCascade >*
+  inline std::vector< gjsxFullCascade* > const*
   fullCascadeSet::getGjsxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &gjsxCascades;
+    ensureCascadesAreUpToDate();
+    return gjsxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< sjgjsxFullCascade >*
+  inline std::vector< sjgjsxFullCascade* > const*
   fullCascadeSet::getSjgjsxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &sjgjsxCascades;
+    ensureCascadesAreUpToDate();
+    return sjgjsxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< svsxFullCascade >*
+  inline std::vector< svsxFullCascade* > const*
   fullCascadeSet::getSvsxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &svsxCascades;
+    ensureCascadesAreUpToDate();
+    return svsxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< gvsxFullCascade >*
+  inline std::vector< gvsxFullCascade* > const*
   fullCascadeSet::getGvsxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &gvsxCascades;
+    ensureCascadesAreUpToDate();
+    return gvsxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< gjsvsxFullCascade >*
+  inline std::vector< gjsvsxFullCascade* > const*
   fullCascadeSet::getGjsvsxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &gjsvsxCascades;
+    ensureCascadesAreUpToDate();
+    return gjsvsxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< svgxFullCascade >*
+  inline std::vector< svgxFullCascade* > const*
   fullCascadeSet::getSvgxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &svgxCascades;
+    ensureCascadesAreUpToDate();
+    return svgxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< svsjgxFullCascade >*
+  inline std::vector< svsjgxFullCascade* > const*
   fullCascadeSet::getSvsjgxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &svsjgxCascades;
+    ensureCascadesAreUpToDate();
+    return svsjgxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< svsjgjsxFullCascade >*
+  inline std::vector< svsjgjsxFullCascade* > const*
   fullCascadeSet::getSvsjgjsxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &svsjgjsxCascades;
+    ensureCascadesAreUpToDate();
+    return svsjgjsxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< svgjsxFullCascade >*
+  inline std::vector< svgjsxFullCascade* > const*
   fullCascadeSet::getSvgjsxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &svgjsxCascades;
+    ensureCascadesAreUpToDate();
+    return svgjsxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< sjgvsxFullCascade >*
+  inline std::vector< sjgvsxFullCascade* > const*
   fullCascadeSet::getSjgvsxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &sjgvsxCascades;
+    ensureCascadesAreUpToDate();
+    return sjgvsxCascades.inspectVector();
   }
 
-  inline minimalAllocationVector< sjgjsvsxFullCascade >*
+  inline std::vector< sjgjsvsxFullCascade* > const*
   fullCascadeSet::getSjgjsvsxCascades()
   {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-      finishPreparingForThisPoint();
-    }
-    return &sjgjsvsxCascades;
+    ensureCascadesAreUpToDate();
+    return sjgjsvsxCascades.inspectVector();
   }
 
   inline particlePointer
@@ -2144,6 +2092,17 @@ namespace LHC_FASER
   const
   {
     return initialScolored;
+  }
+
+  inline void
+  fullCascadeSet::ensureCascadesAreUpToDate()
+  // this calls setUpCascades() if needsToPrepareForThisPoint() is true.
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      setUpCascades();
+      finishPreparingForThisPoint();
+    }
   }
 
   inline void
@@ -2167,7 +2126,7 @@ namespace LHC_FASER
 
   inline fullCascadeSet*
   fullCascadeSetFactory::getFullCascadeSet(
-                   particlePointer const initialScolored,
+                                         particlePointer const initialScolored,
                                             int const beamEnergy )
   {
     return getFullCascadeSetsForOneBeamEnergy( beamEnergy
