@@ -3417,10 +3417,10 @@ int main( int argument_count,
    **/
 
 
-  /* finally, testing the LHC_FASER_UI itself: (not working)*//**
+  /* finally, testing the lhcFaser itself: (not working)*//**
 
-  LHC_FASER::LHC_FASER_UI SPS1a_UI( "SPS1a_spectrum.out" );
-  LHC_FASER::LHC_FASER_UI SPS2_UI( "SPS2_spectrum.out" );
+  LHC_FASER::lhcFaser SPS1a_UI( "SPS1a_spectrum.out" );
+  LHC_FASER::lhcFaser SPS2_UI( "SPS2_spectrum.out" );
 
   SPS1a_UI.add_signal( "sigmaBreakdownTest" );
   SPS1a_UI.add_signal( "Atlas4jMET0l7TeV" );
@@ -3489,7 +3489,7 @@ int main( int argument_count,
                 NULL );
   std::cout
   << std::endl << "constructing test_UI";
-  LHC_FASER::LHC_FASER_UI test_UI( "test_spectrum.out",
+  LHC_FASER::lhcFaser test_UI( "test_spectrum.out",
                                    grid_path,
                                    "fb" );
   gettimeofday( &end_time,

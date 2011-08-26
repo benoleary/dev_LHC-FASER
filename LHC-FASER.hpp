@@ -92,74 +92,34 @@
 
 namespace LHC_FASER
 {
-
   /* this is a class for calculating MSSM signal event rates at the LHC.
    * it tries to be a Factory (creating appropriate subtypes of signals based
    * on input).
    */
-  class LHC_FASER_UI
+  class lhcFaser
   {
-
   public:
-
-    // I thought about the factory pattern to replace all these constructors,
-    // but then I decided that it wouldn't have any advantage.
-
-    // default constructor assuming default path to grids & default SLHA
-    // spectrum file:
-    LHC_FASER_UI( CppSLHA::CppSLHA0* const given_spectrum_data )
-    // default constructor with specified CppSLHA.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    // constructor with specified SLHA file:
-    LHC_FASER_UI( std::string const given_SLHA_file_name )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    // constructor with specified CppSLHA & user-defined path to grids:
-    LHC_FASER_UI( CppSLHA::CppSLHA0* const given_spectrum_data,
-                  std::string const given_path_to_grids )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    // constructor with specified SLHA file & user-defined path to grids:
-    LHC_FASER_UI( std::string const given_SLHA_file_name,
-                  std::string const given_path_to_grids )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    // constructor with specified CppSLHA & user-defined path to grids,
-    // & whether returned event rates should be in nb, pb or fb:
-    LHC_FASER_UI( CppSLHA::CppSLHA0* const given_spectrum_data,
-                  std::string const given_path_to_grids,
-                  std::string const given_cross_section_unit )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    // constructor with specified SLHA file & user-defined path to grids,
-    // & whether returned event rates should be in nb, pb or fb:
-    LHC_FASER_UI( std::string const given_SLHA_file_name,
-                  std::string const given_path_to_grids,
-                  std::string const given_cross_section_unit )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     /* constructor with specified CppSLHA & user-defined path to grids,
      * whether returned event rates should be in nb, pb or fb& whether to use
      * LO or NLO:
      */
-    LHC_FASER_UI( CppSLHA::CppSLHA0* const given_spectrum_datas,
-                  std::string const given_path_to_grids,
-                  std::string const given_cross_section_unit,
-                  bool const given_NLO_to_be_used )
+    lhcFaser( CppSLHA::CppSLHA0* const spectrumData,
+              std::string const pathToGrids = "./grids/",
+              std::string const crossSectionUnit = "fb",
+              bool const usingNlo = true )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     /* constructor with specified SLHA file & user-defined path to grids,
      * whether returned event rates should be in nb, pb or fb& whether to use
      * LO or NLO:
      */
-    LHC_FASER_UI( std::string const given_SLHA_file_name,
-                  std::string const given_path_to_grids,
-                  std::string const given_cross_section_unit,
-                  bool const given_NLO_to_be_used )
+    lhcFaser( std::string const slhaFileName,
+              std::string const pathToGrids = "./grids/",
+              std::string const crossSectionUnit = "fb",
+              bool const usingNlo = true )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    ~LHC_FASER_UI()
+    ~lhcFaser()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
@@ -198,31 +158,33 @@ namespace LHC_FASER
 
 
   protected:
-
-    CppSLHA::CppSLHA0* spectrum_data;
+    CppSLHA::CppSLHA0* spectrumData;
     // this holds the MSSM spectrum data.
-    bool own_CppSLHA;
+    bool usingOwnCppSlha;
     // this notes whether the CppSLHA was supplied externally (in which case
     // the destructor does NOT delete the CppSLHA).
-    std::string path_to_grids;
+    std::string pathToGrids;
     // this is where the lookup tables live.
-    double cross_section_unit_factor;
+    std::string pathToJetPlusMetAcceptanceGrids;
+    // this is where the lookup tables for jet+MET acceptances live.
+    double crossSectionUnitFactor;
     // this is to allow for the user to specify event rates in fb, pb or nb.
-    bool NLO_to_be_used;
+    bool usingNlo;
     // this is to allow the user to use LO or NLO cross-sections.
 
-    inputHandler* input_handler_object;
+    inputHandler* inputSource;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
-    crossSectionHandler* cross_section_handler_object;
+    crossSectionHandler* crossSectionSource;
     // this holds the lookup tables for LHC colored sparticle pair production
     // cross-sections.
-    kinematics_handler* kinematics_handler_object;
+    jetPlusMetAcceptanceHandler* jetPlusMetAcceptanceSource;
     // this holds the kinematic data lookup tables for colored sparticle
     // production at the LHC.
-    cascade_handler* cascade_handler_object;
+    electroweakCascadesForOneBeamEnergy* electroweakCascadeSource;
+    fullCascadeSetFactory* fullCascadeSetSource;
     // this handles the cascade decays of colored sparticles.
-    std::vector< signalHandler* > signal_set;
+    std::vector< signalHandler* > signalSet;
     // this tracks the various signals of LHC supersymmetric events & their
     // rates.
 
@@ -230,18 +192,18 @@ namespace LHC_FASER
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
 
-    readierForNewPoint* readier_instance;
+    readierForNewPoint* readier;
 
 
     void
-    initialize( CppSLHA::CppSLHA0* const given_spectrum_data,
-                std::string const given_path_to_grids,
-                std::string const given_cross_section_unit,
-                bool const given_NLO_to_be_used )
+    initialize( CppSLHA::CppSLHA0* const spectrumData,
+                std::string const pathToGrids,
+                std::string const crossSectionUnit,
+                bool const usingNlo )
     // this is used by all the constructors to do most of the construction.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-  };  // end of LHC_FASER_UI class.
+  };  // end of lhcFaser class.
 
 
 
@@ -249,30 +211,30 @@ namespace LHC_FASER
   // inline functions:
 
   inline signalHandler*
-  LHC_FASER_UI::add_signal( std::string const signal_name )
+  lhcFaser::add_signal( std::string const signal_name )
   // this adds a new signal to the set of signals based on its name.
   {
 
     signalHandler* return_pointer = new signalHandler( signal_name,
                                                          shortcut,
-                                                   cross_section_unit_factor );
+                                                   crossSectionUnitFactor );
 
-    signal_set.push_back( return_pointer );
+    signalSet.push_back( return_pointer );
 
     return return_pointer;
 
   }
 
   inline signalHandler*
-  LHC_FASER_UI::get_signal( std::string const signal_name )
+  lhcFaser::get_signal( std::string const signal_name )
   // this returns the handler object for the requested signal name.
   {
 
     signalHandler* return_pointer = NULL;
 
     for( std::vector< signalHandler* >::iterator
-         signal_iterator = signal_set.begin();
-         signal_set.end() > signal_iterator;
+         signal_iterator = signalSet.begin();
+         signalSet.end() > signal_iterator;
          signal_iterator++ )
       // look through all the signals...
       {
@@ -283,7 +245,7 @@ namespace LHC_FASER
 
             return_pointer = *signal_iterator;
 
-            signal_iterator = signal_set.end();
+            signal_iterator = signalSet.end();
             // stop looking.
 
           }
@@ -296,7 +258,7 @@ namespace LHC_FASER
 
 
   inline void
-  LHC_FASER_UI::update_for_updated_point()
+  lhcFaser::update_for_updated_point()
   /* this assumes that the CppSLHA was updated & so sets each signal to be
    * recalculated next time its value is requested. I expect that I could do
    * this more elegantly with throwing exceptions, but I'll leave that for
@@ -304,27 +266,27 @@ namespace LHC_FASER
    */
   {
 
-    readier_instance->readyObserversForNewPoint();
+    readier->readyObserversForNewPoint();
 
   }
 
   inline void
-  LHC_FASER_UI::update_for_new_point()
+  lhcFaser::update_for_new_point()
   // this reads in the CppSLHA's target file & recalculates all required
   // signals.
   {
 
-    spectrum_data->read_file();
+    spectrumData->read_file();
     update_for_updated_point();
 
   }
 
   inline void
-  LHC_FASER_UI::update_for_new_point( std::string const SLHA_file_name )
+  lhcFaser::update_for_new_point( std::string const SLHA_file_name )
   // this reads in the new file & recalculates all required signals.
   {
 
-    spectrum_data->read_file( SLHA_file_name );
+    spectrumData->read_file( SLHA_file_name );
     update_for_updated_point();
 
   }

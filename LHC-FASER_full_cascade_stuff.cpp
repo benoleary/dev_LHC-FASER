@@ -704,7 +704,7 @@ namespace LHC_FASER
 
   fullCascadeSet::fullCascadeSet( inputHandler const* const shortcut,
                                   particlePointer const initialScolored,
-                     electroweakCascadeHandler* const electroweakCascadeSource,
+                     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                       std::list< fullCascadeSet* >* const squarkCascadeSetList,
                                   double const beamEnergy ) :
     getsReadiedForNewPoint( shortcut->getReadier() ),
@@ -767,7 +767,7 @@ namespace LHC_FASER
 
   squarkFullCascadeSet::squarkFullCascadeSet(
                                             inputHandler const* const shortcut,
-                   electroweakCascadeHandler* const electroweakCascadeHandling,
+                   electroweakCascadesForOneBeamEnergy* const electroweakCascadeHandling,
                                          particlePointer const initialScolored,
                            readiableCascadeSetList* const squarkCascadeSetList,
                                         fullCascadeSet* const gluinoCascadeSet,
@@ -1000,7 +1000,7 @@ namespace LHC_FASER
 
   gluinoFullCascadeSet::gluinoFullCascadeSet(
                                             inputHandler const* const shortcut,
-                     electroweakCascadeHandler* const electroweakCascadeSource,
+                     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                            readiableCascadeSetList* const squarkCascadeSetList,
                                               double const beamEnergy ) :
     fullCascadeSet( shortcut,
@@ -1117,7 +1117,7 @@ namespace LHC_FASER
 
   fullCascadeSetsForOneBeamEnergy::fullCascadeSetsForOneBeamEnergy(
                                             inputHandler const* const shortcut,
-                     electroweakCascadeHandler* const electroweakCascadeSource,
+                     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                                     double const beamEnergy ) :
     shortcut( shortcut ),
     electroweakCascadeSource( electroweakCascadeSource ),
@@ -1194,7 +1194,7 @@ namespace LHC_FASER
 
   fullCascadeSetFactory::fullCascadeSetFactory(
                                             inputHandler const* const shortcut,
-                  electroweakCascadeHandler* const electroweakCascadeSource ) :
+                  electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource ) :
     shortcut( shortcut ),
     electroweakCascadeSource( electroweakCascadeSource )
   {

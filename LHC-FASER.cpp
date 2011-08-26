@@ -57,222 +57,107 @@
 
 namespace LHC_FASER
 {
-
-  // default constructor assuming default path to grids & default SLHA
-  // spectrum file:
-  LHC_FASER_UI::LHC_FASER_UI( CppSLHA::CppSLHA0* const given_spectrum_data ) :
-    own_CppSLHA( false )
-  {
-
-    initialize( given_spectrum_data,
-                "./grids/",
-                "fb",
-                true );
-
-  }
-
-  // constructor with specified SLHA file:
-  LHC_FASER_UI::LHC_FASER_UI( std::string const given_SLHA_file_name ) :
-    own_CppSLHA( true )
-  {
-
-    spectrum_data = new CppSLHA::CppSLHA2( given_SLHA_file_name );
-
-    initialize( spectrum_data,
-                "./grids/",
-                "fb",
-                true );
-
-  }
-
-  // constructor with specified CppSLHA and user-defined path to grids:
-  LHC_FASER_UI::LHC_FASER_UI( CppSLHA::CppSLHA0* const given_spectrum_data,
-                              std::string const given_path_to_grids ) :
-    own_CppSLHA( false )
-  {
-
-    initialize( given_spectrum_data,
-                given_path_to_grids,
-                "fb",
-                true );
-
-  }
-
-  // constructor with specified SLHA file and user-defined path to grids:
-  LHC_FASER_UI::LHC_FASER_UI( std::string const given_SLHA_file_name,
-                              std::string const given_path_to_grids ) :
-    own_CppSLHA( true )
-  {
-
-    spectrum_data = new CppSLHA::CppSLHA2( given_SLHA_file_name );
-
-    initialize( spectrum_data,
-                given_path_to_grids,
-                "fb",
-                true );
-
-  }
-
-  // constructor with specified CppSLHA & user-defined path to grids,
-  // & whether returned event rates should be in nb, pb or fb:
-  LHC_FASER_UI::LHC_FASER_UI( CppSLHA::CppSLHA0* const given_spectrum_data,
-                              std::string const given_path_to_grids,
-                              std::string const given_cross_section_unit ) :
-    own_CppSLHA( false )
-  {
-
-    initialize( given_spectrum_data,
-                given_path_to_grids,
-                given_cross_section_unit,
-                true );
-
-  }
-
-  // constructor with specified SLHA file & user-defined path to grids,
-  // & whether returned event rates should be in nb, pb or fb:
-  LHC_FASER_UI::LHC_FASER_UI( std::string const given_SLHA_file_name,
-                              std::string const given_path_to_grids,
-                              std::string const given_cross_section_unit ) :
-    own_CppSLHA( true )
-  {
-
-    spectrum_data = new CppSLHA::CppSLHA2( given_SLHA_file_name );
-
-    initialize( spectrum_data,
-                given_path_to_grids,
-                given_cross_section_unit,
-                true );
-
-  }
-
   /* constructor with specified CppSLHA & user-defined path to grids,
-   * whether returned event rates should be in nb, pb or fb& whether to use
+   * whether returned event rates should be in nb, pb or fb & whether to use
    * LO or NLO:
    */
-  LHC_FASER_UI::LHC_FASER_UI( CppSLHA::CppSLHA0* const given_spectrum_data,
-                              std::string const given_path_to_grids,
-                              std::string const given_cross_section_unit,
-                              bool const given_NLO_to_be_used ) :
-    own_CppSLHA( false )
+  lhcFaser::lhcFaser( CppSLHA::CppSLHA0* const spectrumData,
+                      std::string const pathToGrids,
+                      std::string const crossSectionUnit,
+                      bool const usingNlo ) :
+    usingOwnCppSlha( false )
   {
-
-    initialize( given_spectrum_data,
-                given_path_to_grids,
-                given_cross_section_unit,
-                given_NLO_to_be_used );
-
+    initialize( spectrumData,
+                pathToGrids,
+                crossSectionUnit,
+                usingNlo );
   }
 
   /* constructor with specified SLHA file & user-defined path to grids,
-   * whether returned event rates should be in nb, pb or fb& whether to use
+   * whether returned event rates should be in nb, pb or fb & whether to use
    * LO or NLO:
    */
-  LHC_FASER_UI::LHC_FASER_UI( std::string const given_SLHA_file_name,
-                              std::string const given_path_to_grids,
-                              std::string const given_cross_section_unit,
-                              bool const given_NLO_to_be_used ) :
-    own_CppSLHA( true )
+  lhcFaser::lhcFaser( std::string const slhaFileName,
+                      std::string const pathToGrids,
+                      std::string const crossSectionUnit,
+                      bool const usingNlo ) :
+    spectrumData( new CppSLHA::CppSLHA2( slhaFileName ) ),
+    usingOwnCppSlha( true )
   {
-
-    spectrum_data = new CppSLHA::CppSLHA2( given_SLHA_file_name );
-
-    initialize( spectrum_data,
-                given_path_to_grids,
-                given_cross_section_unit,
-                given_NLO_to_be_used );
-
+    initialize( spectrumData,
+                pathToGrids,
+                crossSectionUnit,
+                usingNlo );
   }
 
-  LHC_FASER_UI::~LHC_FASER_UI()
+  lhcFaser::~lhcFaser()
   {
-
-    if( own_CppSLHA )
+    if( usingOwnCppSlha )
       {
-
-        delete spectrum_data;
-
+        delete spectrumData;
       }
-
     for( std::vector< signalHandler* >::iterator
-           deletion_iterator = signal_set.begin();
-         signal_set.end() > deletion_iterator;
-         deletion_iterator++ )
+         deletionIterator( signalSet.begin() );
+         signalSet.end() > deletionIterator;
+         deletionIterator++ )
       {
-
-        delete *deletion_iterator;
-
+        delete *deletionIterator;
       }
-
     delete shortcut;
-    delete input_handler_object;
-    delete cross_section_handler_object;
-    delete kinematics_handler_object;
-    delete cascade_handler_object;
-    delete readier_instance;
-
+    delete inputSource;
+    delete crossSectionSource;
+    delete jetPlusMetAcceptanceSource;
+    delete electroweakCascadeSource;
+    delete readier;
   }
 
 
   void
-  LHC_FASER_UI::initialize( CppSLHA::CppSLHA0* const given_spectrum_data,
-                            std::string const given_path_to_grids,
-                            std::string const given_cross_section_unit,
-                            bool const given_NLO_to_be_used )
-  // this is used by all the constructors to do most of the construction.
+  lhcFaser::initialize( CppSLHA::CppSLHA0* const spectrumData,
+                        std::string const pathToGrids,
+                        std::string const crossSectionUnit,
+                        bool const usingNlo )
+  // this is used by the constructors to do most of the construction.
   {
-
-    spectrum_data = given_spectrum_data;
-
-    path_to_grids.assign( given_path_to_grids );
-
-    NLO_to_be_used = given_NLO_to_be_used;
-
-    if( 0 == given_cross_section_unit.compare( "pb" ) )
+    this->spectrumData = spectrumData;
+    this->pathToGrids.assign( pathToGrids );
+    this->usingNlo = usingNlo;
+    if( 0 == crossSectionUnit.compare( "pb" ) )
       {
-
-        cross_section_unit_factor = 1.0;
-
+        crossSectionUnitFactor = 1.0;
       }
-    else if( 0 == given_cross_section_unit.compare( "fb" ) )
+    else if( 0 == crossSectionUnit.compare( "fb" ) )
       {
-
-        cross_section_unit_factor = 1000.0;
-
+        crossSectionUnitFactor = 1000.0;
       }
-    else if( 0 == given_cross_section_unit.compare( "nb" ) )
+    else if( 0 == crossSectionUnit.compare( "nb" ) )
       {
-
-        cross_section_unit_factor = 0.001;
-
+        crossSectionUnitFactor = 0.001;
       }
     else
       {
-
         std::cout
         << "LHC-FASER::error! given_unit has to be pb/fb/nb (all lowercase"
         << " characters). Carrying on, assuming fb.";
         std::cout << std::endl;
-
-        cross_section_unit_factor = 1000.0;
-
+        crossSectionUnitFactor = 1000.0;
       }
 
-    readier_instance = new readierForNewPoint();
+    readier = new readierForNewPoint();
+    inputSource = new inputHandler( spectrumData,
+                                    spectrumData->get_particle_spectrum(),
+                                    pathToGrids,
+                                    readier );
+    crossSectionSource = new crossSectionHandler( inputSource );
+    jetPlusMetAcceptanceSource
+    = new jetPlusMetAcceptanceHandler( inputSource,
+                                       &(this->pathToGrids) );
+    electroweakCascadeSource = new electroweakCascadesForOneBeamEnergy;
 
-    input_handler_object = new inputHandler( spectrum_data,
-                                        spectrum_data->get_particle_spectrum(),
-                                              path_to_grids,
-                                              readier_instance );
-
-    cross_section_handler_object
-    = new crossSectionHandler( input_handler_object );
-    kinematics_handler_object = new kinematics_handler( input_handler_object );
-    cascade_handler_object = new cascade_handler( input_handler_object );
-
-    shortcut = new signalShortcuts( input_handler_object,
-                                     cross_section_handler_object,
-                                     kinematics_handler_object,
-                                     cascade_handler_object );
+    shortcut = new signalShortcuts( inputSource,
+                                     crossSectionSource,
+                                     jetPlusMetAcceptanceSource,
+                                     electroweakCascadeSource );
 
   }
 

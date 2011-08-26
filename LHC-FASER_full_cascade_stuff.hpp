@@ -881,7 +881,7 @@ namespace LHC_FASER
 
     fullCascadeSet( inputHandler const* const shortcut,
                     particlePointer const initialScolored,
-                    electroweakCascadeHandler* const electroweakCascades,
+                    electroweakCascadesForOneBeamEnergy* const electroweakCascades,
                     std::list< fullCascadeSet* >* const squarkCascadeSetList,
                     double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -943,7 +943,7 @@ namespace LHC_FASER
   protected:
     inputHandler const* const shortcut;
     particlePointer const initialScolored;
-    electroweakCascadeHandler* const electroweakCascadeSource;
+    electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource;
     std::vector< fullCascade* > openCascades;
     // this holds pointers to all the open cascades.
 
@@ -1006,7 +1006,7 @@ namespace LHC_FASER
   {
   public:
     squarkFullCascadeSet( inputHandler const* const shortcut,
-                          electroweakCascadeHandler* const ewCascadeHandler,
+                          electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
                           particlePointer const initialScolored,
                           readiableCascadeSetList* const squarkCascadeSetList,
                           fullCascadeSet* const gluinoCascadeSet,
@@ -1032,7 +1032,7 @@ namespace LHC_FASER
   {
   public:
     gluinoFullCascadeSet( inputHandler const* const shortcut,
-                          electroweakCascadeHandler* const ewCascadeHandler,
+                          electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
                           readiableCascadeSetList* const squarkCascadeSetList,
                           double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -1055,7 +1055,7 @@ namespace LHC_FASER
   {
   public:
     fullCascadeSetsForOneBeamEnergy( inputHandler const* const shortcut,
-                     electroweakCascadeHandler* const electroweakCascadeSource,
+                     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                      double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~fullCascadeSetsForOneBeamEnergy()
@@ -1077,7 +1077,7 @@ namespace LHC_FASER
 
   protected:
     inputHandler const* const shortcut;
-    electroweakCascadeHandler* const electroweakCascadeSource;
+    electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource;
     double const beamEnergy;
     std::vector< squarkFullCascadeSet* > squarkCascadeSets;
     gluinoFullCascadeSet* gluinoCascadeSet;
@@ -1091,7 +1091,7 @@ namespace LHC_FASER
   {
   public:
     fullCascadeSetFactory( inputHandler const* const shortcut,
-                           electroweakCascadeHandler* const ewCascadeHandler )
+                           electroweakCascadesForOneBeamEnergy* const ewCascadeHandler )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~fullCascadeSetFactory()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -1111,7 +1111,7 @@ namespace LHC_FASER
 
   protected:
     inputHandler const* const shortcut;
-    electroweakCascadeHandler* const electroweakCascadeSource;
+    electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource;
     std::vector< fullCascadeSetsForOneBeamEnergy* > cascadeSetsPerEnergy;
   };
 

@@ -564,7 +564,7 @@ namespace LHC_FASER
     CppSLHA::particle_property_set const* const secondParticle;
     CppSLHA::particle_property_set const* const thirdParticle;
     CppSLHA::particle_property_set const* const fourthParticle;
-    /* these masses could be pulled out of spectrum_data every time they are
+    /* these masses could be pulled out of spectrumData every time they are
      * needed, but it's probably worthwhile to have them as quickly-accessible
      * doubles:
      */

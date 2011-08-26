@@ -53,8 +53,8 @@
  *      found in a subdirectory included with this package.
  */
 
-#ifndef LHC_FASER_BASE_ELECTROWEAK_CASCADE_STUFF_HPP_
-#define LHC_FASER_BASE_ELECTROWEAK_CASCADE_STUFF_HPP_
+#ifndef LHC_FASER_ELECTROWEAK_CASCADE_COLLECTION_STUFF_HPP_
+#define LHC_FASER_ELECTROWEAK_CASCADE_COLLECTION_STUFF_HPP_
 
 #include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
 #include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
@@ -172,17 +172,21 @@ namespace LHC_FASER
 
   // this gives out pointers to electroweakCascadeSets at a fixed beam energy
   // based on the requested colored sparticle & electroweakino or vector boson.
-  class electroweakCascadeHandler
+  class electroweakCascadesForOneBeamEnergy
   {
   public:
-    electroweakCascadeHandler(
-                      leptonAcceptancesForOneBeamEnergy* const kinematicsTable,
-                               int const beamEnergy,
-                               inputHandler const* const shortcut )
+    electroweakCascadesForOneBeamEnergy(
+                               leptonAcceptanceHandler* const kinematicsSource,
+                                         int const beamEnergy,
+                                         inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~electroweakCascadeHandler()
+    ~electroweakCascadesForOneBeamEnergy()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+    int
+    getBeamEnergy()
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     electroweakCascadeSet*
     getCascadeSet( particlePointer const coloredDecayer,
                    particlePointer const electroweakino )
@@ -192,7 +196,6 @@ namespace LHC_FASER
      * electroweakCascadeSet & returns a pointer to that.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     electroweakCascadeSet*
     getCascadeSet( particlePointer const coloredDecayer,
                    particlePointer const electroweakBoson,
@@ -215,6 +218,31 @@ namespace LHC_FASER
   };
 
 
+  // this class holds all the electroweakCascadesForOneBeamEnergy & passes out
+  // pointers to them.
+  class electroweakCascadeHandler
+  {
+  public:
+    electroweakCascadeHandler( inputHandler const* const shortcut,
+                               std::string const* const gridFileSetLocation )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~electroweakCascadeHandler()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    electroweakCascadesForOneBeamEnergy*
+    getElectroweakCascadesForOneBeamEnergy( int const beamEnergy )
+    /* this looks to see if there is an existing
+     * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
+     * makes 1, & returns the pointer.
+     */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    inputHandler const* const shortcut;
+    leptonAcceptanceHandler kinematicsSource;
+    std::vector< electroweakCascadesForOneBeamEnergy* >
+    cascadeSetAtBeamEnergies;
+  };
 
 
 
@@ -305,6 +333,15 @@ namespace LHC_FASER
     return returnValue;
   }
 
+
+
+  inline int
+  electroweakCascadesForOneBeamEnergy::getBeamEnergy()
+  const
+  {
+    return beamEnergy;
+  }
+
 }
 
-#endif /* LHC_FASER_BASE_ELECTROWEAK_CASCADE_STUFF_HPP_ */
+#endif /* LHC_FASER_ELECTROWEAK_CASCADE_COLLECTION_STUFF_HPP_ */

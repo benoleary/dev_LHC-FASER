@@ -339,18 +339,19 @@ namespace LHC_FASER
 
 
 
-  electroweakCascadeHandler::electroweakCascadeHandler(
-                      leptonAcceptancesForOneBeamEnergy* const kinematicsTable,
+  electroweakCascadesForOneBeamEnergy::electroweakCascadesForOneBeamEnergy(
+                               leptonAcceptanceHandler* const kinematicsSource,
                                                         int const beamEnergy,
                                          inputHandler const* const shortcut ) :
-    kinematicsTable( kinematicsTable ),
+    kinematicsTable( kinematicsSource->getLeptonAcceptancesForOneBeamEnergy(
+                                                                beamEnergy ) ),
     beamEnergy( beamEnergy ),
     shortcut( shortcut )
   {
     // just an initialization list.
   }
 
-  electroweakCascadeHandler::~electroweakCascadeHandler()
+  electroweakCascadesForOneBeamEnergy::~electroweakCascadesForOneBeamEnergy()
   {
     for( std::vector< electroweakCascadeSet* >::iterator
          deletionIterator( electroweakinoCascadeSets.begin() );
@@ -370,7 +371,7 @@ namespace LHC_FASER
 
 
   electroweakCascadeSet*
-  electroweakCascadeHandler::getCascadeSet(
+  electroweakCascadesForOneBeamEnergy::getCascadeSet(
                                           particlePointer const coloredDecayer,
                                      particlePointer const electroweakDecayer )
   /* this looks to see if it already has an electroweakCascadeSet
@@ -407,7 +408,7 @@ namespace LHC_FASER
   }
 
   electroweakCascadeSet*
-  electroweakCascadeHandler::getCascadeSet(
+  electroweakCascadesForOneBeamEnergy::getCascadeSet(
                                           particlePointer const coloredDecayer,
                                         particlePointer const electroweakBoson,
                                         particlePointer const lighterScolored )
@@ -445,6 +446,64 @@ namespace LHC_FASER
                                    lighterScolored,
                                    shortcut );
       bosonCascadeSets.push_back( returnPointer );
+    }
+    return returnPointer;
+  }
+
+
+  electroweakCascadeHandler::electroweakCascadeHandler(
+                                            inputHandler const* const shortcut,
+                               std::string const* const gridFileSetLocation ) :
+    kinematicsSource( shortcut,
+                      gridFileSetLocation ),
+    shortcut( shortcut )
+  {
+    // just an initialization list.
+  }
+
+  electroweakCascadeHandler::~electroweakCascadeHandler()
+  {
+    for( std::vector< leptonAcceptancesForOneBeamEnergy* >::iterator
+         deletionIterator( cascadeSetAtBeamEnergies->begin() );
+         cascadeSetAtBeamEnergies->end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+  }
+
+
+  electroweakCascadesForOneBeamEnergy*
+  electroweakCascadeHandler::getElectroweakCascadesForOneBeamEnergy(
+                                                         int const beamEnergy )
+  /* this looks to see if there is an existing
+   * electroweakCascadesForOneBeamEnergy with the requested beam energy, & if
+   * not, makes 1, & returns the pointer.
+   */
+  {
+    electroweakCascadesForOneBeamEnergy* returnPointer( NULL );
+    // we look to see if we already have a leptonAcceptancesForOneBeamEnergy
+    // for these values:
+    for( std::vector< electroweakCascadesForOneBeamEnergy* >::iterator
+         searchIterator = cascadeSetAtBeamEnergies->begin();
+         cascadeSetAtBeamEnergies->end() > searchIterator;
+         ++searchIterator )
+    {
+      if( beamEnergy == (*searchIterator)->getBeamEnergy() )
+      {
+        returnPointer = *searchIterator;
+        searchIterator = acceptanceTables->end();
+      }
+    }
+    if( NULL == returnPointer )
+      // if we do not already have a electroweakCascadeForOneBeamEnergy for
+      // this beam energy, we make a new instance:
+    {
+      returnPointer
+      = new electroweakCascadesForOneBeamEnergy( &kinematicsSource,
+                                                 beamEnergy,
+                                                 shortcut );
+      cascadeSetAtBeamEnergies.push_back( returnPointer );
     }
     return returnPointer;
   }
