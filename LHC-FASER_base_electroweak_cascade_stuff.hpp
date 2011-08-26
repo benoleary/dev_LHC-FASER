@@ -409,129 +409,12 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
-  /* this is a class to hold a set of electroweakCascadeSource associated with a
-   * single decaying electroweakino or vector boson (from the decay of a single
-   * colored sparticle). the decaying colored sparticle is assumed to be the
-   * version with a PDG code which is POSITIVE, rather than the antiparticle
-   * with negative code. hence for example an instance of this class would be
-   * for a positively-charged up squark which decays into a negatively-charged
-   * down quark & a positively-charged chargino, or for another example an
-   * instance could be for a negatively-charged down squark, which decays into
-   * a positively-charged up quark & a negatively-charged chargino (which has
-   * negative PDG code!). the charge-conjugate process, which is assumed to
-   * have the same branching ratios & acceptances, though for opposite-charge
-   * SM fermions, must be taken care of by whatever objects are using this
-   * class.
-   */
-  class electroweakCascadeSet
-  {
-  public:
-    electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
-                           particlePointer const coloredDecayer,
-                           particlePointer const electroweakDecayer,
-                           inputHandler const* const shortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    virtual
-    ~electroweakCascadeSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    bool
-    isEquivalent( particlePointer const coloredDecayer,
-                  particlePointer const electroweakDecayer )
-    // this returns true if the coloredDecayers & electroweakDecayers match.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    particlePointer
-    getColoredDecayer()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    particlePointer
-    getElectroweakDecayer()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getAcceptance( acceptanceCutSet const* const cuts,
-                   int const numberOfAdditionalJets,
-                   int const numberOfNegativeElectrons,
-                   int const numberOfPositiveElectrons,
-                   int const numberOfNegativeMuons,
-                   int const numberOfPositiveMuons )
-    /* this does the common job of checking to see if the point has been
-     * updated before calling the relevant protected virtual function, which
-     * returns the set of values for acceptance * branching ratio FOR THE
-     * CASCADES FROM electroweakDecayer ONWARDS (does NOT include the BR for
-     * coloredDecayer to electroweakDecayer - this is dealt with by the
-     * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
-     * are being considered for the signal).
-     * this function returns 0.0 if the cascades never result in the requested
-     * set of jets + leptons.
-     * the number of jets is the number produced from the decay of the
-     * decaying *electroweak* particle (neutralino, chargino or vector boson),
-     * NOT from the decay of the colored sparticle to the decaying electroweak
-     * particle.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getOssfMinusOsdf( acceptanceCutSet* const cuts )
-    /* this does the common job of checking to see if the point has been
-     * updated before calling the relevant protected virtual function, which
-     * returns the value for acceptance * branching ratio FOR THE
-     * CASCADES FROM electroweakDecayer ONWARDS (does NOT include the BR for
-     * coloredDecayer to electroweakDecayer - this is dealt with by the
-     * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
-     * are being considered for the signal).
-     * this function returns 0.0 if the cascades never result in an OSSF - OSDF
-     * signal.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-    leptonAcceptanceParameterSet* const kinematics;
-    inputHandler const* const shortcut;
-    particlePointer const coloredDecayer;
-    particlePointer const electroweakDecayer;
-    std::vector< electroweakCascade* > cascades;
-    electroweakCascade* currentCascade; // this is used for filling cascades.
-  };
-
-  // this gives out pointers to electroweakCascadeSets at a fixed beam energy
-  // based on the requested colored sparticle & electroweakino or vector boson.
-  class electroweakCascadeHandler
-  {
-  public:
-    electroweakCascadeHandler(
-                      leptonAcceptancesForOneBeamEnergy* const kinematicsTable,
-                               int const beamEnergy,
-                               inputHandler const* const shortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual
-    ~electroweakCascadeHandler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    electroweakCascadeSet*
-    getCascadeSet( particlePointer const coloredDecayer,
-                   particlePointer const electroweakDecayer )
-    /* this looks to see if it already has an electroweakCascadeSet
-     * corresponding to the requested pairing, & if it does, it returns a
-     * pointer to it, & if it doesn't, it constructs a new
-     * electroweakCascadeSet & returns a pointer to that.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-    leptonAcceptancesForOneBeamEnergy* const kinematicsTable;
-    int const beamEnergy;
-    inputHandler const* const shortcut;
-    std::vector< electroweakCascadeSet* > cascadeSets;
-    electroweakCascadeSet* currentCascadeSet;
-    // this is used for filling cascadeSets.
-  };
-
 
 
 
 
   // inline functions:
+
 
   inline void
   acceptanceValues::reset( double const unsetValues )
@@ -958,12 +841,32 @@ namespace LHC_FASER
 
   inline bool
   electroweakCascadeSet::isEquivalent( particlePointer const coloredDecayer,
-                                       particlePointer const electroweakDecayer )
+                                     particlePointer const electroweakDecayer )
   // this returns true if the coloredDecayers & electroweakDecayers match.
   {
     if( ( coloredDecayer == this->coloredDecayer )
         &&
         ( electroweakDecayer == this->electroweakDecayer ) )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  inline bool
+  electroweakCascadeSet::isEquivalent( particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                       particlePointer const lighterScolored )
+  // this returns true if the coloredDecayers & electroweakDecayers match.
+  {
+    if( ( coloredDecayer == this->coloredDecayer )
+        &&
+        ( electroweakDecayer == this->electroweakDecayer )
+        &&
+        ( lighterScolored == this->lighterScolored ) )
     {
       return true;
     }

@@ -564,8 +564,8 @@ namespace LHC_FASER
   electroweakCascadeHandler::~electroweakCascadeHandler()
   {
     for( std::vector< electroweakCascadeSet* >::iterator
-         deletionIterator = cascadeSets.begin();
-         cascadeSets.end() > deletionIterator;
+         deletionIterator = electroweakinoCascadeSets.begin();
+         electroweakinoCascadeSets.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -584,15 +584,15 @@ namespace LHC_FASER
   {
     electroweakCascadeSet* returnPointer( NULL );
     for( std::vector< electroweakCascadeSet* >::iterator
-         cascadeIterator = cascadeSets.begin();
-         cascadeSets.end() > cascadeIterator;
+         cascadeIterator = electroweakinoCascadeSets.begin();
+         electroweakinoCascadeSets.end() > cascadeIterator;
          ++cascadeIterator )
     {
       if( (*cascadeIterator)->isEquivalent( coloredDecayer,
                                             electroweakDecayer ) )
       {
         returnPointer = *cascadeIterator;
-        cascadeIterator = cascadeSets.end();
+        cascadeIterator = electroweakinoCascadeSets.end();
       }
     }
     if( NULL == returnPointer )
@@ -604,7 +604,7 @@ namespace LHC_FASER
                                    coloredDecayer,
                                    electroweakDecayer,
                                    shortcut );
-      cascadeSets.push_back( returnPointer );
+      electroweakinoCascadeSets.push_back( returnPointer );
     }
     return returnPointer;
   }

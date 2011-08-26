@@ -885,7 +885,8 @@ namespace LHC_FASER
             svgxCascades.addNewAtEnd()->setProperties( initialScolored,
                                      electroweakCascadeSource->getCascadeSet(
                                                                initialScolored,
-                                                                 *ewIterator ),
+                                                                 *ewIterator,
+                                                       shortcut->getGluino() ),
                                                        *gxIterator );
             addOpenCascade( svgxCascades.getBack() );
           }
@@ -927,15 +928,15 @@ namespace LHC_FASER
       {
         soughtPositivePdgCodeList.clear();
         soughtPositivePdgCodeList.push_back(
-                         (*cascadeIterator)->initialScolored->get_PDG_code() );
+                    (*cascadeIterator)->getInitialScolored()->get_PDG_code() );
         soughtPositivePdgCodeList.push_back( (*ewIterator)->get_PDG_code() );
         soughtNegativePdgCodeList.clear();
         soughtNegativePdgCodeList.push_back(
-                         (*cascadeIterator)->initialScolored->get_PDG_code() );
+                    (*cascadeIterator)->getInitialScolored()->get_PDG_code() );
         soughtNegativePdgCodeList.push_back(
                                             -((*ewIterator)->get_PDG_code()) );
         if( ( initialScolored->get_absolute_mass()
-              > ( (*cascadeIterator)->initialScolored->get_absolute_mass()
+              > ( (*cascadeIterator)->getInitialScolored()->get_absolute_mass()
                   + (*ewIterator)->get_absolute_mass() ) )
             &&
             ( ( lhcFaserGlobal::negligibleBr
@@ -956,7 +957,8 @@ namespace LHC_FASER
             svsxCascades.addNewAtEnd()->setProperties( initialScolored,
                                        electroweakCascadeSource->getCascadeSet(
                                                                initialScolored,
-                                                                 *ewIterator ),
+                                                                   *ewIterator,
+                                    (*cascadeIterator)->getInitialScolored() ),
                                                        *sxIterator );
             addOpenCascade( svsxCascades.getBack() );
           }
@@ -969,7 +971,8 @@ namespace LHC_FASER
             svsjgxCascades.addNewAtEnd()->setProperties( initialScolored,
                                        electroweakCascadeSource->getCascadeSet(
                                                                initialScolored,
-                                                                 *ewIterator ),
+                                                                   *ewIterator,
+                                    (*cascadeIterator)->getInitialScolored() ),
                                                          *sjgxIterator );
             addOpenCascade( svsjgxCascades.getBack() );
           }
@@ -983,7 +986,8 @@ namespace LHC_FASER
             svsjgjsxCascades.addNewAtEnd()->setProperties( initialScolored,
                                        electroweakCascadeSource->getCascadeSet(
                                                                initialScolored,
-                                                                 *ewIterator ),
+                                                                   *ewIterator,
+                                    (*cascadeIterator)->getInitialScolored() ),
                                                            *sjgjsxIterator );
             addOpenCascade( svsjgjsxCascades.getBack() );
           }
@@ -1037,7 +1041,7 @@ namespace LHC_FASER
          cascadeIterator( squarkCascadeSetList->begin() );
          ( ( squarkCascadeSetList->end() != cascadeIterator )
            &&
-           ( (*cascadeIterator)->initialScolored->get_absolute_mass()
+           ( (*cascadeIterator)->getInitialScolored()->get_absolute_mass()
              < initialScolored->get_absolute_mass() ) );
          ++cascadeIterator )
     {
@@ -1071,11 +1075,11 @@ namespace LHC_FASER
       {
         soughtPositivePdgCodeList.clear();
         soughtPositivePdgCodeList.push_back(
-                         (*cascadeIterator)->initialScolored->get_PDG_code() );
+                    (*cascadeIterator)->getInitialScolored()->get_PDG_code() );
         soughtPositivePdgCodeList.push_back( (*ewIterator)->get_PDG_code() );
         soughtNegativePdgCodeList.clear();
         soughtNegativePdgCodeList.push_back(
-                         (*cascadeIterator)->initialScolored->get_PDG_code() );
+                    (*cascadeIterator)->getInitialScolored()->get_PDG_code() );
         soughtNegativePdgCodeList.push_back(
                                             -((*ewIterator)->get_PDG_code()) );
         if( ( initialScolored->get_absolute_mass()
@@ -1099,7 +1103,8 @@ namespace LHC_FASER
             gvsxCascades.addNewAtEnd()->setProperties(
                                        electroweakCascadeSource->getCascadeSet(
                                                                initialScolored,
-                                                                 *ewIterator ),
+                                                                 *ewIterator,
+                                    (*cascadeIterator)->getInitialScolored() ),
                                                        *sxIterator );
             addOpenCascade( gvsxCascades.getBack() );
           }
@@ -1241,4 +1246,5 @@ namespace LHC_FASER
     }
     return returnPointer;
   }
+
 }  // end of LHC_FASER namespace.

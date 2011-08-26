@@ -5,8 +5,8 @@
  *      Author: bol
  */
 
-#ifndef LHC_FASER_DERIVED_ELECTROWEAK_CASCADE_STUFF_HPP_
-#define LHC_FASER_DERIVED_ELECTROWEAK_CASCADE_STUFF_HPP_
+#ifndef LHC_FASER_NEUTRAL_ELECTROWEAK_CASCADE_STUFF_HPP_
+#define LHC_FASER_NEUTRAL_ELECTROWEAK_CASCADE_STUFF_HPP_
 
 #include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
 
@@ -54,11 +54,11 @@ namespace LHC_FASER
   public:
     neutralinoToSemuCascade( leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
+                             particlePointer const coloredDecayer,
                              //bool const coloredDecayerIsNotAntiparticle,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
+                             particlePointer const electroweakDecayer,
                              //bool const electroweakDecayerIsNotAntiparticle,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
+                             particlePointer const intermediateDecayer,
                              inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
@@ -128,10 +128,10 @@ namespace LHC_FASER
     chargeSummedNeutralinoToSemuCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
-                                          inputHandler const* const shortcut )
+                                         particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                     particlePointer const intermediateDecayer,
+                                         inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~chargeSummedNeutralinoToSemuCascade()
@@ -181,9 +181,9 @@ namespace LHC_FASER
   public:
     neutralinoToStauCascade( leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
+                             particlePointer const coloredDecayer,
+                             particlePointer const electroweakDecayer,
+                             particlePointer const intermediateDecayer,
                              inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -280,9 +280,9 @@ namespace LHC_FASER
     chargeSummedNeutralinoToStauCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
+                                         particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                     particlePointer const intermediateDecayer,
                                          inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -364,8 +364,8 @@ namespace LHC_FASER
   public:
     neutralinoToZCascade( leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
+                          particlePointer const coloredDecayer,
+                          particlePointer const electroweakDecayer,
                           inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~neutralinoToZCascade()
@@ -440,9 +440,9 @@ namespace LHC_FASER
     chargeSummedNeutralinoToZCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-                          inputHandler const* const shortcut )
+                                      particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                      inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~chargeSummedNeutralinoToZCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -503,9 +503,9 @@ namespace LHC_FASER
   public:
     neutralinoToHiggsCascade( leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
+                              particlePointer const coloredDecayer,
+                              particlePointer const electroweakDecayer,
+                              particlePointer const intermediateDecayer,
                               inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~neutralinoToHiggsCascade()
@@ -579,8 +579,8 @@ namespace LHC_FASER
     chargeSummedNeutralinoVirtualCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
                                           inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~chargeSummedNeutralinoVirtualCascade()
@@ -654,17 +654,16 @@ namespace LHC_FASER
   // decaying neutralino -> SM fermion+antifermion pair + lightest neutralino
   // currently this is a placeholder, just substituting in the charge-summed
   // version.
-  class neutralinoThreeBodyCascade :
-                                    public chargeSummedNeutralinoVirtualCascade
+  class neutralinoVirtualCascade : public chargeSummedNeutralinoVirtualCascade
   {
   public:
-    neutralinoThreeBodyCascade( leptonAcceptanceParameterSet* const kinematics,
+    neutralinoVirtualCascade( leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-                                inputHandler const* const shortcut )
+                              particlePointer const coloredDecayer,
+                              particlePointer const electroweakDecayer,
+                              inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~neutralinoThreeBodyCascade()
+    ~neutralinoVirtualCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   //protected:
@@ -680,9 +679,9 @@ namespace LHC_FASER
     scoloredToZPlusScoloredCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                   CppSLHA::particle_property_set const* const lighterScolored,
-                          inputHandler const* const shortcut )
+                                    particlePointer const coloredDecayer,
+                                    particlePointer const lighterScolored,
+                                    inputHandler const* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~scoloredToZPlusScoloredCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -741,6 +740,7 @@ namespace LHC_FASER
 
   // inline functions:
 
+
   inline bool
   lightestNeutralinoCascade::validSignal( int const numberOfJets,
                                           int const numberOfNegativeElectrons,
@@ -778,6 +778,7 @@ namespace LHC_FASER
     // once the cascade has reached the LSP, it stays as the LSP 100% of the
     // time, never triggering any jets or leptons.
   }
+
 }  // end of LHC_FASER namespace.
 
-#endif /* LHC_FASER_DERIVED_ELECTROWEAK_CASCADE_STUFF_HPP_ */
+#endif /* LHC_FASER_NEUTRAL_ELECTROWEAK_CASCADE_STUFF_HPP_ */

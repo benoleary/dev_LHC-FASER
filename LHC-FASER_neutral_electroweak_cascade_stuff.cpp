@@ -32,12 +32,12 @@ namespace LHC_FASER
   neutralinoToSemuCascade::neutralinoToSemuCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
+                                          particlePointer const coloredDecayer,
                                   //bool const coloredDecayerIsNotAntiparticle,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
+                                      particlePointer const electroweakDecayer,
                               //bool const electroweakDecayerIsNotAntiparticle,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
-                                        inputHandler const* const shortcut ) :
+                                     particlePointer const intermediateDecayer,
+                                         inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
@@ -59,16 +59,14 @@ namespace LHC_FASER
       muonsNotElectrons = false;
     }
     // we set up the BR of the (only) channel:
-    firstBr
-    = shortcut->getExclusiveBrCalculator( electroweakDecayer,
-                                          intermediateDecayer,
-                                          true,
-                                          shortcut->getEmptyList() );
-    secondBr
-    = shortcut->getExclusiveBrCalculator( intermediateDecayer,
-                                             shortcut->getNeutralinoOne(),
-                                             true,
-                                             shortcut->getEmptyList() );
+    firstBr = shortcut->getExclusiveBrCalculator( electroweakDecayer,
+                                                  intermediateDecayer,
+                                                  true,
+                                                  shortcut->getEmptyList() );
+    secondBr = shortcut->getExclusiveBrCalculator( intermediateDecayer,
+                                                  shortcut->getNeutralinoOne(),
+                                                   true,
+                                                   shortcut->getEmptyList() );
     nearSameDistribution
     = new same_chirality_near_muon( shortcut->getReadier(),
                                     shortcut->getCppSlha(),
@@ -188,30 +186,34 @@ namespace LHC_FASER
       farOppositeFail = ( 1.0 - integrateAcceptance( farOppositeDistribution,
                                              cuts->getSecondaryLeptonCut() ) );
 
-      currentAcceptance->setOssfMinusOsdf( ( cascadeBr * nearSamePass
-                                                       * farSamePass
-                                             + ( cascadeBr
+      currentAcceptance->setOssfMinusOsdf(
+                                      ( nearNegativeLeptonSameHandednessTimesBr
+                                        * nearSamePass * farSamePass
+                                        + ( cascadeBr
                                     - nearNegativeLeptonSameHandednessTimesBr )
-                                               * nearOppositePass
-                                               * farOppositePass ) );
-      currentAcceptance->setZeroJetsZeroLeptons( ( cascadeBr * nearSameFail
-                                                             * farSameFail
-                                                 + ( cascadeBr
+                                          * nearOppositePass
+                                          * farOppositePass ) );
+      currentAcceptance->setZeroJetsZeroLeptons(
+                                      ( nearNegativeLeptonSameHandednessTimesBr
+                                        * nearSameFail * farSameFail
+                                        + ( cascadeBr
                                     - nearNegativeLeptonSameHandednessTimesBr )
-                                                   * nearOppositeFail
-                                                   * farOppositeFail ) );
+                                          * nearOppositeFail
+                                          * farOppositeFail ) );
+      double nearSamePassFarFailPlusConjugate( ( nearSamePass * farSameFail
+                                      + farOppositePass * nearOppositeFail ) );
+      double farSamePassNearFailPlusConjugate( ( farSamePass * nearSameFail
+                                      + nearOppositePass * farOppositeFail ) );
       justOneNegativeLeptonPass
       = ( nearNegativeLeptonSameHandednessTimesBr
-          * ( nearSamePass * farSameFail + farOppositePass * nearOppositeFail )
+          * nearSamePassFarFailPlusConjugate
           + ( cascadeBr - nearNegativeLeptonSameHandednessTimesBr )
-            * ( farSamePass * nearSameFail
-                + nearOppositePass * farOppositeFail ) );
+            * farSamePassNearFailPlusConjugate );
       justOnePositiveLeptonPass
       = ( nearNegativeLeptonSameHandednessTimesBr
-          * ( farSamePass * nearSameFail + nearOppositePass * farOppositeFail )
+          * farSamePassNearFailPlusConjugate
           + ( cascadeBr - nearNegativeLeptonSameHandednessTimesBr )
-            * ( nearSamePass * farSameFail
-                + farOppositePass * nearOppositeFail ) );
+            * nearSamePassFarFailPlusConjugate );
 
       if( muonsNotElectrons )
       {
@@ -244,18 +246,14 @@ namespace LHC_FASER
   chargeSummedNeutralinoToSemuCascade::chargeSummedNeutralinoToSemuCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                                    bool const coloredDecayerIsNotAntiparticle,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-                                bool const electroweakDecayerIsNotAntiparticle,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
-                                        inputHandler const* const shortcut ) :
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                     particlePointer const intermediateDecayer,
+                                         inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
-                        coloredDecayerIsNotAntiparticle,
                         electroweakDecayer,
-                        electroweakDecayerIsNotAntiparticle,
                         intermediateDecayer,
                         true,
                         shortcut ),
@@ -273,31 +271,29 @@ namespace LHC_FASER
       muonsNotElectrons = false;
     }
     // we set up the BR of the (only) channel:
-    firstBr
-    = shortcut->getExclusiveBrCalculator( electroweakDecayer,
-                                             intermediateDecayer,
-                                             true,
-                                             shortcut->getEmptyList() );
-    secondBr
-    = shortcut->getExclusiveBrCalculator( intermediateDecayer,
-                                             shortcut->getNeutralinoOne(),
-                                             true,
-                                             shortcut->getEmptyList() );
+    firstBr = shortcut->getExclusiveBrCalculator( electroweakDecayer,
+                                                  intermediateDecayer,
+                                                  true,
+                                                  shortcut->getEmptyList() );
+    secondBr = shortcut->getExclusiveBrCalculator( intermediateDecayer,
+                                                  shortcut->getNeutralinoOne(),
+                                                   true,
+                                                   shortcut->getEmptyList() );
     nearDistribution
-    = new same_chirality_near_muon( shortcut->getReadier(),
-                                    shortcut->getCppSlha(),
-                                    coloredDecayer,
-                                    effectiveSquarkMass,
-                                    electroweakDecayer,
-                                    intermediateDecayer );
+    = new flat_near_muon_plus_antimuon( shortcut->getReadier(),
+                                        shortcut->getCppSlha(),
+                                        coloredDecayer,
+                                        effectiveSquarkMass,
+                                        electroweakDecayer,
+                                        intermediateDecayer );
     farDistribution
-    = new same_chirality_far_muon( shortcut->getReadier(),
-                                   shortcut->getCppSlha(),
-                                   coloredDecayer,
-                                   effectiveSquarkMass,
-                                   electroweakDecayer,
-                                   intermediateDecayer,
-                                   shortcut->getNeutralinoOne() );
+    = new flat_far_muon_plus_antimuon( shortcut->getReadier(),
+                                       shortcut->getCppSlha(),
+                                       coloredDecayer,
+                                       effectiveSquarkMass,
+                                       electroweakDecayer,
+                                       intermediateDecayer,
+                                       shortcut->getNeutralinoOne() );
     activeDistributions.push_back( nearDistribution );
     activeDistributions.push_back( farDistribution );
   }
@@ -400,10 +396,10 @@ namespace LHC_FASER
   neutralinoToStauCascade::neutralinoToStauCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
-                                        inputHandler const* const shortcut ) :
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                     particlePointer const intermediateDecayer,
+                                         inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
@@ -413,16 +409,14 @@ namespace LHC_FASER
                         shortcut )
   {
     // we set up the BR of the (only-ish) channel:
-    firstBr
-    = shortcut->getExclusiveBrCalculator( electroweakDecayer,
-                                             intermediateDecayer,
-                                             true,
-                                             shortcut->getEmptyList() );
-    secondBr
-    = shortcut->getExclusiveBrCalculator( intermediateDecayer,
-                                             shortcut->getNeutralinoOne(),
-                                             true,
-                                             shortcut->getEmptyList() );
+    firstBr = shortcut->getExclusiveBrCalculator( electroweakDecayer,
+                                                  intermediateDecayer,
+                                                  true,
+                                                  shortcut->getEmptyList() );
+    secondBr = shortcut->getExclusiveBrCalculator( intermediateDecayer,
+                                                  shortcut->getNeutralinoOne(),
+                                                   true,
+                                                   shortcut->getEmptyList() );
     nearSameTauDistribution
     = new same_chirality_near_muon( shortcut->getReadier(),
                                     shortcut->getCppSlha(),
@@ -557,41 +551,23 @@ namespace LHC_FASER
    * particle, & false otherwise.
    */
   {
-    if( 2 == numberOfJets )
+    if( ( 0 <= numberOfJets )
+        &&
+        ( 0 <= numberOfNegativeElectrons )
+        &&
+        ( 0 <= numberOfPositiveElectrons )
+        &&
+        ( 0 <= numberOfNegativeMuons )
+        &&
+        ( 0 <= numberOfPositiveMuons )
+        &&
+        ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
+        &&
+        ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
     {
-      if( ( 0 == numberOfNegativeElectrons )
-          &&
-          ( 0 == numberOfPositiveElectrons )
-          &&
-          ( 0 == numberOfNegativeMuons )
-          &&
-          ( 0 == numberOfPositiveMuons ) )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else if( ( 0 <= numberOfJets )
-             &&
-             ( 0 <= numberOfNegativeElectrons )
-             &&
-             ( 0 <= numberOfPositiveElectrons )
-             &&
-             ( 0 <= numberOfNegativeMuons )
-             &&
-             ( 0 <= numberOfPositiveMuons )
-             &&
-             ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
-             &&
-             ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
-    {
-      if( 2 >=
-          ( numberOfJets
-            + numberOfNegativeElectrons + numberOfPositiveElectrons
-            + numberOfNegativeMuons + numberOfPositiveMuons ) )
+      if( 2 >= ( numberOfJets
+                 + numberOfNegativeElectrons + numberOfPositiveElectrons
+                 + numberOfNegativeMuons + numberOfPositiveMuons ) )
       {
         return true;
       }
@@ -634,21 +610,17 @@ namespace LHC_FASER
       currentCuts = cuts;
       this->currentAcceptance = currentAcceptance;
       jetLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness(
-                                                coloredDecayer->get_PDG_code(),
+      = shortcut->quarkOrLeptonLeftHandedness( coloredDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       jetRightHandedness = ( 1.0 - jetLeftHandedness );
-      nearNegativeTauLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness(
+      nearNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
                                             mediating_particle->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
       nearNegativeTauRightHandedness = ( 1.0 - nearNegativeTauLeftHandedness );
-      farNegativeTauLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness(
+      farNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
                                             mediating_particle->get_PDG_code(),
                               shortcut->getNeutralinoOne()->get_PDG_code() );
       farNegativeTauRightHandedness = ( 1.0 - farNegativeTauLeftHandedness );
-
 
       /* in the following, XY(bar)Z(bar) is quark handedness, near tau
        * lepton handedness, far tau lepton handedness, YbarZ means that
@@ -865,7 +837,7 @@ namespace LHC_FASER
     currentNearFailSum
     = ( tauToPionTimesTauToMuonBr * nearPionFail
         + ( tauToElectronTimesTauToMuonBr + tauPairToMuonPairBr )
-        * nearMuonFail );
+          * nearMuonFail );
     currentFarFailSum
     = ( tauToPionTimesTauToMuonBr * farPionFail
         + ( tauToElectronTimesTauToMuonBr + tauPairToMuonPairBr )
@@ -900,10 +872,10 @@ namespace LHC_FASER
   chargeSummedNeutralinoToStauCascade::chargeSummedNeutralinoToStauCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
-                                        inputHandler const* const shortcut ) :
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                     particlePointer const intermediateDecayer,
+                                         inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
@@ -913,16 +885,14 @@ namespace LHC_FASER
                         shortcut )
   {
     // we set up the BR of the (only-ish) channel:
-    firstBr
-    = shortcut->getExclusiveBrCalculator( electroweakDecayer,
-                                             intermediateDecayer,
-                                             true,
-                                             shortcut->getEmptyList() );
-    secondBr
-    = shortcut->getExclusiveBrCalculator( intermediateDecayer,
-                                             shortcut->getNeutralinoOne(),
-                                             true,
-                                             shortcut->getEmptyList() );
+    firstBr = shortcut->getExclusiveBrCalculator( electroweakDecayer,
+                                                  intermediateDecayer,
+                                                  true,
+                                                  shortcut->getEmptyList() );
+    secondBr = shortcut->getExclusiveBrCalculator( intermediateDecayer,
+                                                  shortcut->getNeutralinoOne(),
+                                                   true,
+                                                   shortcut->getEmptyList() );
     nearTauDistribution
     = new flat_near_muon_plus_antimuon( shortcut->getReadier(),
                                         shortcut->getCppSlha(),
@@ -989,6 +959,48 @@ namespace LHC_FASER
   }
 
 
+  bool
+  chargeSummedNeutralinoToStauCascade::validSignal( int const numberOfJets,
+                                           int const numberOfNegativeElectrons,
+                                           int const numberOfPositiveElectrons,
+                                               int const numberOfNegativeMuons,
+                                              int const numberOfPositiveMuons )
+  /* this returns true if a configuration where each of the signs of tau lepton
+   * decayed either into a detected jet, detected lepton, or undetected
+   * particle, & false otherwise.
+   */
+  {
+    if( ( 0 <= numberOfJets )
+        &&
+        ( 0 <= numberOfNegativeElectrons )
+        &&
+        ( 0 <= numberOfPositiveElectrons )
+        &&
+        ( 0 <= numberOfNegativeMuons )
+        &&
+        ( 0 <= numberOfPositiveMuons )
+        &&
+        ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
+        &&
+        ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
+    {
+      if( 2 >= ( numberOfJets
+                 + numberOfNegativeElectrons + numberOfPositiveElectrons
+                 + numberOfNegativeMuons + numberOfPositiveMuons ) )
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   void
   chargeSummedNeutralinoToStauCascade::calculateAcceptance(
                                                   acceptanceCutSet* const cuts,
@@ -1018,17 +1030,14 @@ namespace LHC_FASER
       currentCuts = cuts;
       this->currentAcceptance = currentAcceptance;
       jetLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness(
-                                                coloredDecayer->get_PDG_code(),
+      = shortcut->quarkOrLeptonLeftHandedness( coloredDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       jetRightHandedness = ( 1.0 - jetLeftHandedness );
-      nearNegativeTauLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness(
+      nearNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
                                             mediating_particle->get_PDG_code(),
                                               decaying_EWino->get_PDG_code() );
       nearNegativeTauRightHandedness = ( 1.0 - nearNegativeTauLeftHandedness );
-      farNegativeTauLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness(
+      farNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
                                             mediating_particle->get_PDG_code(),
                               shortcut->getNeutralinoOne()->get_PDG_code() );
       farNegativeTauRightHandedness = ( 1.0 - farNegativeTauLeftHandedness );
@@ -1196,9 +1205,9 @@ namespace LHC_FASER
   neutralinoToZCascade::neutralinoToZCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-                                        inputHandler const* const shortcut ) :
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                         inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
@@ -1215,8 +1224,10 @@ namespace LHC_FASER
           + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
         / ( 5.0 - 2.0 * twiceSquareOfWeakCosine
             + 2.0 * twiceSquareOfWeakCosine * twiceSquareOfWeakCosine ) );
+
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
+
     directMuonDistribution = new Z_handed_muon( shortcut->getReadier(),
                                                 shortcut->getCppSlha(),
                                                 coloredDecayer,
@@ -1232,7 +1243,7 @@ namespace LHC_FASER
                                                    effectiveSquarkMass,
                                                    electroweakDecayer,
                                                    intermediateDecayer,
-                                                shortcut->getNeutralinoOne(),
+                                                  shortcut->getNeutralinoOne(),
                                                    true,
                                                    false );
     oppositeHandedTauDistribution = new Z_handed_muon( shortcut->getReadier(),
@@ -1241,7 +1252,7 @@ namespace LHC_FASER
                                                        effectiveSquarkMass,
                                                        electroweakDecayer,
                                                        intermediateDecayer,
-                                                shortcut->getNeutralinoOne(),
+                                                  shortcut->getNeutralinoOne(),
                                                        false,
                                                        false );
     activeDistributions.push_back( directMuonDistribution );
@@ -1307,41 +1318,23 @@ namespace LHC_FASER
    * particle, & false otherwise.
    */
   {
-    if( 2 == numberOfJets )
+    if( ( 0 <= numberOfJets )
+        &&
+        ( 0 <= numberOfNegativeElectrons )
+        &&
+        ( 0 <= numberOfPositiveElectrons )
+        &&
+        ( 0 <= numberOfNegativeMuons )
+        &&
+        ( 0 <= numberOfPositiveMuons )
+        &&
+        ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
+        &&
+        ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
     {
-      if( ( 0 == numberOfNegativeElectrons )
-          &&
-          ( 0 == numberOfPositiveElectrons )
-          &&
-          ( 0 == numberOfNegativeMuons )
-          &&
-          ( 0 == numberOfPositiveMuons ) )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else if( ( 0 <= numberOfJets )
-             &&
-             ( 0 <= numberOfNegativeElectrons )
-             &&
-             ( 0 <= numberOfPositiveElectrons )
-             &&
-             ( 0 <= numberOfNegativeMuons )
-             &&
-             ( 0 <= numberOfPositiveMuons )
-             &&
-             ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
-             &&
-             ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
-    {
-      if( 2 >=
-          ( numberOfJets
-            + numberOfNegativeElectrons + numberOfPositiveElectrons
-            + numberOfNegativeMuons + numberOfPositiveMuons ) )
+      if( 2 >= ( numberOfJets
+                 + numberOfNegativeElectrons + numberOfPositiveElectrons
+                 + numberOfNegativeMuons + numberOfPositiveMuons ) )
       {
         return true;
       }
@@ -1440,8 +1433,7 @@ namespace LHC_FASER
       // now Z decays to tau-antitau pairs, followed by the decays of the taus:
       cascadeBr *= CppSLHA::PDG_data::Z_to_tau_lepton_antilepton_BR;
       jetLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness(
-                                                coloredDecayer->get_PDG_code(),
+      = shortcut->quarkOrLeptonLeftHandedness( coloredDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       // left-handed quark, left-handed negative tau lepton:
       configurationBr
@@ -1601,9 +1593,9 @@ namespace LHC_FASER
   chargeSummedNeutralinoToZCascade::chargeSummedNeutralinoToZCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-                                        inputHandler const* const shortcut ) :
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                         inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
@@ -1620,8 +1612,10 @@ namespace LHC_FASER
           + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
         / ( 5.0 - 2.0 * twiceSquareOfWeakCosine
             + 2.0 * twiceSquareOfWeakCosine * twiceSquareOfWeakCosine ) );
+
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
+
     directMuonDistribution = new Z_handed_muon( shortcut->getReadier(),
                                                 shortcut->getCppSlha(),
                                                 coloredDecayer,
@@ -1672,41 +1666,23 @@ namespace LHC_FASER
    * particle, & false otherwise.
    */
   {
-    if( 2 == numberOfJets )
+    if( ( 0 <= numberOfJets )
+        &&
+        ( 0 <= numberOfNegativeElectrons )
+        &&
+        ( 0 <= numberOfPositiveElectrons )
+        &&
+        ( 0 <= numberOfNegativeMuons )
+        &&
+        ( 0 <= numberOfPositiveMuons )
+        &&
+        ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
+        &&
+        ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
     {
-      if( ( 0 == numberOfNegativeElectrons )
-          &&
-          ( 0 == numberOfPositiveElectrons )
-          &&
-          ( 0 == numberOfNegativeMuons )
-          &&
-          ( 0 == numberOfPositiveMuons ) )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else if( ( 0 <= numberOfJets )
-             &&
-             ( 0 <= numberOfNegativeElectrons )
-             &&
-             ( 0 <= numberOfPositiveElectrons )
-             &&
-             ( 0 <= numberOfNegativeMuons )
-             &&
-             ( 0 <= numberOfPositiveMuons )
-             &&
-             ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
-             &&
-             ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
-    {
-      if( 2 >=
-          ( numberOfJets
-            + numberOfNegativeElectrons + numberOfPositiveElectrons
-            + numberOfNegativeMuons + numberOfPositiveMuons ) )
+      if( 2 >= ( numberOfJets
+                 + numberOfNegativeElectrons + numberOfPositiveElectrons
+                 + numberOfNegativeMuons + numberOfPositiveMuons ) )
       {
         return true;
       }
@@ -1806,15 +1782,13 @@ namespace LHC_FASER
       // now Z decays to tau-antitau pairs, followed by the decays of the taus:
       cascadeBr *= CppSLHA::PDG_data::Z_to_tau_lepton_antilepton_BR;
       // left-handed negative tau lepton:
-      configurationBr
-      = ( cascadeBr * negativeTauLeftHandedness );
+      configurationBr = ( cascadeBr * negativeTauLeftHandedness );
       currentMuonDistribution = hardMuonDistribution;
       currentPionDistribution = softPionDistribution;
       calculateForCurrentConfiguration();
 
       // right-handed negative tau lepton:
-      configurationBr
-      = ( cascadeBr * ( 1.0 - negativeTauLeftHandedness ) );
+      configurationBr = ( cascadeBr * ( 1.0 - negativeTauLeftHandedness ) );
       currentMuonDistribution = softMuonDistribution;
       currentPionDistribution = hardPionDistribution;
       calculateForCurrentConfiguration();
@@ -1879,14 +1853,16 @@ namespace LHC_FASER
 
     currentAcceptance->addToZeroJetsZeroLeptons( configurationBr
                                                  * ( tauPairToPionPairBr
-                                                   * nearPionFail * farPionFail
+                                                     * tauPionFail
+                                                     * tauPionFail
                                         + 2.0 * ( tauToPionTimesTauToElectronBr
                                                   + tauToPionTimesTauToMuonBr )
-                                                  * tauPionFail * tauMuonFail
+                                                * tauPionFail * tauMuonFail
                                                  + ( tauPairToElectronPairBr
                                           + 2.0 * tauToElectronTimesTauToMuonBr
                                                      + tauPairToMuonPairBr )
-                                              * nearMuonFail * farMuonFail ) );
+                                                   * tauMuonFail
+                                                   * tauMuonFail ) );
   }
 
 
@@ -1894,10 +1870,10 @@ namespace LHC_FASER
   neutralinoToHiggsCascade::neutralinoToHiggsCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
-                                        inputHandler const* const shortcut ) :
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                     particlePointer const intermediateDecayer,
+                                         inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
@@ -1960,41 +1936,23 @@ namespace LHC_FASER
    * particle, & false otherwise.
    */
   {
-    if( 2 == numberOfJets )
+    if( ( 0 <= numberOfJets )
+        &&
+        ( 0 <= numberOfNegativeElectrons )
+        &&
+        ( 0 <= numberOfPositiveElectrons )
+        &&
+        ( 0 <= numberOfNegativeMuons )
+        &&
+        ( 0 <= numberOfPositiveMuons )
+        &&
+        ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
+        &&
+        ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
     {
-      if( ( 0 == numberOfNegativeElectrons )
-          &&
-          ( 0 == numberOfPositiveElectrons )
-          &&
-          ( 0 == numberOfNegativeMuons )
-          &&
-          ( 0 == numberOfPositiveMuons ) )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else if( ( 0 <= numberOfJets )
-             &&
-             ( 0 <= numberOfNegativeElectrons )
-             &&
-             ( 0 <= numberOfPositiveElectrons )
-             &&
-             ( 0 <= numberOfNegativeMuons )
-             &&
-             ( 0 <= numberOfPositiveMuons )
-             &&
-             ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
-             &&
-             ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
-    {
-      if( 2 >=
-          ( numberOfJets
-            + numberOfNegativeElectrons + numberOfPositiveElectrons
-            + numberOfNegativeMuons + numberOfPositiveMuons ) )
+      if( 2 >= ( numberOfJets
+                 + numberOfNegativeElectrons + numberOfPositiveElectrons
+                 + numberOfNegativeMuons + numberOfPositiveMuons ) )
       {
         return true;
       }
@@ -2250,9 +2208,9 @@ namespace LHC_FASER
   chargeSummedNeutralinoVirtualCascade::chargeSummedNeutralinoVirtualCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-                                        inputHandler const* const shortcut ) :
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                         inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
@@ -2390,41 +2348,23 @@ namespace LHC_FASER
    * particle, & false otherwise.
    */
   {
-    if( 2 == numberOfJets )
+    if( ( 0 <= numberOfJets )
+        &&
+        ( 0 <= numberOfNegativeElectrons )
+        &&
+        ( 0 <= numberOfPositiveElectrons )
+        &&
+        ( 0 <= numberOfNegativeMuons )
+        &&
+        ( 0 <= numberOfPositiveMuons )
+        &&
+        ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
+        &&
+        ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
     {
-      if( ( 0 == numberOfNegativeElectrons )
-          &&
-          ( 0 == numberOfPositiveElectrons )
-          &&
-          ( 0 == numberOfNegativeMuons )
-          &&
-          ( 0 == numberOfPositiveMuons ) )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else if( ( 0 <= numberOfJets )
-             &&
-             ( 0 <= numberOfNegativeElectrons )
-             &&
-             ( 0 <= numberOfPositiveElectrons )
-             &&
-             ( 0 <= numberOfNegativeMuons )
-             &&
-             ( 0 <= numberOfPositiveMuons )
-             &&
-             ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
-             &&
-             ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
-    {
-      if( 2 >=
-          ( numberOfJets
-            + numberOfNegativeElectrons + numberOfPositiveElectrons
-            + numberOfNegativeMuons + numberOfPositiveMuons ) )
+      if( 2 >= ( numberOfJets
+                 + numberOfNegativeElectrons + numberOfPositiveElectrons
+                 + numberOfNegativeMuons + numberOfPositiveMuons ) )
       {
         return true;
       }
@@ -2462,8 +2402,7 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
     currentCuts = cuts;
     this->currentAcceptance = currentAcceptance;
-    cascadeBr
-    =  electroweakDecayerDecays->get_branching_ratio_for_exact_match(
+    cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
                                                        CppSLHA::PDG_code::down,
                                                   -(CppSLHA::PDG_code::down) );
@@ -2473,8 +2412,7 @@ namespace LHC_FASER
       currentJetDistribution = directDownDistribution;
       calculateForCurrentJetConfiguration();
     }
-    cascadeBr
-    =  electroweakDecayerDecays->get_branching_ratio_for_exact_match(
+    cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
                                                          CppSLHA::PDG_code::up,
                                                     -(CppSLHA::PDG_code::up) );
@@ -2484,8 +2422,7 @@ namespace LHC_FASER
       currentJetDistribution = directUpDistribution;
       calculateForCurrentJetConfiguration();
     }
-    cascadeBr
-    =  electroweakDecayerDecays->get_branching_ratio_for_exact_match(
+    cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
                                                     CppSLHA::PDG_code::strange,
                                                -(CppSLHA::PDG_code::strange) );
@@ -2495,8 +2432,7 @@ namespace LHC_FASER
       currentJetDistribution = directStrangeDistribution;
       calculateForCurrentJetConfiguration();
     }
-    cascadeBr
-    =  electroweakDecayerDecays->get_branching_ratio_for_exact_match(
+    cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
                                                       CppSLHA::PDG_code::charm,
                                                  -(CppSLHA::PDG_code::charm) );
@@ -2506,8 +2442,7 @@ namespace LHC_FASER
       currentJetDistribution = directCharmDistribution;
       calculateForCurrentJetConfiguration();
     }
-    cascadeBr
-    =  electroweakDecayerDecays->get_branching_ratio_for_exact_match(
+    cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
                                                      CppSLHA::PDG_code::bottom,
                                                 -(CppSLHA::PDG_code::bottom) );
@@ -2517,8 +2452,7 @@ namespace LHC_FASER
       currentJetDistribution = directBottomDistribution;
       calculateForCurrentJetConfiguration();
     }
-    cascadeBr
-    =  electroweakDecayerDecays->get_branching_ratio_for_exact_match(
+    cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
                                                    CppSLHA::PDG_code::electron,
                                               -(CppSLHA::PDG_code::electron) );
@@ -2538,8 +2472,7 @@ namespace LHC_FASER
       currentAcceptance->addToZeroJetsZeroLeptons( cascadeBr
                                                    * directFail * directFail );
     }
-    cascadeBr
-    =  electroweakDecayerDecays->get_branching_ratio_for_exact_match(
+    cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
                                                        CppSLHA::PDG_code::muon,
                                                   -(CppSLHA::PDG_code::muon) );
@@ -2559,8 +2492,7 @@ namespace LHC_FASER
       currentAcceptance->addToZeroJetsZeroLeptons( cascadeBr
                                                    * directFail * directFail );
     }
-    cascadeBr
-    =  electroweakDecayerDecays->get_branching_ratio_for_exact_match(
+    cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
                                                  CppSLHA::PDG_code::tau_lepton,
                                             -(CppSLHA::PDG_code::tau_lepton) );
@@ -2591,8 +2523,7 @@ namespace LHC_FASER
       // until I can think of a better way to do this, we take an average of
       // the pass rates.
       currentPass = ( cascadeBr * tauToPionTimesTauToElectronBr
-                      * ( hardPionPass * hardMuonPass
-                          + softPionPass * softMuonPass ) );
+                      * 2.0 * averagePionPass * averageMuonPass );
       currentAcceptance->addToOneJetOneNegativeElectron( currentPass );
       currentAcceptance->addToOneJetOnePositiveElectron( currentPass );
       currentPass = ( cascadeBr * tauToPionTimesTauToMuonBr
@@ -2618,14 +2549,16 @@ namespace LHC_FASER
                                                        * averageMuonFail ) ) );
       currentPass = ( cascadeBr * averageMuonPass
                       * ( tauToPionTimesTauToElectronBr * averagePionFail
-                  + ( tauPairToElectronPairBr + tauToElectronTimesTauToMuonBr )
-                    * averageMuonFail ) );
+                          + ( tauPairToElectronPairBr
+                              + tauToElectronTimesTauToMuonBr )
+                            * averageMuonFail ) );
       currentAcceptance->addToZeroJetsOneNegativeElectron( currentPass );
       currentAcceptance->addToZeroJetsOnePositiveElectron( currentPass );
       currentPass = ( cascadeBr * averageMuonPass
                       * ( tauToPionTimesTauToMuonBr * averagePionFail
-                  + ( tauToElectronTimesTauToMuonBr + tauPairToMuonPairBr )
-                    * averageMuonFail ) );
+                          + ( tauToElectronTimesTauToMuonBr
+                              + tauPairToMuonPairBr )
+                            * averageMuonFail ) );
       currentAcceptance->addToZeroJetsOneNegativeMuon( currentPass );
       currentAcceptance->addToZeroJetsOnePositiveMuon( currentPass );
 
@@ -2665,21 +2598,21 @@ namespace LHC_FASER
 
 
 
-  neutralinoThreeBodyCascade::neutralinoThreeBodyCascade(
+  neutralinoVirtualCascade::neutralinoVirtualCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
-                                        inputHandler const* const shortcut ) :
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                                         inputHandler const* const shortcut ) :
     chargeSummedNeutralinoVirtualCascade( kinematics,
-                                            coloredDecayer,
-                                            electroweakDecayer,
-                                            shortcut )
+                                          coloredDecayer,
+                                          electroweakDecayer,
+                                          shortcut )
   {
-    // just substituting in a chargeSummedNeutralinoThreeBodyCascade instead.
+    // just substituting in a chargeSummedNeutralinoVirtualCascade instead.
   }
 
-  neutralinoThreeBodyCascade::~neutralinoThreeBodyCascade()
+  neutralinoVirtualCascade::~neutralinoVirtualCascade()
   {
     // does nothing.
   }
@@ -2689,9 +2622,9 @@ namespace LHC_FASER
   scoloredToZPlusScoloredCascade::scoloredToZPlusScoloredCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
-                   CppSLHA::particle_property_set const* const lighterScolored,
-                                        inputHandler const* const shortcut ) :
+                                          particlePointer const coloredDecayer,
+                                         particlePointer const lighterScolored,
+                                         inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
@@ -2708,15 +2641,17 @@ namespace LHC_FASER
           + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
         / ( 5.0 - 2.0 * twiceSquareOfWeakCosine
             + 2.0 * twiceSquareOfWeakCosine * twiceSquareOfWeakCosine ) );
+
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
+
     directMuonDistribution
     = new vector_from_squark_to_muon( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
-                                       coloredDecayer,
-                                       effectiveSquarkMass,
-                                       lighterScolored,
-                                       intermediateDecayer );
+                                      shortcut->getCppSlha(),
+                                      coloredDecayer,
+                                      effectiveSquarkMass,
+                                      lighterScolored,
+                                      intermediateDecayer );
     activeDistributions.push_back( directMuonDistribution );
 
     hardMuonDistribution
@@ -2758,41 +2693,23 @@ namespace LHC_FASER
    * particle, & false otherwise.
    */
   {
-    if( 2 == numberOfJets )
+    if( ( 0 <= numberOfJets )
+        &&
+        ( 0 <= numberOfNegativeElectrons )
+        &&
+        ( 0 <= numberOfPositiveElectrons )
+        &&
+        ( 0 <= numberOfNegativeMuons )
+        &&
+        ( 0 <= numberOfPositiveMuons )
+        &&
+        ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
+        &&
+        ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
     {
-      if( ( 0 == numberOfNegativeElectrons )
-          &&
-          ( 0 == numberOfPositiveElectrons )
-          &&
-          ( 0 == numberOfNegativeMuons )
-          &&
-          ( 0 == numberOfPositiveMuons ) )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else if( ( 0 <= numberOfJets )
-             &&
-             ( 0 <= numberOfNegativeElectrons )
-             &&
-             ( 0 <= numberOfPositiveElectrons )
-             &&
-             ( 0 <= numberOfNegativeMuons )
-             &&
-             ( 0 <= numberOfPositiveMuons )
-             &&
-             ( 1 >= ( numberOfNegativeElectrons + numberOfNegativeMuons ) )
-             &&
-             ( 1 >= ( numberOfPositiveElectrons + numberOfPositiveMuons ) ) )
-    {
-      if( 2 >=
-          ( numberOfJets
-            + numberOfNegativeElectrons + numberOfPositiveElectrons
-            + numberOfNegativeMuons + numberOfPositiveMuons ) )
+      if( 2 >= ( numberOfJets
+                 + numberOfNegativeElectrons + numberOfPositiveElectrons
+                 + numberOfNegativeMuons + numberOfPositiveMuons ) )
       {
         return true;
       }
@@ -2828,9 +2745,9 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsOneNegativeMuon( 0.0 );
     currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
-    cascadeBr
-    = ( electroweakDecayer->inspect_direct_decay_handler(
-                  )->get_branching_ratio_for_exact_match( CppSLHA::PDG_code::Z,
+    cascadeBr = ( electroweakDecayer->inspect_direct_decay_handler(
+                                        )->get_branching_ratio_for_exact_match(
+                                                          CppSLHA::PDG_code::Z,
                                              electroweakDecayer->get_PDG_code()
         /* the lighter scolored got put into electroweakDecayer, while the Z
          * boson got put into intermediateDecayer. */ ) );
@@ -2957,21 +2874,25 @@ namespace LHC_FASER
     currentAcceptance->addToZeroJetsOnePositiveElectron( currentPass );
     currentPass = ( configurationBr * tauMuonPass
                     * ( tauToPionTimesTauToMuonBr * tauPionFail
-                      + ( tauToElectronTimesTauToMuonBr + tauPairToMuonPairBr )
+                        + ( tauToElectronTimesTauToMuonBr
+                            + tauPairToMuonPairBr )
                         * tauMuonFail ) );
     currentAcceptance->addToZeroJetsOneNegativeMuon( currentPass );
     currentAcceptance->addToZeroJetsOnePositiveMuon( currentPass );
 
     currentAcceptance->addToZeroJetsZeroLeptons( configurationBr
                                                  * ( tauPairToPionPairBr
-                                                   * nearPionFail * farPionFail
-                                        + 2.0 * ( tauToPionTimesTauToElectronBr
+                                                     * tauPionFail
+                                                     * tauPionFail
+                                                 + 2.0
+                                              * ( tauToPionTimesTauToElectronBr
                                                   + tauToPionTimesTauToMuonBr )
-                                                  * tauPionFail * tauMuonFail
+                                                   * tauPionFail * tauMuonFail
                                                  + ( tauPairToElectronPairBr
                                           + 2.0 * tauToElectronTimesTauToMuonBr
                                                      + tauPairToMuonPairBr )
-                                              * nearMuonFail * farMuonFail ) );
+                                                   * tauMuonFail
+                                                   * tauMuonFail ) );
   }
 
 }  // end of LHC_FASER namespace.
