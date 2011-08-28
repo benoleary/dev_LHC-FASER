@@ -93,16 +93,16 @@ namespace LHC_FASER
   lhcFaser::~lhcFaser()
   {
     if( usingOwnCppSlha )
-      {
-        delete spectrumData;
-      }
+    {
+      delete spectrumData;
+    }
     for( std::vector< signalHandler* >::iterator
          deletionIterator( signalSet.begin() );
          signalSet.end() > deletionIterator;
          deletionIterator++ )
-      {
-        delete *deletionIterator;
-      }
+    {
+      delete *deletionIterator;
+    }
     delete shortcut;
     delete inputSource;
     delete crossSectionSource;
@@ -123,25 +123,25 @@ namespace LHC_FASER
     this->pathToGrids.assign( pathToGrids );
     this->usingNlo = usingNlo;
     if( 0 == crossSectionUnit.compare( "pb" ) )
-      {
-        crossSectionUnitFactor = 1.0;
-      }
+    {
+      crossSectionUnitFactor = 1.0;
+    }
     else if( 0 == crossSectionUnit.compare( "fb" ) )
-      {
-        crossSectionUnitFactor = 1000.0;
-      }
+    {
+      crossSectionUnitFactor = 1000.0;
+    }
     else if( 0 == crossSectionUnit.compare( "nb" ) )
-      {
-        crossSectionUnitFactor = 0.001;
-      }
+    {
+      crossSectionUnitFactor = 0.001;
+    }
     else
-      {
-        std::cout
-        << "LHC-FASER::error! given_unit has to be pb/fb/nb (all lowercase"
-        << " characters). Carrying on, assuming fb.";
-        std::cout << std::endl;
-        crossSectionUnitFactor = 1000.0;
-      }
+    {
+      std::cout
+      << "LHC-FASER::error! given_unit has to be pb/fb/nb (all lowercase"
+      << " characters). Carrying on, assuming fb.";
+      std::cout << std::endl;
+      crossSectionUnitFactor = 1000.0;
+    }
 
     readier = new readierForNewPoint();
     inputSource = new inputHandler( spectrumData,
@@ -149,15 +149,15 @@ namespace LHC_FASER
                                     pathToGrids,
                                     readier );
     crossSectionSource = new crossSectionHandler( inputSource );
-    jetPlusMetAcceptanceSource
-    = new jetPlusMetAcceptanceHandler( inputSource,
-                                       &(this->pathToGrids) );
-    electroweakCascadeSource = new electroweakCascadesForOneBeamEnergy;
+    jetPlusMetAcceptanceSource = new jetPlusMetAcceptanceHandler( inputSource,
+                                                        &(this->pathToGrids) );
+    electroweakCascadeSource = new electroweakCascadeHandler( inputSource,
+                                                        &(this->pathToGrids) );
 
     shortcut = new signalShortcuts( inputSource,
-                                     crossSectionSource,
-                                     jetPlusMetAcceptanceSource,
-                                     electroweakCascadeSource );
+                                    crossSectionSource,
+                                    jetPlusMetAcceptanceSource,
+                                    fullCascadeSetSource );
 
   }
 

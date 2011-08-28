@@ -181,7 +181,7 @@ namespace LHC_FASER
     jetPlusMetAcceptanceHandler* jetPlusMetAcceptanceSource;
     // this holds the kinematic data lookup tables for colored sparticle
     // production at the LHC.
-    electroweakCascadesForOneBeamEnergy* electroweakCascadeSource;
+    electroweakCascadeHandler* electroweakCascadeSource;
     fullCascadeSetFactory* fullCascadeSetSource;
     // this handles the cascade decays of colored sparticles.
     std::vector< signalHandler* > signalSet;

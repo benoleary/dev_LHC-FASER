@@ -290,8 +290,8 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    kinematics_table* fourJetKinematics;
-    kinematics_table* threeJetKinematics;
+    jetAcceptanceTable* fourJetKinematics;
+    jetAcceptanceTable* threeJetKinematics;
     /* the 4-jet signal is complicated enough that we also consider only 3 of
      * the 4 required hard jets coming from (showered) decays to
      * electroweakinos, with the 4th coming from a cascade decay of the

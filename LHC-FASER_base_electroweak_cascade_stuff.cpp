@@ -115,19 +115,21 @@ namespace LHC_FASER
   electroweakCascade::electroweakCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-                    CppSLHA::particle_property_set const* const coloredDecayer,
+                                          particlePointer const coloredDecayer,
                                   //bool const coloredDecayerIsNotAntiparticle,
-                CppSLHA::particle_property_set const* const electroweakDecayer,
+                                      particlePointer const electroweakDecayer,
                               //bool const electroweakDecayerIsNotAntiparticle,
-               CppSLHA::particle_property_set const* const intermediateDecayer,
+                                     particlePointer const intermediateDecayer,
                                           bool const canDoOssfMinusOsdf,
-                                        inputHandler const* const shortcut ) :
+                                         inputHandler const* const shortcut ) :
+    getsReadiedForNewPoint( shortcut->getReadier() ),
     kinematics( kinematics ),
     effectiveSquarkMass( effectiveSquarkMass ),
     coloredDecayer( coloredDecayer ),
     //coloredDecayerIsNotAntiparticle( coloredDecayerIsNotAntiparticle ),
     electroweakDecayer( electroweakDecayer ),
     intermediateDecayer( intermediateDecayer ),
+    canDoOssfMinusOsdf( canDoOssfMinusOsdf ),
     firstBr( NULL ),
     secondBr( NULL ),
     cascadeBr( CppSLHA::CppSLHA_global::really_wrong_value ),
@@ -139,11 +141,10 @@ namespace LHC_FASER
     // just an initialization list.
   }
 
-  virtual
   electroweakCascade::~electroweakCascade()
   {
     for( std::vector< leptonEnergyDistribution* >::iterator
-         deletionIterator = activeDistributions.begin();
+         deletionIterator( activeDistributions.begin() );
          activeDistributions.end() > deletionIterator;
          ++deletionIterator )
     {
@@ -152,7 +153,7 @@ namespace LHC_FASER
   }
 
   double
-  electroweakCascade::getAcceptance( acceptanceCutSet* const cuts,
+  electroweakCascade::getAcceptance( acceptanceCutSet const* const cuts,
                                      int const numberOfAdditionalJets,
                                      int const numberOfNegativeElectrons,
                                      int const numberOfPositiveElectrons,
@@ -330,7 +331,7 @@ namespace LHC_FASER
       returnValue += ( 0.5 * binSize
                            * kinematics->acceptanceAt( binEnergy,
                                                        transverseMomentumCut )
-                           * lepton_distribution->value_at( binEnergy ) );
+                           * leptonDistribution->valueAt( binEnergy ) );
       return returnValue;
     }
     else

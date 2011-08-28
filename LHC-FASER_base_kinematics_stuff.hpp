@@ -84,7 +84,7 @@ namespace LHC_FASER
     // value.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    acceptanceCutSet( acceptanceCutSet* const copySource )
+    acceptanceCutSet( acceptanceCutSet const* const copySource )
     // this constructor copies the values from a given acceptanceCutSet.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -93,31 +93,31 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     static bool
-    compareJetAndBothLeptonCuts( acceptanceCutSet* const firstPointer,
-                                 acceptanceCutSet* const secondPointer )
+    compareJetAndBothLeptonCuts( acceptanceCutSet const* const firstPointer,
+                                 acceptanceCutSet const* const secondPointer )
     // this returns true if both acceptanceCutSets have the same jet cut & both
     // lepton cuts.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     static bool
-    compareJustBothLeptonCuts( acceptanceCutSet* const firstPointer,
-                               acceptanceCutSet* const secondPointer )
+    compareJustBothLeptonCuts( acceptanceCutSet const* const firstPointer,
+                               acceptanceCutSet const* const secondPointer )
     // this returns true if both acceptanceCutSets have the same
     // primaryLeptonCut & secondaryLeptonCut, regardless of the jet cut.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     static bool
-    compareJustPrimaryLeptonCut( acceptanceCutSet* const firstPointer,
-                                 acceptanceCutSet* const secondPointer )
+    compareJustPrimaryLeptonCut( acceptanceCutSet const* const firstPointer,
+                                 acceptanceCutSet const* const secondPointer )
     // this returns true if both acceptanceCutSets have the same
     // primaryLeptonCut, regardless of the other values.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     static bool
-    justReturnTrue( acceptanceCutSet* const firstPointer,
-                    acceptanceCutSet* const secondPointer )
+    justReturnTrue( acceptanceCutSet const* const firstPointer,
+                    acceptanceCutSet const* const secondPointer )
     // this just returns true, for when the acceptance cut doesn't matter.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     void
-    becomeCopyOf( acceptanceCutSet* const copyPointer )
+    becomeCopyOf( acceptanceCutSet const* const copyPointer )
     // this copies the values from a given acceptanceCutSet.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -305,7 +305,7 @@ namespace LHC_FASER
   // inline functions:
 
   inline void
-  acceptanceCutSet::becomeCopyOf( acceptanceCutSet* const copyPointer )
+  acceptanceCutSet::becomeCopyOf( acceptanceCutSet const* const copyPointer )
   // this copies the values from a given acceptanceCutSet.
   {
     beamEnergy = copyPointer->getBeamEnergy();
@@ -316,8 +316,8 @@ namespace LHC_FASER
 
   inline bool
   acceptanceCutSet::compareJetAndBothLeptonCuts(
-                                          acceptanceCutSet* const firstPointer,
-                                        acceptanceCutSet* const secondPointer )
+                                    acceptanceCutSet const* const firstPointer,
+                                  acceptanceCutSet const* const secondPointer )
   // this returns true if both acceptanceCutSets have the same jet cut & both
   // lepton cuts.
   {
@@ -333,8 +333,8 @@ namespace LHC_FASER
 
   inline bool
   acceptanceCutSet::compareJustBothLeptonCuts(
-                                          acceptanceCutSet* const firstPointer,
-                                        acceptanceCutSet* const secondPointer )
+                                    acceptanceCutSet const* const firstPointer,
+                                  acceptanceCutSet const* const secondPointer )
   {
     if( ( firstPointer->getPrimaryLeptonCut()
           == secondPointer->getPrimaryLeptonCut() )
@@ -352,8 +352,8 @@ namespace LHC_FASER
 
   inline bool
   acceptanceCutSet::compareJustPrimaryLeptonCut(
-                                          acceptanceCutSet* const firstPointer,
-                                        acceptanceCutSet* const secondPointer )
+                                    acceptanceCutSet const* const firstPointer,
+                                  acceptanceCutSet const* const secondPointer )
   {
     if( firstPointer->getPrimaryLeptonCut()
         == secondPointer->getPrimaryLeptonCut() )
@@ -367,8 +367,8 @@ namespace LHC_FASER
   }
 
   inline bool
-  acceptanceCutSet::justReturnTrue( acceptanceCutSet* const firstPointer,
-                                    acceptanceCutSet* const secondPointer )
+  acceptanceCutSet::justReturnTrue( acceptanceCutSet const* const firstPointer,
+                                  acceptanceCutSet const* const secondPointer )
   {
     return true;
   }

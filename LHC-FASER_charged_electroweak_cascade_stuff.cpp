@@ -136,12 +136,12 @@ namespace LHC_FASER
 
   void
   charginoToSemuOrEmuSnuCascade::calculateAcceptance(
-                                                  acceptanceCutSet* const cuts,
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the slepton to the LSP.
   {
-    cascadeBr = ( first_BR->getBr() * second_BR->getBr() );
+    cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
@@ -378,12 +378,12 @@ namespace LHC_FASER
 
   void
   charginoToStauOrTauSnuCascade::calculateAcceptance(
-                                                  acceptanceCutSet* const cuts,
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the slepton to the LSP.
   {
-    cascadeBr = ( first_BR->getBr() * second_BR->getBr() );
+    cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
@@ -408,12 +408,12 @@ namespace LHC_FASER
         // have the opposite helicity to their charge-conjugates.
       {
         antitauRightHandedness = nearLeptonLeftHandedness;
-        nearLeptonLeftHandedness = ( 1.0 - antitauLeftHandedness );
+        nearLeptonLeftHandedness = ( 1.0 - antitauRightHandedness );
       }
       else
       {
         antitauRightHandedness = shortcut->quarkOrLeptonLeftHandedness(
-                                            mediating_particle->get_PDG_code(),
+                                           intermediateDecayer->get_PDG_code(),
                                 shortcut->getNeutralinoOne()->get_PDG_code() );
       }
 
@@ -691,7 +691,7 @@ namespace LHC_FASER
   }
 
   void
-  charginoToWCascade::calculateAcceptance( acceptanceCutSet* const cuts,
+  charginoToWCascade::calculateAcceptance( acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios.
   {
@@ -920,7 +920,8 @@ namespace LHC_FASER
   }
 
   void
-  charginoToHiggsCascade::calculateAcceptance( acceptanceCutSet* const cuts,
+  charginoToHiggsCascade::calculateAcceptance(
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios.
   {
@@ -1080,38 +1081,38 @@ namespace LHC_FASER
                                      shortcut->getSstrangeL(),
                                      shortcut->getSstrangeR() );
     directElectronDistribution
-    = new neutralino_three_body_decay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
-                                       coloredDecayer,
-                                       effectiveSquarkMass,
-                                       electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getElectronSneutrinoL(),
-                                       shortcut->getElectronSneutrinoR(),
-                                       shortcut->getSelectronL(),
-                                       shortcut->getSelectronR() );
+    = new chargino_three_body_decay( shortcut->getReadier(),
+                                     shortcut->getCppSlha(),
+                                     coloredDecayer,
+                                     effectiveSquarkMass,
+                                     electroweakDecayer,
+                                     shortcut->getNeutralinoOne(),
+                                     shortcut->getElectronSneutrinoL(),
+                                     shortcut->getElectronSneutrinoR(),
+                                     shortcut->getSelectronL(),
+                                     shortcut->getSelectronR() );
     directMuonDistribution
-    = new neutralino_three_body_decay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
-                                       coloredDecayer,
-                                       effectiveSquarkMass,
-                                       electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getMuonSneutrinoL(),
-                                       shortcut->getMuonSneutrinoR(),
-                                       shortcut->getSmuonL(),
-                                       shortcut->getSmuonR() );
+    = new chargino_three_body_decay( shortcut->getReadier(),
+                                     shortcut->getCppSlha(),
+                                     coloredDecayer,
+                                     effectiveSquarkMass,
+                                     electroweakDecayer,
+                                     shortcut->getNeutralinoOne(),
+                                     shortcut->getMuonSneutrinoL(),
+                                     shortcut->getMuonSneutrinoR(),
+                                     shortcut->getSmuonL(),
+                                     shortcut->getSmuonR() );
     directTauDistribution
-    = new neutralino_three_body_decay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
-                                       coloredDecayer,
-                                       effectiveSquarkMass,
-                                       electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getTauSneutrinoL(),
-                                       shortcut->getTauSneutrinoR(),
-                                       shortcut->getStauOne(),
-                                       shortcut->getStauTwo() );
+    = new chargino_three_body_decay( shortcut->getReadier(),
+                                     shortcut->getCppSlha(),
+                                     coloredDecayer,
+                                     effectiveSquarkMass,
+                                     electroweakDecayer,
+                                     shortcut->getNeutralinoOne(),
+                                     shortcut->getTauSneutrinoL(),
+                                     shortcut->getTauSneutrinoR(),
+                                     shortcut->getStauOne(),
+                                     shortcut->getStauTwo() );
     activeDistributions.push_back( directDownUpDistribution );
     activeDistributions.push_back( directStrangeCharmDistribution );
     activeDistributions.push_back( directElectronDistribution );
@@ -1200,7 +1201,8 @@ namespace LHC_FASER
   }
 
   void
-  charginoVirtualCascade::calculateAcceptance( acceptanceCutSet* const cuts,
+  charginoVirtualCascade::calculateAcceptance(
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios.
   {
@@ -1300,16 +1302,16 @@ namespace LHC_FASER
       averagePionPass = ( 0.5 * ( hardPionPass + softPionPass ) );
       averagePionFail = ( 0.5 * ( hardPionFail + softPionFail ) );
 
-      currentAcceptance->addToOneJetZeroLeptons( configurationBr
+      currentAcceptance->addToOneJetZeroLeptons( cascadeBr
                           * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
                                                  * averagePionPass );
-      currentPass = ( configurationBr * averageMuonPass );
+      currentPass = ( cascadeBr * averageMuonPass );
       currentAcceptance->addToZeroJetsOnePositiveElectron( currentPass
-                      * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR );
+                    * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR );
       currentAcceptance->addToZeroJetsOnePositiveMuon( currentPass
-                         * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR  );
+                       * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR  );
 
-      currentAcceptance->addToZeroJetsZeroLeptons( configurationBr
+      currentAcceptance->addToZeroJetsZeroLeptons( cascadeBr
                         * ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
                             * averagePionFail
                      + ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR
@@ -1329,6 +1331,7 @@ namespace LHC_FASER
                                 leptonAcceptanceParameterSet* const kinematics,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
                                          particlePointer const lighterScolored,
                                          inputHandler const* const shortcut ) :
     electroweakCascade( kinematics,
@@ -1424,7 +1427,7 @@ namespace LHC_FASER
 
   void
   scoloredToWPlusScoloredCascade::calculateAcceptance(
-                                                  acceptanceCutSet* const cuts,
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios.
   {
@@ -1484,12 +1487,12 @@ namespace LHC_FASER
       // antileptons:
       cascadeBr *= CppSLHA::PDG_data::W_plus_to_neutrino_tau_antilepton_BR;
       antitauAntimuonPass = integrateAcceptance( antitauAntimuonDistribution,
-                                          currentCuts->getPrimaryLeptonCut() );
+                                                 cuts->getPrimaryLeptonCut() );
       antitauAntimuonFail
       = ( 1.0 - integrateAcceptance( antitauAntimuonDistribution,
-                                     currentCuts->getSecondaryLeptonCut() ) );
+                                     cuts->getSecondaryLeptonCut() ) );
       antitauPionPass = integrateAcceptance( antitauPionDistribution,
-                                             currentCuts->getJetCut() );
+                                             cuts->getJetCut() );
       antitauPionFail = ( 1.0 - antitauPionPass );
 
       currentAcceptance->addToOneJetZeroLeptons( configurationBr

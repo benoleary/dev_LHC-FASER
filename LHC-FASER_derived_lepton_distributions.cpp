@@ -61,7 +61,7 @@ namespace LHC_FASER
 {
 
   flat_near_muon_plus_antimuon::flat_near_muon_plus_antimuon(
-                                    readierForNewPoint* const given_readier,
+                                       readierForNewPoint* const given_readier,
                                  CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -1580,8 +1580,8 @@ namespace LHC_FASER
     /*if( 0.0 != same_handedness_factor )
       {
 
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
+        *//* antisymmetric bit positive for both vector & axial coupling (this
+         * is the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
          * VvSqPlusAaSq):
          *//*
         // 0.0
@@ -1742,7 +1742,7 @@ namespace LHC_FASER
         /*if( 0.0 != same_handedness_factor )
           {
 
-            /* antisymmetric bit positive for both vector & axial coupling
+            *//* antisymmetric bit positive for both vector & axial coupling
              * (this is the sum of 2 terms in the Mathematica notebook:
              * VvPlusJjAaAllSq & VvSqPlusAaSq):
              *//*
@@ -1866,7 +1866,7 @@ namespace LHC_FASER
         /*if( 0.0 != same_handedness_factor )
           {
 
-            /* antisymmetric bit positive for both vector & axial coupling
+            *//* antisymmetric bit positive for both vector & axial coupling
              * (this is the sum of 2 terms in the Mathematica notebook:
              * VvPlusJjAaAllSq & VvSqPlusAaSq):
              *//*
@@ -2187,8 +2187,8 @@ namespace LHC_FASER
     /*if( 0.0 != same_handedness_factor )
       {
 
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
+        *//* antisymmetric bit positive for both vector & axial coupling (this
+         * is the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
          * VvSqPlusAaSq):
          *//*
         // 0.0
@@ -3398,7 +3398,7 @@ namespace LHC_FASER
 
 
   vector_from_squark_to_muon::vector_from_squark_to_muon(
-                                    readierForNewPoint* const given_readier,
+                                       readierForNewPoint* const given_readier,
                                  CppSLHA::CppSLHA0 const* const given_spectrum,
               CppSLHA::particle_property_set const* const given_first_particle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -3410,7 +3410,7 @@ namespace LHC_FASER
                               effectiveSquarkMass,
                               given_second_particle,
                               given_third_particle,
-                              given_fourth_particle ),
+                              NULL ),
     MINtoMAX_const( 0,
                     0,
                     CppSLHA::CppSLHA_global::really_wrong_value ),
@@ -3430,7 +3430,6 @@ namespace LHC_FASER
 
   }
 
-  virtual
   vector_from_squark_to_muon::~vector_from_squark_to_muon()
   {
 

@@ -60,7 +60,7 @@ namespace LHC_FASER
   signalShortcuts::signalShortcuts( inputHandler const* const inputShortcuts,
                                     crossSectionHandler* const crossSections,
                       jetPlusMetAcceptanceHandler* const jetPlusMetAcceptances,
-                              leptonAcceptanceHandler* const leptonAcceptances,
+                            //leptonAcceptanceHandler* const leptonAcceptances,
                                    fullCascadeSetFactory* const cascadeSets ) :
     inputShortcuts( inputShortcuts ),
     crossSections( given_cross_section_pointer ),

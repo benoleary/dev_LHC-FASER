@@ -59,8 +59,7 @@
 #include "LHC-FASER_input_handling_stuff.hpp"
 #include "LHC-FASER_sparticle_decay_stuff.hpp"
 #include "LHC-FASER_lepton_kinematics_stuff.hpp"
-#include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
-#include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
+#include "LHC-FASER_electroweak_cascade_collection_stuff.hpp"
 
 namespace LHC_FASER
 {

@@ -69,7 +69,8 @@ namespace LHC_FASER
     // just an initialization list.
   }
 
-  acceptanceCutSet::acceptanceCutSet( acceptanceCutSet* const copyPointer ) :
+  acceptanceCutSet::acceptanceCutSet(
+                                  acceptanceCutSet const* const copyPointer ) :
     beamEnergy( copyPointer->beamEnergy ),
     primaryLeptonCut( copyPointer->primaryLeptonCut ),
     secondaryLeptonCut( copyPointer->secondaryLeptonCut ),
@@ -120,8 +121,8 @@ namespace LHC_FASER
       double currentSquarkMass( 0.0 );
       double currentGluinoMass( 0.0 );
       std::vector< double > neutralinoMasses;
-      lowestSquarkMass( 0.0 );
-      lowestGluinoMass( 0.0 );
+      lowestSquarkMass = 0.0;
+      lowestGluinoMass = 0.0;
       double currentValue;
       // the value currently being read in.
       bool gridSizeStillUnknown( true );
@@ -1272,7 +1273,7 @@ namespace LHC_FASER
               }
             }
             return lhcFaserGlobal::unitLinearInterpolation(
-                             ( ( lighter_neutralino - highNeutralinoMassRatio )
+                                ( ( neutralinoRatio - highNeutralinoMassRatio )
                                / ( 1.0 - highNeutralinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
                                                                     gluinoMass,
@@ -1296,5 +1297,6 @@ namespace LHC_FASER
       return CppSLHA::CppSLHA_global::really_wrong_value;
     }
   }
+
 }  // end of LHC_FASER namespace.
 

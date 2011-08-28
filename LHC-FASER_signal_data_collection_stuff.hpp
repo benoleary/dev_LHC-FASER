@@ -74,7 +74,7 @@ namespace LHC_FASER
     signalShortcuts( inputHandler const* const inputShortcuts,
                      crossSectionHandler* const crossSections,
                      jetPlusMetAcceptanceHandler* const jetPlusMetAcceptances,
-                     leptonAcceptanceHandler* const leptonAcceptances,
+                     //leptonAcceptanceHandler* const leptonAcceptances,
                      fullCascadeSetFactory* const cascadeSets )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -93,10 +93,10 @@ namespace LHC_FASER
     getJetPlusMetAcceptances()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    leptonAcceptanceHandler*
-    getLeptonAcceptances()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    //leptonAcceptanceHandler*
+    //getLeptonAcceptances()
+    //const
+    /* code after the classes in this .hpp file, or in the .cpp file. *///;
     fullCascadeSetFactory*
     getCascadeSets()
     const
@@ -114,7 +114,7 @@ namespace LHC_FASER
     inputHandler const* const inputShortcuts;
     crossSectionHandler* const crossSections;
     jetPlusMetAcceptanceHandler* const jetPlusMetAcceptances;
-    leptonAcceptanceHandler* const leptonAcceptances;
+    //leptonAcceptanceHandler* const leptonAcceptances;
     fullCascadeSetFactory* const cascadeSets;
   };  // end of signalShortcuts class.
 
@@ -233,12 +233,12 @@ namespace LHC_FASER
     return jetPlusMetAcceptances;
   }
 
-  inline leptonAcceptanceHandler*
+  /*inline leptonAcceptanceHandler*
   signalShortcuts::getLeptonAcceptances()
   const
   {
     return leptonAcceptances;
-  }
+  }*/
 
   inline fullCascadeSetFactory*
   signalShortcuts::getCascadeSets()

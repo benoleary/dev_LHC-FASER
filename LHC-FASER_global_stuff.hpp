@@ -221,6 +221,7 @@ namespace LHC_FASER
 
   // inline functions:
 
+
   inline double
   lhcFaserGlobal::unitLinearInterpolation( double const xFraction,
                                            double const leftValue,

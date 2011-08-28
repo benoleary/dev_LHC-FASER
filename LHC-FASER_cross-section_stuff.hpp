@@ -157,9 +157,7 @@ namespace LHC_FASER
    */
   class crossSectionTable : public getsReadiedForNewPoint
   {
-
   public:
-
     crossSectionTable( squareGrid const* const lookupTable,
                        signedParticleShortcutPair const* const scoloredPair,
                        double const flavorFactor,
@@ -181,9 +179,9 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
+    inputHandler const* const shortcut;
     signedParticleShortcutPair const* scoloredPair;
     CppSLHA::particle_property_set const* directlyProducedSquark;
-    inputHandler const* const shortcut;
     double storedValue;
     squareGrid const* const lookupTable;
     double const flavorFactor;
@@ -201,9 +199,7 @@ namespace LHC_FASER
    */
   class crossSectionTableSet
   {
-
   public:
-
     crossSectionTableSet( std::string const* const gridDirectory,
                           int const beamEnergy,
                           inputHandler const* const shortcut )

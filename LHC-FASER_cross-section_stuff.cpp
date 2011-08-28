@@ -311,13 +311,14 @@ namespace LHC_FASER
         &&
         ( yCoordinate >= lowestYCoordinate ) )
     {
-      double xSteps = ( ( xCoordinate - lowestXCoordinate ) / gridStepSize );
-      int lowerLeftX = (int)xSteps;
+      double xSteps( ( ( xCoordinate - lowestXCoordinate ) / gridStepSize ) );
+      unsigned int lowerLeftX( (unsigned int)xSteps );
       if( values.size() > ( lowerLeftX + 1 ) )
         // if the x co-ordinate is less than its maximal grid value...
       {
-        double ySteps = ( ( yCoordinate - lowestYCoordinate ) / gridStepSize );
-        int lowerLeftY = (int)ySteps;
+        double
+        ySteps( ( ( yCoordinate - lowestYCoordinate ) / gridStepSize ) );
+        unsigned int lowerLeftY( (unsigned int)ySteps );
 
         if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
@@ -352,8 +353,9 @@ namespace LHC_FASER
                ( (double)lowerLeftX == xSteps ) )
         // otherwise, if it's on the maximal x edge...
       {
-        double ySteps = ( ( yCoordinate - lowestYCoordinate ) / gridStepSize );
-        int lowerLeftY = (int)ySteps;
+        double
+        ySteps( ( ( yCoordinate - lowestYCoordinate ) / gridStepSize ) );
+        unsigned int lowerLeftY( (unsigned int)ySteps );
         if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
         {
@@ -543,10 +545,10 @@ namespace LHC_FASER
   crossSectionTableSet::crossSectionTableSet(
                                         std::string const* const gridDirectory,
                                               int const beamEnergy,
-                                        inputHandler const* const shortcut ) :
+                                         inputHandler const* const shortcut ) :
+    shortcut( shortcut ),
     gridDirectory( *gridDirectory ),
-    beamEnergy( beamEnergy ),
-    shortcut( shortcut )
+    beamEnergy( beamEnergy )
   {
     // just an initialization list.
   }

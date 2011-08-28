@@ -339,7 +339,7 @@ namespace LHC_FASER
     static void
     cachePairConstruction( acceptanceValues** const cachedValuesAndFlag,
                            acceptanceCutSet** const cachedKey,
-                           acceptanceCutSet* const constructionKey )
+                           acceptanceCutSet const* const constructionKey )
     /* this makes a new acceptanceValues instance to hold an acceptance value
      * along with a flag for whether it has been calculated or not, &
      * associates it with a key.
@@ -349,7 +349,7 @@ namespace LHC_FASER
     static void
     cachePairReset( acceptanceValues* const cachedValuesAndFlag,
                     acceptanceCutSet* const cachedKey,
-                    acceptanceCutSet* const constructionKey )
+                    acceptanceCutSet const* const constructionKey )
     /* this resets an acceptanceValues instance to hold an acceptance value
      * along with a flag for whether it has been calculated or not, &
      * associates it with a key.
@@ -393,7 +393,7 @@ namespace LHC_FASER
     // value for the requested signal, false otherwise.
 
     virtual void
-    calculateAcceptance( acceptanceCutSet* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const cuts,
                          acceptanceValues* const currentAcceptance )
     = 0;
     // this should set all the appropriate acceptance * branching ratio values
@@ -814,7 +814,7 @@ namespace LHC_FASER
   electroweakCascade::cachePairConstruction(
                                   acceptanceValues** const cachedValuesAndFlag,
                                             acceptanceCutSet** const cachedKey,
-                                      acceptanceCutSet* const constructionKey )
+                                acceptanceCutSet const* const constructionKey )
   // this makes a new std::pair to hold an acceptance value along with a flag
   // for whether it has been calculated or not, & associates it with a key.
   {
@@ -828,7 +828,7 @@ namespace LHC_FASER
   electroweakCascade::cachePairReset(
                                    acceptanceValues* const cachedValuesAndFlag,
                                       acceptanceCutSet* const cachedKey,
-                                      acceptanceCutSet* const constructionKey )
+                                acceptanceCutSet const* const constructionKey )
   // this resets a std::pair to hold an acceptance value along with a flag
   // for whether it has been calculated or not, & associates it with a key.
   {

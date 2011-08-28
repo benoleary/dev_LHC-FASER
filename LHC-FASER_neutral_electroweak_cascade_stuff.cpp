@@ -147,7 +147,8 @@ namespace LHC_FASER
   }
 
   void
-  neutralinoToSemuCascade::calculateAcceptance( acceptanceCutSet* const cuts,
+  neutralinoToSemuCascade::calculateAcceptance(
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the selectron or smuon to the LSP.
@@ -343,7 +344,7 @@ namespace LHC_FASER
 
   void
   chargeSummedNeutralinoToSemuCascade::calculateAcceptance(
-                                                  acceptanceCutSet* const cuts,
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the selectron or smuon to the LSP.
@@ -583,7 +584,8 @@ namespace LHC_FASER
   }
 
   void
-  neutralinoToStauCascade::calculateAcceptance( acceptanceCutSet* const cuts,
+  neutralinoToStauCascade::calculateAcceptance(
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the stau to the LSP.
@@ -1003,7 +1005,7 @@ namespace LHC_FASER
 
   void
   chargeSummedNeutralinoToStauCascade::calculateAcceptance(
-                                                  acceptanceCutSet* const cuts,
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the stau to the LSP.
@@ -1350,7 +1352,8 @@ namespace LHC_FASER
   }
 
   void
-  neutralinoToZCascade::calculateAcceptance( acceptanceCutSet* const cuts,
+  neutralinoToZCascade::calculateAcceptance(
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios..
   {
@@ -1699,7 +1702,7 @@ namespace LHC_FASER
 
   void
   chargeSummedNeutralinoToZCascade::calculateAcceptance(
-                                                  acceptanceCutSet* const cuts,
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios.
   {
@@ -1968,7 +1971,8 @@ namespace LHC_FASER
   }
 
   void
-  neutralinoToHiggsCascade::calculateAcceptance( acceptanceCutSet* const cuts,
+  neutralinoToHiggsCascade::calculateAcceptance(
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios.
   {
@@ -2381,7 +2385,7 @@ namespace LHC_FASER
 
   void
   chargeSummedNeutralinoVirtualCascade::calculateAcceptance(
-                                                  acceptanceCutSet* const cuts,
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios.
   {
@@ -2726,7 +2730,7 @@ namespace LHC_FASER
 
   void
   scoloredToZPlusScoloredCascade::calculateAcceptance(
-                                                  acceptanceCutSet* const cuts,
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios.
   {

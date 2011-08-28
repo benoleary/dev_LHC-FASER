@@ -66,7 +66,7 @@ namespace LHC_FASER
     // does nothing.
   }
 
-  ~effectiveSquarkMassHolder()
+  effectiveSquarkMassHolder::~effectiveSquarkMassHolder()
   {
     // does nothing.
   }

@@ -169,14 +169,15 @@ namespace LHC_FASER
   class minimalAllocationKeyedVector
   {
   public:
-    minimalAllocationKeyedVector( bool (*comparisonFunction)( keyClass* const,
-                                                             keyClass* const ),
+    minimalAllocationKeyedVector(
+                             bool (*comparisonFunction)( keyClass const* const,
+                                                       keyClass const* const ),
                              void (*constructionFunction)( storedClass** const,
                                                            keyClass** const,
-                                                           keyClass* const ),
+                                                       keyClass const* const ),
                                   void (*resetFunction)( storedClass* const,
                                                          keyClass* const,
-                                                         keyClass* const ) )
+                                                      keyClass const* const ) )
     /* comparisonFunction should return true if the 2 arguments are "equal" in
      * whatever sense is required.
      * constructionFunction should assign a pointer to a newly-constructed
@@ -206,12 +207,12 @@ namespace LHC_FASER
 
 
     void
-    setComparison( bool (*comparisonFunction)( keyClass* const,
-                                               keyClass* const ) )
+    setComparison( bool (*comparisonFunction)( keyClass const* const,
+                                               keyClass const* const ) )
     /* code after the classes in this .hpp file. */;
 
     storedClass*
-    getPointer( keyClass* const keyPointer )
+    getPointer( keyClass const* const keyPointer )
     /* this returns a pointer to the storedClass instance that matches
      * keyPointer, if there is a stored pointer to such an instance, or it
      * constructs a new storedClass instance with keyPointer & returns the
@@ -241,14 +242,14 @@ namespace LHC_FASER
     //unsigned int currentlyStoredNumber;
     unsigned int searchCounter;
     bool keyNotFound;
-    bool (*comparisonFunction)( keyClass* const,
-                                keyClass* const );
+    bool (*comparisonFunction)( keyClass const* const,
+                                keyClass const* const );
     void (*constructionFunction)( storedClass** const,
                                   keyClass** const,
-                                  keyClass* const );
+                                  keyClass const* const );
     void (*resetFunction)( storedClass* const,
                            keyClass* const,
-                           keyClass* const );
+                           keyClass const* const );
   };
 
 
@@ -490,14 +491,14 @@ namespace LHC_FASER
   inline
   minimalAllocationKeyedVector< storedClass,
                                 keyClass >::minimalAllocationKeyedVector(
-                                   bool (*comparisonFunction)( keyClass* const,
-                                                             keyClass* const ),
+                             bool (*comparisonFunction)( keyClass const* const,
+                                                       keyClass const* const ),
                              void (*constructionFunction)( storedClass** const,
                                                            keyClass** const,
-                                                           keyClass* const ),
+                                                       keyClass const* const ),
                                      void (*resetFunction)( storedClass* const,
                                                             keyClass* const,
-                                                          keyClass* const ) ) :
+                                                    keyClass const* const ) ) :
   //currentlyStoredNumber( 0 ),
   comparisonFunction( comparisonFunction ),
   constructionFunction( constructionFunction ),
@@ -528,8 +529,8 @@ namespace LHC_FASER
   inline void
   minimalAllocationKeyedVector< storedClass,
                                 keyClass >::setComparison(
-                                   bool (*comparisonFunction)( keyClass* const,
-                                                            keyClass* const ) )
+                             bool (*comparisonFunction)( keyClass const* const,
+                                                      keyClass const* const ) )
   {
     this->comparisonFunction = comparisonFunction;
   }
@@ -543,7 +544,7 @@ namespace LHC_FASER
   inline storedClass*
   minimalAllocationKeyedVector< storedClass,
                                 keyClass >::getPointer(
-                                                   keyClass* const keyPointer )
+                                             keyClass const* const keyPointer )
   {
     // set things up for the search:
     keyNotFound = true;
@@ -619,6 +620,7 @@ namespace LHC_FASER
     //currentlyStoredNumber = 0;
     currentPointers.clear();
   }
+
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_TEMPLATE_CLASSES_HPP_ */
