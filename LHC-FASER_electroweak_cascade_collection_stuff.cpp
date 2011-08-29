@@ -63,10 +63,10 @@ namespace LHC_FASER
                                       particlePointer const electroweakDecayer,
                                          inputHandler const* const shortcut ) :
     kinematics( kinematics ),
+    shortcut( shortcut ),
     coloredDecayer( coloredDecayer ),
     electroweakDecayer( electroweakDecayer ),
-    lighterScolored( NULL ),
-    shortcut( shortcut )
+    lighterScolored( NULL )
   // this is the version for electroweakinos.
   {
     effectiveSquarkMassHolder* effectiveSquarkMassPointer;
@@ -287,10 +287,10 @@ namespace LHC_FASER
                                          particlePointer const lighterScolored,
                                          inputHandler const* const shortcut ) :
     kinematics( kinematics ),
+    shortcut( shortcut ),
     coloredDecayer( coloredDecayer ),
     electroweakDecayer( electroweakDecayer ),
-    lighterScolored( lighterScolored ),
-    shortcut( shortcut )
+    lighterScolored( lighterScolored )
   // this is the version for vector bosons.
   {
     effectiveSquarkMassHolder* effectiveSquarkMassPointer;
@@ -319,7 +319,6 @@ namespace LHC_FASER
       currentCascade = new scoloredToZPlusScoloredCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                            coloredDecayer,
-                                                           electroweakDecayer,
                                                            lighterScolored,
                                                            shortcut );
       cascades.push_back( currentCascade );
@@ -442,7 +441,7 @@ namespace LHC_FASER
                                     *  neutralino is used here, just as long as
                                     *   it's lighter than coloredDecayer */ ),
                                    coloredDecayer,
-                                   electroweakDecayer,
+                                   electroweakBoson,
                                    lighterScolored,
                                    shortcut );
       bosonCascadeSets.push_back( returnPointer );
@@ -463,9 +462,9 @@ namespace LHC_FASER
 
   electroweakCascadeHandler::~electroweakCascadeHandler()
   {
-    for( std::vector< leptonAcceptancesForOneBeamEnergy* >::iterator
-         deletionIterator( cascadeSetAtBeamEnergies->begin() );
-         cascadeSetAtBeamEnergies->end() > deletionIterator;
+    for( std::vector< electroweakCascadesForOneBeamEnergy* >::iterator
+         deletionIterator( cascadeSetAtBeamEnergies.begin() );
+         cascadeSetAtBeamEnergies.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -485,14 +484,14 @@ namespace LHC_FASER
     // we look to see if we already have a leptonAcceptancesForOneBeamEnergy
     // for these values:
     for( std::vector< electroweakCascadesForOneBeamEnergy* >::iterator
-         searchIterator = cascadeSetAtBeamEnergies->begin();
-         cascadeSetAtBeamEnergies->end() > searchIterator;
+         searchIterator( cascadeSetAtBeamEnergies.begin() );
+         cascadeSetAtBeamEnergies.end() > searchIterator;
          ++searchIterator )
     {
       if( beamEnergy == (*searchIterator)->getBeamEnergy() )
       {
         returnPointer = *searchIterator;
-        searchIterator = acceptanceTables->end();
+        searchIterator = cascadeSetAtBeamEnergies.end();
       }
     }
     if( NULL == returnPointer )

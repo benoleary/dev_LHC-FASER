@@ -149,9 +149,9 @@ namespace LHC_FASER
                        CppSLHA::EW_scale_spectrum const* const spectrumPointer,
                               std::string const pathToGrids,
                               readierForNewPoint* const readier ) :
-    readier( readier ),
     verbosity( false ),
     usingNloFlag( true ),
+    readier( readier ),
     cppSlhaPointer( cppSlhaPointer ),
     spectrumPointer( spectrumPointer ),
     pathToGrids( pathToGrids ),
@@ -262,7 +262,6 @@ namespace LHC_FASER
                                            CppSLHA::PDG_code::chargino_one ) ),
     charginoTwoPointer( spectrumPointer->inspect_particle_property_set(
                                            CppSLHA::PDG_code::chargino_two ) ),
-    decayCheckers( new decayCheckerHandler( readier ) ),
     nmixPointer( cppSlhaPointer->inspect_BLOCK( "NMIX" ) ),
     umixPointer( cppSlhaPointer->inspect_BLOCK( "UMIX" ) ),
     vmixPointer( cppSlhaPointer->inspect_BLOCK( "VMIX" ) ),
@@ -272,6 +271,7 @@ namespace LHC_FASER
     ydPointer( cppSlhaPointer->inspect_BLOCK( "YD" ) ),
     yuPointer( cppSlhaPointer->inspect_BLOCK( "YU" ) ),
     yePointer( cppSlhaPointer->inspect_BLOCK( "YE" ) ),
+    //decayCheckers( new decayCheckerHandler( readier ) ),
     hardMuonFromTauFunction(),
     softMuonFromTauFunction(),
     hardPionFromTauFunction(),
@@ -287,7 +287,7 @@ namespace LHC_FASER
     updateDependentMasses = new updateDependentAbsoluteMasses( gluinoPointer,
                                                                readier );
     updateDependentAverageSquarks4Mass
-    = new updateDependentAverageMass( squarks4,
+    = new updateDependentAverageMass( &squarks4,
                                       readier );
 
     // the default cross-sections are those generated with the MSTW2008 PDF
@@ -546,7 +546,7 @@ namespace LHC_FASER
       delete *deletionIterator;
     }
 
-    delete decayCheckers;
+    //delete decayCheckers;
     delete exclusiveBrs;
     delete updateDependentInputValues;
     delete updateDependentMasses;
@@ -556,7 +556,7 @@ namespace LHC_FASER
 
   double
   inputHandler::quarkOrLeptonLeftHandedness( int const sfermionCode,
-                                              int const ewinoCode )
+                                             int const ewinoCode )
   const
   /* this returns the square of the coupling associated with the left-handed
    * projection operator of the Feynman rule for the vertex of the given
@@ -875,7 +875,6 @@ namespace LHC_FASER
               std::cout << std::endl;
             }
             leftSquared = CppSLHA::CppSLHA_global::really_wrong_value;
-            rightSquared = CppSLHA::CppSLHA_global::really_wrong_value;
           }
           leftSquared = ( leftCoupling * leftCoupling );
           return ( leftSquared
@@ -981,7 +980,8 @@ namespace LHC_FASER
                                                      4 ) );
           // actually, the Feynman rule has an additional minus sign, but it
           // doesn't matter because this is getting squared.
-          rightCoupling = ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 0.75 )
+          rightCoupling = ( M_SQRT1_2
+                            * ( getHyperchargeGaugeCoupling() / 0.75 )
                             * nmixPointer->get_entry( whichNeutralino,
                                                       1 ) );
         }
@@ -1035,7 +1035,8 @@ namespace LHC_FASER
                                                      4 ) );
           // actually, the Feynman rule has an additional minus sign, but it
           // doesn't matter because this is getting squared.
-          rightCoupling = ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 0.75 )
+          rightCoupling = ( M_SQRT1_2
+                            * ( getHyperchargeGaugeCoupling() / 0.75 )
                             * nmixPointer->get_entry( whichNeutralino,
                                                       1 ) );
         }
@@ -1043,8 +1044,9 @@ namespace LHC_FASER
         {
           leftCoupling
           = ( ( M_SQRT1_2
-                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
-                                                          2 )
+                * ( getWeakGaugeCoupling()
+                    * nmixPointer->get_entry( whichNeutralino,
+                                              2 )
                     - ( getHyperchargeGaugeCoupling() / 3.0 )
                       * nmixPointer->get_entry( whichNeutralino,
                                                 1 ) ) )
@@ -1063,7 +1065,8 @@ namespace LHC_FASER
                                                         3 ) )
                               * sbotmixPointer->get_entry( 1,
                                                            1 )
-                              - ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 1.5 )
+                              - ( M_SQRT1_2
+                                  * ( getHyperchargeGaugeCoupling() / 1.5 )
                                   * nmixPointer->get_entry( whichNeutralino,
                                                             1 ) )
                                   * sbotmixPointer->get_entry( 1,
@@ -1074,8 +1077,9 @@ namespace LHC_FASER
         {
           leftCoupling
           = ( ( M_SQRT1_2
-                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
-                                                          2 )
+                * ( getWeakGaugeCoupling()
+                    * nmixPointer->get_entry( whichNeutralino,
+                                              2 )
                     - ( getHyperchargeGaugeCoupling()  / 3.0 )
                       * nmixPointer->get_entry( whichNeutralino,
                                                 1 ) ) )
@@ -1094,7 +1098,8 @@ namespace LHC_FASER
                                                         3 ) )
                               * sbotmixPointer->get_entry( 2,
                                                            1 )
-                              - ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 1.5 )
+                              - ( M_SQRT1_2
+                                  * ( getHyperchargeGaugeCoupling() / 1.5 )
                                   * nmixPointer->get_entry( whichNeutralino,
                                                             1 ) )
                                   * sbotmixPointer->get_entry( 2,
@@ -1105,8 +1110,9 @@ namespace LHC_FASER
         {
           leftCoupling
           = ( ( M_SQRT1_2
-                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
-                                                          2 )
+                * ( getWeakGaugeCoupling()
+                    * nmixPointer->get_entry( whichNeutralino,
+                                              2 )
                     - ( getHyperchargeGaugeCoupling() / 3.0 )
                       * nmixPointer->get_entry( whichNeutralino,
                                                 1 ) ) )
@@ -1119,7 +1125,8 @@ namespace LHC_FASER
                   * stopmixPointer->get_entry( 1,
                                                2 ) );
           // the (relative) signs of the terms do matter in this case.
-          rightCoupling = ( ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 0.75 )
+          rightCoupling = ( ( M_SQRT1_2
+                              * ( getHyperchargeGaugeCoupling() / 0.75 )
                               * nmixPointer->get_entry( whichNeutralino,
                                                         1 ) )
                               * stopmixPointer->get_entry( 1,
@@ -1136,8 +1143,9 @@ namespace LHC_FASER
         {
           leftCoupling
           = ( ( M_SQRT1_2
-                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
-                                                          2 )
+                * ( getWeakGaugeCoupling()
+                    * nmixPointer->get_entry( whichNeutralino,
+                                              2 )
                     - ( getHyperchargeGaugeCoupling() / 3.0 )
                       * nmixPointer->get_entry( whichNeutralino,
                                                 1 ) ) )
@@ -1150,7 +1158,8 @@ namespace LHC_FASER
                     * stopmixPointer->get_entry( 2,
                                                  2 ) );
           // the (relative) signs of the terms do matter in this case.
-          rightCoupling = ( ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() / 0.75 )
+          rightCoupling = ( ( M_SQRT1_2
+                              * ( getHyperchargeGaugeCoupling() / 0.75 )
                               * nmixPointer->get_entry( whichNeutralino,
                                                         1 ) )
                               * stopmixPointer->get_entry( 2,
@@ -1219,8 +1228,9 @@ namespace LHC_FASER
         {
           leftCoupling
           = ( ( M_SQRT1_2
-                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
-                                                          2 )
+                * ( getWeakGaugeCoupling()
+                    * nmixPointer->get_entry( whichNeutralino,
+                                              2 )
                     + getHyperchargeGaugeCoupling()
                       * nmixPointer->get_entry( whichNeutralino,
                                                 1 ) ) )
@@ -1239,7 +1249,8 @@ namespace LHC_FASER
                                                         3 ) )
                               * staumixPointer->get_entry( 1,
                                                            1 )
-                            - ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() * 2.0 )
+                            - ( M_SQRT1_2
+                                * ( getHyperchargeGaugeCoupling() * 2.0 )
                                 * nmixPointer->get_entry( whichNeutralino,
                                                           1 ) )
                                 * staumixPointer->get_entry( 1,
@@ -1250,8 +1261,9 @@ namespace LHC_FASER
         {
           leftCoupling
           = ( ( M_SQRT1_2
-                * ( getWeakGaugeCoupling() * nmixPointer->get_entry( whichNeutralino,
-                                                          2 )
+                * ( getWeakGaugeCoupling()
+                    * nmixPointer->get_entry( whichNeutralino,
+                                              2 )
                     + getHyperchargeGaugeCoupling()
                       * nmixPointer->get_entry( whichNeutralino,
                                                 1 ) ) )
@@ -1270,7 +1282,8 @@ namespace LHC_FASER
                                                         3 ) )
                             * staumixPointer->get_entry( 2,
                                                          1 )
-                            - ( M_SQRT1_2 * ( getHyperchargeGaugeCoupling() * 2.0 )
+                            - ( M_SQRT1_2
+                                * ( getHyperchargeGaugeCoupling() * 2.0 )
                                 * nmixPointer->get_entry( whichNeutralino,
                                                           1 ) )
                               * staumixPointer->get_entry( 2,
@@ -1290,7 +1303,6 @@ namespace LHC_FASER
             std::cout << std::endl;
           }
           leftSquared = CppSLHA::CppSLHA_global::really_wrong_value;
-          rightSquared = CppSLHA::CppSLHA_global::really_wrong_value;
         }
       }
       leftSquared = ( leftCoupling * leftCoupling );
@@ -1298,5 +1310,6 @@ namespace LHC_FASER
                / ( leftSquared + rightCoupling * rightCoupling ) );
     }  // end of if it's a neutralino.
   }
+
 }  // end of LHC_FASER namespace.
 

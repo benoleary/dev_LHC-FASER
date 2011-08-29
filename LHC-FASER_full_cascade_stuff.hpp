@@ -881,7 +881,7 @@ namespace LHC_FASER
     fullCascadeSet( inputHandler const* const shortcut,
                     particlePointer const initialScolored,
                     electroweakCascadesForOneBeamEnergy* const electroweakCascades,
-                    std::list< fullCascadeSet* >* const squarkCascadeSetList,
+                    readiableCascadeSetList* const squarkCascadeSetList,
                     double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
@@ -1054,15 +1054,14 @@ namespace LHC_FASER
   {
   public:
     fullCascadeSetsForOneBeamEnergy( inputHandler const* const shortcut,
-                     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                      double const beamEnergy )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~fullCascadeSetsForOneBeamEnergy()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     fullCascadeSet*
-    getFullCascadeSet(
-                  particlePointer const initialScolored )
+    getFullCascadeSet( particlePointer const initialScolored )
     /* this returns the fullCascadeSet for the requested colored sparticle, or
      * NULL if we were asked for a sparticle that is not the gluino or in
      * shortcut->getSquarks().
@@ -1090,7 +1089,7 @@ namespace LHC_FASER
   {
   public:
     fullCascadeSetFactory( inputHandler const* const shortcut,
-                           electroweakCascadesForOneBeamEnergy* const ewCascadeHandler )
+          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~fullCascadeSetFactory()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -2132,6 +2131,7 @@ namespace LHC_FASER
     return getFullCascadeSetsForOneBeamEnergy( beamEnergy
                                        )->getFullCascadeSet( initialScolored );
   }
+
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_FULL_CASCADE_STUFF_HPP_ */

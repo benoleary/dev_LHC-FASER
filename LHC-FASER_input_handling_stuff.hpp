@@ -468,11 +468,11 @@ namespace LHC_FASER
      * the given particle or its antiparticle are in the collection.)
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    directDecayChecker*
+    /*directDecayChecker*
     getDirectDecayChecker( particlePointer const decayerParticle,
                            particleVectorPointer const productSet )
     const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    *//* code after the classes in this .hpp file, or in the .cpp file. *///;
     exclusiveBrCalculator*
     getExclusiveBrCalculator( particlePointer const decayerParticle,
                               particlePointer const productParticle,
@@ -603,6 +603,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     effectiveSquarkMassHolder*
     getOnShellEffectiveSquarkMass( particlePointer onshellSquark )
+    const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
@@ -729,7 +730,7 @@ namespace LHC_FASER
     std::vector< particlePointer > neutralEwsbScalarsAndPseudoscalars;
     std::vector< particlePointer > ewsbBosonsAndMassiveVectorBosons;
 
-    decayCheckerHandler* decayCheckers;
+    //decayCheckerHandler* decayCheckers;
     exclusiveBrHandler* exclusiveBrs;
 
     hard_muon_from_tau hardMuonFromTauFunction;
@@ -1368,14 +1369,14 @@ namespace LHC_FASER
     return returnBool;
   }
 
-  inline directDecayChecker*
+  /*inline directDecayChecker*
   inputHandler:: getDirectDecayChecker( particlePointer const decayingParticle,
                                        particleVectorPointer const productSet )
   const
   {
     return decayCheckers->getDecayChecker( decayingParticle,
                                            productSet );
-  }
+  }*/
 
   inline exclusiveBrCalculator*
   inputHandler::getExclusiveBrCalculator(
@@ -1611,10 +1612,11 @@ namespace LHC_FASER
 
   inline effectiveSquarkMassHolder*
   inputHandler::getOnShellEffectiveSquarkMass( particlePointer onshellSquark )
+  const
   {
     effectiveSquarkMassHolder* returnPointer( NULL );
-    for( std::vector< onshellSquarkMassHolder* >::iterator
-         squarkIterator = onshellSquarkEffectiveMasses.begin();
+    for( std::vector< onshellSquarkMassHolder* >::const_iterator
+         squarkIterator( onshellSquarkEffectiveMasses.begin() );
          onshellSquarkEffectiveMasses.end() > squarkIterator;
          ++squarkIterator )
     {
@@ -1625,6 +1627,7 @@ namespace LHC_FASER
     }
     return returnPointer;
   }
+
 }
 
 #endif /* LHC_FASER_INPUT_HANDLING_STUFF_HPP_ */

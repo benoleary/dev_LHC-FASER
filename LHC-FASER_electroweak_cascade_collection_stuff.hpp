@@ -238,8 +238,8 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    inputHandler const* const shortcut;
     leptonAcceptanceHandler kinematicsSource;
+    inputHandler const* const shortcut;
     std::vector< electroweakCascadesForOneBeamEnergy* >
     cascadeSetAtBeamEnergies;
   };

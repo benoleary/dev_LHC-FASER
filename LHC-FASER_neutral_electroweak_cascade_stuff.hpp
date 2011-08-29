@@ -38,7 +38,8 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceValues* const currentAcceptance )
+    calculateAcceptance( acceptanceCutSet const* const cuts,
+                         acceptanceValues* const currentAcceptance )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
@@ -772,6 +773,7 @@ namespace LHC_FASER
 
   inline void
   lightestNeutralinoCascade::calculateAcceptance(
+                                            acceptanceCutSet const* const cuts,
                                     acceptanceValues* const currentAcceptance )
   {
     currentAcceptance->setZeroJetsZeroLeptons( 1.0 );

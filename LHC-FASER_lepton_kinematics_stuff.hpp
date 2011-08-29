@@ -229,7 +229,7 @@ namespace LHC_FASER
    * acceptance.
    */
   class leptonAcceptanceParameterSet : public getsReadiedForNewPoint,
-                                              effectiveSquarkMassHolder
+                                       public effectiveSquarkMassHolder
   {
   public:
     static double const defaultBinSize = 2.0;
