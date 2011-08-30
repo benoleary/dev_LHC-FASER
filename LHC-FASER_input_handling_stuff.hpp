@@ -56,7 +56,6 @@
 #ifndef LHC_FASER_INPUT_HANDLING_STUFF_HPP_
 #define LHC_FASER_INPUT_HANDLING_STUFF_HPP_
 
-#include "CppSLHA/CppSLHA.hpp"
 #include "LHC-FASER_global_stuff.hpp"
 #include "LHC-FASER_derived_lepton_distributions.hpp"
 #include "LHC-FASER_sparticle_decay_stuff.hpp"
@@ -1392,42 +1391,42 @@ namespace LHC_FASER
                                           exclusionList );
   }
 
-  std::list< int > const*
+  inline std::list< int > const*
   inputHandler::getEmptyList()
   const
   {
     return &emptyList;
   }
 
-  std::list< int > const*
+  inline std::list< int > const*
   inputHandler::getJets()
   const
   {
     return &jets;
   }
 
-  std::list< int > const*
+  inline std::list< int > const*
   inputHandler::getJets5()
   const
   {
     return &jets5;
   }
 
-  std::list< int > const*
+  inline std::list< int > const*
   inputHandler::getJets4()
   const
   {
     return &jets4;
   }
 
-  std::list< int > const*
+  inline std::list< int > const*
   inputHandler::getNotInJets5()
   const
   {
     return &notInJets5;
   }
 
-  std::list< int > const*
+  inline std::list< int > const*
   inputHandler::getNotInJets4()
   const
   {
@@ -1546,28 +1545,28 @@ namespace LHC_FASER
     return &ewsbBosonsAndMassiveVectorBosons;
   }
 
-  hard_muon_from_tau const*
+  inline hard_muon_from_tau const*
   inputHandler::getHardMuonFromTau()
   const
   {
     return &hardMuonFromTauFunction;
   }
 
-  soft_muon_from_tau const*
+  inline soft_muon_from_tau const*
   inputHandler::getSoftMuonFromTau()
   const
   {
     return &softMuonFromTauFunction;
   }
 
-  hard_pion_from_tau const*
+  inline hard_pion_from_tau const*
   inputHandler::getHardPionFromTau()
   const
   {
     return &hardPionFromTauFunction;
   }
 
-  soft_pion_from_tau const*
+  inline soft_pion_from_tau const*
   inputHandler::getSoftPionFromTau()
   const
   {

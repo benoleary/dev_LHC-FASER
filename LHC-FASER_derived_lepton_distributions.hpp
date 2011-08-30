@@ -58,9 +58,6 @@
 #ifndef LHC_FASER_DERIVED_LEPTON_DISTRIBUTIONS_HPP_
 #define LHC_FASER_DERIVED_LEPTON_DISTRIBUTIONS_HPP_
 
-
-#include "CppSLHA/CppSLHA.hpp"
-#include "LHC-FASER_global_stuff.hpp"
 #include "LHC-FASER_base_lepton_distribution_stuff.hpp"
 
 namespace LHC_FASER

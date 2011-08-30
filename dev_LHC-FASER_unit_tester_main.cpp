@@ -202,13 +202,13 @@ protected:
 
 // the main program:
 
-int main( int argument_count,
-          char* argument_strings[] )
+int main( int argumentCount,
+          char* argumentStrings[] )
 {
 
   int recalculation_amount = 10;
 
-  if( 2 != argument_count )
+  if( 2 != argumentCount )
     // if the input was definitely wrong...
     {
 
@@ -222,7 +222,7 @@ int main( int argument_count,
   else  // otherwise, do what is supposed to be done.
     {
 
-      std::string argument_interpretter( argument_strings[ 1 ] );
+      std::string argument_interpretter( argumentStrings[ 1 ] );
       std::stringstream argument_stream( argument_interpretter );
       argument_stream >> recalculation_amount;
 
@@ -240,7 +240,7 @@ int main( int argument_count,
 
   /* testing the lepton energy distributions in the squark rest frame: (slight changes of input) *//**/
 
-  distribution_set::distribution_set distributions( &test_readier );
+  distribution_set distributions( &test_readier );
 
   CppSLHA::EW_scale_spectrum* const
   spectrum = SLHA_data.get_particle_spectrum();

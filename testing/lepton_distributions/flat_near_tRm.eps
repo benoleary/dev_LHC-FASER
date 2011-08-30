@@ -1,7 +1,7 @@
 %!PS-Adobe-2.0
 %%Title: flat_near_tRm.eps
-%%Creator: gnuplot 4.2 patchlevel 6 
-%%CreationDate: Tue Feb 22 14:36:32 2011
+%%Creator: gnuplot 4.4 patchlevel 3
+%%CreationDate: Tue Aug 30 18:38:03 2011
 %%DocumentFonts: (atend)
 %%BoundingBox: 50 50 554 770
 %%Orientation: Landscape
@@ -11,8 +11,8 @@
 /gnudict 256 dict def
 gnudict begin
 %
-% The following 6 true/false flags may be edited by hand if required
-% The unit line width may also be changed
+% The following true/false flags may be edited by hand if desired.
+% The unit line width and grayscale image gamma correction may also be changed.
 %
 /Color true def
 /Blacktext false def
@@ -21,9 +21,11 @@ gnudict begin
 /Landscape true def
 /Level1 false def
 /Rounded false def
+/ClipToBoundingBox false def
 /TransparentPatterns false def
 /gnulinewidth 5.000 def
 /userlinewidth gnulinewidth def
+/Gamma 1.0 def
 %
 /vshift -46 def
 /dl1 {
@@ -46,16 +48,24 @@ systemdict /pdfmark known not {
 SDict begin [
   /Title (flat_near_tRm.eps)
   /Subject (gnuplot plot)
-  /Creator (gnuplot 4.2 patchlevel 6 )
-  /Author (Dr Ben,,,)
+  /Creator (gnuplot 4.4 patchlevel 3)
+  /Author (oleary)
 %  /Producer (gnuplot)
 %  /Keywords ()
-  /CreationDate (Tue Feb 22 14:36:32 2011)
+  /CreationDate (Tue Aug 30 18:38:03 2011)
   /DOCINFO pdfmark
 end
 } ifelse
+/doclip {
+  ClipToBoundingBox {
+    newpath 50 50 moveto 554 50 lineto 554 770 lineto 50 770 lineto closepath
+    clip
+  } if
+} def
 %
-% Gnuplot Prolog Version 4.2 (August 2006)
+% Gnuplot Prolog Version 4.4 (August 2010)
+%
+%/SuppressPDFMark true def
 %
 /M {moveto} bind def
 /L {lineto} bind def
@@ -65,6 +75,8 @@ end
 /Z {closepath} bind def
 /C {setrgbcolor} bind def
 /f {rlineto fill} bind def
+/g {setgray} bind def
+/Gshow {show} def   % May be redefined later in the file to support UTF-8
 /vpt2 vpt 2 mul def
 /hpt2 hpt 2 mul def
 /Lshow {currentpoint stroke M 0 vshift R 
@@ -85,6 +97,7 @@ end
 	dup 1 lt {pop 1} if 10 mul /udl exch def} def
 /PL {stroke userlinewidth setlinewidth
 	Rounded {1 setlinejoin 1 setlinecap} if} def
+3.8 setmiterlimit
 % Default Line colors
 /LCw {1 1 1} def
 /LCb {0 0 0} def
@@ -427,17 +440,18 @@ currentdict end definefont pop
      { 5 get 3 eq {gsave} {grestore} ifelse }
      {dup dup 0 get findfont exch 1 get scalefont setfont
      [ currentpoint ] exch dup 2 get 0 exch R dup 5 get 2 ne {dup dup 6
-     get exch 4 get {show} {stringwidth pop 0 R} ifelse }if dup 5 get 0 eq
+     get exch 4 get {Gshow} {stringwidth pop 0 R} ifelse }if dup 5 get 0 eq
      {dup 3 get {2 get neg 0 exch R pop} {pop aload pop M} ifelse} {dup 5
      get 1 eq {dup 2 get exch dup 3 get exch 6 get stringwidth pop -2 div
      dup 0 R} {dup 6 get stringwidth pop -2 div 0 R 6 get
      show 2 index {aload pop M neg 3 -1 roll neg R pop pop} {pop pop pop
      pop aload pop M} ifelse }ifelse }ifelse }
      ifelse }
-   forall} bind def
+   forall} def
+/Gswidth {dup type /stringtype eq {stringwidth} {pop (n) stringwidth} ifelse} def
 /MFwidth {0 exch { dup 5 get 3 ge { 5 get 3 eq { 0 } { pop } ifelse }
  {dup 3 get{dup dup 0 get findfont exch 1 get scalefont setfont
-     6 get stringwidth pop add} {pop} ifelse} ifelse} forall} bind def
+     6 get Gswidth pop add} {pop} ifelse} ifelse} forall} def
 /MLshow { currentpoint stroke M
   0 exch R
   Blacktext {gsave 0 setgray MFshow grestore} {MFshow} ifelse } bind def
@@ -454,6 +468,7 @@ end
 %%Page: 1 1
 gnudict begin
 gsave
+doclip
 50 50 translate
 0.100 0.100 scale
 90 rotate
@@ -463,308 +478,310 @@ newpath
 (Helvetica) findfont 140 scalefont setfont
 1.000 UL
 LTb
-882 280 M
+462 280 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 280 M
+378 280 M
 [ [(Helvetica) 140.0 0.0 true true 0 ( 0)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 739 M
+462 739 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 739 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.005)]
+378 739 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 1)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 1198 M
+462 1198 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 1198 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.01)]
+378 1198 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 2)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 1658 M
+462 1657 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 1658 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.015)]
+378 1657 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 3)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 2117 M
+462 2116 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 2117 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.02)]
+378 2116 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 4)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 2576 M
+462 2576 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 2576 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.025)]
+378 2576 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 5)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 3035 M
+462 3035 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 3035 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.03)]
+378 3035 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 6)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 3494 M
+462 3494 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 3494 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.035)]
+378 3494 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 7)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 3954 M
+462 3953 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 3954 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.04)]
+378 3953 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 8)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 4413 M
+462 4412 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 4413 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.045)]
+378 4412 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 9)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 4872 M
+462 4871 M
 63 0 V
-6045 0 R
+6422 0 R
 -63 0 V
 stroke
-798 4872 M
-[ [(Helvetica) 140.0 0.0 true true 0 ( 0.05)]
+378 4871 M
+[ [(Helvetica) 140.0 0.0 true true 0 ( 10)]
 ] -46.7 MRshow
 1.000 UL
 LTb
-882 280 M
+462 280 M
 0 63 V
-0 4529 R
+0 4528 R
 0 -63 V
 stroke
-882 140 M
+462 140 M
 [ [(Helvetica) 140.0 0.0 true true 0 ( 0)]
 ] -46.7 MCshow
 1.000 UL
 LTb
-1900 280 M
+1543 280 M
 0 63 V
-0 4529 R
+0 4528 R
 0 -63 V
 stroke
-1900 140 M
+1543 140 M
 [ [(Helvetica) 140.0 0.0 true true 0 ( 20)]
 ] -46.7 MCshow
 1.000 UL
 LTb
-2918 280 M
+2624 280 M
 0 63 V
-0 4529 R
+0 4528 R
 0 -63 V
 stroke
-2918 140 M
+2624 140 M
 [ [(Helvetica) 140.0 0.0 true true 0 ( 40)]
 ] -46.7 MCshow
 1.000 UL
 LTb
-3936 280 M
+3705 280 M
 0 63 V
-0 4529 R
+0 4528 R
 0 -63 V
 stroke
-3936 140 M
+3705 140 M
 [ [(Helvetica) 140.0 0.0 true true 0 ( 60)]
 ] -46.7 MCshow
 1.000 UL
 LTb
-4954 280 M
+4785 280 M
 0 63 V
-0 4529 R
+0 4528 R
 0 -63 V
 stroke
-4954 140 M
+4785 140 M
 [ [(Helvetica) 140.0 0.0 true true 0 ( 80)]
 ] -46.7 MCshow
 1.000 UL
 LTb
-5972 280 M
+5866 280 M
 0 63 V
-0 4529 R
+0 4528 R
 0 -63 V
 stroke
-5972 140 M
+5866 140 M
 [ [(Helvetica) 140.0 0.0 true true 0 ( 100)]
 ] -46.7 MCshow
 1.000 UL
 LTb
-6990 280 M
+6947 280 M
 0 63 V
-0 4529 R
+0 4528 R
 0 -63 V
 stroke
-6990 140 M
+6947 140 M
 [ [(Helvetica) 140.0 0.0 true true 0 ( 120)]
 ] -46.7 MCshow
 1.000 UL
 LTb
 1.000 UL
 LTb
-882 4872 N
-882 280 L
-6108 0 V
-0 4592 V
--6108 0 V
+462 4871 N
+462 280 L
+6485 0 V
+0 4591 V
+-6485 0 V
 Z stroke
 1.000 UP
 1.000 UL
 LTb
+% Begin plot #1
 3.000 UL
 LT0
-1.00 0.00 0.00 C 882 280 M
-53 4459 V
-54 -79 V
-53 -122 V
-54 -156 V
-53 -183 V
-54 -202 V
-53 -213 V
-54 -216 V
-53 -211 V
-54 -198 V
-53 -179 V
-54 -163 V
-53 -148 V
-54 -137 V
-53 -126 V
-54 -117 V
-53 -110 V
-53 -101 V
-54 -96 V
-53 -90 V
-54 -84 V
-53 -80 V
-54 -75 V
-53 -71 V
-54 -67 V
-53 -64 V
-54 -60 V
-53 -58 V
-54 -55 V
-53 -52 V
-54 -49 V
-53 -47 V
-54 -45 V
-53 -43 V
-53 -41 V
-54 -39 V
-53 -37 V
-54 -35 V
-53 -34 V
-54 -32 V
-53 -31 V
-54 -29 V
-53 -28 V
-54 -27 V
-53 -25 V
-54 -24 V
-53 -23 V
-54 -22 V
-53 -21 V
-54 -20 V
-53 -19 V
-53 -18 V
-54 -17 V
-53 -16 V
-54 -16 V
-53 -14 V
-54 -14 V
-53 -13 V
-54 -13 V
-53 -11 V
-54 -11 V
-53 -11 V
-54 -10 V
-53 -9 V
-54 -9 V
-53 -8 V
-54 -7 V
-53 -8 V
-53 -6 V
-54 -6 V
-53 -6 V
-54 -6 V
-53 -5 V
-54 -4 V
-53 -4 V
-54 -4 V
-53 -4 V
-54 -3 V
-53 -3 V
-54 -3 V
-53 -2 V
-54 -2 V
-53 -2 V
-54 -2 V
-53 -1 V
-53 -1 V
-54 -2 V
-53 -1 V
-54 0 V
-53 -1 V
-54 -1 V
-53 0 V
-54 0 V
-53 -1 V
-54 0 V
-53 0 V
-54 0 V
-53 0 V
-54 0 V
-53 0 V
+1.00 0.00 0.00 C 462 280 M
+54 481 V
+54 481 V
+54 481 V
+54 481 V
+54 482 V
+54 481 V
+54 481 V
+54 481 V
+54 481 V
+1028 317 L
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 0 V
+57 0 V
+56 0 V
+57 0 V
+57 0 V
+56 -37 V
+% End plot #1
 stroke
 1.000 UL
 LTb
-882 4872 N
-882 280 L
-6108 0 V
-0 4592 V
--6108 0 V
+462 4871 N
+462 280 L
+6485 0 V
+0 4591 V
+-6485 0 V
 Z stroke
 1.000 UP
 1.000 UL

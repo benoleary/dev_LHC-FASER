@@ -236,6 +236,11 @@ namespace LHC_FASER
     // normalization.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+    double
+    get_coefficient( int const powerOfEnergy,
+                     int const powerOfLogarithm )
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     double
     evaluate( double const given_energy )
@@ -809,6 +814,33 @@ namespace LHC_FASER
 
       }
 
+  }
+
+  inline double
+  segment_term_set::get_coefficient( int const powerOfEnergy,
+                                     int const powerOfLogarithm )
+  const
+  {
+    double returnValue( 0.0 );
+    // start by assuming that the coefficient is zero.
+    for( std::vector< lepton_distribution_expansion_term* >::const_iterator
+         termIterator( segment_terms.begin() );
+         segment_terms.end() > termIterator;
+         ++termIterator )
+      // go through all the terms...
+      {
+        if( ( powerOfEnergy == (*termIterator)->get_power_of_energy() )
+            &&
+            ( powerOfLogarithm == (*termIterator)->get_power_of_logarithm() ) )
+          // if we find the requested term with a non-zero coefficient...
+        {
+          returnValue = (*termIterator)->get_coefficient();
+          // note the coefficient to return.
+          termIterator = segment_terms.end();
+          // stop looking.
+        }
+      }
+    return returnValue;
   }
 
 

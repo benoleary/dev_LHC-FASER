@@ -2320,8 +2320,10 @@ namespace LHC_FASER
          ++term_iterator )
       {
 
-        (*term_iterator)->set_coefficient(
-                         (*tau_decay)( (*term_iterator)->get_power_of_energy(),
+        (*term_iterator)->set_coefficient( reference_segment->get_coefficient(
+                                       (*term_iterator)->get_power_of_energy(),
+                                   (*term_iterator)->get_power_of_logarithm() )
+                       * (*tau_decay)( (*term_iterator)->get_power_of_energy(),
                                     (*term_iterator)->get_power_of_logarithm(),
                                        (*term_iterator)->get_reference_term(
                                                       )->get_power_of_energy(),
@@ -2338,8 +2340,10 @@ namespace LHC_FASER
          ++term_iterator )
       {
 
-        (*term_iterator)->set_coefficient(
-                         (*tau_decay)( (*term_iterator)->get_power_of_energy(),
+        (*term_iterator)->set_coefficient( reference_segment->get_coefficient(
+                                       (*term_iterator)->get_power_of_energy(),
+                                   (*term_iterator)->get_power_of_logarithm() )
+                       * (*tau_decay)( (*term_iterator)->get_power_of_energy(),
                                     (*term_iterator)->get_power_of_logarithm(),
                                        (*term_iterator)->get_reference_term(
                                                       )->get_power_of_energy(),

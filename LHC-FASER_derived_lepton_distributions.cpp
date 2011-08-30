@@ -361,7 +361,7 @@ namespace LHC_FASER
 
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses:
-    if( ( firstMass / secondMass ) > ( secondMass / thirdMass ) )
+    if( ( firstMass * thirdMass ) > ( secondMass * secondMass ) )
       {
 
         Elk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
@@ -407,8 +407,8 @@ namespace LHC_FASER
 
 
     // HK to MAX segment:
-    HKtoMAX_segment.set_segment_range( Elk,
-                                       Ehk );
+    HKtoMAX_segment.set_segment_range( Ehk,
+                                       maximumEnergy );
 
     HKtoMAX_const.set_coefficient( log( maximumEnergy ) );
 
@@ -432,10 +432,10 @@ namespace LHC_FASER
     << std::endl
     << "debugging: flat_far_muon_plus_antimuon_distribution:";
     std::cout << std::endl << "normalization = " << normalization;
-    std::cout << std::endl << "minimum_energy = " << minimum_energy;
+    std::cout << std::endl << "minimumEnergy = " << minimumEnergy;
     std::cout << std::endl << "Elk = " << Elk;
     std::cout << std::endl << "Ehk = " << Ehk;
-    std::cout << std::endl << "maximum_energy = " << maximum_energy;
+    std::cout << std::endl << "maximumEnergy = " << maximumEnergy;
     std::cout << std::endl;**/
 
   }
@@ -538,7 +538,7 @@ namespace LHC_FASER
 
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses.
-    if( ( firstMass / secondMass ) > ( secondMass / thirdMass ) )
+    if( ( firstMass * thirdMass ) > ( secondMass * secondMass ) )
       {
 
         Elk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
@@ -595,7 +595,7 @@ namespace LHC_FASER
 
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses.
-    if( ( firstMass / secondMass ) < ( secondMass / thirdMass ) )
+    if( ( firstMass * thirdMass ) < ( secondMass * secondMass ) )
       // if the assumption that the mass spectrum was SPS1a-like was
       // incorrect...
       {
@@ -779,7 +779,7 @@ namespace LHC_FASER
 
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses.
-    if( ( firstMass / secondMass ) > ( secondMass / thirdMass ) )
+    if( ( firstMass * thirdMass ) > ( secondMass * secondMass ) )
       {
 
         Elk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
@@ -834,8 +834,9 @@ namespace LHC_FASER
     LKtoHK_segment.set_segment_range( Elk,
                                       Ehk );
 
-    // there are 2 kinematic cases for determining the kink energies in terms of the cascade masses.
-    if( ( firstMass / secondMass ) < ( secondMass / thirdMass ) )
+    // there are 2 kinematic cases for determining the kink energies in terms
+    // of the cascade masses.
+    if( ( firstMass * thirdMass ) < ( secondMass * secondMass ) )
       // if the assumption that the mass spectrum was SPS1a-like was
       // incorrect...
       {

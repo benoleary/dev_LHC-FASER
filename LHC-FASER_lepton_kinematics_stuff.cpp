@@ -153,6 +153,24 @@ namespace LHC_FASER
 
 
 
+  leptonAcceptanceTable::leptonAcceptanceTable(
+                                  leptonAcceptanceGrid const* const lookupGrid,
+                                                particlePointer const scolored,
+                                         inputHandler const* const shortcut ) :
+    lookupGrid( lookupGrid ),
+    scolored( scolored ),
+    shortcut( shortcut )
+  {
+    // just an initialization list.
+  }
+
+  leptonAcceptanceTable::~leptonAcceptanceTable()
+  {
+    // does nothing.
+  }
+
+
+
   squarkBasedLeptonAcceptanceTable::squarkBasedLeptonAcceptanceTable(
                                   leptonAcceptanceGrid const* const lookupGrid,
                                                   particlePointer const squark,

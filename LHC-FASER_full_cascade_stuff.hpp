@@ -1109,7 +1109,7 @@ namespace LHC_FASER
   // inline functions:
 
 
-  particlePointer
+  inline particlePointer
   fullCascade::getInitialScolored()
   const
   {
@@ -1952,7 +1952,7 @@ namespace LHC_FASER
 
 
 
-  bool
+  inline bool
   fullCascadeSet::massOrdered( fullCascadeSet* firstSet,
                                fullCascadeSet* secondSet )
   // this returns true if firstSet's initialScolored has equal or lighter mass
