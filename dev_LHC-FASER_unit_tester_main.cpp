@@ -44,7 +44,6 @@
 #include "LHC-FASER_derived_lepton_distributions.hpp"
 #include "LHC-FASER_input_handling_stuff.hpp"
 #include "LHC-FASER_cross-section_stuff.hpp"
-#include "LHC-FASER_kinematics_stuff.hpp"
 //#include "LHC-FASER_derived_electroweak_cascade_stuff.hpp"
 //#include "LHC-FASER_signal_data_collection_stuff.hpp"
 //#include "LHC-FASER_signal_calculator_stuff.hpp"
@@ -3422,32 +3421,32 @@ int main( int argument_count,
   LHC_FASER::lhcFaser SPS1a_UI( "SPS1a_spectrum.out" );
   LHC_FASER::lhcFaser SPS2_UI( "SPS2_spectrum.out" );
 
-  SPS1a_UI.add_signal( "sigmaBreakdownTest" );
-  SPS1a_UI.add_signal( "Atlas4jMET0l7TeV" );
-  SPS2_UI.add_signal( "badSignalName" );
-  SPS2_UI.add_signal( "Atlas4jMET0l7TeV" );
+  SPS1a_UI.addSignal( "sigmaBreakdownTest" );
+  SPS1a_UI.addSignal( "Atlas4jMET0l7TeV" );
+  SPS2_UI.addSignal( "badSignalName" );
+  SPS2_UI.addSignal( "Atlas4jMET0l7TeV" );
 
   LHC_FASER::signal_handler* sigma_SPS1a
-  = SPS1a_UI.get_signal( "sigmaBreakdownTest" );
+  = SPS1a_UI.getSignal( "sigmaBreakdownTest" );
   LHC_FASER::signal_handler* Atlas_SPS1a
-  = SPS1a_UI.get_signal( "Atlas4jMET0l7TeV" );
+  = SPS1a_UI.getSignal( "Atlas4jMET0l7TeV" );
   LHC_FASER::signal_handler* Atlas_SPS2
-  = SPS2_UI.get_signal( "Atlas4jMET0l7TeV" );
+  = SPS2_UI.getSignal( "Atlas4jMET0l7TeV" );
   LHC_FASER::signal_handler* bad_SPS2
-  = SPS2_UI.get_signal( "badSignalName" );
+  = SPS2_UI.getSignal( "badSignalName" );
 
 
   std::cout << std::endl;
   std::cout << std::endl << "all 4 test signals from test UIs have pointers.";
   std::cout << std::endl;
 
-  SPS1a_UI.update_for_new_point();
+  SPS1a_UI.updateForNewSlha();
   std::cout << std::endl;
-  std::cout << std::endl << "SPS1a_UI.update_for_new_point() successful.";
+  std::cout << std::endl << "SPS1a_UI.updateForNewSlha() successful.";
   std::cout << std::endl;
-  SPS2_UI.update_for_new_point();
+  SPS2_UI.updateForNewSlha();
   std::cout << std::endl;
-  std::cout << std::endl << "SPS2_UI.update_for_new_point() successful.";
+  std::cout << std::endl << "SPS2_UI.updateForNewSlha() successful.";
   std::cout << std::endl;
   std::cout
   << std::endl << "after updating for new point, "
@@ -3506,8 +3505,8 @@ int main( int argument_count,
   signal_name.assign( "Atlas4jMET0l7TeV" );
   std::cout
   << std::endl << "adding " << signal_name;
-  test_UI.add_signal( signal_name );
-  signals.push_back( test_UI.get_signal( signal_name ) );
+  test_UI.addSignal( signal_name );
+  signals.push_back( test_UI.getSignal( signal_name ) );
   gettimeofday( &end_time,
                 NULL );
   seconds_taken
@@ -3522,8 +3521,8 @@ int main( int argument_count,
   signal_name.assign( "Atlas3jMET1l7TeV" );
   std::cout
   << std::endl << "adding " << signal_name;
-  test_UI.add_signal( signal_name );
-  signals.push_back( test_UI.get_signal( signal_name ) );
+  test_UI.addSignal( signal_name );
+  signals.push_back( test_UI.getSignal( signal_name ) );
   gettimeofday( &end_time,
                 NULL );
   seconds_taken
@@ -3585,7 +3584,7 @@ int main( int argument_count,
                         NULL );
           std::cout
           << std::endl << "reading it in & updating";
-          test_UI.update_for_new_point();
+          test_UI.updateForNewSlha();
           gettimeofday( &end_time,
                         NULL );
           seconds_taken

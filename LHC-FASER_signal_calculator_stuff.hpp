@@ -88,7 +88,6 @@ namespace LHC_FASER
   public:
     signalCalculator( signalDefinitionSet* signalDefinitions )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
     ~signalCalculator()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -107,7 +106,6 @@ namespace LHC_FASER
      * instance of the derived class based on arguments, & return a pointer to
      * the new instance of the derived class.
      */
-
     virtual bool
     calculate( double* signalValue,
                double* uncertaintyFactor )
@@ -135,9 +133,10 @@ namespace LHC_FASER
 
   protected:
     signalDefinitionSet signalDefinitions;
+    inputHandler const* const shortcut;
     std::vector< productionChannelPointerSet* > channels;
-    //full_cascade* first_cascade;
-    //full_cascade* second_cascade;
+    //fullCascade* firstCascade;
+    //fullCascade* secondCascade;
     std::vector< fullCascade* >* firstCascades;
     std::vector< fullCascade* >* secondCascades;
     std::list< int > excludedFinalStateParticles;
@@ -158,10 +157,9 @@ namespace LHC_FASER
   {
   public:
     signalHandler( std::string const signalName,
-                   signalShortcuts* const shortcut,
-                   double const crossSectionUnitFactor )
+                   double const crossSectionUnitFactor,
+                   signalDefinitionSet* const signalPreparationDefinitions )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     ~signalHandler()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -205,12 +203,9 @@ namespace LHC_FASER
    */
   class reallyWrongCalculator : public signalCalculator
   {
-
   public:
-
-    reallyWrongCalculator( signalShortcuts* const shortcut )
+    reallyWrongCalculator( signalDefinitionSet* const signalDefinitions )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
     ~reallyWrongCalculator()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -271,7 +266,7 @@ namespace LHC_FASER
     // the default Atlas4jMET0l lepton transverse momentum cut is 10.0 GeV.
 
     static signalCalculator*
-    getCalculator( std::string const* const arguments,
+    getCalculator( std::string const* const argumentString,
                    signalDefinitionSet* const signalDefinitions )
     // this either returns a pointer to a new Atlas4jMET0l_calculator with cuts
     // decided by the given string, or a pointer to a really_wrong_calculator.
@@ -332,8 +327,8 @@ namespace LHC_FASER
     // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
 
     static signalCalculator*
-    getCalculator( std::string const* const arguments,
-                   signalDefinitionSet* const signalDefiner )
+    getCalculator( std::string const* const argumentString,
+                   signalDefinitionSet* const signalDefinitions )
     // this either returns a pointer to a new Atlas3jMET1l_calculator with cuts
     // decided by the given string, or a pointer to a really_wrong_calculator.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -366,6 +361,7 @@ namespace LHC_FASER
 
 
   // inline functions:
+
 
   inline std::string const*
   signalHandler::getName()
@@ -453,6 +449,7 @@ namespace LHC_FASER
     *uncertaintyFactor = CppSLHA::CppSLHA_global::really_wrong_value;
     return false;
   }
+
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_SIGNAL_CALCULATOR_STUFF_HPP_ */

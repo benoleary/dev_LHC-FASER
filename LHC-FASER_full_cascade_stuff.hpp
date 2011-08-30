@@ -167,7 +167,6 @@ namespace LHC_FASER
     getInitialScolored()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     void
     resetCachedBranchingRatio()
     /* this sets branchingRatioNeedsToBeReCalculated to true, so that
@@ -179,7 +178,6 @@ namespace LHC_FASER
      * to the fullCascade constructor.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual double
     getBrToEwino( std::list< int > const* excludedSmParticles )
     /* this works out the branching ratio for the decays of colored sparticles
@@ -189,17 +187,14 @@ namespace LHC_FASER
      * for the initial decay by subcascade->getBrToEwino.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     std::vector< particleWithInt* > const*
     getCascadeDefiner()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     colorfulCascadeType
     getColofulCascadeType()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual double
     getAcceptance( bool const scoloredIsNotAntiparticle,
                    acceptanceCutSet* const cuts,
@@ -214,7 +209,6 @@ namespace LHC_FASER
      * false.
      */
     = 0;
-
     double
     getAcceptanceWithMinimumJets( bool const scoloredIsNotAntiparticle,
                                   acceptanceCutSet* const cuts,
@@ -232,7 +226,6 @@ namespace LHC_FASER
      *      - numberOfPositiveMuons )
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
     specifiedJetsOneOssfMinusOsdfPair( acceptanceCutSet* const cuts,
                                        int const numberOfAdditionalJets )
@@ -245,7 +238,6 @@ namespace LHC_FASER
      * ->getOssfMinusOsdf( cuts ).
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
     unspecifiedJetsSpecifiedOssfMinusOsdfPairs( acceptanceCutSet* const cuts,
                                                 int const numberOfLeptonPairs )
@@ -253,15 +245,12 @@ namespace LHC_FASER
     // & if vectorCascade is not NULL, vectorCascade->getOssfMinusOsdf( cuts ).
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
     // the following just call various combinations of getAcceptance(...):
-
     double
     specifiedJetsSpecifiedChargeSummedLeptons( acceptanceCutSet* const cuts,
                                               int const numberOfAdditionalJets,
                                                int const numberOfLeptons )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
     unspecifiedJetsSpecifiedChargeSummedLeptons( acceptanceCutSet* const cuts,
                                                  int const numberOfLeptons )

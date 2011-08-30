@@ -83,11 +83,9 @@ namespace LHC_FASER
     // this constructor sets the values to -1.0, which is the default "unset"
     // value.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     acceptanceCutSet( acceptanceCutSet const* const copySource )
     // this constructor copies the values from a given acceptanceCutSet.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
     ~acceptanceCutSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -115,12 +113,10 @@ namespace LHC_FASER
                     acceptanceCutSet const* const secondPointer )
     // this just returns true, for when the acceptance cut doesn't matter.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     void
     becomeCopyOf( acceptanceCutSet const* const copyPointer )
     // this copies the values from a given acceptanceCutSet.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     int
     getBeamEnergy()
     const

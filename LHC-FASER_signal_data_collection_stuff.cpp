@@ -63,7 +63,7 @@ namespace LHC_FASER
                             //leptonAcceptanceHandler* const leptonAcceptances,
                                    fullCascadeSetFactory* const cascadeSets ) :
     inputShortcuts( inputShortcuts ),
-    crossSections( given_cross_section_pointer ),
+    crossSections( crossSections ),
     jetPlusMetAcceptances( jetPlusMetAcceptances ),
     cascadeSets( cascadeSets )
   {
@@ -93,7 +93,7 @@ namespace LHC_FASER
     acceptanceCutSet(),
     shortcut( shortcut ),
     crossSections( NULL ),
-    leptonKinematics( NULL ),
+    //leptonKinematics( NULL ),
     jetPlusMetAcceptance( NULL )
   {
     // just an initialization list.
@@ -104,7 +104,7 @@ namespace LHC_FASER
     acceptanceCutSet( (acceptanceCutSet)copySource ),
     shortcut( copySource->getShortcuts() ),
     crossSections( copySource->getCrossSections() ),
-    leptonKinematics( copySource->getLeptonKinematics() ),
+    //leptonKinematics( copySource->getLeptonKinematics() ),
     jetPlusMetAcceptance( copySource->getJetPlusMetAcceptance() )
   {
     // just an initialization list.

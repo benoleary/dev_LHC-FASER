@@ -77,7 +77,6 @@ namespace LHC_FASER
                      //leptonAcceptanceHandler* const leptonAcceptances,
                      fullCascadeSetFactory* const cascadeSets )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     ~signalShortcuts()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -101,7 +100,6 @@ namespace LHC_FASER
     getCascadeSets()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
     getUncertainty()
     /* this looks at the various mass differences in the hierarchy & then
@@ -128,7 +126,6 @@ namespace LHC_FASER
    */
   class signalDefinitionSet : public acceptanceCutSet
   {
-
   public:
     signalDefinitionSet( signalShortcuts* const shortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -153,6 +150,10 @@ namespace LHC_FASER
     void
     setJetPlusMetAcceptance( jetAcceptanceTable* const inputTable )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    setExcludedStandardModelProducts(
+                                  std::list< int > const* const exclusionList )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     fullCascadeSetsForOneBeamEnergy*
     getCascadeSets()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -165,6 +166,7 @@ namespace LHC_FASER
     jetAcceptanceTable* jetPlusMetAcceptance;
     // by default each signal has only a single jet+MET table to look up; if a
     // signal needs to look up more tables, it should store the extras itself.
+    std::list< int > const* exclusionList;
     fullCascadeSetsForOneBeamEnergy* cascadeSets;
   };  // end of signal_definitions class.
 
@@ -180,7 +182,6 @@ namespace LHC_FASER
     productionChannelPointerSet( signalDefinitionSet* const signalDefinitions,
                          signedParticleShortcutPair const* const scoloredPair )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     ~productionChannelPointerSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -284,6 +285,13 @@ namespace LHC_FASER
     jetPlusMetAcceptance = inputTable;
   }
 
+  inline void
+  signalDefinitionSet::setExcludedStandardModelProducts(
+                                  std::list< int > const* const exclusionList )
+  {
+    this->exclusionList = exclusionList;
+  }
+
   inline fullCascadeSetsForOneBeamEnergy*
   signalDefinitionSet::getCascadeSets()
   {
@@ -316,6 +324,7 @@ namespace LHC_FASER
   {
     return secondCascadeSet;
   }
+
 }  // end of LHC_FASER namespace
 
 #endif /* LHC_FASER_SIGNAL_DATA_COLLECTION_STUFF_HPP_ */

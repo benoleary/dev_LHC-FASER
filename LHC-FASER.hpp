@@ -108,7 +108,6 @@ namespace LHC_FASER
               std::string const crossSectionUnit = "fb",
               bool const usingNlo = true )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     /* constructor with specified SLHA file & user-defined path to grids,
      * whether returned event rates should be in nb, pb or fb& whether to use
      * LO or NLO:
@@ -118,44 +117,34 @@ namespace LHC_FASER
               std::string const crossSectionUnit = "fb",
               bool const usingNlo = true )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     ~lhcFaser()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
     signalHandler*
-    add_signal( std::string const signal_name )
+    addSignal( std::string const signalName )
     // this adds a new signal to the set of signals based on its name.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
     signalHandler*
-    get_signal( std::string const signal_name )
+    getSignal( std::string const signalName )
     // this returns the handler object for the requested signal name.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
     void
-    update_for_updated_point()
+    updateForUpdatedSpectrum()
     /* this assumes that the CppSLHA was updated & so sets each signal to be
      * recalculated next time its value is requested. I expect that I could do
      * this more elegantly with throwing exceptions, but I'll leave that for
      * another day.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
     void
-    update_for_new_point()
+    updateForNewSlha()
     // this reads in the CppSLHA's target file & recalculates all required
     // signals.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     void
-    update_for_new_point( std::string const SLHA_file_name )
+    updateForNewSlha( std::string const slhaFileName )
     // this reads in the new file & recalculates all required signals.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
     CppSLHA::CppSLHA0* spectrumData;
@@ -184,6 +173,7 @@ namespace LHC_FASER
     electroweakCascadeHandler* electroweakCascadeSource;
     fullCascadeSetFactory* fullCascadeSetSource;
     // this handles the cascade decays of colored sparticles.
+    signalDefinitionSet* signalPreparationDefinitions;
     std::vector< signalHandler* > signalSet;
     // this tracks the various signals of LHC supersymmetric events & their
     // rates.
@@ -191,9 +181,7 @@ namespace LHC_FASER
     signalShortcuts* shortcut;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
-
     readierForNewPoint* readier;
-
 
     void
     initialize( CppSLHA::CppSLHA0* const spectrumData,
@@ -210,85 +198,65 @@ namespace LHC_FASER
 
   // inline functions:
 
+
   inline signalHandler*
-  lhcFaser::add_signal( std::string const signal_name )
+  lhcFaser::addSignal( std::string const signalName )
   // this adds a new signal to the set of signals based on its name.
   {
-
-    signalHandler* return_pointer = new signalHandler( signal_name,
-                                                         shortcut,
-                                                   crossSectionUnitFactor );
-
-    signalSet.push_back( return_pointer );
-
-    return return_pointer;
-
+    signalSet.push_back( new signalHandler( signalName,
+                                            crossSectionUnitFactor,
+                                            signalPreparationDefinitions ) );
+    return signalSet.back();
   }
 
   inline signalHandler*
-  lhcFaser::get_signal( std::string const signal_name )
+  lhcFaser::getSignal( std::string const signalName )
   // this returns the handler object for the requested signal name.
   {
-
-    signalHandler* return_pointer = NULL;
-
+    signalHandler* returnPointer( NULL );
     for( std::vector< signalHandler* >::iterator
-         signal_iterator = signalSet.begin();
-         signalSet.end() > signal_iterator;
-         signal_iterator++ )
+         signalIterator( signalSet.begin() );
+         signalSet.end() > signalIterator;
+         signalIterator++ )
       // look through all the signals...
       {
-
-        if( 0 == (*signal_iterator)->getName()->compare( signal_name ) )
+        if( 0 == (*signalIterator)->getName()->compare( signalName ) )
           // if we find the requested signal...
           {
-
-            return_pointer = *signal_iterator;
-
-            signal_iterator = signalSet.end();
+            returnPointer = *signalIterator;
+            signalIterator = signalSet.end();
             // stop looking.
-
           }
-
       }
-
-    return return_pointer;
-
+    return returnPointer;
   }
 
-
   inline void
-  lhcFaser::update_for_updated_point()
+  lhcFaser::updateForUpdatedSpectrum()
   /* this assumes that the CppSLHA was updated & so sets each signal to be
    * recalculated next time its value is requested. I expect that I could do
    * this more elegantly with throwing exceptions, but I'll leave that for
    * another day.
    */
   {
-
     readier->readyObserversForNewPoint();
-
   }
 
   inline void
-  lhcFaser::update_for_new_point()
+  lhcFaser::updateForNewSlha()
   // this reads in the CppSLHA's target file & recalculates all required
   // signals.
   {
-
     spectrumData->read_file();
-    update_for_updated_point();
-
+    updateForUpdatedSpectrum();
   }
 
   inline void
-  lhcFaser::update_for_new_point( std::string const SLHA_file_name )
+  lhcFaser::updateForNewSlha( std::string const slhaFileName )
   // this reads in the new file & recalculates all required signals.
   {
-
-    spectrumData->read_file( SLHA_file_name );
-    update_for_updated_point();
-
+    spectrumData->read_file( slhaFileName );
+    updateForUpdatedSpectrum();
   }
 
 }  // end of LHC_FASER namespace.

@@ -103,6 +103,7 @@ namespace LHC_FASER
     {
       delete *deletionIterator;
     }
+    delete signalPreparationDefinitions;
     delete shortcut;
     delete inputSource;
     delete crossSectionSource;
@@ -158,6 +159,8 @@ namespace LHC_FASER
                                     crossSectionSource,
                                     jetPlusMetAcceptanceSource,
                                     fullCascadeSetSource );
+
+    signalPreparationDefinitions = new signalDefinitionSet( shortcut );
 
   }
 

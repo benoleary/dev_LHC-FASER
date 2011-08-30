@@ -60,6 +60,7 @@ namespace LHC_FASER
   signalCalculator::signalCalculator(
                                signalDefinitionSet* const signalDefinitions ) :
     signalDefinitions( signalDefinitions ),
+    shortcut( signalDefinitions->getShortcuts()->getInputShortcuts() ),
     firstCascades( NULL ),
     secondCascades( NULL )
   {
@@ -90,11 +91,11 @@ namespace LHC_FASER
 
 
   signalHandler::signalHandler( std::string const signalName,
-                                signalShortcuts* const shortcut,
-                                double const crossSectionUnitFactor ) :
+                                double const crossSectionUnitFactor,
+                    signalDefinitionSet* const signalPreparationDefinitions ) :
     getsReadiedForNewPoint( shortcut->getInputShortcuts()->getReadier() ),
     signalName( signalName ),
-    shortcut( shortcut ),
+    shortcut( signalPreparationDefinitions->getShortcuts() ),
     crossSectionUnitFactor( crossSectionUnitFactor )
   {
     // debugging
@@ -118,7 +119,7 @@ namespace LHC_FASER
                                  signalName.end() );
       rateCalculator
       = Atlas4jMET0l_calculator::getCalculator( &calculatorArgument,
-                                                shortcut );
+                                                signalPreparationDefinitions );
     }
     else if( 0 == signalName.compare( 0,
                                       12,
@@ -130,7 +131,7 @@ namespace LHC_FASER
                                  signalName.end() );
       rateCalculator
       = Atlas3jMET1l_calculator::getCalculator( &calculatorArgument,
-                                                shortcut );
+                                                signalPreparationDefinitions );
     }
     else if( 0 == signalName.compare( "CMS2jMETanyl14TeV" ) )
       // if the signal is the CMS 2-jet, missing transverse momentum,
@@ -145,16 +146,15 @@ namespace LHC_FASER
       << CppSLHA::CppSLHA_global::really_wrong_value_string
       << " for every point instead.";
 
-      rateCalculator = new reallyWrongCalculator( shortcut );
+      rateCalculator
+      = new reallyWrongCalculator( signalPreparationDefinitions );
     }
     else if( 0 == signalName.compare( "sigmaBreakdownTest" ) )
       // if the signal is the test to see if the cross-section breakdown works
       // as it should...
     {
       rateCalculator
-      = new sigmaBreakdownTestCalculator( shortcut,
-                                          shortcut->getCrossSections(
-                                                         )->getTableSet( 7 ) );
+      = new sigmaBreakdownTestCalculator( signalPreparationDefinitions );
     }
     else
       // otherwise, a malformed signal name was passed:
@@ -169,23 +169,22 @@ namespace LHC_FASER
       << " every point.";
       std::cout << std::endl;
 
-      rateCalculator = new reallyWrongCalculator( shortcut );
+      rateCalculator
+      = new reallyWrongCalculator( signalPreparationDefinitions );
     }
 
   }
 
   signalHandler::~signalHandler()
   {
-
     delete rateCalculator;
-
   }
 
 
 
   reallyWrongCalculator::reallyWrongCalculator(
-                                            signalShortcuts* const shortcut ) :
-    signalCalculator( shortcut )
+                               signalDefinitionSet* const signalDefinitions ) :
+    signalCalculator( signalDefinitions )
   {
     // just an initialization list.
   }
@@ -199,11 +198,12 @@ namespace LHC_FASER
 
   sigmaBreakdownTestCalculator::sigmaBreakdownTestCalculator(
                                signalDefinitionSet* const signalDefinitions ) :
-    signalDefinitions( signalDefinitions )
+    signalCalculator( signalDefinitions )
   {
-    this->signalDefinitions->setExcludedStandardModelProducts(
+    this->signalDefinitions.setExcludedStandardModelProducts(
                           signalDefinitions->getShortcuts()->getInputShortcuts(
                                                           )->getNotInJets5() );
+    this->signalDefinitions.setBeamEnergy( 7 );
   }
 
   sigmaBreakdownTestCalculator::~sigmaBreakdownTestCalculator()
@@ -212,6 +212,7 @@ namespace LHC_FASER
     // does nothing.
 
   }
+
 
   bool
   sigmaBreakdownTestCalculator::calculate( double* const signalValue,
@@ -232,7 +233,7 @@ namespace LHC_FASER
     *signalValue = 0.0;
 
     for( std::vector< productionChannelPointerSet* >::iterator
-         channelIterator = channels.begin();
+         channelIterator( channels.begin() );
          channels.end() > channelIterator;
          ++channelIterator )
     {
@@ -257,38 +258,38 @@ namespace LHC_FASER
 
         // we have to look at all the open cascade pairings:
         firstCascades
-        = (*channelIterator)->getFirstCascadeSet()->getOpenCascades(
-          (*channelIterator)->getScoloredPair()->firstIsNotAntiparticle(),
-                                                          &signalDefinitions );
+        = (*channelIterator)->getFirstCascadeSet()->getOpenCascades();
         secondCascades
-        = (*channelIterator)->getSecondCascadeSet()->getOpenCascades(
-           (*channelIterator)->getScoloredPair()->secondIsNotAntiparticle(),
-                                                           &signalDefinitions);
+        = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
 
         for( std::vector< fullCascade* >::iterator
-             firstCascadeIterator = firstCascades->begin();
+             firstCascadeIterator( firstCascades->begin() );
              firstCascades->end() > firstCascadeIterator;
              ++firstCascadeIterator )
         {
+          firstCascadeBrToEwino
+          =  (*firstCascadeIterator)->getBrToEwino( shortcut->getEmptyList() );
           if( ( lhcFaserGlobal::negligibleBr
-              * 2.0 * (double)(firstCascades->size()) )
-              < (*firstCascadeIterator)->getBrToEwino() )
+                * 2.0 * (double)(firstCascades->size()) )
+              < firstCascadeBrToEwino )
             // this should mean we never throw away more than
             // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
           {
             for( std::vector< fullCascade* >::iterator
-                 secondCascadeIterator = secondCascades->begin();
+                 secondCascadeIterator( secondCascades->begin() );
                  secondCascades->end() > secondCascadeIterator;
                  ++secondCascadeIterator )
             {
+              secondCascadeBrToEwino =  (*secondCascadeIterator)->getBrToEwino(
+                                                    shortcut->getEmptyList() );
               if( ( lhcFaserGlobal::negligibleBr
-                  * 2.0 * (double)(secondCascades->size()) )
-                  < (*secondCascadeIterator)->getBrToEwino() )
+                    * 2.0 * (double)(secondCascades->size()) )
+                  < secondCascadeBrToEwino )
                 // this should mean we never throw away more than
                 // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
               {
-                channelBrTotal += ( (*firstCascadeIterator)->getBrToEwino()
-                                  * (*secondCascadeIterator)->getBrToEwino() );
+                channelBrTotal += ( firstCascadeBrToEwino
+                                    * secondCascadeBrToEwino );
               }
               // end of if the BR of the 2nd cascade to its electroweakino was
               // not negligible.
@@ -316,44 +317,45 @@ namespace LHC_FASER
   // the default Atlas4jMET0l lepton transverse momentum cut is 10.0 GeV.
 
   signalCalculator*
-  Atlas4jMET0l_calculator::getCalculator( std::string const* const arguments,
+  Atlas4jMET0l_calculator::getCalculator(
+                                       std::string const* const argumentString,
                                  signalDefinitionSet* const signalDefinitions )
   // this either returns a pointer to a new Atlas4jMET0l_calculator with cuts
   // decided by the given string, or a pointer to a reallyWrongCalculator.
   {
     signalDefinitions->setExcludedStandardModelProducts(
                         signalDefinitions->getShortcuts()->getInputShortcuts(
-                                                       )->getNotInJets5() );
-    signalCalculator* returnPointer = NULL;
+                                                          )->getNotInJets5() );
+    signalCalculator* returnPointer( NULL );
     int characterSkipper;
     // this is used in interpreting the arguments string.
-    if( 0 == arguments->compare( 0,
-                                 4,
-                                 "7TeV" ) )
+    if( 0 == argumentString->compare( 0,
+                                      4,
+                                      "7TeV" ) )
       //for a beam energy of 7 TeV...
     {
       signalDefinitions->setBeamEnergy( 7 );
       characterSkipper = 4;
     }
-    else if( 0 == arguments->compare( 0,
-                                      5,
-                                      "07TeV" ) )
+    else if( 0 == argumentString->compare( 0,
+                                           5,
+                                           "07TeV" ) )
       //for a beam energy of 7 TeV...
     {
       signalDefinitions->setBeamEnergy( 7 );
       characterSkipper = 5;
     }
-    else if( 0 == arguments->compare( 0,
-                                      5,
-                                      "10TeV" ) )
+    else if( 0 == argumentString->compare( 0,
+                                           5,
+                                           "10TeV" ) )
       //for a beam energy of 10 TeV...
     {
       signalDefinitions->setBeamEnergy( 10 );
       characterSkipper = 5;
     }
-    else if( 0 == arguments->compare( 0,
-                                      5,
-                                      "14TeV" ) )
+    else if( 0 == argumentString->compare( 0,
+                                           5,
+                                           "14TeV" ) )
       //for a beam energy of 14 TeV...
     {
       signalDefinitions->setBeamEnergy( 14 );
@@ -364,18 +366,18 @@ namespace LHC_FASER
       std::cout
       << std::endl
       << "LHC-FASER::error! signalHandler::signalHandler( "
-      << arguments << ", " <<  signalDefinitions << " ) was passed"
+      << argumentString << ", " <<  signalDefinitions << " ) was passed"
       << " a name it does not know (started with \"Atlas4jMET0l\","
       << " but then \"7TeV\", \"07TeV\", \"10TeV\" or \"14TeV\" are expected"
       << " as the next characters). its calculator is being set to return "
       << CppSLHA::CppSLHA_global::really_wrong_value_string << " for"
       << " every point.";
-      returnPointer = new reallyWrongCalculator();
+      returnPointer = new reallyWrongCalculator( signalDefinitions );
     }
     if( NULL == returnPointer )
       // if the signalCalculator hasn't been set to a reallyWrongCalculator...
     {
-      if( 0 == arguments->compare( characterSkipper,
+      if( 0 == argumentString->compare( characterSkipper,
                                    ( characterSkipper + 3 ),
                                    "pTl" ) )
         // if the next 3 characters denote a non-default lepton
@@ -383,7 +385,7 @@ namespace LHC_FASER
       {
         double leptonCut;
         characterSkipper += 3;
-        std::stringstream leptonCutStream( signalName );
+        std::stringstream leptonCutStream( *argumentString );
         leptonCutStream.ignore( characterSkipper );
         leptonCutStream >> leptonCut;
         signalDefinitions->setLeptonCut( leptonCut );
@@ -398,22 +400,21 @@ namespace LHC_FASER
     return returnPointer;
   }
 
-
   Atlas4jMET0l_calculator::Atlas4jMET0l_calculator(
                                signalDefinitionSet* const signalDefinitions ) :
-    signalDefinitions( signalDefinitions )
+    signalCalculator( signalDefinitions )
   {
     std::string jetGridName( "Atlas4jMET" );
     fourJetKinematics
-    = signalDefinitions->getShortcuts()->getJetPlusMetAcceptances()->get_table(
-                                            signalDefinitions->getBeamEnergy(),
+    = signalDefinitions->getShortcuts()->getJetPlusMetAcceptances(
+           )->getJetPlusMetAcceptanceTable( signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
                                                 jetAcceptanceGridTableColumn );
 
     jetGridName.assign( "Atlas3jMET" );
     threeJetKinematics
-    = signalDefinitions->getShortcuts()->getJetPlusMetAcceptances()->get_table(
-                                            signalDefinitions->getBeamEnergy(),
+    = signalDefinitions->getShortcuts()->getJetPlusMetAcceptances(
+           )->getJetPlusMetAcceptanceTable( signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
                                                 jetAcceptanceGridTableColumn );
     excludedFinalStateParticles.push_back( CppSLHA::PDG_code::top );
@@ -445,7 +446,7 @@ namespace LHC_FASER
     *signalValue = 0.0;
 
     for( std::vector< productionChannelPointerSet* >::iterator
-         channelIterator = channels.begin();
+         channelIterator( channels.begin() );
          channels.end() > channelIterator;
          ++channelIterator )
     {
@@ -460,27 +461,27 @@ namespace LHC_FASER
         = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
 
         for( std::vector< fullCascade* >::iterator
-             firstCascadeIterator = firstCascades->begin();
+             firstCascadeIterator( firstCascades->begin() );
              firstCascades->end() > firstCascadeIterator;
              ++firstCascadeIterator )
         {
           firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
           if( ( lhcFaserGlobal::negligibleBr
-              * 2.0 * (double)(firstCascades->size()) )
+                * 2.0 * (double)(firstCascades->size()) )
               < firstCascadeBrToEwino )
             // this should mean we never throw away more than
             // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
           {
             for( std::vector< fullCascade* >::iterator
-                 secondCascadeIterator = secondCascades->begin();
+                 secondCascadeIterator( secondCascades->begin() );
                  secondCascades->end() > secondCascadeIterator;
                  ++secondCascadeIterator )
             {
               secondCascadeBrToEwino = (*secondCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
               if( ( lhcFaserGlobal::negligibleBr
-                  * 2.0 * (double)(secondCascades->size()) )
+                    * 2.0 * (double)(secondCascades->size()) )
                   < secondCascadeBrToEwino )
                 // this should mean we never throw away more than
                 // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
@@ -518,7 +519,7 @@ namespace LHC_FASER
                     < subchannelZeroOrMoreJetsZeroLeptons )
                 {
                   fourJetAcceptance
-                  = fourJetKinematics->getJetPlusMetAcceptance(
+                  = fourJetKinematics->getAcceptance(
                                          (*channelIterator)->getScoloredPair(),
                                                          *firstCascadeIterator,
                                                       *secondCascadeIterator );
@@ -535,7 +536,7 @@ namespace LHC_FASER
                     subchannelValue
                     += ( subchannelCrossSectionTimesBrToEwinos
                          * subchannelOneOrMoreJetsZeroLeptons
-                         * ( threeJetKinematics->getJetPlusMetAcceptance(
+                         * ( threeJetKinematics->getAcceptance(
                                          (*channelIterator)->getScoloredPair(),
                                                          *firstCascadeIterator,
                                                        *secondCascadeIterator )
@@ -561,7 +562,7 @@ namespace LHC_FASER
     }  // end of loop over channels.
     // currently, we do the uncertainty very roughly:
     *uncertaintyFactor
-    = ( *signalValue * signalDefinitions->getUncertainty() );
+    = ( *signalValue * signalDefinitions.getShortcuts()->getUncertainty() );
     return true;
   }
 
@@ -572,47 +573,49 @@ namespace LHC_FASER
   double const Atlas3jMET1l_calculator::defaultExtraJetCut( 40.0 );
   // this is the standard cut for the jets beyond the hardest cut for this
   // signal as implemented in this code.
-  double const Atlas3jMET1l_calculator::defaultPrimaryLeptonCut( 20.0 ;
+  double const Atlas3jMET1l_calculator::defaultPrimaryLeptonCut( 20.0 );
   double const Atlas3jMET1l_calculator::defaultSecondaryLeptonCut( 10.0 );
   // the default Atlas4jMET0l lepton transverse momentum cuts are 20.0 GeV
   // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
 
-  Atlas3jMET1l_calculator::getCalculator( std::string const* const arguments,
+  signalCalculator*
+  Atlas3jMET1l_calculator::getCalculator(
+                                       std::string const* const argumentString,
                                  signalDefinitionSet* const signalDefinitions )
   {
     signalDefinitions->setExcludedStandardModelProducts(
                         signalDefinitions->getShortcuts()->getInputShortcuts(
                                                        )->getNotInJets5() );
-    signalCalculator* returnPointer = NULL;
+    signalCalculator* returnPointer( NULL );
     int characterSkipper;
     // this is used in interpreting the arguments string.
-    if( 0 == arguments->compare( 0,
-                                 4,
-                                 "7TeV" ) )
+    if( 0 == argumentString->compare( 0,
+                                      4,
+                                      "7TeV" ) )
       //for a beam energy of 7 TeV...
     {
       signalDefinitions->setBeamEnergy( 7 );
       characterSkipper = 4;
     }
-    else if( 0 == arguments->compare( 0,
-                                      5,
-                                      "07TeV" ) )
+    else if( 0 == argumentString->compare( 0,
+                                           5,
+                                           "07TeV" ) )
       //for a beam energy of 7 TeV...
     {
       signalDefinitions->setBeamEnergy( 7 );
       characterSkipper = 5;
     }
-    else if( 0 == arguments->compare( 0,
-                                      5,
-                                      "10TeV" ) )
+    else if( 0 == argumentString->compare( 0,
+                                           5,
+                                           "10TeV" ) )
       //for a beam energy of 10 TeV...
     {
       signalDefinitions->setBeamEnergy( 10 );
       characterSkipper = 5;
     }
-    else if( 0 == arguments->compare( 0,
-                                      5,
-                                      "14TeV" ) )
+    else if( 0 == argumentString->compare( 0,
+                                           5,
+                                           "14TeV" ) )
       //for a beam energy of 14 TeV...
     {
       signalDefinitions->setBeamEnergy( 14 );
@@ -623,20 +626,20 @@ namespace LHC_FASER
       std::cout
       << std::endl
       << "LHC-FASER::error! signal_handler::signal_handler( "
-      << arguments << ", " <<  signalDefinitions << " ) was passed"
+      << argumentString << ", " <<  signalDefinitions << " ) was passed"
       << " a name it does not know (started with \"Atlas3jMET1l\","
       << " but then \"7TeV\", \"07TeV\", \"10TeV\" or \"14TeV\" are expected"
       << " as the next characters). its calculator is being set to return "
       << CppSLHA::CppSLHA_global::really_wrong_value_string << " for"
       << " every point.";
-      returnPointer = new reallyWrongCalculator();
+      returnPointer = new reallyWrongCalculator( signalDefinitions );
     }
     if( NULL == returnPointer )
       // if the signalCalculator hasn't been set to a reallyWrongCalculator...
     {
-      if( 0 == arguments->compare( characterSkipper,
-                                   ( characterSkipper + 3 ),
-                                   "pTl" ) )
+      if( 0 == argumentString->compare( characterSkipper,
+                                        ( characterSkipper + 3 ),
+                                        "pTl" ) )
         // if the next 3 characters denote a non-default primary lepton
         // transverse momentum cut...
       {
@@ -644,11 +647,11 @@ namespace LHC_FASER
         // "[whatever]TeVpTl[primary lepton cut]pTl[secondary lepton cut]
         double leptonCut;
         characterSkipper += 3;
-        std::string leptonCutSubstring( arguments,
+        std::string leptonCutSubstring( *argumentString,
                                         characterSkipper );
         // leptonCutSubstring is arguments with the "Atlas3j1l[whatever]TeVpTl"
         // bit removed.
-        int failingLeptonCutPosition = leptonCutSubstring.find( "pTl" );
+        int failingLeptonCutPosition( leptonCutSubstring.find( "pTl" ) );
         // failingLeptonCutPosition is now the number of characters in
         // leptonCutSubstring before "pTl" (the 2nd "pTl" in arguments).
         std::stringstream
@@ -680,14 +683,14 @@ namespace LHC_FASER
     return returnPointer;
   }
 
-
   Atlas3jMET1l_calculator::Atlas3jMET1l_calculator(
                                signalDefinitionSet* const signalDefinitions ) :
-    signalDefinitions( signalDefinitions )
+    signalCalculator( signalDefinitions )
   {
     std::string jetGridName( "Atlas3jMET" );
     this->signalDefinitions.setJetPlusMetAcceptance(
-         signalDefinitions.getShortcuts()->getJetPlusMetAcceptances()->getTable(
+                   signalDefinitions->getShortcuts()->getJetPlusMetAcceptances(
+                                               )->getJetPlusMetAcceptanceTable(
                                             signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
                                               jetAcceptanceGridTableColumn ) );
@@ -720,7 +723,7 @@ namespace LHC_FASER
     *signalValue = 0.0;
 
     for( std::vector< productionChannelPointerSet* >::iterator
-         channelIterator = channels.begin();
+         channelIterator( channels.begin() );
          channels.end() > channelIterator;
          ++channelIterator )
     {
@@ -735,27 +738,27 @@ namespace LHC_FASER
         = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
 
         for( std::vector< fullCascade* >::iterator
-             firstCascadeIterator = firstCascades->begin();
+             firstCascadeIterator( firstCascades->begin() );
              firstCascades->end() > firstCascadeIterator;
              ++firstCascadeIterator )
         {
           firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
           if( ( lhcFaserGlobal::negligibleBr
-              * 2.0 * (double)(firstCascades->size()) )
+                * 2.0 * (double)(firstCascades->size()) )
               < firstCascadeBrToEwino )
             // this should mean we never throw away more than
             // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
           {
             for( std::vector< fullCascade* >::iterator
-                 secondCascadeIterator = secondCascades->begin();
+                 secondCascadeIterator( secondCascades->begin() );
                  secondCascades->end() > secondCascadeIterator;
                  ++secondCascadeIterator )
             {
               secondCascadeBrToEwino = (*secondCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
               if( ( lhcFaserGlobal::negligibleBr
-                  * 2.0 * (double)(secondCascades->size()) )
+                    * 2.0 * (double)(secondCascades->size()) )
                   < secondCascadeBrToEwino )
                 // this should mean we never throw away more than
                 // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
@@ -791,9 +794,11 @@ namespace LHC_FASER
                 {
                   // here is where we update *signal_value to account for this
                   // particular subchannel:
-                  *signalValue += ( subchannelCrossSectionTimesBrToEwinos
-                                    * subchannelZeroOrMoreJetsOneLepton
-                                   * signalDefinitions.getJetPlusMetAcceptance(
+                  *signalValue
+                  += ( subchannelCrossSectionTimesBrToEwinos
+                       * subchannelZeroOrMoreJetsOneLepton
+                       * signalDefinitions.getJetPlusMetAcceptance(
+                                                              )->getAcceptance(
                                          (*channelIterator)->getScoloredPair(),
                                                          *firstCascadeIterator,
                                                     *secondCascadeIterator ) );
@@ -812,7 +817,7 @@ namespace LHC_FASER
     }  // end of loop over channels.
     // currently, we do the uncertainty very roughly:
     *uncertaintyFactor
-    = ( *signalValue * signalDefinitions->getUncertainty() );
+    = ( *signalValue * signalDefinitions.getShortcuts()->getUncertainty() );
     return true;
   }
 
