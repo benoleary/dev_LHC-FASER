@@ -232,15 +232,15 @@ namespace LHC_FASER
                                        public effectiveSquarkMassHolder
   {
   public:
-    static double const defaultBinSize = 2.0;
-    static double const defaultTransverseMomentumCut = 10.0;
+    static double const defaultBinSize;
+    static double const defaultTransverseMomentumCut;
 
-    leptonAcceptanceParameterSet( inputHandler* const shortcut,
+    leptonAcceptanceParameterSet( inputHandler const* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                                   particlePointer const scolored,
                                   particlePointer const ewino )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    leptonAcceptanceParameterSet( inputHandler* const shortcut,
+    leptonAcceptanceParameterSet( inputHandler const* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                                   particlePointer const scolored,
                                   particlePointer const ewino,
@@ -271,7 +271,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    inputHandler* const shortcut;
+    inputHandler const* const shortcut;
     leptonAcceptanceTable const* acceptanceTable;
     particlePointer const scolored;
     particlePointer const ewino;
@@ -301,6 +301,7 @@ namespace LHC_FASER
     double
     calculateAcceptanceAt( double const givenEnergy,
                            double const givenCut )
+    //const
     /* this interpolates the values in acceptanceBins to the requested value,
      * or returns pseudorapidityAcceptance if it's lower, scaled to the given
      * value for the transverse momentum cut.
@@ -376,7 +377,7 @@ namespace LHC_FASER
   protected:
     inputHandler const* const shortcut;
     int const beamEnergy;
-    leptonAcceptanceGrid acceptanceGrid;
+    leptonAcceptanceGrid* acceptanceGrid;
     std::vector< leptonAcceptancesForOneScolored* > acceptanceSets;
     double const binSize;
     // by default, the grids provide acceptances at 2 GeV spacings for the

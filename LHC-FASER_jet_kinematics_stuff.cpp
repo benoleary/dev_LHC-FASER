@@ -121,6 +121,12 @@ namespace LHC_FASER
 
 
 
+  jetAcceptanceTable::usedCascades const
+  jetAcceptanceTable::lastEnumElement( jetAcceptanceTable::sizeOfEnum );
+  int const
+  jetAcceptanceTable::sizeOfUsedCascades(
+                                    (int)jetAcceptanceTable::lastEnumElement );
+
   jetAcceptanceTable::jetAcceptanceTable(
                                     std::string const* const gridFilesLocation,
                                           std::string const* const jetCutName,
@@ -128,7 +134,11 @@ namespace LHC_FASER
                                          inputHandler const* const shortcut ) :
     jetCutName( *jetCutName ),
     acceptanceColumn( acceptanceColumn ),
-    shortcut( shortcut )
+    shortcut( shortcut ),
+    heavierThanGluinoSquarkMass( shortcut ),
+    useFirstMass( shortcut ),
+    useSecondMass( shortcut ),
+    useAverageMass( shortcut )
   {
     std::string gridFileBaseName( *gridFilesLocation );
     gridFileBaseName.append( "/" );
@@ -145,12 +155,12 @@ namespace LHC_FASER
     gridFileName.assign( gridFileBaseName );
     gridFileName.append( "/squark+squark_acceptance.dat" );
     squarkSquarkGrid = new acceptanceGrid( &gridFileName );
-    for( int vectorAdder = (int)usedCascades::sizeOfEnum;
+    for( int vectorAdder( sizeOfUsedCascades );
          0 < vectorAdder;
          --vectorAdder )
     {
       gridMatrixRow = gridsMatrix.addNewAtEnd();
-      for( int pairAdder = (int)usedCascades::sizeOfEnum;
+      for( int pairAdder( sizeOfUsedCascades );
            0 < pairAdder;
            --pairAdder )
       {
@@ -159,59 +169,59 @@ namespace LHC_FASER
     }
 
     // now we specify the various cases:
-    gridMatrixRow = gridsMatrix.getPointer( (int)usedCascades::gx );
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::gx );
+    gridMatrixRow = gridsMatrix.getPointer( (int)gx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gx );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &heavierThanGluinoSquarkMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::sx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)sx );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useSecondMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::gsx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gsx );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useSecondMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::sgx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)sgx );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useSecondMass;
 
-    gridMatrixRow = gridsMatrix.getPointer( (int)usedCascades::sx );
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::gx );
+    gridMatrixRow = gridsMatrix.getPointer( (int)sx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gx );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useFirstMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::sx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)sx );
     gridMatrixElement->first = squarkAntisquarkGrid;
     gridMatrixElement->second = &useAverageMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::gsx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gsx );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useAverageMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::sgx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)sgx );
     gridMatrixElement->first = squarkAntisquarkGrid;
     gridMatrixElement->second = &useFirstMass;
 
-    gridMatrixRow = gridsMatrix.getPointer( (int)usedCascades::gsx );
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::gx );
+    gridMatrixRow = gridsMatrix.getPointer( (int)gsx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gx );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useFirstMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::sx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)sx );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useAverageMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::gsx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gsx );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useAverageMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::sgx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)sgx );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useFirstMass;
 
-    gridMatrixRow = gridsMatrix.getPointer( (int)usedCascades::sgx );
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::gx );
+    gridMatrixRow = gridsMatrix.getPointer( (int)sgx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gx );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useFirstMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::sx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)sx );
     gridMatrixElement->first = squarkAntisquarkGrid;
     gridMatrixElement->second = &useSecondMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::gsx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gsx );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useSecondMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)usedCascades::sgx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)sgx );
     gridMatrixElement->first = squarkAntisquarkGrid;
     gridMatrixElement->second = &useAverageMass;
   }
@@ -230,40 +240,31 @@ namespace LHC_FASER
                                      particlePointer* const squarkFromCascade )
   {
     usedCascades typeToCountAs;
-    if( fullCascade::colorfulCascadeType::gx
-        == givenCascade->getColofulCascadeType() )
+    if( fullCascade::gx == givenCascade->getColofulCascadeType() )
     {
       typeToCountAs = gx;
       *squarkFromCascade = NULL;
     }
-    else if( ( fullCascade::colorfulCascadeType::sx
-               == givenCascade->getColofulCascadeType() )
+    else if( ( fullCascade::sx == givenCascade->getColofulCascadeType() )
              ||
-             ( fullCascade::colorfulCascadeType::svsx
-               == givenCascade->getColofulCascadeType() ) )
+             ( fullCascade::svsx == givenCascade->getColofulCascadeType() ) )
     {
       typeToCountAs = sx;
-      *squarkMassCascade
-      = givenCascade->getCascadeDefiner()->back()->first;
+      *squarkFromCascade = givenCascade->getCascadeDefiner()->back()->first;
     }
-    else if( ( fullCascade::colorfulCascadeType::sjgx
-               == givenCascade->getColofulCascadeType() )
+    else if( ( fullCascade::sjgx == givenCascade->getColofulCascadeType() )
              ||
-             ( fullCascade::colorfulCascadeType::svgx
-               == givenCascade->getColofulCascadeType() )
+             ( fullCascade::svgx == givenCascade->getColofulCascadeType() )
              ||
-             ( fullCascade::colorfulCascadeType::svsjgx
-               == givenCascade->getColofulCascadeType() ) )
+             ( fullCascade::svsjgx == givenCascade->getColofulCascadeType() ) )
     {
       typeToCountAs = sgx;
-      *squarkFromCascade
-      = givenCascade->getCascadeDefiner()->at( 2 )->first;
+      *squarkFromCascade = givenCascade->getCascadeDefiner()->at( 2 )->first;
     }
     else
     {
       typeToCountAs = gsx;
-      *squarkFromCascade
-      = givenCascade->getCascadeDefiner()->at( 1 )->first;
+      *squarkFromCascade = givenCascade->getCascadeDefiner()->at( 1 )->first;
     }
     return (int)typeToCountAs;
   }
@@ -323,8 +324,8 @@ namespace LHC_FASER
   jetAcceptanceTablesForOneBeamEnergy::~jetAcceptanceTablesForOneBeamEnergy()
   {
     for( std::vector< jetAcceptanceTable* >::iterator
-         deletionIterator = jetTables->begin();
-         jetTables->end() > deletionIterator;
+         deletionIterator( jetTables.begin() );
+         jetTables.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -341,15 +342,15 @@ namespace LHC_FASER
     // we look to see if we already have a jetAcceptanceTable for this jet+MET
     // cut set:
     for( std::vector< jetAcceptanceTable* >::iterator
-         searchIterator = jetTables->begin();
-         jetTables->end() > searchIterator;
+         searchIterator( jetTables.begin() );
+         jetTables.end() > searchIterator;
          ++searchIterator )
     {
       if((*searchIterator)->isRequested( jetCutName,
                                          acceptanceColumn ) )
       {
         returnPointer = *searchIterator;
-        searchIterator = jetTables->end();
+        searchIterator = jetTables.end();
       }
     }
     if( NULL == returnPointer )
@@ -378,9 +379,9 @@ namespace LHC_FASER
 
   jetPlusMetAcceptanceHandler::~jetPlusMetAcceptanceHandler()
   {
-    for( std::vector< leptonAcceptancesForOneBeamEnergy* >::iterator
-         deletionIterator = acceptanceTables->begin();
-         acceptanceTables->end() > deletionIterator;
+    for( std::vector< jetAcceptanceTablesForOneBeamEnergy* >::iterator
+         deletionIterator( acceptanceTables.begin() );
+         acceptanceTables.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -399,14 +400,14 @@ namespace LHC_FASER
     // we look to see if we already have a leptonAcceptancesForOneBeamEnergy
     // for these values:
     for( std::vector< jetAcceptanceTablesForOneBeamEnergy* >::iterator
-         searchIterator = acceptanceTables->begin();
-         acceptanceTables->end() > searchIterator;
+         searchIterator( acceptanceTables.begin() );
+         acceptanceTables.end() > searchIterator;
          ++searchIterator )
     {
       if( beamEnergy == (*searchIterator)->getBeamEnergy() )
       {
         returnPointer = *searchIterator;
-        searchIterator = acceptanceTables->end();
+        searchIterator = acceptanceTables.end();
       }
     }
     if( NULL == returnPointer )
@@ -420,5 +421,6 @@ namespace LHC_FASER
     }
     return returnPointer;
   }
+
 }  // end of LHC_FASER namespace.
 

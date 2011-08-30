@@ -262,12 +262,12 @@ namespace LHC_FASER
   {
 
   public:
-    static int const jetAcceptanceGridTableColumn = 4;
+    static int const jetAcceptanceGridTableColumn;
     // this is dependent on the format of the grids.
-    static double const defaultExtraJetCut = 40.0;
+    static double const defaultExtraJetCut;
     // this is the standard cut for the jets beyond the hardest cut for this
     // signal as implemented in this code.
-    static double const defaultLeptonCut = 10.0;
+    static double const defaultLeptonCut;
     // the default Atlas4jMET0l lepton transverse momentum cut is 10.0 GeV.
 
     static signalCalculator*
@@ -321,13 +321,13 @@ namespace LHC_FASER
   {
 
   public:
-    static int const jetAcceptanceGridTableColumn = 4;
+    static int const jetAcceptanceGridTableColumn;
     // this is dependent on the format of the grids.
-    static double const defaultExtraJetCut = 40.0;
+    static double const defaultExtraJetCut;
     // this is the standard cut for the jets beyond the hardest cut for this
     // signal as implemented in this code.
-    static double const defaultPrimaryLeptonCut = 20.0;
-    static double const defaultSecondaryLeptonCut = 10.0;
+    static double const defaultPrimaryLeptonCut;
+    static double const defaultSecondaryLeptonCut;
     // the default Atlas4jMET0l lepton transverse momentum cuts are 20.0 GeV
     // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
 

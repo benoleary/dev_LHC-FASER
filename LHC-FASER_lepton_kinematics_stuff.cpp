@@ -193,7 +193,7 @@ namespace LHC_FASER
   leptonAcceptanceParameterSet::defaultTransverseMomentumCut( 10.0 );
 
   leptonAcceptanceParameterSet::leptonAcceptanceParameterSet(
-                                                  inputHandler* const shortcut,
+                                            inputHandler const* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                                                 particlePointer const scolored,
                                                 particlePointer const ewino ) :
@@ -214,7 +214,7 @@ namespace LHC_FASER
   }
 
   leptonAcceptanceParameterSet::leptonAcceptanceParameterSet(
-                                                  inputHandler* const shortcut,
+                                            inputHandler const* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                                                 particlePointer const scolored,
                                                    particlePointer const ewino,
@@ -287,7 +287,7 @@ namespace LHC_FASER
   leptonAcceptanceParameterSet::calculateAcceptanceAt(
                                                       double const givenEnergy,
                                                        double const givenCut )
-  const
+  //const
   /* this interpolates the values in acceptanceBins to the requested value,
    * or returns pseudorapidityAcceptance if it's lower, scaled to the given
    * value for the transverse momentum cut.
@@ -345,7 +345,7 @@ namespace LHC_FASER
       }
       else if( ( 0 <= lowerBin )
                &&
-               ( acceptanceBins.size() > ( lowerBin + 1 ) ) )
+               ( acceptanceBins.size() > (unsigned int)( lowerBin + 1 ) ) )
         // if we're in a region between 2 bin entries...
       {
         // debugging:
@@ -366,7 +366,7 @@ namespace LHC_FASER
                                           - acceptanceBins.at( lowerBin ) ) );
         // we return a linear interpolation.
       }
-      else if( acceptanceBins.size() <= ( lowerBin + 1 ) )
+      else if( acceptanceBins.size() <= (unsigned int)( lowerBin + 1 ) )
         // if we're in a region beyond the bins...
       {
         // debugging:
@@ -376,7 +376,7 @@ namespace LHC_FASER
         << " acceptanceBins.back() = " << acceptanceBins.back();
         std::cout << std::endl;**/
 
-        return_value = acceptanceBins.back();
+        returnValue = acceptanceBins.back();
         // we assume the acceptance is dominated by the pseudorapidity cut
         // by this point, so is constant out to any higher energy.
       }
@@ -420,8 +420,8 @@ namespace LHC_FASER
   leptonAcceptancesForOneScolored::~leptonAcceptancesForOneScolored()
   {
     for( std::vector< leptonAcceptanceParameterSet* >::iterator
-         deletionIterator( parameterSets->begin() );
-         parameterSets->end() > deletionIterator;
+         deletionIterator( parameterSets.begin() );
+         parameterSets.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -439,14 +439,14 @@ namespace LHC_FASER
     // we look to see if we already have a leptonAcceptanceParameterSet for
     // this electroweakino:
     for( std::vector< leptonAcceptanceParameterSet* >::iterator
-         searchIterator( parameterSets->begin() );
-         parameterSets->end() > searchIterator;
+         searchIterator( parameterSets.begin() );
+         parameterSets.end() > searchIterator;
          ++searchIterator )
     {
       if( ewino == (*searchIterator)->getEwino() )
       {
         returnPointer = *searchIterator;
-        searchIterator = parameterSets->end();
+        searchIterator = parameterSets.end();
       }
     }
     if( NULL == returnPointer )
@@ -488,8 +488,8 @@ namespace LHC_FASER
   leptonAcceptancesForOneBeamEnergy::~leptonAcceptancesForOneBeamEnergy()
   {
     for( std::vector< leptonAcceptancesForOneScolored* >::iterator
-         deletionIterator( acceptanceSets->begin() );
-         acceptanceSets->end() > deletionIterator;
+         deletionIterator( acceptanceSets.begin() );
+         acceptanceSets.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -508,14 +508,14 @@ namespace LHC_FASER
     // we look to see if we already have a leptonAcceptancesForOneScolored for
     // this colored sparticle:
     for( std::vector< leptonAcceptancesForOneScolored* >::iterator
-         searchIterator( acceptanceSets->begin() );
-         acceptanceSets->end() > searchIterator;
+         searchIterator( acceptanceSets.begin() );
+         acceptanceSets.end() > searchIterator;
          ++searchIterator )
     {
       if( scolored == (*searchIterator)->getScolored() )
       {
         returnPointer = *searchIterator;
-        searchIterator = acceptanceSets->end();
+        searchIterator = acceptanceSets.end();
       }
     }
     if( NULL == returnPointer )
@@ -546,8 +546,8 @@ namespace LHC_FASER
   leptonAcceptanceHandler::~leptonAcceptanceHandler()
   {
     for( std::vector< leptonAcceptancesForOneBeamEnergy* >::iterator
-         deletionIterator( acceptanceTables->begin() );
-         acceptanceTables->end() > deletionIterator;
+         deletionIterator( acceptanceTables.begin() );
+         acceptanceTables.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -569,16 +569,16 @@ namespace LHC_FASER
     // we look to see if we already have a leptonAcceptancesForOneBeamEnergy
     // for these values:
     for( std::vector< leptonAcceptancesForOneBeamEnergy* >::iterator
-         searchIterator( acceptanceTables->begin() );
-         acceptanceTables->end() > searchIterator;
+         searchIterator( acceptanceTables.begin() );
+         acceptanceTables.end() > searchIterator;
          ++searchIterator )
     {
-      if( scolored == (*searchIterator)->isRequested( beamEnergy,
-                                                      binSize,
-                                                      transverseMomentumCut ) )
+      if( (*searchIterator)->isRequested( beamEnergy,
+                                          binSize,
+                                          transverseMomentumCut ) )
       {
         returnPointer = *searchIterator;
-        searchIterator = acceptanceTables->end();
+        searchIterator = acceptanceTables.end();
       }
     }
     if( NULL == returnPointer )

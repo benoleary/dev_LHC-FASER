@@ -190,6 +190,9 @@ namespace LHC_FASER
     };
     // this could be expanded, provided grids that account for multiple squark
     // flavors are provided.
+    static usedCascades const lastEnumElement;
+    static int const sizeOfUsedCascades;
+
     jetAcceptanceTable( std::string const* const gridFilesLocation,
                         std::string const* const jetCutName,
                         int const acceptanceColumn,
@@ -240,7 +243,7 @@ namespace LHC_FASER
 
     int
     getIntForCascadeType( fullCascade const* const givenCascade,
-                          double* const squarkMassFromCascade )
+                          particlePointer* const squarkFromCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
@@ -271,7 +274,7 @@ namespace LHC_FASER
   protected:
     inputHandler const* const shortcut;
     int const beamEnergy;
-    std::string const gridFileSetLocation;
+    std::string gridFileSetLocation;
     std::vector< jetAcceptanceTable* > jetTables;
   };
 

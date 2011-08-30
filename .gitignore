@@ -68,3 +68,21 @@ Debug/LHC-FASER_input_handling_stuff.d
 Debug/LHC-FASER_input_handling_stuff.o
 
 Debug/LHC-FASER_jet_kinematics_stuff.d
+
+Debug/LHC-FASER_neutral_electroweak_cascade_stuff.o
+
+Debug/LHC-FASER_signal_calculator_stuff.d
+
+Debug/LHC-FASER_base_electroweak_cascade_stuff.o
+
+Debug/LHC-FASER_charged_electroweak_cascade_stuff.o
+
+Debug/LHC-FASER_lepton_kinematics_stuff.o
+
+Debug/LHC-FASER_neutral_electroweak_cascade_stuff.d
+
+Debug/LHC-FASER_jet_kinematics_stuff.o
+
+Debug/LHC-FASER_lepton_kinematics_stuff.d
+
+Debug/LHC-FASER.o

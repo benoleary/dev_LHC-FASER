@@ -408,6 +408,8 @@ namespace LHC_FASER
     double configurationBr;
     // this is the branching ratio for the particular polarization & charge
     // configuration of the tau leptons being calculated.
+    acceptanceCutSet const* currentCuts;
+    acceptanceValues* currentAcceptance;
 
     virtual bool
     validSignal( int const numberOfJets,
@@ -471,6 +473,8 @@ namespace LHC_FASER
     double configurationBr;
     // this is the branching ratio for the particular polarization & charge
     // configuration of the tau leptons being calculated.
+    acceptanceCutSet const* currentCuts;
+    acceptanceValues* currentAcceptance;
 
     virtual bool
     validSignal( int const numberOfJets,
@@ -541,6 +545,8 @@ namespace LHC_FASER
     double configurationBr;
     // this is the branching ratio for the particular polarization & charge
     // configuration of the tau leptons being calculated.
+    acceptanceCutSet const* currentCuts;
+    acceptanceValues* currentAcceptance;
     CppSLHA::particle_decay_set_handler const* intermediateDecayerDecays;
     double currentBrToHadrons;
     double currentBrToElectrons;
@@ -710,6 +716,8 @@ namespace LHC_FASER
     double configurationBr;
     // this is the branching ratio for the particular polarization & charge
     // configuration of the tau leptons being calculated.
+    acceptanceCutSet const* currentCuts;
+    acceptanceValues* currentAcceptance;
 
     virtual bool
     validSignal( int const numberOfJets,

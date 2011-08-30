@@ -12,9 +12,8 @@ namespace LHC_FASER
   lightestNeutralinoCascade::lightestNeutralinoCascade() :
     electroweakCascade( NULL,
                         NULL,
-                        false,
                         NULL,
-                        false,
+                        NULL,
                         NULL,
                         false,
                         NULL )
@@ -153,7 +152,7 @@ namespace LHC_FASER
   // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the selectron or smuon to the LSP.
   {
-    cascadeBr = ( first_BR->getBr() * second_BR->getBr() );
+    cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
@@ -349,7 +348,7 @@ namespace LHC_FASER
   // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the selectron or smuon to the LSP.
   {
-    cascadeBr = ( first_BR->getBr() * second_BR->getBr() );
+    cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
     // this is just for *1* of the possibilities (e.g. negatively-charged
     // slepton) - the charge-conjugate is accounted for with factors of 2.
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
@@ -605,7 +604,7 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsOneNegativeMuon( 0.0 );
     currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
-    cascadeBr = ( first_BR->getBr() * second_BR->getBr() );
+    cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
@@ -616,12 +615,12 @@ namespace LHC_FASER
                                           electroweakDecayer->get_PDG_code() );
       jetRightHandedness = ( 1.0 - jetLeftHandedness );
       nearNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
-                                            mediating_particle->get_PDG_code(),
-                                              decaying_EWino->get_PDG_code() );
+                                           intermediateDecayer->get_PDG_code(),
+                                          electroweakDecayer->get_PDG_code() );
       nearNegativeTauRightHandedness = ( 1.0 - nearNegativeTauLeftHandedness );
       farNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
-                                            mediating_particle->get_PDG_code(),
-                              shortcut->getNeutralinoOne()->get_PDG_code() );
+                                           intermediateDecayer->get_PDG_code(),
+                                shortcut->getNeutralinoOne()->get_PDG_code() );
       farNegativeTauRightHandedness = ( 1.0 - farNegativeTauLeftHandedness );
 
       /* in the following, XY(bar)Z(bar) is quark handedness, near tau
@@ -1025,7 +1024,7 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsOneNegativeMuon( 0.0 );
     currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
-    cascadeBr = ( first_BR->getBr() * second_BR->getBr() );
+    cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
@@ -1036,12 +1035,12 @@ namespace LHC_FASER
                                           electroweakDecayer->get_PDG_code() );
       jetRightHandedness = ( 1.0 - jetLeftHandedness );
       nearNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
-                                            mediating_particle->get_PDG_code(),
-                                              decaying_EWino->get_PDG_code() );
+                                           intermediateDecayer->get_PDG_code(),
+                                          electroweakDecayer->get_PDG_code() );
       nearNegativeTauRightHandedness = ( 1.0 - nearNegativeTauLeftHandedness );
       farNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
-                                            mediating_particle->get_PDG_code(),
-                              shortcut->getNeutralinoOne()->get_PDG_code() );
+                                           intermediateDecayer->get_PDG_code(),
+                                shortcut->getNeutralinoOne()->get_PDG_code() );
       farNegativeTauRightHandedness = ( 1.0 - farNegativeTauLeftHandedness );
 
       /* 1st, left-handed quark, left-handed near negative tau lepton
@@ -2275,8 +2274,8 @@ namespace LHC_FASER
                                        effectiveSquarkMass,
                                        electroweakDecayer,
                                        shortcut->getNeutralinoOne(),
-                                       shortcut->get_sbottom_L(),
-                                       shortcut->get_sbottom_R() );
+                                       shortcut->getSbottomOne(),
+                                       shortcut->getSbottomTwo() );
     directElectronDistribution
     = new neutralino_three_body_decay( shortcut->getReadier(),
                                        shortcut->getCppSlha(),
@@ -2591,7 +2590,7 @@ namespace LHC_FASER
   chargeSummedNeutralinoVirtualCascade::calculateForCurrentJetConfiguration()
   {
     directPass = integrateAcceptance( currentJetDistribution,
-                                      cuts->getJetCut() );
+                                      currentCuts->getJetCut() );
     directFail = ( 1.0 - directPass );
     currentAcceptance->addToTwoJets( cascadeBr * directPass * directPass );
     currentAcceptance->addToOneJetZeroLeptons( 2.0 * cascadeBr * directPass
@@ -2609,6 +2608,7 @@ namespace LHC_FASER
                                       particlePointer const electroweakDecayer,
                                          inputHandler const* const shortcut ) :
     chargeSummedNeutralinoVirtualCascade( kinematics,
+                                          effectiveSquarkMass,
                                           coloredDecayer,
                                           electroweakDecayer,
                                           shortcut )

@@ -64,10 +64,10 @@ namespace LHC_FASER
     secondCascades( NULL )
   {
     for( std::vector< signedParticleShortcutPair* >::const_iterator
-         pairIterator = signalDefinitions->getShortcuts()->get_input_shortcuts(
-                           )->getScoloredProductionCombinations()->begin();
-         signalDefinitions->getShortcuts()->get_input_shortcuts(
-                              )->getScoloredProductionCombinations()->end()
+         pairIterator( signalDefinitions->getShortcuts()->getInputShortcuts(
+                             )->getScoloredProductionCombinations()->begin() );
+         signalDefinitions->getShortcuts()->getInputShortcuts(
+                                  )->getScoloredProductionCombinations()->end()
          > pairIterator;
          ++pairIterator )
     {
@@ -79,7 +79,7 @@ namespace LHC_FASER
   signalCalculator::~signalCalculator()
   {
     for( std::vector< productionChannelPointerSet* >::iterator
-         deletionIterator = channels.begin();
+         deletionIterator( channels.begin() );
          channels.end() > deletionIterator;
          ++deletionIterator )
     {
@@ -92,7 +92,7 @@ namespace LHC_FASER
   signalHandler::signalHandler( std::string const signalName,
                                 signalShortcuts* const shortcut,
                                 double const crossSectionUnitFactor ) :
-    getsReadiedForNewPoint( shortcut->get_input_shortcuts()->getReadier() ),
+    getsReadiedForNewPoint( shortcut->getInputShortcuts()->getReadier() ),
     signalName( signalName ),
     shortcut( shortcut ),
     crossSectionUnitFactor( crossSectionUnitFactor )
@@ -146,18 +146,15 @@ namespace LHC_FASER
       << " for every point instead.";
 
       rateCalculator = new reallyWrongCalculator( shortcut );
-
     }
     else if( 0 == signalName.compare( "sigmaBreakdownTest" ) )
       // if the signal is the test to see if the cross-section breakdown works
       // as it should...
     {
-
       rateCalculator
       = new sigmaBreakdownTestCalculator( shortcut,
                                           shortcut->getCrossSections(
-                                                       )->getTableSet( 7 ) );
-
+                                                         )->getTableSet( 7 ) );
     }
     else
       // otherwise, a malformed signal name was passed:
@@ -187,7 +184,7 @@ namespace LHC_FASER
 
 
   reallyWrongCalculator::reallyWrongCalculator(
-                                           signalShortcuts* const shortcut ) :
+                                            signalShortcuts* const shortcut ) :
     signalCalculator( shortcut )
   {
     // just an initialization list.
@@ -205,8 +202,8 @@ namespace LHC_FASER
     signalDefinitions( signalDefinitions )
   {
     this->signalDefinitions->setExcludedStandardModelProducts(
-                        signalDefinitions->getShortcuts()->get_input_shortcuts(
-                                                       )->getNotInJets5() );
+                          signalDefinitions->getShortcuts()->getInputShortcuts(
+                                                          )->getNotInJets5() );
   }
 
   sigmaBreakdownTestCalculator::~sigmaBreakdownTestCalculator()
@@ -310,6 +307,14 @@ namespace LHC_FASER
 
 
 
+  int const Atlas4jMET0l_calculator::jetAcceptanceGridTableColumn( 4 );
+  // this is dependent on the format of the grids.
+  double const Atlas4jMET0l_calculator::defaultExtraJetCut( 40.0 );
+  // this is the standard cut for the jets beyond the hardest cut for this
+  // signal as implemented in this code.
+  double const Atlas4jMET0l_calculator::defaultLeptonCut( 10.0 );
+  // the default Atlas4jMET0l lepton transverse momentum cut is 10.0 GeV.
+
   signalCalculator*
   Atlas4jMET0l_calculator::getCalculator( std::string const* const arguments,
                                  signalDefinitionSet* const signalDefinitions )
@@ -317,7 +322,7 @@ namespace LHC_FASER
   // decided by the given string, or a pointer to a reallyWrongCalculator.
   {
     signalDefinitions->setExcludedStandardModelProducts(
-                        signalDefinitions->getShortcuts()->get_input_shortcuts(
+                        signalDefinitions->getShortcuts()->getInputShortcuts(
                                                        )->getNotInJets5() );
     signalCalculator* returnPointer = NULL;
     int characterSkipper;
@@ -562,11 +567,21 @@ namespace LHC_FASER
 
 
 
+  int const Atlas3jMET1l_calculator::jetAcceptanceGridTableColumn( 4 );
+  // this is dependent on the format of the grids.
+  double const Atlas3jMET1l_calculator::defaultExtraJetCut( 40.0 );
+  // this is the standard cut for the jets beyond the hardest cut for this
+  // signal as implemented in this code.
+  double const Atlas3jMET1l_calculator::defaultPrimaryLeptonCut( 20.0 ;
+  double const Atlas3jMET1l_calculator::defaultSecondaryLeptonCut( 10.0 );
+  // the default Atlas4jMET0l lepton transverse momentum cuts are 20.0 GeV
+  // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
+
   Atlas3jMET1l_calculator::getCalculator( std::string const* const arguments,
                                  signalDefinitionSet* const signalDefinitions )
   {
     signalDefinitions->setExcludedStandardModelProducts(
-                        signalDefinitions->getShortcuts()->get_input_shortcuts(
+                        signalDefinitions->getShortcuts()->getInputShortcuts(
                                                        )->getNotInJets5() );
     signalCalculator* returnPointer = NULL;
     int characterSkipper;
