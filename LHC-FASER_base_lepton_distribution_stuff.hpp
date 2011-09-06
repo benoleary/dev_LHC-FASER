@@ -288,7 +288,11 @@ namespace LHC_FASER
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     leptonDistributionExpansionTerm*
-    addTerm( leptonDistributionExpansionTerm* const termToAdd )
+    addTerm( int const powerOfEnergy,
+             int const powerOfLogarithm,
+             leptonDistributionExpansionTerm* const referenceTerm = NULL,
+             double const
+             coefficientValue = CppSLHA::CppSLHA_global::really_wrong_value )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     normalizeCoefficients( double const normalizingFactor )
@@ -314,6 +318,9 @@ namespace LHC_FASER
 
   protected:
     std::vector< leptonDistributionExpansionTerm* > segmentTerms;
+    // the segmentTermSet is responsible for calling the destructors of the
+    // leptonDistributionExpansionTerms held in segmentTerms.
+    leptonDistributionExpansionTerm* termAdder;
     double segmentStart;
     double segmentEnd;
   };
@@ -379,17 +386,17 @@ namespace LHC_FASER
     virtual double
     operator()( int const visibleProductEnergyPower
                 /* the power of the visible product's energy for the term. */,
-               int const visibleProductLogPower
+                int const visibleProductLogPower
 /* the power of the logarithm of the visible product's energy for the term. */,
-               int const tauLeptonEnergyPower
-               /* the power of the tau lepton's energy for the term. */,
-               int const tauLeptonLogPower
+                int const tauLeptonEnergyPower
+                /* the power of the tau lepton's energy for the term. */,
+                int const tauLeptonLogPower
     /* the power of the logarithm of the tau lepton's energy for the term. */,
-               double const tauMinEnergy
-        /* the minimum of the range of the tau lepton energies considered. */,
-               double const tauMaxEnergy
-        /* the maximum of the range of the tau lepton energies considered. */,
-               bool const isInsideRange )
+                double const tauMinEnergy
+         /* the minimum of the range of the tau lepton energies considered. */,
+                double const tauMaxEnergy
+         /* the maximum of the range of the tau lepton energies considered. */,
+                bool const isInsideRange )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -416,17 +423,17 @@ namespace LHC_FASER
     virtual double
     operator()( int const visibleProductEnergyPower
                 /* the power of the visible product's energy for the term. */,
-               int const visibleProductLogPower
+                int const visibleProductLogPower
 /* the power of the logarithm of the visible product's energy for the term. */,
-               int const tauLeptonEnergyPower
-               /* the power of the tau lepton's energy for the term. */,
-               int const tauLeptonLogPower
-    /* the power of the logarithm of the tau lepton's energy for the term. */,
-               double const tauMinEnergy
-        /* the minimum of the range of the tau lepton energies considered. */,
-               double const tauMaxEnergy
-        /* the maximum of the range of the tau lepton energies considered. */,
-               bool const isInsideRange )
+                int const tauLeptonEnergyPower
+                /* the power of the tau lepton's energy for the term. */,
+                int const tauLeptonLogPower
+     /* the power of the logarithm of the tau lepton's energy for the term. */,
+                double const tauMinEnergy
+         /* the minimum of the range of the tau lepton energies considered. */,
+                double const tauMaxEnergy
+         /* the maximum of the range of the tau lepton energies considered. */,
+                bool const isInsideRange )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -443,39 +450,32 @@ namespace LHC_FASER
    */
   class hardPionFromTau : public tauDecayCoefficient
   {
-
   public:
-
     hardPionFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
     ~hardPionFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
     virtual double
     operator()( int const visibleProductEnergyPower
                 /* the power of the visible product's energy for the term. */,
-               int const visibleProductLogPower
+                int const visibleProductLogPower
 /* the power of the logarithm of the visible product's energy for the term. */,
-               int const tauLeptonEnergyPower
-               /* the power of the tau lepton's energy for the term. */,
-               int const tauLeptonLogPower
-    /* the power of the logarithm of the tau lepton's energy for the term. */,
-               double const tauMinimumEnergy
-        /* the minimum of the range of the tau lepton energies considered. */,
-               double const tauMaximumEnergy
-        /* the maximum of the range of the tau lepton energies considered. */,
-               bool const isInsideRange )
+                int const tauLeptonEnergyPower
+                /* the power of the tau lepton's energy for the term. */,
+                int const tauLeptonLogPower
+     /* the power of the logarithm of the tau lepton's energy for the term. */,
+                double const tauMinimumEnergy
+         /* the minimum of the range of the tau lepton energies considered. */,
+                double const tauMaximumEnergy
+         /* the maximum of the range of the tau lepton energies considered. */,
+                bool const isInsideRange )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   //protected:
-
     // nothing.
-
   };
 
   /* this functor returns the coefficientValue for the pion distribution which would
@@ -485,75 +485,62 @@ namespace LHC_FASER
    * whether the pion's energy is inside the range of the tau lepton's energy
    * for this segment.
    */
-  class soft_pion_from_tau : public tauDecayCoefficient
+  class softPionFromTau : public tauDecayCoefficient
   {
-
   public:
-
-    soft_pion_from_tau()
+    softPionFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~soft_pion_from_tau()
+    ~softPionFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     virtual double
     operator()( int const visibleProductEnergyPower
                 /* the power of the visible product's energy for the term. */,
-               int const visibleProductLogPower
+                int const visibleProductLogPower
 /* the power of the logarithm of the visible product's energy for the term. */,
-               int const tauLeptonEnergyPower
-               /* the power of the tau lepton's energy for the term. */,
-               int const tauLeptonLogPower
-    /* the power of the logarithm of the tau lepton's energy for the term. */,
-               double const tauMinimumEnergy
-        /* the minimum of the range of the tau lepton energies considered. */,
-               double const tauMaximumEnergy
-        /* the maximum of the range of the tau lepton energies considered. */,
-               bool const isInsideRange )
+                int const tauLeptonEnergyPower
+                /* the power of the tau lepton's energy for the term. */,
+                int const tauLeptonLogPower
+     /* the power of the logarithm of the tau lepton's energy for the term. */,
+                double const tauMinimumEnergy
+         /* the minimum of the range of the tau lepton energies considered. */,
+                double const tauMaximumEnergy
+         /* the maximum of the range of the tau lepton energies considered. */,
+                bool const isInsideRange )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   //protected:
     // nothing.
-
   };
 
 
   /* this holds together a pair of segmentTermSet pointers for the 2 parts of
    * of the distribution for the visible decay product of a tau lepton with
    * distribution given by the 3rd segmentTermSet pointer the
-   * tau_segment_triple has. it performs the role of updating the visible decay
+   * tauSegmentTriple has. it performs the role of updating the visible decay
    * product terms based on the reference terms.
    */
-  class tau_segment_triple
+  class tauSegmentTriple
   {
-
   public:
-
-    tau_segment_triple( std::vector< segmentTermSet* >* given_segment_set,
-                        segmentTermSet* given_segment,
-                        tauDecayCoefficient const* const given_tau_decay )
+    tauSegmentTriple( std::vector< segmentTermSet* >* segmentSetToPopulate,
+                      segmentTermSet* referenceSegment,
+                      tauDecayCoefficient const* const tauDecay )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~tau_segment_triple()
+    ~tauSegmentTriple()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     void
-    update_segments()
+    updateSegments()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   protected:
-
-    segmentTermSet* reference_segment;
-    segmentTermSet* low_segment;
-    segmentTermSet* high_segment;
-    tauDecayCoefficient const* const tau_decay;
-
+    segmentTermSet* referenceSegment;
+    segmentTermSet* lowSegment;
+    segmentTermSet* highSegment;
+    tauDecayCoefficient const* const tauDecay;
   };
 
   /* this class is just an abstract base class for some polymorphic derived
@@ -571,7 +558,6 @@ namespace LHC_FASER
                      CppSLHA::particle_property_set const* const thirdParticle,
                    CppSLHA::particle_property_set const* const fourthParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
     ~leptonEnergyDistribution()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -639,13 +625,11 @@ namespace LHC_FASER
     reset()
     // this updates the masses then calls calculate_coefficients().
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual void
     calculateCoefficients()
     = 0;
     // this is overridden by functions which calculate & set the coefficients
     // of all the terms of the distribution.
-
     void
     normalizeCoefficients()
     // this goes through each segment & gets it to divide its terms'
@@ -658,32 +642,26 @@ namespace LHC_FASER
    * or pion which is from the decay of a left- or right-handed tau lepton or
    * antilepton with the provided energy distribution.
    */
-  class visible_tau_decay_product : public leptonEnergyDistribution
+  class visibleTauDecayProduct : public leptonEnergyDistribution
   {
-
   public:
-
-    visible_tau_decay_product( readierForNewPoint* const given_readier,
-                      leptonEnergyDistribution* const given_tau_distribution,
-                               tauDecayCoefficient const* const tau_decay )
+    visibleTauDecayProduct( readierForNewPoint* const readier,
+                            leptonEnergyDistribution* const tauDistribution,
+                            tauDecayCoefficient const* const tauDecay )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~visible_tau_decay_product()
+    ~visibleTauDecayProduct()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
-    leptonEnergyDistribution* const tau_distribution;
-    std::vector< tau_segment_triple* > tau_triples;
+    leptonEnergyDistribution* const tauDistribution;
+    std::vector< tauSegmentTriple* > tauTriples;
 
     virtual void
     calculateCoefficients()
     // this is overridden by functions which calculate & set the coefficients
     // of all the terms of the distribution.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
 
@@ -893,13 +871,6 @@ namespace LHC_FASER
   const
   {
     return (int)segmentTerms.size();
-  }
-
-  inline leptonDistributionExpansionTerm*
-  segmentTermSet::addTerm( leptonDistributionExpansionTerm* const termToAdd )
-  {
-    segmentTerms.push_back( termToAdd );
-    return termToAdd;
   }
 
   inline void

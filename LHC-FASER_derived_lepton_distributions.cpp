@@ -74,22 +74,15 @@ namespace LHC_FASER
                               given_second_particle,
                               given_third_particle,
                               NULL ),
-    MINtoMAX_const( 0,
-                    0,
-                    CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
+                                              0 ) )
   {
-
-    MINtoMAX_segment.addTerm( &MINtoMAX_const );
-
     segments.push_back( &MINtoMAX_segment );
-
   }
 
   flat_near_muon_plus_antimuon::~flat_near_muon_plus_antimuon()
   {
-
     // does nothing.
-
   }
 
 
@@ -108,13 +101,7 @@ namespace LHC_FASER
     = ( ( firstMass / secondMass ) * productionFrameEnergy );
 
 
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization:
-
-    // well, in this case, the distribution is a constant in the only segment's
-    // range, so I won't bother with writing it.
-
-    normalization = ( maximumEnergy - minimumEnergy );
+    // now we set up the coefficients of various terms.
 
 
     // debugging:
@@ -125,8 +112,7 @@ namespace LHC_FASER
     << std::endl << "second_mass = " << second_mass
     << std::endl << "production_frame_energy = " << production_frame_energy
     << std::endl << "minimum_energy = " << minimum_energy
-    << std::endl << "maximum_energy = " << maximum_energy
-    << std::endl << "normalization = " << normalization;
+    << std::endl << "maximum_energy = " << maximum_energy;
     std::cout << std::endl;**/
 
 
@@ -136,9 +122,7 @@ namespace LHC_FASER
     MINtoMAX_segment.setSegmentRange( minimumEnergy,
                                         maximumEnergy );
 
-    // constant term:
-    MINtoMAX_const.setCoefficient( ( 1.0 / normalization ) );
-
+    normalizeCoefficients();
   }
 
 
@@ -157,19 +141,12 @@ namespace LHC_FASER
                                 given_second_particle,
                                 given_third_particle,
                                 NULL ),
-    MINtoMAX_const( 0,
-                    0,
-                    CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoMAX_lin( 1,
-                  0,
-                  CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
+                                              0 ) ),
+    MINtoMAX_lin( MINtoMAX_segment.addTerm( 1,
+                                            0 ) )
   {
-
-    MINtoMAX_segment.addTerm( &MINtoMAX_const );
-    MINtoMAX_segment.addTerm( &MINtoMAX_lin );
-
     segments.push_back( &MINtoMAX_segment );
-
   }
 
   same_chirality_near_muon::~same_chirality_near_muon()
@@ -206,9 +183,6 @@ namespace LHC_FASER
 
     MINtoMAX_lin.setCoefficient( 1.0 );
 
-
-    normalization = ( 0.5 * ( maximumEnergy - minimumEnergy )
-                          * ( maximumEnergy - minimumEnergy ) );
     normalizeCoefficients();
 
   }
@@ -229,19 +203,12 @@ namespace LHC_FASER
                                 given_second_particle,
                                 given_third_particle,
                                 NULL ),
-    MINtoMAX_const( 0,
-                    0,
-                    CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoMAX_lin( 1,
-                  0,
-                  CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
+                                              0 ) ),
+    MINtoMAX_lin( MINtoMAX_segment.addTerm( 1,
+                                            0 ) )
   {
-
-    MINtoMAX_segment.addTerm( &MINtoMAX_const );
-    MINtoMAX_segment.addTerm( &MINtoMAX_lin );
-
     segments.push_back( &MINtoMAX_segment );
-
   }
 
   opposite_chirality_near_muon::~opposite_chirality_near_muon()
@@ -280,11 +247,7 @@ namespace LHC_FASER
 
     MINtoMAX_lin.setCoefficient( -1.0 );
 
-
-    normalization = ( 0.5 * ( maximumEnergy - minimumEnergy )
-                          * ( maximumEnergy - minimumEnergy ) );
     normalizeCoefficients();
-
   }
 
 
@@ -304,39 +267,20 @@ namespace LHC_FASER
                                 given_second_particle,
                                 given_third_particle,
                                 given_fourth_particle ),
-    MINtoLK_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_const( 0,
-                  0,
-                  CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoLK_const( MINtoLK_segment.addTerm( 0,
+                                            0 ) ),
+    MINtoLK_log( MINtoLK_segment.addTerm( 0,
+                                          1 ) ),
+    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+                                          0 ) ),
+    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
+                                            0 ) ),
+    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
+                                          1 ) )
   {
-
-    MINtoLK_segment.addTerm( &MINtoLK_const );
-    MINtoLK_segment.addTerm( &MINtoLK_log );
-
     segments.push_back( &MINtoLK_segment );
-
-
-    LKtoHK_segment.addTerm( &LKtoHK_const );
-
     segments.push_back( &LKtoHK_segment );
-
-
-    HKtoMAX_segment.addTerm( &HKtoMAX_const );
-    HKtoMAX_segment.addTerm( &HKtoMAX_log );
-
     segments.push_back( &HKtoMAX_segment );
-
   }
 
   flat_far_muon_plus_antimuon::~flat_far_muon_plus_antimuon()
@@ -414,17 +358,6 @@ namespace LHC_FASER
 
     HKtoMAX_log.setCoefficient( -1.0 );
 
-
-    normalization
-    = ( MINtoLK_const.getCoefficient() * ( Elk - minimumEnergy )
-        + MINtoLK_log.getCoefficient()
-          * ( Elk * ( log( Elk ) - 1.0 )
-              - minimumEnergy * ( log( minimumEnergy ) - 1.0 ) )
-        + LKtoHK_const.getCoefficient() * ( Ehk - Elk )
-        + HKtoMAX_const.getCoefficient() * ( maximumEnergy - Ehk )
-        + HKtoMAX_log.getCoefficient()
-          * ( maximumEnergy * ( log( maximumEnergy ) - 1.0 )
-              - Ehk * ( log( Ehk ) - 1.0 ) ) );
     normalizeCoefficients();
 
     // debugging:
@@ -437,7 +370,6 @@ namespace LHC_FASER
     std::cout << std::endl << "Ehk = " << Ehk;
     std::cout << std::endl << "maximumEnergy = " << maximumEnergy;
     std::cout << std::endl;**/
-
   }
 
 
@@ -457,59 +389,30 @@ namespace LHC_FASER
                                 given_second_particle,
                                 given_third_particle,
                                 given_fourth_particle ),
-    MINtoLK_inv( -1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_lin( 1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_inv( -1,
-                0,
-                CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_const( 0,
-                  0,
-                  CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_inv( -1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_lin( 1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoLK_inv( MINtoLK_segment.addTerm( -1,
+                                          0 ) ),
+    MINtoLK_const( MINtoLK_segment.addTerm( 0,
+                                            0 ) ),
+    MINtoLK_log( MINtoLK_segment.addTerm( 0,
+                                          1 ) ),
+    MINtoLK_lin( MINtoLK_segment.addTerm( 1,
+                                          0 ) ),
+    LKtoHK_inv( LKtoHK_segment.addTerm( -1,
+                                        0 ) ),
+    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+                                          0 ) ),
+    HKtoMAX_inv( HKtoMAX_segment.addTerm( -1,
+                                          0 ) ),
+    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
+                                            0 ) ),
+    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
+                                          1 ) ),
+    HKtoMAX_lin( HKtoMAX_segment.addTerm( 1,
+                                          0 ) )
   {
-
-    MINtoLK_segment.addTerm( &MINtoLK_inv );
-    MINtoLK_segment.addTerm( &MINtoLK_const );
-    MINtoLK_segment.addTerm( &MINtoLK_log );
-    MINtoLK_segment.addTerm( &MINtoLK_lin );
-
     segments.push_back( &MINtoLK_segment );
-
-
-    LKtoHK_segment.addTerm( &LKtoHK_inv );
-    LKtoHK_segment.addTerm( &LKtoHK_const );
-
     segments.push_back( &LKtoHK_segment );
-
-
-    HKtoMAX_segment.addTerm( &HKtoMAX_inv );
-    HKtoMAX_segment.addTerm( &HKtoMAX_const );
-    HKtoMAX_segment.addTerm( &HKtoMAX_log );
-    HKtoMAX_segment.addTerm( &HKtoMAX_lin );
-
     segments.push_back( &HKtoMAX_segment );
-
   }
 
   same_chirality_far_muon::~same_chirality_far_muon()
@@ -642,24 +545,6 @@ namespace LHC_FASER
         ( ( mNSq * mq * ( mlSq - mXSq ) )
           / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
 
-
-    normalization
-    = ( MINtoLK_lin.getCoefficient()
-        * 0.5 * ( Elk * Elk - minimumEnergy * minimumEnergy )
-        + MINtoLK_log.getCoefficient()
-          * ( Elk * ( log( Elk ) - 1.0 )
-              - minimumEnergy * ( log( minimumEnergy ) - 1.0 ) )
-        + MINtoLK_const.getCoefficient() * ( Elk - minimumEnergy )
-        + MINtoLK_inv.getCoefficient() * log( ( Elk / minimumEnergy ) )
-        + LKtoHK_const.getCoefficient() * ( Ehk - Elk )
-        + LKtoHK_inv.getCoefficient() * log( ( Ehk / Elk ) )
-        + HKtoMAX_lin.getCoefficient()
-          * 0.5 * ( maximumEnergy * maximumEnergy - Ehk * Ehk )
-        + HKtoMAX_log.getCoefficient()
-          * ( maximumEnergy * ( log( maximumEnergy ) - 1.0 )
-              - Ehk * ( log( Ehk ) - 1.0 ) )
-        + HKtoMAX_const.getCoefficient() * ( maximumEnergy - Ehk )
-        + HKtoMAX_inv.getCoefficient() * log( ( maximumEnergy / Ehk ) ) );
     normalizeCoefficients();
 
 
@@ -679,7 +564,6 @@ namespace LHC_FASER
     std::cout << std::endl << "LKtoHK_const = " << LKtoHK_const;
     std::cout << std::endl << "LKtoHK_inv = " << LKtoHK_inv;
     std::cout << std::endl;**/
-
   }
 
 
@@ -699,59 +583,30 @@ namespace LHC_FASER
                                 given_second_particle,
                                 given_third_particle,
                                 given_fourth_particle ),
-    MINtoLK_inv( -1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_lin( 1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_inv( -1,
-                0,
-                CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_const( 0,
-                  0,
-                  CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_inv( -1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_lin( 1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoLK_inv( MINtoLK_segment.addTerm( -1,
+                                          0 ) ),
+    MINtoLK_const( MINtoLK_segment.addTerm( 0,
+                                            0 ) ),
+    MINtoLK_log( MINtoLK_segment.addTerm( 0,
+                                          1 ) ),
+    MINtoLK_lin( MINtoLK_segment.addTerm( 1,
+                                          0 ) ),
+    LKtoHK_inv( LKtoHK_segment.addTerm( -1,
+                                        0 ) ),
+    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+                         0 ) ),
+    HKtoMAX_inv( HKtoMAX_segment.addTerm( -1,
+                                          0 ) ),
+    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
+                                            0 ) ),
+    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
+                                          1 ) ),
+    HKtoMAX_lin( HKtoMAX_segment.addTerm( 1,
+                                          0 ) )
   {
-
-    MINtoLK_segment.addTerm( &MINtoLK_inv );
-    MINtoLK_segment.addTerm( &MINtoLK_const );
-    MINtoLK_segment.addTerm( &MINtoLK_log );
-    MINtoLK_segment.addTerm( &MINtoLK_lin );
-
     segments.push_back( &MINtoLK_segment );
-
-
-    LKtoHK_segment.addTerm( &LKtoHK_inv );
-    LKtoHK_segment.addTerm( &LKtoHK_const );
-
     segments.push_back( &LKtoHK_segment );
-
-
-    HKtoMAX_segment.addTerm( &HKtoMAX_inv );
-    HKtoMAX_segment.addTerm( &HKtoMAX_const );
-    HKtoMAX_segment.addTerm( &HKtoMAX_log );
-    HKtoMAX_segment.addTerm( &HKtoMAX_lin );
-
     segments.push_back( &HKtoMAX_segment );
-
   }
 
   opposite_chirality_far_muon::~opposite_chirality_far_muon()
@@ -884,24 +739,6 @@ namespace LHC_FASER
         ( ( mNSq * mq * ( mlSq - mXSq ) )
           / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
 
-
-    normalization
-    = ( MINtoLK_lin.getCoefficient()
-        * 0.5 * ( Elk * Elk - minimumEnergy * minimumEnergy )
-        + MINtoLK_log.getCoefficient()
-          * ( Elk * ( log( Elk ) - 1.0 )
-              - minimumEnergy * ( log( minimumEnergy ) - 1.0 ) )
-        + MINtoLK_const.getCoefficient() * ( Elk - minimumEnergy )
-        + MINtoLK_inv.getCoefficient() * log( ( Elk / minimumEnergy ) )
-        + LKtoHK_const.getCoefficient() * ( Ehk - Elk )
-        + LKtoHK_inv.getCoefficient() * log( ( Ehk / Elk ) )
-        + HKtoMAX_lin.getCoefficient()
-          * 0.5 * ( maximumEnergy * maximumEnergy - Ehk * Ehk )
-        + HKtoMAX_log.getCoefficient()
-          * ( maximumEnergy * ( log( maximumEnergy ) - 1.0 )
-              - Ehk * ( log( Ehk ) - 1.0 ) )
-        + HKtoMAX_const.getCoefficient() * ( maximumEnergy - Ehk )
-        + HKtoMAX_inv.getCoefficient() * log( ( maximumEnergy / Ehk ) ) );
     normalizeCoefficients();
 
 
@@ -946,39 +783,20 @@ namespace LHC_FASER
                                 given_second_particle,
                                 given_third_particle,
                                 given_fourth_particle ),
-    MINtoLK_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_const( 0,
-                  0,
-                  CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoLK_const( MINtoLK_segment.addTerm( 0,
+                                            0 ) ),
+    MINtoLK_log( MINtoLK_segment.addTerm( 0,
+                                          1 ) ),
+    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+                                          0 ) ),
+    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
+                                            0 ) ),
+    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
+                                          1 ) )
   {
-
-    MINtoLK_segment.addTerm( &MINtoLK_const );
-    MINtoLK_segment.addTerm( &MINtoLK_log );
-
     segments.push_back( &MINtoLK_segment );
-
-
-    LKtoHK_segment.addTerm( &LKtoHK_const );
-
     segments.push_back( &LKtoHK_segment );
-
-
-    HKtoMAX_segment.addTerm( &HKtoMAX_const );
-    HKtoMAX_segment.addTerm( &HKtoMAX_log );
-
     segments.push_back( &HKtoMAX_segment );
-
   }
 
   Higgs_muon_plus_antimuon::~Higgs_muon_plus_antimuon()
@@ -1058,16 +876,6 @@ namespace LHC_FASER
     HKtoMAX_const.setCoefficient( log( maximumEnergy ) );
     HKtoMAX_log.setCoefficient( -1.0 );
 
-    normalization
-    = ( MINtoLK_const.getCoefficient() * ( Elk - minimumEnergy )
-        + MINtoLK_log.getCoefficient()
-          * ( Elk * ( log( Elk ) - 1.0 )
-              - minimumEnergy * ( log( minimumEnergy ) - 1.0 ) )
-        + LKtoHK_const.getCoefficient() * ( Ehk - Elk )
-        + HKtoMAX_const.getCoefficient() * ( maximumEnergy - Ehk )
-        + HKtoMAX_log.getCoefficient()
-          * ( maximumEnergy * ( log( maximumEnergy ) - 1.0 )
-              - Ehk * ( log( Ehk ) - 1.0 ) ) );
     normalizeCoefficients();
 
     // debugging:
@@ -1104,104 +912,55 @@ namespace LHC_FASER
                               given_second_particle,
                               given_third_particle,
                               given_fourth_particle ),
-    MINtoLK_inv( -1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_lin( 1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_linlog( 1,
-                    1,
-                    CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_sq( 2,
-                0,
-                CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_const( 0,
-                  0,
-                  CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_lin( 1,
-                0,
-                CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_sq( 2,
-               0,
-               CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_inv( -1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_lin( 1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_linlog( 1,
-                    1,
-                    CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_sq( 2,
-                0,
-                CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoLK_inv( MINtoLK_segment.addTerm( -1,
+                                          0 ) ),
+    MINtoLK_const( MINtoLK_segment.addTerm( 0,
+                                            0 ) ),
+    MINtoLK_log( MINtoLK_segment.addTerm( 0,
+                                          1 ) ),
+    MINtoLK_lin( MINtoLK_segment.addTerm( 1,
+                                          0 ) ),
+    MINtoLK_linlog( MINtoLK_segment.addTerm( 1,
+                                             1 ) ),
+    MINtoLK_sq( MINtoLK_segment.addTerm( 2,
+                                         0 ) ),
+    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+                                          0 ) ),
+    LKtoHK_lin( LKtoHK_segment.addTerm( 1,
+                                        0 ) ),
+    LKtoHK_sq( LKtoHK_segment.addTerm( 2,
+                                       0 ) ),
+    HKtoMAX_inv( HKtoMAX_segment.addTerm( -1,
+                                          0 ) ),
+    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
+                                            0 ) ),
+    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
+                                          1 ) ),
+    HKtoMAX_lin( HKtoMAX_segment.addTerm( 1,
+                                          0 ) ),
+    HKtoMAX_linlog( HKtoMAX_segment.addTerm( 1,
+                                             1 ) ),
+    HKtoMAX_sq( HKtoMAX_segment.addTerm( 2,
+                                         0 ) )
   {
-
     if( should_sum_over_handedness )
-      {
-
-        same_handedness_factor = 0.0;
-
-      }
+    {
+      same_handedness_factor = 0.0;
+    }
     else
+    {
+      if( negative_muon_is_same_handedness )
       {
-
-        if( negative_muon_is_same_handedness )
-          {
-
-            same_handedness_factor = 1.0;
-
-          }
-        else
-          {
-
-            same_handedness_factor = -1.0;
-
-          }
-
+        same_handedness_factor = 1.0;
       }
-
-
-    MINtoLK_segment.addTerm( &MINtoLK_inv );
-    MINtoLK_segment.addTerm( &MINtoLK_const );
-    MINtoLK_segment.addTerm( &MINtoLK_log );
-    MINtoLK_segment.addTerm( &MINtoLK_lin );
-    MINtoLK_segment.addTerm( &MINtoLK_linlog );
-    MINtoLK_segment.addTerm( &MINtoLK_sq );
-
+      else
+      {
+        same_handedness_factor = -1.0;
+      }
+    }
     segments.push_back( &MINtoLK_segment );
-
-
-    LKtoHK_segment.addTerm( &LKtoHK_const );
-    LKtoHK_segment.addTerm( &LKtoHK_lin );
-    LKtoHK_segment.addTerm( &LKtoHK_sq );
-
     segments.push_back( &LKtoHK_segment );
-
-
-    HKtoMAX_segment.addTerm( &HKtoMAX_inv );
-    HKtoMAX_segment.addTerm( &HKtoMAX_const );
-    HKtoMAX_segment.addTerm( &HKtoMAX_log );
-    HKtoMAX_segment.addTerm( &HKtoMAX_lin );
-    HKtoMAX_segment.addTerm( &HKtoMAX_linlog );
-    HKtoMAX_segment.addTerm( &HKtoMAX_sq );
-
     segments.push_back( &HKtoMAX_segment );
-
   }
 
   Z_handed_muon::~Z_handed_muon()
@@ -1323,9 +1082,6 @@ namespace LHC_FASER
             * ( 4.0 * ElMinsq * mCsq * mQcu * mVsq ) );
         // tick! tick!
 
-        normalization = ( current_term_coefficient * ( lnElk - lnEmin ) );
-        // current_term_coefficient should not be zero at this point.
-
         // antisymmetric bit positive for vector & negative for axial coupling:
         // 0.0
         // tick!
@@ -1335,7 +1091,6 @@ namespace LHC_FASER
       {
 
         current_term_coefficient = 0.0;
-        normalization = 0.0;
 
       }
 
@@ -1402,13 +1157,6 @@ namespace LHC_FASER
       }
 
     MINtoLK_const.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient * ( Elk - minimumEnergy ) );
-
-      }
 
 
     // log:
@@ -1452,15 +1200,6 @@ namespace LHC_FASER
       }
 
     MINtoLK_log.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( ( Elk * ( lnElk + 1.0 ) )
-                 - ( minimumEnergy *  ( lnEmin + 1.0 ) ) ) );
-
-      }
 
 
     // lin:
@@ -1512,14 +1251,6 @@ namespace LHC_FASER
       }
 
     MINtoLK_lin.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( 0.5 * ( Elk * Elk - minimumEnergy * minimumEnergy ) ) );
-
-      }
 
 
     // linlog:
@@ -1545,11 +1276,6 @@ namespace LHC_FASER
         current_term_coefficient
         = ( same_handedness_factor * ( 32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
         // tick! tick!
-        normalization
-        += ( current_term_coefficient
-             * ( ( Elk * Elk * ( lnElk + 0.5 ) )
-                 - ( minimumEnergy * minimumEnergy * ( lnEmin + 0.5 ) ) ) );
-        // current_term_coefficient should not be zero at this point.
 
 
         // antisymmetric bit positive for vector & negative for axial coupling:
@@ -1595,11 +1321,6 @@ namespace LHC_FASER
       }*/
 
     MINtoLK_sq.setCoefficient( current_term_coefficient );
-    normalization
-    += ( current_term_coefficient
-         * ( ( Elk * Elk * Elk
-               - minimumEnergy * minimumEnergy * minimumEnergy ) / 3.0 ) );
-    // current_term_coefficient should not be zero at this point.
 
 
     // LK to HK:
@@ -1883,31 +1604,6 @@ namespace LHC_FASER
         LKtoHK_sq.setCoefficient( current_term_coefficient );
 
       }
-    current_term_coefficient = LKtoHK_sq.getCoefficient();
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-            * ( ( Ehk * Ehk * Ehk - Elk * Elk * Elk ) / 3.0 ) );
-
-      }
-    current_term_coefficient = LKtoHK_lin.getCoefficient();
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient * ( 0.5 * ( Ehk * Ehk - Elk * Elk ) ) );
-
-      }
-    current_term_coefficient = LKtoHK_const.getCoefficient();
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient * ( Ehk - Elk ) );
-
-      }
 
 
     // HK to MAX:
@@ -1938,9 +1634,6 @@ namespace LHC_FASER
         = ( same_handedness_factor
             * ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq ) );
         // tick! tick!
-        normalization
-        += ( current_term_coefficient * ( lnEmax - lnEhk ) );
-        // current_term_coefficient should not be zero at this point.
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         // 0.0
@@ -2014,13 +1707,6 @@ namespace LHC_FASER
       }
 
     HKtoMAX_const.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient * ( maximumEnergy - Ehk ) );
-
-      }
 
 
     // log:
@@ -2064,15 +1750,6 @@ namespace LHC_FASER
       }
 
     HKtoMAX_log.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( ( maximumEnergy *  ( lnEmax + 1.0 ) )
-                 - ( Ehk * ( lnEhk + 1.0 ) ) ) );
-
-      }
 
 
     // lin:
@@ -2120,14 +1797,6 @@ namespace LHC_FASER
       }
 
     HKtoMAX_lin.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( 0.5 * ( maximumEnergy * maximumEnergy - Ehk * Ehk ) ) );
-
-      }
 
 
     // linlog:
@@ -2154,11 +1823,6 @@ namespace LHC_FASER
         = ( same_handedness_factor
             * ( -32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
         // tick! tick!
-        normalization
-        += ( current_term_coefficient
-             * ( ( maximumEnergy * maximumEnergy * ( lnEmax + 0.5 ) )
-                 - ( Ehk * Ehk * ( lnEhk + 0.5 ) ) ) );
-        // current_term_coefficient should not be zero at this point.
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         // 0.0
@@ -2202,19 +1866,6 @@ namespace LHC_FASER
       }*/
 
     HKtoMAX_sq.setCoefficient( current_term_coefficient );
-    normalization
-    += ( current_term_coefficient
-         * ( ( maximumEnergy * maximumEnergy * maximumEnergy
-               - Ehk * Ehk * Ehk ) / 3.0 ) );
-    // current_term_coefficient should not be zero at this point.
-
-    // now we normalize the distribution:
-    if( 0.0 != normalization )
-      {
-
-        normalizeCoefficients();
-
-      }
 
     // debugging:
     /**std::cout
@@ -2254,166 +1905,105 @@ namespace LHC_FASER
                                 given_third_particle,
                                 given_fourth_particle ),
     jet_is_left_handed( given_jet_is_left_handed ),
-    MINtoLK_inv( -1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_lin( 1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_linlog( 1,
-                    1,
-                    CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoLK_sq( 2,
-                0,
-                CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_const( 0,
-                  0,
-                  CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_lin( 1,
-                0,
-                CppSLHA::CppSLHA_global::really_wrong_value ),
-    LKtoHK_sq( 2,
-               0,
-               CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_inv( -1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_const( 0,
-                   0,
-                   CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_log( 0,
-                 1,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_lin( 1,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_linlog( 1,
-                    1,
-                    CppSLHA::CppSLHA_global::really_wrong_value ),
-    HKtoMAX_sq( 2,
-                0,
-                CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoLK_inv( MINtoLK_segment.addTerm( -1,
+                                          0 ) ),
+    MINtoLK_const( MINtoLK_segment.addTerm( 0,
+                                            0 ) ),
+    MINtoLK_log( MINtoLK_segment.addTerm( 0,
+                                          1 ) ),
+    MINtoLK_lin( MINtoLK_segment.addTerm( 1,
+                                          0 ) ),
+    MINtoLK_linlog( MINtoLK_segment.addTerm( 1,
+                                             1 ) ),
+    MINtoLK_sq( MINtoLK_segment.addTerm( 2,
+                                         0 ) ),
+    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+                                          0 ) ),
+    LKtoHK_lin( LKtoHK_segment.addTerm( 1,
+                                        0 ) ),
+    LKtoHK_sq( LKtoHK_segment.addTerm( 2,
+                                       0 ) ),
+    HKtoMAX_inv( HKtoMAX_segment.addTerm( -1,
+                                          0 ) ),
+    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
+                                            0 ) ),
+    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
+                                          1 ) ),
+    HKtoMAX_lin( HKtoMAX_segment.addTerm( 1,
+                                          0 ) ),
+    HKtoMAX_linlog( HKtoMAX_segment.addTerm( 1,
+                                             1 ) ),
+    HKtoMAX_sq( HKtoMAX_segment.addTerm( 2,
+                                         0 ) )
   {
-
     NMIX = spectrum->inspect_BLOCK( "NMIX" );
     UMIX = spectrum->inspect_BLOCK( "UMIX" );
     VMIX = spectrum->inspect_BLOCK( "VMIX" );
-
     if( CppSLHA::PDG_code::chargino_one
         == given_second_particle->get_PDG_code() )
-      {
-
-        which_chargino = 1;
-
-      }
+    {
+      which_chargino = 1;
+    }
     else if( CppSLHA::PDG_code::chargino_two
-             == given_second_particle->get_PDG_code() )
-      {
-
-        which_chargino = 2;
-
-      }
+        == given_second_particle->get_PDG_code() )
+    {
+      which_chargino = 2;
+    }
     else
-      {
-
-        which_chargino = -1;
-        // this will cause UMIX or VMIX to return NaN, which should show the
-        // result up as obviously wrong.
-
-        std::cout
-        << std::endl
-        << "LHC-FASER::error! W_minus_plus_up_L_type_muon expected to be given"
-        << " a chargino as its 2nd particle, but did not receive a particle"
-        << " with code +-" << CppSLHA::PDG_code::chargino_one << " or +-"
-        << CppSLHA::PDG_code::chargino_two << ", rather, it received "
-        << secondParticle->get_name() << " (code: "
-        << secondParticle->get_PDG_code() << ")";
-        std::cout << std::endl;
-
-      }
-
-
+    {
+      which_chargino = -1;
+      // this will cause UMIX or VMIX to return NaN, which should show the
+      // result up as obviously wrong.
+      std::cout
+      << std::endl
+      << "LHC-FASER::error! W_minus_plus_up_L_type_muon expected to be given"
+      << " a chargino as its 2nd particle, but did not receive a particle"
+      << " with code +-" << CppSLHA::PDG_code::chargino_one << " or +-"
+      << CppSLHA::PDG_code::chargino_two << ", rather, it received "
+      << secondParticle->get_name() << " (code: "
+      << secondParticle->get_PDG_code() << ")";
+      std::cout << std::endl;
+    }
     if( CppSLHA::PDG_code::neutralino_one
         == given_fourth_particle->get_PDG_code() )
-      {
-
-        which_neutralino = 1;
-
-      }
+    {
+      which_neutralino = 1;
+    }
     else if( CppSLHA::PDG_code::neutralino_two
-             == given_fourth_particle->get_PDG_code() )
-      {
-
-        which_neutralino = 2;
-
-      }
+        == given_fourth_particle->get_PDG_code() )
+    {
+      which_neutralino = 2;
+    }
     else if( CppSLHA::PDG_code::neutralino_three
-             == given_fourth_particle->get_PDG_code() )
-      {
-
-        which_neutralino = 3;
-
-      }
+        == given_fourth_particle->get_PDG_code() )
+    {
+      which_neutralino = 3;
+    }
     else if( CppSLHA::PDG_code::neutralino_four
-             == given_fourth_particle->get_PDG_code() )
-      {
-
-        which_neutralino = 4;
-
-      }
+        == given_fourth_particle->get_PDG_code() )
+    {
+      which_neutralino = 4;
+    }
     else
-      {
-
-        which_neutralino = -1;
-        // this will cause NMIX to return NaN, which should show the result up
-        // as obviously wrong.
-
-        std::cout
-        << std::endl
-        << "LHC-FASER::error! W_minus_plus_up_L_type_muon expected to be given"
-        << " a neutralino as its 4th particle, but did not receive a particle"
-        << " with code " << CppSLHA::PDG_code::neutralino_one << ", "
-        << CppSLHA::PDG_code::neutralino_two << ", "
-        << CppSLHA::PDG_code::neutralino_three << ", or "
-        << CppSLHA::PDG_code::neutralino_four << ", rather, it received "
-        << fourthParticle->get_name() << " (code: "
-        << fourthParticle->get_PDG_code() << ")";
-        std::cout << std::endl;
-
-      }
-
-    MINtoLK_segment.addTerm( &MINtoLK_inv );
-    MINtoLK_segment.addTerm( &MINtoLK_const );
-    MINtoLK_segment.addTerm( &MINtoLK_log );
-    MINtoLK_segment.addTerm( &MINtoLK_lin );
-    MINtoLK_segment.addTerm( &MINtoLK_linlog );
-    MINtoLK_segment.addTerm( &MINtoLK_sq );
-
+    {
+      which_neutralino = -1;
+      // this will cause NMIX to return NaN, which should show the result up
+      // as obviously wrong.
+      std::cout
+      << std::endl
+      << "LHC-FASER::error! W_minus_plus_up_L_type_muon expected to be given"
+      << " a neutralino as its 4th particle, but did not receive a particle"
+      << " with code " << CppSLHA::PDG_code::neutralino_one << ", "
+      << CppSLHA::PDG_code::neutralino_two << ", "
+      << CppSLHA::PDG_code::neutralino_three << ", or "
+      << CppSLHA::PDG_code::neutralino_four << ", rather, it received "
+      << fourthParticle->get_name() << " (code: "
+      << fourthParticle->get_PDG_code() << ")";
+      std::cout << std::endl;
+    }
     segments.push_back( &MINtoLK_segment );
-
-
-    LKtoHK_segment.addTerm( &LKtoHK_const );
-    LKtoHK_segment.addTerm( &LKtoHK_lin );
-    LKtoHK_segment.addTerm( &LKtoHK_sq );
-
     segments.push_back( &LKtoHK_segment );
-
-
-    HKtoMAX_segment.addTerm( &HKtoMAX_inv );
-    HKtoMAX_segment.addTerm( &HKtoMAX_const );
-    HKtoMAX_segment.addTerm( &HKtoMAX_log );
-    HKtoMAX_segment.addTerm( &HKtoMAX_lin );
-    HKtoMAX_segment.addTerm( &HKtoMAX_linlog );
-    HKtoMAX_segment.addTerm( &HKtoMAX_sq );
-
     segments.push_back( &HKtoMAX_segment );
-
   }
 
   W_minus_handed_muon::~W_minus_handed_muon()
@@ -2547,7 +2137,6 @@ namespace LHC_FASER
     lnVsqOverFourElMinsq = log( ( mVsq / ( 4.0 * ElMinsq ) ) );
     EightmCXElMinmQsq = ( 8.0 * mC * fourthMass * ElMin * mQsq );
 
-    normalization = 0.0;
     lnEmin = log( minimumEnergy );
     lnElk = log( Elk );
     lnEhk = log( Ehk );
@@ -2581,18 +2170,6 @@ namespace LHC_FASER
     // 0.0
 
     MINtoLK_inv.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization = ( current_term_coefficient * ( lnElk - lnEmin ) );
-
-      }
-    else
-      {
-
-        normalization = 0.0;
-
-      }
 
 
     // const:
@@ -2648,13 +2225,6 @@ namespace LHC_FASER
              * ( 2.0 * mCsq + ( lnmQC - lnElMin ) * mQCsqSum ) ) );
 
     MINtoLK_const.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient * ( Elk - minimumEnergy ) );
-
-      }
 
 
     // log:
@@ -2693,15 +2263,6 @@ namespace LHC_FASER
          * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
 
     MINtoLK_log.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( ( Elk * ( lnElk + 1.0 ) )
-                 - ( minimumEnergy *  ( lnEmin + 1.0 ) ) ) );
-
-      }
 
 
     // lin:
@@ -2746,14 +2307,6 @@ namespace LHC_FASER
          * ( -2.0 * EightmCXElMinmQsq * mC * mQ * mVsq ) );
 
     MINtoLK_lin.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( 0.5 * ( Elk * Elk - minimumEnergy * minimumEnergy ) ) );
-
-      }
 
 
     // linlog:
@@ -2781,15 +2334,6 @@ namespace LHC_FASER
     // 0.0
 
     MINtoLK_linlog.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( ( Elk * Elk * ( lnElk + 0.5 ) )
-                 - ( minimumEnergy * minimumEnergy * ( lnEmin + 0.5 ) ) ) );
-
-      }
 
 
     // sq:
@@ -2817,16 +2361,6 @@ namespace LHC_FASER
     // 0.0
 
     MINtoLK_sq.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( ( Elk * Elk * Elk
-                   - minimumEnergy * minimumEnergy * minimumEnergy )
-                   / 3.0 ) );
-
-      }
 
 
     // LK to HK:
@@ -3075,31 +2609,6 @@ namespace LHC_FASER
         LKtoHK_sq.setCoefficient( current_term_coefficient );
 
       }
-    current_term_coefficient = LKtoHK_sq.getCoefficient();
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-            * ( ( Ehk * Ehk * Ehk - Elk * Elk * Elk ) / 3.0 ) );
-
-      }
-    current_term_coefficient = LKtoHK_lin.getCoefficient();
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient * ( 0.5 * ( Ehk * Ehk - Elk * Elk ) ) );
-
-      }
-    current_term_coefficient = LKtoHK_const.getCoefficient();
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient * ( Ehk - Elk ) );
-
-      }
 
 
     // HK to MAX:
@@ -3131,13 +2640,6 @@ namespace LHC_FASER
     // 0.0
 
     HKtoMAX_inv.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient * ( lnEmax - lnEhk ) );
-
-      }
 
 
     // const:
@@ -3193,13 +2695,6 @@ namespace LHC_FASER
                  - 2.0 * mQsq ) ) );
 
     HKtoMAX_const.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient * ( maximumEnergy - Ehk ) );
-
-      }
 
 
     // log:
@@ -3238,15 +2733,6 @@ namespace LHC_FASER
          * ( -EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
 
     HKtoMAX_log.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( ( maximumEnergy *  ( lnEmax + 1.0 ) )
-                 - ( Ehk * ( lnEhk + 1.0 ) ) ) );
-
-      }
 
 
     // lin:
@@ -3287,14 +2773,6 @@ namespace LHC_FASER
          * ( 8.0 * EightmCXElMinmQsq * ElMinsq * mC * mQ ) );
 
     HKtoMAX_lin.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( 0.5 * ( maximumEnergy * maximumEnergy - Ehk * Ehk ) ) );
-
-      }
 
 
     // linlog:
@@ -3322,15 +2800,6 @@ namespace LHC_FASER
     // 0.0
 
     HKtoMAX_linlog.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
-
-        normalization
-        += ( current_term_coefficient
-             * ( ( maximumEnergy * maximumEnergy * ( lnEmax + 0.5 ) )
-                 - ( Ehk * Ehk * ( lnEhk + 0.5 ) ) ) );
-
-      }
 
 
     // sq:
@@ -3358,24 +2827,8 @@ namespace LHC_FASER
     // 0.0
 
     HKtoMAX_sq.setCoefficient( current_term_coefficient );
-    if( 0.0 != current_term_coefficient )
-      {
 
-        normalization
-            += ( current_term_coefficient
-                 * ( ( maximumEnergy * maximumEnergy * maximumEnergy
-                       - Ehk * Ehk * Ehk ) / 3.0 ) );
-
-      }
-
-
-    // now we normalize the distribution:
-    if( 0.0 != normalization )
-      {
-
-        normalizeCoefficients();
-
-      }
+    normalizeCoefficients();
 
     // debugging:
     /**std::cout
@@ -3393,7 +2846,6 @@ namespace LHC_FASER
     std::cout << std::endl << "LKtoHK_const = " << LKtoHK_const;
     std::cout << std::endl << "LKtoHK_inv = " << LKtoHK_inv;
     std::cout << std::endl;**/
-
   }
 
 
@@ -3412,23 +2864,14 @@ namespace LHC_FASER
                               given_second_particle,
                               given_third_particle,
                               NULL ),
-    MINtoMAX_const( 0,
-                    0,
-                    CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoMAX_lin( 1,
-                  0,
-                  CppSLHA::CppSLHA_global::really_wrong_value ),
-    MINtoMAX_sq( 2,
-                 0,
-                 CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
+                                              0 ) ),
+    MINtoMAX_lin( MINtoMAX_segment.addTerm( 1,
+                                            0 ) ),
+    MINtoMAX_sq( MINtoMAX_segment.addTerm( 2,
+                                           0 ) )
   {
-
-    MINtoMAX_segment.addTerm( &MINtoMAX_const );
-    MINtoMAX_segment.addTerm( &MINtoMAX_lin );
-    MINtoMAX_segment.addTerm( &MINtoMAX_sq );
-
     segments.push_back( &MINtoMAX_segment );
-
   }
 
   vector_from_squark_to_muon::~vector_from_squark_to_muon()
@@ -3462,10 +2905,10 @@ namespace LHC_FASER
 
     MINtoMAX_const.setCoefficient( -minimumEnergy * maximumEnergy );
     MINtoMAX_lin.setCoefficient( minimumEnergy + maximumEnergy );
-    MINtoMAX_lin.setCoefficient( -1.0 );
+    MINtoMAX_sq.setCoefficient( -1.0 );
 
-    normalization
-    = ( ( energyDifference * energyDifference * energyDifference ) / 6.0 );
+    //normalization
+    //= ( ( energyDifference * energyDifference * energyDifference ) / 6.0 );
     normalizeCoefficients();
 
   }
@@ -3613,15 +3056,10 @@ namespace LHC_FASER
                                 NULL ),
     left_sfermion( given_left_sfermion ),
     right_sfermion( given_right_sfermion ),
-    MINtoMAX_const( 0,
-                    0,
-                    CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
+                                              0 ) )
   {
-
-    MINtoMAX_segment.addTerm( &MINtoMAX_const );
-
     segments.push_back( &MINtoMAX_segment );
-
   }
 
   neutralino_three_body_decay::~neutralino_three_body_decay()
@@ -3641,20 +3079,13 @@ namespace LHC_FASER
     maximumEnergy = ( secondMass - thirdMass );
 
 
-    // now we set up the coefficients of various terms, & use them to
-    // determine the normalization:
-
-    normalization = maximumEnergy;
-
-
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization:
+    // now we set up the coefficients of various terms.
 
     // MIN to MAX segment:
     MINtoMAX_segment.setSegmentRange( minimumEnergy,
                                         maximumEnergy );
 
-    MINtoMAX_const.setCoefficient( ( 1.0 / normalization ) );
+    normalizeCoefficients();
 
   }
 
@@ -3682,15 +3113,10 @@ namespace LHC_FASER
     rightUpIsospinSfermion( rightUpIsospinSfermion ),
     leftDownIsospinSfermion( leftDownIsospinSfermion ),
     rightDownIsospinSfermion( rightDownIsospinSfermion ),
-    MINtoMAX_const( 0,
-                    0,
-                    CppSLHA::CppSLHA_global::really_wrong_value )
+    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
+                                              0 ) )
   {
-
-    MINtoMAX_segment.addTerm( &MINtoMAX_const );
-
     segments.push_back( &MINtoMAX_segment );
-
   }
 
   chargino_three_body_decay::~chargino_three_body_decay()
@@ -3710,12 +3136,6 @@ namespace LHC_FASER
     maximumEnergy = ( secondMass - thirdMass );
 
 
-    // now we set up the coefficients of various terms, & use them to
-    // determine the normalization:
-
-    normalization = maximumEnergy;
-
-
     // now we set up the coefficients of various terms, & use them to determine
     // the normalization:
 
@@ -3723,8 +3143,7 @@ namespace LHC_FASER
     MINtoMAX_segment.setSegmentRange( minimumEnergy,
                                         maximumEnergy );
 
-    MINtoMAX_const.setCoefficient( ( 1.0 / normalization ) );
-
+    normalizeCoefficients();
   }
 
 }  // end of LHC_FASER namespace.

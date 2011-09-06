@@ -453,67 +453,67 @@ namespace LHC_FASER
     activeDistributions.push_back( farOppositeTauDistribution );
 
     nearSameHardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearSameTauDistribution,
                                      shortcut->getHardMuonFromTau() );
     nearSameSoftMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearSameTauDistribution,
                                      shortcut->getSoftMuonFromTau() );
     nearSameHardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearSameTauDistribution,
                                      shortcut->getHardPionFromTau() );
     nearSameSoftPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearSameTauDistribution,
                                      shortcut->getSoftPionFromTau() );
     nearOppositeHardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearOppositeTauDistribution,
                                      shortcut->getHardMuonFromTau() );
     nearOppositeSoftMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearOppositeTauDistribution,
                                      shortcut->getSoftMuonFromTau() );
     nearOppositeHardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearOppositeTauDistribution,
                                      shortcut->getHardPionFromTau() );
     nearOppositeSoftPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearOppositeTauDistribution,
                                      shortcut->getSoftPionFromTau() );
     farSameHardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farSameTauDistribution,
                                      shortcut->getHardMuonFromTau() );
     farSameSoftMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farSameTauDistribution,
                                      shortcut->getSoftMuonFromTau() );
     farSameHardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farSameTauDistribution,
                                      shortcut->getHardPionFromTau() );
     farSameSoftPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farSameTauDistribution,
                                      shortcut->getSoftPionFromTau() );
     farOppositeHardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farOppositeTauDistribution,
                                      shortcut->getHardMuonFromTau() );
     farOppositeSoftMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farOppositeTauDistribution,
                                      shortcut->getSoftMuonFromTau() );
     farOppositeHardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farOppositeTauDistribution,
                                      shortcut->getHardPionFromTau() );
     farOppositeSoftPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farOppositeTauDistribution,
                                      shortcut->getSoftPionFromTau() );
     activeDistributions.push_back( nearSameHardMuonDistribution );
@@ -913,35 +913,35 @@ namespace LHC_FASER
     activeDistributions.push_back( farTauDistribution );
 
     nearHardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearTauDistribution,
                                      shortcut->getHardMuonFromTau() );
     nearSoftMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearTauDistribution,
                                      shortcut->getSoftMuonFromTau() );
     nearHardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearTauDistribution,
                                      shortcut->getHardPionFromTau() );
     nearSoftPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      nearTauDistribution,
                                      shortcut->getSoftPionFromTau() );
     farHardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farTauDistribution,
                                      shortcut->getHardMuonFromTau() );
     farSoftMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farTauDistribution,
                                      shortcut->getSoftMuonFromTau() );
     farHardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farTauDistribution,
                                      shortcut->getHardPionFromTau() );
     farSoftPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      farTauDistribution,
                                      shortcut->getSoftPionFromTau() );
     activeDistributions.push_back( nearHardMuonDistribution );
@@ -1261,35 +1261,35 @@ namespace LHC_FASER
     activeDistributions.push_back( oppositeHandedTauDistribution );
 
     sameHardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      sameHandedTauDistribution,
                                      shortcut->getHardMuonFromTau() );
     sameSoftMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      sameHandedTauDistribution,
                                      shortcut->getSoftMuonFromTau() );
     sameHardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      sameHandedTauDistribution,
                                      shortcut->getHardPionFromTau() );
     sameSoftPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      sameHandedTauDistribution,
                                      shortcut->getSoftPionFromTau() );
     oppositeHardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      oppositeHandedTauDistribution,
                                      shortcut->getHardMuonFromTau() );
     oppositeSoftMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      oppositeHandedTauDistribution,
                                      shortcut->getSoftMuonFromTau() );
     oppositeHardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      oppositeHandedTauDistribution,
                                      shortcut->getHardPionFromTau() );
     oppositeSoftPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      oppositeHandedTauDistribution,
                                      shortcut->getSoftPionFromTau() );
     activeDistributions.push_back( sameHardMuonDistribution );
@@ -1630,19 +1630,19 @@ namespace LHC_FASER
     activeDistributions.push_back( directMuonDistribution );
 
     hardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getHardMuonFromTau() );
     softMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getSoftMuonFromTau() );
     hardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getHardPionFromTau() );
     softPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getSoftPionFromTau() );
     activeDistributions.push_back( hardMuonDistribution );
@@ -1900,19 +1900,19 @@ namespace LHC_FASER
     activeDistributions.push_back( directMuonDistribution );
 
     hardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getHardMuonFromTau() );
     softMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getSoftMuonFromTau() );
     hardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getHardPionFromTau() );
     softPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getSoftPionFromTau() );
     activeDistributions.push_back( hardMuonDistribution );
@@ -2313,19 +2313,19 @@ namespace LHC_FASER
     activeDistributions.push_back( directTauDistribution );
 
     hardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directTauDistribution,
                                      shortcut->getHardMuonFromTau() );
     softMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directTauDistribution,
                                      shortcut->getSoftMuonFromTau() );
     hardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directTauDistribution,
                                      shortcut->getHardPionFromTau() );
     softPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directTauDistribution,
                                      shortcut->getSoftPionFromTau() );
     activeDistributions.push_back( hardMuonDistribution );
@@ -2659,19 +2659,19 @@ namespace LHC_FASER
     activeDistributions.push_back( directMuonDistribution );
 
     hardMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getHardMuonFromTau() );
     softMuonDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getSoftMuonFromTau() );
     hardPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getHardPionFromTau() );
     softPionDistribution
-    = new visible_tau_decay_product( shortcut->getReadier(),
+    = new visibleTauDecayProduct( shortcut->getReadier(),
                                      directMuonDistribution,
                                      shortcut->getSoftPionFromTau() );
     activeDistributions.push_back( hardMuonDistribution );

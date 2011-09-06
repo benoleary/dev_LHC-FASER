@@ -579,7 +579,7 @@ namespace LHC_FASER
     getHardPionFromTau()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    soft_pion_from_tau const*
+    softPionFromTau const*
     getSoftPionFromTau()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -735,7 +735,7 @@ namespace LHC_FASER
     hardMuonFromTau hardMuonFromTauFunction;
     softMuonFromTau softMuonFromTauFunction;
     hardPionFromTau hardPionFromTauFunction;
-    soft_pion_from_tau softPionFromTauFunction;
+    softPionFromTau softPionFromTauFunction;
 
     void
     addSquarkAsColoredSparticleAndInProduction(
@@ -1566,7 +1566,7 @@ namespace LHC_FASER
     return &hardPionFromTauFunction;
   }
 
-  inline soft_pion_from_tau const*
+  inline softPionFromTau const*
   inputHandler::getSoftPionFromTau()
   const
   {

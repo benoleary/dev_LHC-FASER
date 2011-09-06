@@ -62,7 +62,7 @@ public:
     hard_muon( new LHC_FASER::hardMuonFromTau() ),
     soft_muon( new LHC_FASER::softMuonFromTau() ),
     hard_pion( new LHC_FASER::hardPionFromTau() ),
-    soft_pion( new LHC_FASER::soft_pion_from_tau() )
+    soft_pion( new LHC_FASER::softPionFromTau() )
   {
 
     // just an initialization list.
@@ -108,7 +108,7 @@ public:
     names_vector.push_back( test_name );
 
     LHC_FASER::leptonEnergyDistribution* tau_distribution
-    = new LHC_FASER::visible_tau_decay_product( readier,
+    = new LHC_FASER::visibleTauDecayProduct( readier,
                                                 given_distribution,
                                                 hard_muon );
     test_name = new std::string( given_name );
@@ -116,7 +116,7 @@ public:
     distributions_vector.push_back( tau_distribution );
     names_vector.push_back( test_name );
     tau_distribution
-    = new LHC_FASER::visible_tau_decay_product( readier,
+    = new LHC_FASER::visibleTauDecayProduct( readier,
                                                 given_distribution,
                                                 soft_muon );
     test_name = new std::string( given_name );
@@ -124,7 +124,7 @@ public:
     distributions_vector.push_back( tau_distribution );
     names_vector.push_back( test_name );
     tau_distribution
-    = new LHC_FASER::visible_tau_decay_product( readier,
+    = new LHC_FASER::visibleTauDecayProduct( readier,
                                                 given_distribution,
                                                 soft_pion );
     test_name = new std::string( given_name );
@@ -132,7 +132,7 @@ public:
     distributions_vector.push_back( tau_distribution );
     names_vector.push_back( test_name );
     tau_distribution
-    = new LHC_FASER::visible_tau_decay_product( readier,
+    = new LHC_FASER::visibleTauDecayProduct( readier,
                                                 given_distribution,
                                                 hard_pion );
     test_name = new std::string( given_name );
