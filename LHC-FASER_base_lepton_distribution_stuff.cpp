@@ -87,255 +87,348 @@ namespace LHC_FASER
 
 
 
-  lepton_distribution_expansion_term::lepton_distribution_expansion_term(
-                                               int const given_power_of_energy,
-                                            int const given_power_of_logarithm,
-                                             double const given_coefficient,
-             lepton_distribution_expansion_term* const given_reference_term ) :
-    power_of_energy( given_power_of_energy ),
-    power_of_logarithm( given_power_of_logarithm ),
-    coefficient( given_coefficient ),
-    reference_term( given_reference_term )
+  leptonDistributionExpansionTerm::leptonDistributionExpansionTerm(
+                                                       int const powerOfEnergy,
+                                                    int const powerOfLogarithm,
+                                                 double const coefficientValue,
+                       leptonDistributionExpansionTerm* const referenceTerm ) :
+    powerOfEnergy( powerOfEnergy ),
+    powerOfLogarithm( powerOfLogarithm ),
+    coefficientValue( coefficientValue ),
+    referenceTerm( referenceTerm )
   {
-
     // just an initialization list.
-
   }
 
-  lepton_distribution_expansion_term::lepton_distribution_expansion_term(
-                                               int const given_power_of_energy,
-                                            int const given_power_of_logarithm,
-                                             double const given_coefficient ) :
-    power_of_energy( given_power_of_energy ),
-    power_of_logarithm( given_power_of_logarithm ),
-    coefficient( given_coefficient ),
-    reference_term( NULL )
+
+  leptonDistributionExpansionTerm::~leptonDistributionExpansionTerm()
   {
-
-    // just an initialization list.
-
-  }
-
-  lepton_distribution_expansion_term::~lepton_distribution_expansion_term()
-  {
-
     // does nothing.
-
   }
 
 
   double
-  lepton_distribution_expansion_term::evaluate( double const given_energy )
+  leptonDistributionExpansionTerm::evaluate( double const inputEnergy )
   const
   // this evaluates this term for the given input energy.
   {
+    if( 0.0 != coefficientValue )
+    {
+      double returnValue( coefficientValue );
 
-    // debugging:
-    /**std::cout << std::endl << "debugging: "
-    << "lepton_distribution_expansion_term::evaluate( " << given_energy
-    << " ) called";
-    std::cout << std::endl;**/
-
-
-    double return_value = 0.0;
-
-    if( ( 0.0 < given_energy )
-        // only give a value if the energy is above 0.0 since otherwise the
-        // logarithms are not going to work.
-        &&
-        ( 0.0 != coefficient ) )
-      // & don't bother if the coefficient is 0.0 anyway.
+      for( int powerCount( powerOfEnergy );
+           0 < powerCount;
+           --powerCount )
       {
-
-        if( -1 == power_of_energy )
-          {
-
-            return_value = ( coefficient / given_energy );
-
-          }
-        else if( 0 == power_of_energy )
-          {
-
-            return_value = coefficient;
-
-          }
-        else if( 1 == power_of_energy )
-          {
-
-            return_value = ( coefficient * given_energy );
-
-          }
-        else if( 2 == power_of_energy )
-          {
-
-            return_value = ( coefficient * given_energy * given_energy );
-
-          }
-        else if( 3 == power_of_energy )
-          {
-
-            return_value = ( coefficient * given_energy
-                             * given_energy * given_energy );
-
-          }
-        // I could set up something recursive, but there shouldn't be any
-        // higher powers than 3.
-
-        if( 0 < power_of_logarithm )
-          {
-
-            double log_energy = log( given_energy );
-
-            /*for( int logarithm_counter = 0;
-            logarithm_counter < power_of_logarithm;
-            logarithm_counter++ )
-            {
-
-            return_value *= log_energy;
-
-            }*/
-            // go go super-irrelevant, premature optimization!
-            if( 1 == power_of_logarithm )
-              {
-
-                return_value *= log_energy;
-
-              }
-            else if( 2 == power_of_logarithm )
-              {
-
-                return_value *= ( log_energy * log_energy );
-
-              }
-            else if( 3 == power_of_logarithm )
-              {
-
-                return_value *= ( log_energy * log_energy * log_energy );
-
-              }
-
-          }
-
+        returnValue *= inputEnergy;
       }
 
-    return return_value;
+      double logarithmOfEnergy( log( inputEnergy ) );
+      for( int logarithmCounter( powerOfLogarithm );
+           0 < logarithmCounter;
+           --logarithmCounter )
+      {
+        return_value *= logarithmOfEnergy;
+      }
 
+      return returnValue;
+    }
+    else
+    {
+      return 0.0;
+    }
   }
 
-
-  segment_term_set::segment_term_set() :
-    segment_start( CppSLHA::CppSLHA_global::really_wrong_value ),
-    segment_end( CppSLHA::CppSLHA_global::really_wrong_value )
+  double
+  leptonDistributionExpansionTerm::getArea( double startEnergy,
+                                            double endEnergy )
+  const
+  // this gives the definite integral of the term from startEnergy to
+  // endEnergy.
   {
+    double returnValue( 0.0 );
 
-    // just an initialization list.
+    // if this version of the virtual function is being used,
+    // powerOfEnergy >= 0 & powerOfLogarithm >= 1.
+    if( 0.0 != coefficientValue )
+    {
+      if( minimumInputEnergy > startEnergy )
+      {
+        startEnergy = minimumInputEnergy;
+      }
 
+      if( endEnergy > startEnergy )
+      {
+        double energyPowerPlusOne( ( 1.0 + (double)powerOfEnergy ) );
+        double integralToStart( ( coefficientValue / energyPowerPlusOne ) );
+        double integralToEnd( integralToStart );
+
+        for( int powerCount( powerOfEnergy );
+             0 <= powerCount;
+             --powerCount )
+        {
+          integralToStart *= startEnergy;
+          integralToEnd *= endEnergy;
+        }
+        /* now integralToStart is
+         * coefficientValue * startEnergy^( 1 + powerOfEnergy )
+         *                  / ( 1 + powerOfEnergy )
+         * & similar for integralToEnd.
+         */
+
+        energyPowerPlusOne *= -1.0;
+        // the terms in the sum alternate sign, so I put it here.
+        double
+        predivisorOfInversePowersOfEnergyPowerPlusOne( energyPowerPlusOne );
+        double logarithmOfStartEnergy( log( startEnergy ) );
+        double logarithmOfEndEnergy( log( endEnergy ) );
+
+        int logPowerFactorial( 1 );
+        double commonSumFactor( energyPowerPlusOne );
+        double startSumTerm( energyPowerPlusOne * logarithmOfStartEnergy );
+        double endSumTerm( energyPowerPlusOne * logarithmOfEndEnergy );
+        double startSum( 1.0 + startSumTerm );
+        double endSum( 1.0 + endSumTerm );
+        /* now startSum is the sum of the terms corresponding to the lowest 2
+         * powers of ln( startEnergy ) (i.e. 0 & 1, so the constant term & the
+         * term linear in ln( startEnergy )), similar for endSum.
+         * these need to be summed with the terms with powers of
+         * ln( startEnergy ) from 2 to powerOfLogarithm.
+         * logPowerFactorial = 1!, &
+         * predivisorOfInversePowersOfEnergyPowerPlusOne already has its 1st
+         * factor of energyPowerPlusOne. logPowerFactorial needs multiplying by
+         * the integers 2 to powerOfLogarithm (to end up as powerOfLogarithm!)
+         * & predivisorOfInversePowersOfEnergyPowerPlusOne needs to be
+         * multiplied by energyPowerPlusOne ( powerOfLogarithm - 1 ) more
+         * times (to end up as energyPowerPlusOne^powerOfLogarithm).
+         * the following loop goes over the integers 2 to powerOfLogarithm,
+         * hence ( powerOfLogarithm - 1 ) iterations.
+         */
+        for( int logarithmCounter( 2 );
+             powerOfLogarithm >= logarithmCounter;
+             ++logarithmCounter )
+        {
+          logPowerFactorial *= ( logPowerFactorial + 1 );
+          predivisorOfInversePowersOfEnergyPowerPlusOne *= energyPowerPlusOne;
+
+          commonSumFactor *= ( energyPowerPlusOne / (double)powerOfLogarithm );
+          startSumTerm *= ( logarithmOfStartEnergy * commonSumFactor );
+          startSum += startSumTerm;
+          endSumTerm *= ( logarithmOfEndEnergy * commonSumFactor );
+          endSum += endSumTerm;
+        }
+        integralToStart
+        *= ( ( (double)logPowerFactorial
+               / predivisorOfInversePowersOfEnergyPowerPlusOne )
+             * startSum );
+        integralToEnd
+        *= ( ( (double)logPowerFactorial
+               / predivisorOfInversePowersOfEnergyPowerPlusOne )
+             * endSum );
+        returnValue = ( integralToEnd - integralToStart );
+      }
+    }
+    return returnValue;
   }
 
-  segment_term_set::~segment_term_set()
-  {
+  double const leptonDistributionExpansionTerm::minimumInputEnergy( 0.001 );
+   // 1 MeV should be sufficient as the energy resolution.
 
+
+
+  leptonDistributionInverseTerm::leptonDistributionInverseTerm(
+                                                 double const coefficientValue,
+                       leptonDistributionExpansionTerm* const referenceTerm ) :
+    leptonDistributionExpansionTerm( -1,
+                                     0,
+                                     coefficientValue,
+                                     referenceTerm )
+    {
+    // just an initialization.
+  }
+
+  leptonDistributionInverseTerm::~leptonDistributionInverseTerm()
+  {
     // does nothing.
+  }
 
+
+
+  leptonDistributionConstantTerm::leptonDistributionConstantTerm(
+                                                 double const coefficientValue,
+                       leptonDistributionExpansionTerm* const referenceTerm ) :
+    leptonDistributionExpansionTerm( 0,
+                                     0,
+                                     coefficientValue,
+                                     referenceTerm )
+  {
+    // just an initialization.
+  }
+
+  leptonDistributionConstantTerm::~leptonDistributionConstantTerm()
+  {
+    // does nothing.
+  }
+
+
+  leptonDistributionPowerTerm::leptonDistributionPowerTerm(
+                                                       int const powerOfEnergy,
+                                                 double const coefficientValue,
+                       leptonDistributionExpansionTerm* const referenceTerm ) :
+    leptonDistributionExpansionTerm( powerOfEnergy,
+                                     0,
+                                     coefficientValue,
+                                     referenceTerm )
+  {
+    // just an initialization.
+  }
+
+  leptonDistributionPowerTerm::~leptonDistributionPowerTerm()
+  {
+    // does nothing.
   }
 
 
   double
-  segment_term_set::evaluate( double const given_energy )
+  leptonDistributionPowerTerm::getArea( double startEnergy,
+                                        double endEnergy )
+  const
+  // this gives the definite integral of the term from startEnergy to
+  // endEnergy.
+  {
+    double returnValue( 0.0 );
+
+    // if this version of the virtual function is being used,
+    // powerOfEnergy >= 1.
+    if( 0.0 != coefficientValue )
+    {
+      if( minimumInputEnergy > startEnergy )
+      {
+        startEnergy = minimumInputEnergy;
+      }
+
+      if( endEnergy > startEnergy )
+      {
+        double energyPowerPlusOne( ( 1.0 + (double)powerOfEnergy ) );
+        double integralToStart( startEnergy );
+        double integralToEnd( endEnergy );
+
+        for( int powerCount( powerOfEnergy );
+             0 < powerCount;
+             --powerCount )
+        {
+          integralToStart *= startEnergy;
+          integralToEnd *= endEnergy;
+        }
+        /* now integralToStart is startEnergy^( 1 + powerOfEnergy )
+         * & similar for integralToEnd.
+         */
+        returnValue
+        = ( ( ( integralToEnd - integralToStart ) * coefficientValue )
+            / energyPowerPlusOne );
+      }
+    }
+    return returnValue;
+  }
+
+
+
+  segmentTermSet::segmentTermSet() :
+    segmentStart( CppSLHA::CppSLHA_global::really_wrong_value ),
+    segmentEnd( CppSLHA::CppSLHA_global::really_wrong_value )
+  {
+    // just an initialization list.
+  }
+
+  segmentTermSet::~segmentTermSet()
+  {
+    // does nothing.
+  }
+
+
+  double
+  segmentTermSet::evaluate( double const inputEnergy )
   const
   // this evaluates the sum of the set of terms for the given input energy.
   {
-
     // debugging:
     /**std::cout << std::endl << "debugging: "
-    << "segment_term_set::evaluate( " << given_energy
+    << "segmentTermSet::evaluate( " << inputEnergy
     << " ) called";
     std::cout << std::endl;**/
 
-    double return_value = 0.0;
+    double returnValue( 0.0 );
 
     // only evaluate if the input is within the segment's range:
-    if( ( given_energy >= segment_start )
+    if( ( inputEnergy >= segmentStart )
         &&
-        ( given_energy <= segment_end ) )
+        ( inputEnergy <= segmentEnd ) )
       {
-
         // debugging:
-        /**int segment_term_counter = 0;
+        /**int segmentTermCounter( 0 );
         std::cout << std::endl << "debugging: "
-        << "given_energy within range, segment_terms.size() = "
-        << segment_terms.size();
+        << "inputEnergy within range, segmentTerms.size() = "
+        << segmentTerms.size();
         std::cout << std::endl;**/
 
-        for( std::vector< lepton_distribution_expansion_term* >::const_iterator
-             summation_iterator = segment_terms.begin();
-             summation_iterator < segment_terms.end();
-             ++summation_iterator )
+        for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
+             summationIterator = segmentTerms.begin();
+             summationIterator < segmentTerms.end();
+             ++summationIterator )
           {
-
             // debugging:
             /**std::cout << std::endl << "debugging: "
-            << "segment_term_counter = " << ++segment_term_counter;
+            << "segmentTermCounter = " << ++segmentTermCounter;
             std::cout << std::endl;**/
 
-            return_value += (*summation_iterator)->evaluate( given_energy );
-
+            returnValue += (*summationIterator)->evaluate( inputEnergy );
           }
-
       }
-
-    return return_value;
-
+    return returnValue;
   }
 
 
-  tau_decay_coefficient::tau_decay_coefficient()
-  {
 
+  tauDecayCoefficient::tauDecayCoefficient()
+  {
     // just an initialization.
-
   }
 
-  tau_decay_coefficient::~tau_decay_coefficient()
+  tauDecayCoefficient::~tauDecayCoefficient()
   {
-
     // does nothing.
-
   }
 
 
-  hard_muon_from_tau::hard_muon_from_tau() :
-    tau_decay_coefficient()
-  {
 
+  hardMuonFromTau::hardMuonFromTau() :
+    tauDecayCoefficient()
+  {
     // just an initialization.
-
   }
 
-  hard_muon_from_tau::~hard_muon_from_tau()
+  hardMuonFromTau::~hardMuonFromTau()
   {
-
     // does nothing.
-
   }
 
 
   double
-  hard_muon_from_tau::operator()( int const muon_energy_power
+  hardMuonFromTau::operator()( int const visibleProductEnergyPower
                             /* the power of the muon's energy for the term. */,
-                                  int const muon_log_power
+                               int const visibleProductLogPower
            /* the power of the logarithm of the muon's energy for the term. */,
-                                  int const tau_energy_power
+                               int const tauLeptonEnergyPower
                       /* the power of the tau lepton's energy for the term. */,
-                                  int const tau_log_power
+                               int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                                  double const Emin
+                               double const tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
-                                  double const Emax
+                               double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
-                                  bool const is_inside_range )
+                               bool const isInsideRange )
   const
-  /* this returns the coefficient for the muon distribution which would come
+  /* this returns the coefficientValue for the muon distribution which would come
    * from a left-handed tau lepton distribution of the given power of the tau
    * lepton's energy & power of logarithm thereof, for requested integer powers
    * of the muon's energy or logarithm thereof, which also depends on whether
@@ -343,10 +436,9 @@ namespace LHC_FASER
    * segment.
    */
   {
-
     // debugging:
     /**std::cout << std::endl << "debugging: "
-    << "hard_muon_from_tau::operator()( " << muon_energy_power << ", "
+    << "hardMuonFromTau::operator()( " << muon_energy_power << ", "
     << muon_log_power << ", "
     << tau_energy_power << ", "
     << tau_log_power << ", "
@@ -356,409 +448,287 @@ namespace LHC_FASER
     << " ) called";
     std::cout << std::endl;**/
 
-    double return_value = 0.0;
+    double returnValue( 0.0 );
 
-    if( ( -1 == tau_energy_power )
+    if( ( -1 == tauLeptonEnergyPower )
         &&
-        ( 0 == tau_log_power ) )
+        ( 0 == tauLeptonLogPower ) )
+    {
+      if( ( -1 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( -1 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = 1.0;
-
-              }
-
-          }
-        else if( ( 0 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( -4.0 / ( 3.0 * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value += ( 4.0 / ( 3.0 * Emin ) );
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( 1.0 / ( 3.0 * Emax * Emax * Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( 1.0 / ( 3.0 * Emin * Emin * Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( -1 == tau_energy_power ) && ( 0 == tau_log_power )
-    else if( ( 0 == tau_energy_power )
+        if( isInsideRange )
+        {
+          returnValue = 1.0;
+        }
+      }
+      else if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( -4.0 / ( 3.0 * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue += ( 4.0 / ( 3.0 * tauMinEnergy ) );
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( 1.0 / ( 3.0 * tauMaxEnergy * tauMaxEnergy
+                                    * tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue -= ( 1.0 / ( 3.0 * tauMinEnergy * tauMinEnergy
+                                       * tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( -1 == tau_energy_power ) && ( 0 == tau_log_power )
+    else if( ( 0 == tauLeptonEnergyPower )
              &&
-             ( 0 == tau_log_power ) )
+             ( 0 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( ( 4.0 * log_max ) / 3.0 );
-
-            if( is_inside_range )
-              {
-
-                return_value -= ( 4.0 / 9.0 );
-
-              }
-            else
-              {
-
-                double log_min = log( Emin );
-
-                return_value -= ( ( 4.0 * log_min ) / 3.0 );
-
-              }
-
-          }
-        else if( ( 0 == muon_energy_power )
-                 &&
-                 ( 1 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = ( -4.0 / 3.0 );
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( 4.0 / ( 9.0 * Emax * Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( 4.0 / ( 9.0 * Emin * Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 0 == tau_energy_power ) && ( 0 == tau_log_power )
-    else if( ( 0 == tau_energy_power )
+        returnValue = ( ( 4.0 * log( tauMaxEnergy ) ) / 3.0 );
+        if( isInsideRange )
+        {
+          returnValue -= ( 4.0 / 9.0 );
+        }
+        else
+        {
+          returnValue -= ( ( 4.0 * log( tauMinEnergy ) ) / 3.0 );
+        }
+      }
+      else if( ( 0 == visibleProductEnergyPower )
+               &&
+               ( 1 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = ( -4.0 / 3.0 );
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue
+        = ( 4.0 / ( 9.0 * tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue
+          -= ( 4.0 / ( 9.0 * tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 0 == tau_energy_power ) && ( 0 == tau_log_power )
+    else if( ( 0 == tauLeptonEnergyPower )
              &&
-             ( 1 == tau_log_power ) )
+             ( 1 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( ( 2.0 * log_max * log_max ) / 3.0 );
-
-            if( is_inside_range )
-              {
-
-                return_value -= ( 4.0 / 27.0 );
-
-              }
-            else
-              {
-
-                double log_min = log( Emin );
-
-                return_value -= ( ( 2.0 * log_min * log_min ) / 3.0 );
-
-              }
-
-          }
-
-        else if( ( 0 == muon_energy_power )
-                 &&
-                 ( 1 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = ( -4.0 / 9.0 );
-
-              }
-
-          }
-        else if( ( 0 == muon_energy_power )
-                 &&
-                 ( 2 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = ( -2.0 / 3.0 );
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value
-            = ( ( 4.0 * ( 1.0 + 3.0 * log_max ) )
-                / ( 27.0 * Emax * Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                double log_min = log( Emin );
-
-                return_value -= ( ( 4.0 * ( 1.0 + 3.0 * log_min ) )
-                                  / ( 27.0 * Emin * Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 0 == tau_energy_power ) && ( 1 == tau_log_power )
-    else if( ( 1 == tau_energy_power )
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
+        returnValue
+        = ( ( 2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy ) / 3.0 );
+        if( isInsideRange )
+        {
+          returnValue -= ( 4.0 / 27.0 );
+        }
+        else
+        {
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
+          returnValue
+          -= ( ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy ) / 3.0 );
+        }
+      }
+      else if( ( 0 == visibleProductEnergyPower )
+              &&
+              ( 1 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = ( -4.0 / 9.0 );
+        }
+      }
+      else if( ( 0 == visibleProductEnergyPower )
+               &&
+               ( 2 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = ( -2.0 / 3.0 );
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue
+        = ( ( 4.0 * ( 1.0 + 3.0 * log( tauMaxEnergy ) ) )
+            / ( 27.0 * tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue
+          -= ( ( 4.0 * ( 1.0 + 3.0 * log( tauMinEnergy ) ) )
+               / ( 27.0 * tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 0 == tau_energy_power ) && ( 1 == tau_log_power )
+    else if( ( 1 == tauLeptonEnergyPower )
              &&
-             ( 0 == tau_log_power ) )
+             ( 0 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( ( 4.0 * Emax ) / 3.0 );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( ( 4.0 * Emin ) / 3.0 );
-
-              }
-
-          }
-        else if( ( 1 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = -2.0;
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( 2.0 / ( 3.0 * Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( 2.0 / ( 3.0 * Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 1 == tau_energy_power ) && ( 0 == tau_log_power )
-    else if( ( 1 == tau_energy_power )
+        returnValue = ( ( 4.0 * tauMaxEnergy ) / 3.0 );
+        if( !isInsideRange )
+        {
+          returnValue -= ( ( 4.0 * tauMinEnergy ) / 3.0 );
+        }
+      }
+      else if( ( 1 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = -2.0;
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( 2.0 / ( 3.0 * tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue -= ( 2.0 / ( 3.0 * tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 1 == tau_energy_power ) && ( 0 == tau_log_power )
+    else if( ( 1 == tauLeptonEnergyPower )
              &&
-             ( 1 == tau_log_power ) )
+             ( 1 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( ( 4.0 * Emax * ( log_max - 1.0 ) ) / 3.0 );
-
-            if( !is_inside_range )
-              {
-
-                double log_min = log( Emin );
-
-                return_value += ( ( 4.0 * Emin * ( 1.0 - log_min ) ) / 3.0 );
-
-              }
-
-          }
-        else if( ( 1 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = 1.0;
-
-              }
-
-          }
-        else if( ( 1 == muon_energy_power )
-                 &&
-                 ( 1 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = -2.0;
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( ( 1.0 + 2.0 * log_max ) / ( 3.0 * Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                double log_min = log( Emin );
-
-                return_value
-                -= ( ( 1.0 + 2.0 * log_min ) / ( 3.0 * Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 1 == tau_energy_power ) && ( 1 == tau_log_power )
-    else if( ( 2 == tau_energy_power )
+        returnValue
+        = ( ( 4.0 * tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) ) / 3.0 );
+        if( !isInsideRange )
+        {
+          returnValue
+          += ( ( 4.0 * tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) ) / 3.0 );
+        }
+      }
+      else if( ( 1 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = 1.0;
+        }
+      }
+      else if( ( 1 == visibleProductEnergyPower )
+               &&
+               ( 1 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = -2.0;
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( ( 1.0 + 2.0 * log( tauMaxEnergy ) )
+                        / ( 3.0 * tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue
+          -= ( ( 1.0 + 2.0 * log( tauMinEnergy ) )
+               / ( 3.0 * tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 1 == tau_energy_power ) && ( 1 == tau_log_power )
+    else if( ( 2 == tauLeptonEnergyPower )
              &&
-             ( 0 == tau_log_power ) )
+             ( 0 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( ( 2.0 * Emax * Emax ) / 3.0 );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( ( 2.0 * Emin * Emin ) / 3.0 );
-
-              }
-
-          }
-        else if( ( 2 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = -2.0;
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( 4.0 / ( 3.0 * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( 4.0 / ( 3.0 * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 2 == tau_energy_power ) && ( 0 == tau_log_power )
-
-    return return_value;
-
+        returnValue = ( ( 2.0 * tauMaxEnergy * tauMaxEnergy ) / 3.0 );
+        if( !isInsideRange )
+        {
+          returnValue -= ( ( 2.0 * tauMinEnergy * tauMinEnergy ) / 3.0 );
+        }
+      }
+      else if( ( 2 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = -2.0;
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( 4.0 / ( 3.0 * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue -= ( 4.0 / ( 3.0 * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 2 == tau_energy_power ) && ( 0 == tau_log_power )
+    return returnValue;
   }
 
 
-  soft_muon_from_tau::soft_muon_from_tau() :
-    tau_decay_coefficient()
+  softMuonFromTau::softMuonFromTau() :
+    tauDecayCoefficient()
   {
-
     // just an initialization.
-
   }
 
-  soft_muon_from_tau::~soft_muon_from_tau()
+  softMuonFromTau::~softMuonFromTau()
   {
-
     // does nothing.
-
   }
 
 
   double
-  soft_muon_from_tau::operator()( int const muon_energy_power
+  softMuonFromTau::operator()( int const visibleProductEnergyPower
                             /* the power of the muon's energy for the term. */,
-                                  int const muon_log_power
+                               int const visibleProductLogPower
            /* the power of the logarithm of the muon's energy for the term. */,
-                                  int const tau_energy_power
+                               int const tauLeptonEnergyPower
                        /* the power of the tau lepton's energyfor the term. */,
-                                  int const tau_log_power
+                               int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                                  double const Emin
+                               double const tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
-                                  double const Emax
+                               double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
-                                  bool const is_inside_range )
+                               bool const isInsideRange )
   const
-  /* this returns the coefficient for the muon distribution which would come
+  /* this returns the coefficientValue for the muon distribution which would come
    * from a right-handed tau lepton distribution of the given power of the tau
    * lepton's energy & power of logarithm thereof, for requested integer powers
    * of the muon's energy or logarithm thereof, which also depends on whether
@@ -766,495 +736,330 @@ namespace LHC_FASER
    * segment.
    */
   {
-
-    double return_value = 0.0;
-
-    if( ( -1 == tau_energy_power )
+    double returnValue( 0.0 );
+    if( ( -1 == tauLeptonEnergyPower )
         &&
-        ( 0 == tau_log_power ) )
+        ( 0 == tauLeptonLogPower ) )
+    {
+      if( ( -1 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( -1 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = 1.0;
-
-              }
-
-          }
-        else if( ( 0 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( -2.0 / Emax );
-
-            if( !is_inside_range )
-              {
-
-                return_value += ( 2.0 / Emin );
-
-              }
-
-          }
-        else if( ( 2 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( 2.0 / ( Emax * Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( 2.0 / ( Emin * Emin * Emin ) );
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( -1.0 / ( Emax * Emax * Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value += ( 1.0 / ( Emin * Emin * Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( -1 == tau_energy_power ) && ( 0 == tau_log_power )
-    else if( ( 0 == tau_energy_power )
+        if( isInsideRange )
+        {
+          returnValue = 1.0;
+        }
+      }
+      else if( ( 0 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( -2.0 / tauMaxEnergy );
+        if( !isInsideRange )
+        {
+          returnValue += ( 2.0 / tauMinEnergy );
+        }
+      }
+      else if( ( 2 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( 2.0 / ( tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue
+          -= ( 2.0 / ( tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( -1.0 / ( tauMaxEnergy * tauMaxEnergy
+                                 * tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue += ( 1.0 / ( tauMinEnergy * tauMinEnergy
+                                   * tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( -1 == tau_energy_power ) && ( 0 == tau_log_power )
+    else if( ( 0 == tauLeptonEnergyPower )
              &&
-             ( 0 == tau_log_power ) )
+             ( 0 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( 2.0 * log_max );
-
-            if( is_inside_range )
-              {
-
-                return_value -= ( 5.0 / 3.0 );
-
-              }
-            else
-              {
-
-                double log_min = log( Emin );
-
-                return_value -= ( 2.0 * log_min );
-
-              }
-
-          }
-        else if( ( 0 == muon_energy_power )
-                 &&
-                 ( 1 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = -2.0;
-
-              }
-
-          }
-        else if( ( 2 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( 3.0 / ( Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( 3.0 / ( Emin * Emin ) );
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( -4.0 / ( 3.0 * Emax * Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value += ( 4.0 / ( 3.0 * Emin * Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 0 == tau_energy_power ) && ( 0 == tau_log_power )
-    else if( ( 0 == tau_energy_power )
+        returnValue = ( 2.0 * log( tauMaxEnergy ) );
+        if( isInsideRange )
+        {
+          returnValue -= ( 5.0 / 3.0 );
+        }
+        else
+        {
+          returnValue -= ( 2.0 * log( tauMinEnergy ) );
+        }
+      }
+      else if( ( 0 == visibleProductEnergyPower )
+               &&
+               ( 1 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = -2.0;
+        }
+      }
+      else if( ( 2 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( 3.0 / ( tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue -= ( 3.0 / ( tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue
+        = ( -4.0 / ( 3.0 * tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue
+          += ( 4.0 / ( 3.0 * tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 0 == tau_energy_power ) && ( 0 == tau_log_power )
+    else if( ( 0 == tauLeptonEnergyPower )
              &&
-             ( 1 == tau_log_power ) )
+             ( 1 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( log_max * log_max );
-
-            if( is_inside_range )
-              {
-
-                return_value -= ( 19.0 / 18.0 );
-
-              }
-            else
-              {
-
-                double log_min = log( Emin );
-
-                return_value -= ( log_min * log_min );
-
-              }
-
-          }
-
-        else if( ( 0 == muon_energy_power )
-                 &&
-                 ( 1 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = ( -5.0 / 3.0 );
-
-              }
-
-          }
-        else if( ( 0 == muon_energy_power )
-                 &&
-                 ( 2 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = -1.0;
-
-              }
-
-          }
-        else if( ( 2 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( ( 1.5 + 3.0 * log_max ) / ( Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                double log_min = log( Emin );
-
-                return_value -= ( ( 1.5 + 3.0 * log_min ) / ( Emin * Emin ) );
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( ( -4.0 * ( 1.0 + 3.0 * log_max ) )
-                             / ( 9.0 * Emax * Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                double log_min = log( Emin );
-
-                return_value += ( ( 4.0 * ( 1.0 + 3.0 * log_min ) )
-                                  / ( 9.0 * Emin * Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 0 == tau_energy_power ) && ( 1 == tau_log_power )
-    else if( ( 1 == tau_energy_power )
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
+        returnValue = ( logOfTauMaxEnergy * logOfTauMaxEnergy );
+        if( isInsideRange )
+        {
+          returnValue -= ( 19.0 / 18.0 );
+        }
+        else
+        {
+          double logOfTauMinEnergy = log( tauMinEnergy );
+          returnValue -= ( logOfTauMinEnergy * logOfTauMinEnergy );
+        }
+      }
+      else if( ( 0 == visibleProductEnergyPower )
+               &&
+               ( 1 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = ( -5.0 / 3.0 );
+        }
+      }
+      else if( ( 0 == visibleProductEnergyPower )
+               &&
+               ( 2 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = -1.0;
+        }
+      }
+      else if( ( 2 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( ( 1.5 + 3.0 * log( tauMaxEnergy ) )
+                        / ( tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue -= ( ( 1.5 + 3.0 * log( tauMinEnergy ) )
+                           / ( tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( ( -4.0 * ( 1.0 + 3.0 * log( tauMaxEnergy ) ) )
+                      / ( 9.0 * tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue += ( ( 4.0 * ( 1.0 + 3.0 * log( tauMinEnergy ) ) )
+                      / ( 9.0 * tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 0 == tau_energy_power ) && ( 1 == tau_log_power )
+    else if( ( 1 == tauLeptonEnergyPower )
              &&
-             ( 0 == tau_log_power ) )
+             ( 0 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( 2.0 * Emax );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( 2.0 * Emin );
-
-              }
-
-          }
-        else if( ( 1 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = -6.0;
-
-              }
-
-          }
-        else if( ( 2 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( 6.0 / Emax );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( 6.0 / Emin );
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( -2.0 / ( Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value += ( 2.0 / ( Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 1 == tau_energy_power ) && ( 0 == tau_log_power )
-    else if( ( 1 == tau_energy_power )
+        returnValue = ( 2.0 * tauMaxEnergy );
+        if( !isInsideRange )
+        {
+          returnValue -= ( 2.0 * tauMinEnergy );
+        }
+      }
+      else if( ( 1 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = -6.0;
+        }
+      }
+      else if( ( 2 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( 6.0 / tauMaxEnergy );
+        if( !isInsideRange )
+        {
+          returnValue -= ( 6.0 / tauMinEnergy );
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( -2.0 / ( tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue += ( 2.0 / ( tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 1 == tau_energy_power ) && ( 0 == tau_log_power )
+    else if( ( 1 == tauLeptonEnergyPower )
              &&
-             ( 1 == tau_log_power ) )
+             ( 1 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( 2.0 * Emax * ( log_max - 1.0 ) );
-
-            if( !is_inside_range )
-              {
-
-                double log_min = log( Emin );
-
-                return_value += ( 2.0 * Emin * ( 1.0 - log_min ) );
-
-              }
-
-          }
-        else if( ( 1 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = -3.0;
-
-              }
-
-          }
-        else if( ( 1 == muon_energy_power )
-                 &&
-                 ( 1 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = -6.0;
-
-              }
-
-          }
-        else if( ( 2 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( ( 6.0 * ( 1.0 + log_max ) ) / Emax );
-
-            if( !is_inside_range )
-              {
-
-                double log_min = log( Emin );
-
-                return_value -= ( ( 6.0 * ( 1.0 + log_min ) ) / Emin );
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( ( -1.0 * ( 1.0 + 2.0 * log_max ) )
-                             / ( Emax * Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                double log_min = log( Emin );
-
-                return_value += ( ( 1.0 + 2.0 * log_min ) / ( Emin * Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 1 == tau_energy_power ) && ( 1 == tau_log_power )
-    else if( ( 2 == tau_energy_power )
+        returnValue = ( 2.0 * tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) );
+        if( !isInsideRange )
+        {
+          returnValue
+          += ( 2.0 * tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) );
+        }
+      }
+      else if( ( 1 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = -3.0;
+        }
+      }
+      else if( ( 1 == visibleProductEnergyPower )
+               &&
+               ( 1 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = -6.0;
+        }
+      }
+      else if( ( 2 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue
+        = ( ( 6.0 * ( 1.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
+        if( !isInsideRange )
+        {
+          returnValue
+          -= ( ( 6.0 * ( 1.0 + log( tauMinEnergy ) ) ) / tauMinEnergy );
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( ( -1.0 * ( 1.0 + 2.0 * log( tauMaxEnergy ) ) )
+                        / ( tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue += ( ( 1.0 + 2.0 * log( tauMinEnergy ) )
+                           / ( tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 1 == tau_energy_power ) && ( 1 == tau_log_power )
+    else if( ( 2 == tauLeptonEnergyPower )
              &&
-             ( 0 == tau_log_power ) )
+             ( 0 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
       {
-
-        if( ( 0 == muon_energy_power )
-            &&
-            ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( Emax * Emax );
-
-            if( !is_inside_range )
-              {
-
-                return_value -= ( Emin * Emin );
-
-              }
-
-          }
-        else if( ( 2 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            double log_max = log( Emax );
-
-            return_value = ( -6.0 * log_max );
-
-            if( is_inside_range )
-              {
-
-                return_value += 3.0;
-
-              }
-            else
-              {
-
-                double log_min = log( Emin );
-
-                return_value += ( 6.0 * log_min );
-
-
-              }
-
-          }
-        else if( ( 2 == muon_energy_power )
-                 &&
-                 ( 1 == muon_log_power ) )
-          {
-
-            if( is_inside_range )
-              {
-
-                return_value = 6.0;
-
-              }
-
-          }
-        else if( ( 3 == muon_energy_power )
-                 &&
-                 ( 0 == muon_log_power ) )
-          {
-
-            return_value = ( -4.0 / ( Emax ) );
-
-            if( !is_inside_range )
-              {
-
-                return_value += ( 4.0 / ( Emin ) );
-
-              }
-
-          }
-
-      }  // end of if( 2 == tau_energy_power ) && ( 0 == tau_log_power )
-
-    return return_value;
-
+        returnValue = ( tauMaxEnergy * tauMaxEnergy );
+        if( !isInsideRange )
+        {
+          returnValue -= ( tauMinEnergy * tauMinEnergy );
+        }
+      }
+      else if( ( 2 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( -6.0 * log( tauMaxEnergy ) );
+        if( isInsideRange )
+        {
+          returnValue += 3.0;
+        }
+        else
+        {
+          returnValue += ( 6.0 * log( tauMinEnergy ) );
+        }
+      }
+      else if( ( 2 == visibleProductEnergyPower )
+               &&
+               ( 1 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = 6.0;
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( -4.0 / ( tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue += ( 4.0 / ( tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 2 == tau_energy_power ) && ( 0 == tau_log_power )
+    return returnValue;
   }
 
 
-  hard_pion_from_tau::hard_pion_from_tau() :
-    tau_decay_coefficient()
+  hardPionFromTau::hardPionFromTau() :
+    tauDecayCoefficient()
   {
 
     // just an initialization.
 
   }
 
-  hard_pion_from_tau::~hard_pion_from_tau()
+  hardPionFromTau::~hardPionFromTau()
   {
 
     // does nothing.
@@ -1263,7 +1068,7 @@ namespace LHC_FASER
 
 
   double
-  hard_pion_from_tau::operator()( int const pion_energy_power
+  hardPionFromTau::operator()( int const pion_energy_power
                             /* the power of the pion's energy for the term. */,
                                    int const pion_log_power
            /* the power of the logarithm of the pion's energy for the term. */,
@@ -1277,7 +1082,7 @@ namespace LHC_FASER
          /* the maximum of the range of the tau lepton energies considered. */,
                                    bool const is_inside_range )
   const
-  /* this returns the coefficient for the pion distribution which would come
+  /* this returns the coefficientValue for the pion distribution which would come
    * from a right-handed tau lepton distribution of the given power of the
    * tau lepton's energy & power of logarithm thereof, for requested integer
    * powers of the pion's energy or logarithm thereof, which also depends on
@@ -1651,7 +1456,7 @@ namespace LHC_FASER
 
 
   soft_pion_from_tau::soft_pion_from_tau() :
-    tau_decay_coefficient()
+    tauDecayCoefficient()
   {
 
     // just an initialization.
@@ -1681,7 +1486,7 @@ namespace LHC_FASER
          /* the maximum of the range of the tau lepton energies considered. */,
                                    bool const is_inside_range )
   const
-  /* this returns the coefficient for the pion distribution which would come
+  /* this returns the coefficientValue for the pion distribution which would come
    * from a left-handed tau lepton distribution of the given power of the tau
    * lepton's energy & power of logarithm thereof, for requested integer
    * powers of the pion's energy or logarithm thereof, which also depends on
@@ -2205,23 +2010,23 @@ namespace LHC_FASER
 
 
   tau_segment_triple::tau_segment_triple(
-                           std::vector< segment_term_set* >* given_segment_set,
-                                          segment_term_set* given_segment,
-                         tau_decay_coefficient const* const given_tau_decay ) :
+                           std::vector< segmentTermSet* >* given_segment_set,
+                                          segmentTermSet* given_segment,
+                         tauDecayCoefficient const* const given_tau_decay ) :
     reference_segment( given_segment ),
     tau_decay( given_tau_decay )
   {
 
     double coefficient_checker;
 
-    low_segment = new segment_term_set();
-    low_segment->set_segment_start( 0.0 );
+    low_segment = new segmentTermSet();
+    low_segment->setSegmentStart( 0.0 );
 
-    high_segment = new segment_term_set();
+    high_segment = new segmentTermSet();
 
-    for( std::vector< lepton_distribution_expansion_term* >::const_iterator
-         term_iterator = given_segment->get_terms()->begin();
-         given_segment->get_terms()->end() > term_iterator;
+    for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
+         term_iterator = given_segment->getTerms()->begin();
+         given_segment->getTerms()->end() > term_iterator;
          ++term_iterator )
       {
 
@@ -2246,8 +2051,8 @@ namespace LHC_FASER
                 coefficient_checker
                 = (*tau_decay)( energy_power_counter,
                                 log_power_counter,
-                                (*term_iterator)->get_power_of_energy(),
-                                (*term_iterator)->get_power_of_logarithm(),
+                                (*term_iterator)->getPowerOfEnergy(),
+                                (*term_iterator)->getPowerOfLogarithm(),
                                 3.1,
                                 4.3,
                                 false );
@@ -2255,8 +2060,8 @@ namespace LHC_FASER
                 if( 0.0 != coefficient_checker )
                   {
 
-                    low_segment->add_term(
-                                        new lepton_distribution_expansion_term(
+                    low_segment->addTerm(
+                                        new leptonDistributionExpansionTerm(
                                                           energy_power_counter,
                                                              log_power_counter,
                                    CppSLHA::CppSLHA_global::really_wrong_value,
@@ -2267,8 +2072,8 @@ namespace LHC_FASER
                 coefficient_checker
                 = (*tau_decay)( energy_power_counter,
                                 log_power_counter,
-                                (*term_iterator)->get_power_of_energy(),
-                                (*term_iterator)->get_power_of_logarithm(),
+                                (*term_iterator)->getPowerOfEnergy(),
+                                (*term_iterator)->getPowerOfLogarithm(),
                                 3.1,
                                 4.3,
                                 true );
@@ -2276,8 +2081,8 @@ namespace LHC_FASER
                 if( 0.0 != coefficient_checker )
                   {
 
-                    high_segment->add_term(
-                                        new lepton_distribution_expansion_term(
+                    high_segment->addTerm(
+                                        new leptonDistributionExpansionTerm(
                                                           energy_power_counter,
                                                              log_power_counter,
                                    CppSLHA::CppSLHA_global::really_wrong_value,
@@ -2289,7 +2094,7 @@ namespace LHC_FASER
 
           }  // end of loop over powers of energy.
 
-      }  // end of loop over lepton_distribution_expansion_term pointers.
+      }  // end of loop over leptonDistributionExpansionTerm pointers.
 
     // now that all the low_segment & high_segment terms have been added to the
     // segments, we add them to the vector of segment_term_sets.
@@ -2310,47 +2115,47 @@ namespace LHC_FASER
   tau_segment_triple::update_segments()
   {
 
-    low_segment->set_segment_end( reference_segment->get_segment_start() );
-    high_segment->set_segment_range( reference_segment->get_segment_start(),
-                                     reference_segment->get_segment_end() );
+    low_segment->setSegmentEnd( reference_segment->getSegmentStart() );
+    high_segment->setSegmentRange( reference_segment->getSegmentStart(),
+                                     reference_segment->getSegmentEnd() );
 
-    for( std::vector< lepton_distribution_expansion_term* >::const_iterator
-         term_iterator = low_segment->get_terms()->begin();
-         low_segment->get_terms()->end() > term_iterator;
+    for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
+         term_iterator( low_segment->getTerms()->begin() );
+         low_segment->getTerms()->end() > term_iterator;
          ++term_iterator )
       {
 
-        (*term_iterator)->set_coefficient( reference_segment->get_coefficient(
-                                       (*term_iterator)->get_power_of_energy(),
-                                   (*term_iterator)->get_power_of_logarithm() )
-                       * (*tau_decay)( (*term_iterator)->get_power_of_energy(),
-                                    (*term_iterator)->get_power_of_logarithm(),
-                                       (*term_iterator)->get_reference_term(
-                                                      )->get_power_of_energy(),
-                                       (*term_iterator)->get_reference_term(
-                                                   )->get_power_of_logarithm(),
+        (*term_iterator)->setCoefficient( reference_segment->getCoefficient(
+                                       (*term_iterator)->getPowerOfEnergy(),
+                                   (*term_iterator)->getPowerOfLogarithm() )
+                       * (*tau_decay)( (*term_iterator)->getPowerOfEnergy(),
+                                    (*term_iterator)->getPowerOfLogarithm(),
+                                       (*term_iterator)->getReferenceTerm(
+                                                      )->getPowerOfEnergy(),
+                                       (*term_iterator)->getReferenceTerm(
+                                                   )->getPowerOfLogarithm(),
                                        0.0,
-                                       low_segment->get_segment_end(),
+                                       low_segment->getSegmentEnd(),
                                        false ) );
 
       }
-    for( std::vector< lepton_distribution_expansion_term* >::const_iterator
-         term_iterator = high_segment->get_terms()->begin();
-         high_segment->get_terms()->end() > term_iterator;
+    for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
+         term_iterator( high_segment->getTerms()->begin() );
+         high_segment->getTerms()->end() > term_iterator;
          ++term_iterator )
       {
 
-        (*term_iterator)->set_coefficient( reference_segment->get_coefficient(
-                                       (*term_iterator)->get_power_of_energy(),
-                                   (*term_iterator)->get_power_of_logarithm() )
-                       * (*tau_decay)( (*term_iterator)->get_power_of_energy(),
-                                    (*term_iterator)->get_power_of_logarithm(),
-                                       (*term_iterator)->get_reference_term(
-                                                      )->get_power_of_energy(),
-                                       (*term_iterator)->get_reference_term(
-                                                   )->get_power_of_logarithm(),
-                                       high_segment->get_segment_start(),
-                                       high_segment->get_segment_end(),
+        (*term_iterator)->setCoefficient( reference_segment->getCoefficient(
+                                       (*term_iterator)->getPowerOfEnergy(),
+                                   (*term_iterator)->getPowerOfLogarithm() )
+                       * (*tau_decay)( (*term_iterator)->getPowerOfEnergy(),
+                                    (*term_iterator)->getPowerOfLogarithm(),
+                                       (*term_iterator)->getReferenceTerm(
+                                                      )->getPowerOfEnergy(),
+                                       (*term_iterator)->getReferenceTerm(
+                                                   )->getPowerOfLogarithm(),
+                                       high_segment->getSegmentStart(),
+                                       high_segment->getSegmentEnd(),
                                        true ) );
 
       }
@@ -2380,7 +2185,7 @@ namespace LHC_FASER
 
   leptonEnergyDistribution::~leptonEnergyDistribution()
   {
-    for( std::vector< segment_term_set* >::iterator
+    for( std::vector< segmentTermSet* >::iterator
          deletionIterator = segments.begin();
          segments.end() > deletionIterator;
          ++deletionIterator )
@@ -2449,7 +2254,7 @@ namespace LHC_FASER
   visible_tau_decay_product::visible_tau_decay_product(
                                     readierForNewPoint* const given_readier,
                       leptonEnergyDistribution* const given_tau_distribution,
-                               tau_decay_coefficient const* const tau_decay ) :
+                               tauDecayCoefficient const* const tau_decay ) :
     leptonEnergyDistribution( given_readier,
                                 NULL,
                                 NULL,
@@ -2471,7 +2276,7 @@ namespace LHC_FASER
 
     minimumEnergy = 0.0;
 
-    for( std::vector< segment_term_set* >::iterator
+    for( std::vector< segmentTermSet* >::iterator
          segment_iterator = given_tau_distribution->getSegments()->begin();
          given_tau_distribution->getSegments()->end() > segment_iterator;
          ++segment_iterator )
@@ -2517,7 +2322,7 @@ namespace LHC_FASER
     // now all the underlying stuff should have been updated for the point.
 
     for( std::vector< tau_segment_triple* >::iterator
-         triple_iterator = tau_triples.begin();
+         triple_iterator( tau_triples.begin() );
          tau_triples.end() > triple_iterator;
          ++triple_iterator )
       {

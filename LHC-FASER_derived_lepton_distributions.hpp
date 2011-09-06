@@ -87,10 +87,10 @@ namespace LHC_FASER
 
   protected:
 
-    segment_term_set MINtoMAX_segment;
+    segmentTermSet MINtoMAX_segment;
     // the terms between minimum_energy & maximum_energy.
 
-    lepton_distribution_expansion_term MINtoMAX_const;
+    leptonDistributionExpansionTerm MINtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
 
 
@@ -127,12 +127,12 @@ namespace LHC_FASER
 
   protected:
 
-    segment_term_set MINtoMAX_segment;
+    segmentTermSet MINtoMAX_segment;
     // the terms between minimum_energy & maximum_energy.
 
-    lepton_distribution_expansion_term MINtoMAX_const;
+    leptonDistributionExpansionTerm MINtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoMAX_lin;
+    leptonDistributionExpansionTerm MINtoMAX_lin;
     // the term linear in input_energy in the above segment.
 
 
@@ -170,12 +170,12 @@ namespace LHC_FASER
 
   protected:
 
-    segment_term_set MINtoMAX_segment;
+    segmentTermSet MINtoMAX_segment;
     // the terms between minimum_energy & maximum_energy.
 
-    lepton_distribution_expansion_term MINtoMAX_const;
+    leptonDistributionExpansionTerm MINtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoMAX_lin;
+    leptonDistributionExpansionTerm MINtoMAX_lin;
     // the term linear in input_energy in the above segment.
 
 
@@ -215,28 +215,28 @@ namespace LHC_FASER
     double Ehk;
 
 
-    segment_term_set MINtoLK_segment;
+    segmentTermSet MINtoLK_segment;
     // the terms between minimum_energy & Elk.
 
-    lepton_distribution_expansion_term MINtoLK_const;
+    leptonDistributionExpansionTerm MINtoLK_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_log;
+    leptonDistributionExpansionTerm MINtoLK_log;
     // the term linear in the logarithm of input_energy in the above segment.
 
 
-    segment_term_set LKtoHK_segment;
+    segmentTermSet LKtoHK_segment;
     // the terms between Elk & Ehk.
 
-    lepton_distribution_expansion_term LKtoHK_const;
+    leptonDistributionExpansionTerm LKtoHK_const;
     // the term constant with respect to input_energy in the above segment.
 
 
-    segment_term_set HKtoMAX_segment;
+    segmentTermSet HKtoMAX_segment;
     // the terms between Ehk & maximum_energy.
 
-    lepton_distribution_expansion_term HKtoMAX_const;
+    leptonDistributionExpansionTerm HKtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_log;
+    leptonDistributionExpansionTerm HKtoMAX_log;
     // the term linear in the logarithm of input_energy in the above segment.
 
 
@@ -279,41 +279,41 @@ namespace LHC_FASER
     double Ehk;
 
 
-    segment_term_set MINtoLK_segment;
+    segmentTermSet MINtoLK_segment;
     // the terms between minimum_energy & Elk.
 
-    lepton_distribution_expansion_term MINtoLK_inv;
+    leptonDistributionExpansionTerm MINtoLK_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term MINtoLK_const;
+    leptonDistributionExpansionTerm MINtoLK_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_log;
+    leptonDistributionExpansionTerm MINtoLK_log;
     // the term linear in the logarithm of input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_lin;
+    leptonDistributionExpansionTerm MINtoLK_lin;
     // the term linear in input_energy in the above segment.
 
 
-    segment_term_set LKtoHK_segment;
+    segmentTermSet LKtoHK_segment;
     // the terms between Elk & Ehk.
 
-    lepton_distribution_expansion_term LKtoHK_inv;
+    leptonDistributionExpansionTerm LKtoHK_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term LKtoHK_const;
+    leptonDistributionExpansionTerm LKtoHK_const;
     // the term constant with respect to input_energy in the above segment.
 
 
-    segment_term_set HKtoMAX_segment;
+    segmentTermSet HKtoMAX_segment;
     // the terms between Ehk & maximum_energy.
 
-    lepton_distribution_expansion_term HKtoMAX_inv;
+    leptonDistributionExpansionTerm HKtoMAX_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term HKtoMAX_const;
+    leptonDistributionExpansionTerm HKtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_log;
+    leptonDistributionExpansionTerm HKtoMAX_log;
     // the term linear in the logarithm of input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_lin;
+    leptonDistributionExpansionTerm HKtoMAX_lin;
     // the term linear in input_energy in the above segment.
 
 
@@ -356,41 +356,41 @@ namespace LHC_FASER
     double Ehk;
 
 
-    segment_term_set MINtoLK_segment;
+    segmentTermSet MINtoLK_segment;
     // the terms between minimum_energy & Elk.
 
-    lepton_distribution_expansion_term MINtoLK_inv;
+    leptonDistributionExpansionTerm MINtoLK_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term MINtoLK_const;
+    leptonDistributionExpansionTerm MINtoLK_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_log;
+    leptonDistributionExpansionTerm MINtoLK_log;
     // the term linear in the logarithm of input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_lin;
+    leptonDistributionExpansionTerm MINtoLK_lin;
     // the term linear in input_energy in the above segment.
 
 
-    segment_term_set LKtoHK_segment;
+    segmentTermSet LKtoHK_segment;
     // the terms between Elk & Ehk.
 
-    lepton_distribution_expansion_term LKtoHK_inv;
+    leptonDistributionExpansionTerm LKtoHK_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term LKtoHK_const;
+    leptonDistributionExpansionTerm LKtoHK_const;
     // the term constant with respect to input_energy in the above segment.
 
 
-    segment_term_set HKtoMAX_segment;
+    segmentTermSet HKtoMAX_segment;
     // the terms between Ehk & maximum_energy.
 
-    lepton_distribution_expansion_term HKtoMAX_inv;
+    leptonDistributionExpansionTerm HKtoMAX_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term HKtoMAX_const;
+    leptonDistributionExpansionTerm HKtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_log;
+    leptonDistributionExpansionTerm HKtoMAX_log;
     // the term linear in the logarithm of input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_lin;
+    leptonDistributionExpansionTerm HKtoMAX_lin;
     // the term linear in input_energy in the above segment.
 
 
@@ -435,28 +435,28 @@ namespace LHC_FASER
       double Ehk;
 
 
-      segment_term_set MINtoLK_segment;
+      segmentTermSet MINtoLK_segment;
       // the terms between minimum_energy & Elk.
 
-      lepton_distribution_expansion_term MINtoLK_const;
+      leptonDistributionExpansionTerm MINtoLK_const;
       // the term constant with respect to input_energy in the above segment.
-      lepton_distribution_expansion_term MINtoLK_log;
+      leptonDistributionExpansionTerm MINtoLK_log;
       // the term linear in the logarithm of input_energy in the above segment.
 
 
-      segment_term_set LKtoHK_segment;
+      segmentTermSet LKtoHK_segment;
       // the terms between Elk & Ehk.
 
-      lepton_distribution_expansion_term LKtoHK_const;
+      leptonDistributionExpansionTerm LKtoHK_const;
       // the term constant with respect to input_energy in the above segment.
 
 
-      segment_term_set HKtoMAX_segment;
+      segmentTermSet HKtoMAX_segment;
       // the terms between Ehk & maximum_energy.
 
-      lepton_distribution_expansion_term HKtoMAX_const;
+      leptonDistributionExpansionTerm HKtoMAX_const;
       // the term constant with respect to input_energy in the above segment.
-      lepton_distribution_expansion_term HKtoMAX_log;
+      leptonDistributionExpansionTerm HKtoMAX_log;
       // the term linear in the logarithm of input_energy in the above segment.
 
 
@@ -556,55 +556,55 @@ namespace LHC_FASER
 
 
     double current_term_coefficient;
-    // this is for holding the coefficient being calculated.
+    // this is for holding the coefficientValue being calculated.
 
-    segment_term_set MINtoLK_segment;
+    segmentTermSet MINtoLK_segment;
     // the terms between minimum_energy & Elk.
 
-    lepton_distribution_expansion_term MINtoLK_inv;
+    leptonDistributionExpansionTerm MINtoLK_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term MINtoLK_const;
+    leptonDistributionExpansionTerm MINtoLK_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_log;
+    leptonDistributionExpansionTerm MINtoLK_log;
     // the term linear in the logarithm of input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_lin;
+    leptonDistributionExpansionTerm MINtoLK_lin;
     // the term linear in input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_linlog;
+    leptonDistributionExpansionTerm MINtoLK_linlog;
     // the term linear in input_energy & in the logarithm of input_energy in
     // the above segment.
-    lepton_distribution_expansion_term MINtoLK_sq;
+    leptonDistributionExpansionTerm MINtoLK_sq;
     // the term quadratic in input_energy in the above segment.
 
 
-    segment_term_set LKtoHK_segment;
+    segmentTermSet LKtoHK_segment;
     // the terms between Elk & Ehk.
 
-    lepton_distribution_expansion_term LKtoHK_const;
+    leptonDistributionExpansionTerm LKtoHK_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term LKtoHK_lin;
+    leptonDistributionExpansionTerm LKtoHK_lin;
     // the term linear in input_energy in the above
     // segment.
-    lepton_distribution_expansion_term LKtoHK_sq;
+    leptonDistributionExpansionTerm LKtoHK_sq;
     // the term quadratic in input_energy in the above segment.
 
 
-    segment_term_set HKtoMAX_segment;
+    segmentTermSet HKtoMAX_segment;
     // the terms between Ehk & maximum_energy.
 
-    lepton_distribution_expansion_term HKtoMAX_inv;
+    leptonDistributionExpansionTerm HKtoMAX_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term HKtoMAX_const;
+    leptonDistributionExpansionTerm HKtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_log;
+    leptonDistributionExpansionTerm HKtoMAX_log;
     // the term linear in the logarithm of input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_lin;
+    leptonDistributionExpansionTerm HKtoMAX_lin;
     // the term linear in input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_linlog;
+    leptonDistributionExpansionTerm HKtoMAX_linlog;
     // the term linear in input_energy & in the logarithm of input_energy in
     // the above segment.
-    lepton_distribution_expansion_term HKtoMAX_sq;
+    leptonDistributionExpansionTerm HKtoMAX_sq;
     // the term quadratic in input_energy in the above segment.
 
 
@@ -732,55 +732,55 @@ namespace LHC_FASER
 
 
     double current_term_coefficient;
-    // this is for holding the coefficient being calculated.
+    // this is for holding the coefficientValue being calculated.
 
-    segment_term_set MINtoLK_segment;
+    segmentTermSet MINtoLK_segment;
     // the terms between minimum_energy & Elk.
 
-    lepton_distribution_expansion_term MINtoLK_inv;
+    leptonDistributionExpansionTerm MINtoLK_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term MINtoLK_const;
+    leptonDistributionExpansionTerm MINtoLK_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_log;
+    leptonDistributionExpansionTerm MINtoLK_log;
     // the term linear in the logarithm of input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_lin;
+    leptonDistributionExpansionTerm MINtoLK_lin;
     // the term linear in input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoLK_linlog;
+    leptonDistributionExpansionTerm MINtoLK_linlog;
     // the term linear in input_energy & in the logarithm of input_energy in
     // the above segment.
-    lepton_distribution_expansion_term MINtoLK_sq;
+    leptonDistributionExpansionTerm MINtoLK_sq;
     // the term quadratic in input_energy in the above segment.
 
 
-    segment_term_set LKtoHK_segment;
+    segmentTermSet LKtoHK_segment;
     // the terms between Elk & Ehk.
 
-    lepton_distribution_expansion_term LKtoHK_const;
+    leptonDistributionExpansionTerm LKtoHK_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term LKtoHK_lin;
+    leptonDistributionExpansionTerm LKtoHK_lin;
     // the term linear in input_energy in the above
     // segment.
-    lepton_distribution_expansion_term LKtoHK_sq;
+    leptonDistributionExpansionTerm LKtoHK_sq;
     // the term quadratic in input_energy in the above segment.
 
 
-    segment_term_set HKtoMAX_segment;
+    segmentTermSet HKtoMAX_segment;
     // the terms between Ehk & maximum_energy.
 
-    lepton_distribution_expansion_term HKtoMAX_inv;
+    leptonDistributionExpansionTerm HKtoMAX_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
-    lepton_distribution_expansion_term HKtoMAX_const;
+    leptonDistributionExpansionTerm HKtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_log;
+    leptonDistributionExpansionTerm HKtoMAX_log;
     // the term linear in the logarithm of input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_lin;
+    leptonDistributionExpansionTerm HKtoMAX_lin;
     // the term linear in input_energy in the above segment.
-    lepton_distribution_expansion_term HKtoMAX_linlog;
+    leptonDistributionExpansionTerm HKtoMAX_linlog;
     // the term linear in input_energy & in the logarithm of input_energy in
     // the above segment.
-    lepton_distribution_expansion_term HKtoMAX_sq;
+    leptonDistributionExpansionTerm HKtoMAX_sq;
     // the term quadratic in input_energy in the above segment.
 
 
@@ -831,14 +831,14 @@ namespace LHC_FASER
     double energyDifference;
     // maximum_energy - minimum_energy
 
-    segment_term_set MINtoMAX_segment;
+    segmentTermSet MINtoMAX_segment;
     // the terms between minimum_energy & maximum_energy.
 
-    lepton_distribution_expansion_term MINtoMAX_const;
+    leptonDistributionExpansionTerm MINtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoMAX_lin;
+    leptonDistributionExpansionTerm MINtoMAX_lin;
     // the term linear in input_energy in the above segment.
-    lepton_distribution_expansion_term MINtoMAX_sq;
+    leptonDistributionExpansionTerm MINtoMAX_sq;
     // the term quadratic in input_energy in the above segment.
 
 
@@ -1020,10 +1020,10 @@ namespace LHC_FASER
     CppSLHA::particle_property_set const* const left_sfermion;
     CppSLHA::particle_property_set const* const right_sfermion;
 
-    segment_term_set MINtoMAX_segment;
+    segmentTermSet MINtoMAX_segment;
     // the terms between minimum_energy & maximum_energy.
 
-    lepton_distribution_expansion_term MINtoMAX_const;
+    leptonDistributionExpansionTerm MINtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
 
 
@@ -1071,10 +1071,10 @@ namespace LHC_FASER
     CppSLHA::particle_property_set const* const leftDownIsospinSfermion;
     CppSLHA::particle_property_set const* const rightDownIsospinSfermion;
 
-    segment_term_set MINtoMAX_segment;
+    segmentTermSet MINtoMAX_segment;
     // the terms between minimum_energy & maximum_energy.
 
-    lepton_distribution_expansion_term MINtoMAX_const;
+    leptonDistributionExpansionTerm MINtoMAX_const;
     // the term constant with respect to input_energy in the above segment.
 
 

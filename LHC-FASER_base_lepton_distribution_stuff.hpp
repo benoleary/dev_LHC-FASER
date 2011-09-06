@@ -111,150 +111,211 @@ namespace LHC_FASER
 
 
   // this class is for emulating doing minor symbolic algebra.
-  class lepton_distribution_expansion_term
+  class leptonDistributionExpansionTerm
   {
-
   public:
-
-    lepton_distribution_expansion_term( int const given_power_of_energy,
-                                        int const given_power_of_logarithm,
-                                        double const given_coefficient,
-               lepton_distribution_expansion_term* const given_reference_term )
+    leptonDistributionExpansionTerm( int const powerOfEnergy,
+                                     int const powerOfLogarithm,
+                                     double const coefficientValue,
+                  leptonDistributionExpansionTerm* const referenceTerm = NULL )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~leptonDistributionExpansionTerm()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    // if not given a reference term, this sets its pointer to NULL.
-    lepton_distribution_expansion_term( int const given_power_of_energy,
-                                        int const given_power_of_logarithm,
-                                        double const given_coefficient )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~lepton_distribution_expansion_term()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    lepton_distribution_expansion_term const*
-    get_reference_term()
+    leptonDistributionExpansionTerm const*
+    getReferenceTerm()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     int
-    get_power_of_energy()
+    getPowerOfEnergy()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     int
-    get_power_of_logarithm()
+    getPowerOfLogarithm()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
-    get_coefficient()
+    getCoefficient()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     void
-    set_coefficient( double const given_value )
+    setCoefficient( double const coefficientValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     void
-    normalize_coefficient( double const normalization )
-    // this just divides coefficient by normalization.
+    normalizeCoefficient( double const normalizingFactor )
+    // this just multiplies coefficientValue by normalizingFactor.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    inline double
-    evaluate( double const given_energy )
+    virtual double
+    evaluate( double const inputEnergy )
     const
     // this evaluates this term for the given input energy.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
+    virtual double
+    getArea( double startEnergy,
+             double endEnergy )
+    const
+    // this gives the definite integral of the term from startEnergy to
+    // endEnergy.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-
-    int power_of_energy;
-    int power_of_logarithm;
-    double coefficient;
-    lepton_distribution_expansion_term* const reference_term;
+    int powerOfEnergy;
+    int powerOfLogarithm;
+    double coefficientValue;
+    leptonDistributionExpansionTerm* const referenceTerm;
     // this is for ease of updating coefficients in tauon-decay distributions.
+    static double const minimumInputEnergy;
+    // this is used to prevent trying to take logarithms of 0.0 or less.
+  };
 
+  class leptonDistributionInverseTerm : public leptonDistributionExpansionTerm
+  {
+  public:
+    leptonDistributionInverseTerm( double const coefficientValue,
+                  leptonDistributionExpansionTerm* const referenceTerm = NULL )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~leptonDistributionInverseTerm()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual double
+    evaluate( double const inputEnergy )
+    const
+    // this evaluates this term for the given input energy.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual double
+    getArea( double startEnergy,
+             double endEnergy )
+    const
+    // this gives the definite integral of the term from startEnergy to
+    // endEnergy.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    // nothing.
+  };
+
+  class leptonDistributionConstantTerm : public leptonDistributionExpansionTerm
+  {
+  public:
+    leptonDistributionConstantTerm( double const coefficientValue,
+                  leptonDistributionExpansionTerm* const referenceTerm = NULL )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~leptonDistributionConstantTerm()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual double
+    evaluate( double const inputEnergy )
+    const
+    // this evaluates this term for the given input energy.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual double
+    getArea( double startEnergy,
+             double endEnergy )
+    const
+    // this gives the definite integral of the term from startEnergy to
+    // endEnergy.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    // nothing.
+  };
+
+  class leptonDistributionPowerTerm : public leptonDistributionExpansionTerm
+  {
+  public:
+    leptonDistributionPowerTerm( double const coefficientValue,
+                  leptonDistributionExpansionTerm* const referenceTerm = NULL )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~leptonDistributionPowerTerm()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual double
+    evaluate( double const inputEnergy )
+    const
+    // this evaluates this term for the given input energy.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual double
+    getArea( double startEnergy,
+             double endEnergy )
+    const
+    // this gives the definite integral of the term from startEnergy to
+    // endEnergy.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    // nothing.
   };
 
 
-  // this is a class to hold a set of lepton_distribution_expansion_term
+  // this is a class to hold a set of leptonDistributionExpansionTerm
   // objects relevant for an energy range for the distribution.
-  class segment_term_set
+  class segmentTermSet
   {
-
   public:
-
-    segment_term_set()
+    segmentTermSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~segment_term_set()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    double
-    get_segment_start()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    void
-    set_segment_start( double const given_value )
+    ~segmentTermSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     double
-    get_segment_end()
+    getSegmentStart()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     void
-    set_segment_end( double const given_value )
+    setSegmentStart( double const inputValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    void
-    set_segment_range( double const given_start,
-                       double const given_end )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    std::vector< lepton_distribution_expansion_term* > const*
-    get_terms()
+    double
+    getSegmentEnd()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
+    void
+    setSegmentEnd( double const inputValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    setSegmentRange( double const rangeStart,
+                     double const rangeEnd )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    std::vector< leptonDistributionExpansionTerm* > const*
+    getTerms()
+    const
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
     int
-    get_number_of_terms()
+    getNumberOfTerms()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-
-    lepton_distribution_expansion_term*
-    add_term( lepton_distribution_expansion_term* const given_term )
+    leptonDistributionExpansionTerm*
+    addTerm( leptonDistributionExpansionTerm* const termToAdd )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     void
-    normalize_coefficients( double const normalization )
-    // this goes through each term & gets it to divide its coefficient by
-    // normalization.
+    normalizeCoefficients( double const normalizingFactor )
+    // this goes through each term & gets it to multiply its coefficient
+    // by normalizingFactor.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
-    get_coefficient( int const powerOfEnergy,
-                     int const powerOfLogarithm )
+    getCoefficient( int const powerOfEnergy,
+                    int const powerOfLogarithm )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     double
-    evaluate( double const given_energy )
+    evaluate( double const inputEnergy )
     const
     // this evaluates the sum of the set of terms for the given input energy.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
+    double
+    getArea()
+    const
+    // this evaluates the sum of the areas of the set of terms for the
+    // segment's range.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-
-    std::vector< lepton_distribution_expansion_term* > segment_terms;
-    double segment_start;
-    double segment_end;
-
+    std::vector< leptonDistributionExpansionTerm* > segmentTerms;
+    double segmentStart;
+    double segmentEnd;
   };
 
 
@@ -265,44 +326,38 @@ namespace LHC_FASER
    * (yes, left-handed tau leptons / right-handed tau antileptons give harder
    * muons / electrons but softer pions than the other helicity.)
    */
-  class tau_decay_coefficient
+  class tauDecayCoefficient
   {
-
   public:
-
-    tau_decay_coefficient()
+    tauDecayCoefficient()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~tau_decay_coefficient()
+    ~tauDecayCoefficient()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual double
-    operator()( int const visible_product_energy_power
-                /* the power of the visible productParticle's energy for the term. */,
-                int const visible_product_log_power
-/* the power of the logarithm of the visible productParticle's energy for the term. */,
-                int const tau_lepton_energy_power
+    operator()( int const visibleProductEnergyPower
+                 /* the power of the visible product's energy for the term. */,
+                int const visibleProductLogPower
+/* the power of the logarithm of the visible product's energy for the term. */,
+                int const tauLeptonEnergyPower
                 /* the power of the tau lepton's energy for the term. */,
-                int const tau_lepton_log_power
+                int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const Emin
+                double const tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
-                double const Emax
+                double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
-                bool const is_inside_range )
+                bool const isInsideRange )
     const
     = 0;
     /* this is overridden by functions which return the value of the
-     * coefficient for the specified term for the tauon decay productParticle from the
+     * coefficient for the specified term for the tauon decay product from the
      * specified term for the tauon.
      */
 
-
-    //protected:
-
-      // nothing.
-
+  //protected:
+    // nothing.
   };
 
   /* this functor returns the coefficient for the muon distribution which would
@@ -312,121 +367,107 @@ namespace LHC_FASER
    * whether the muon's energy is inside the range of the tau lepton's energy
    * for this segment.
    */
-  class hard_muon_from_tau : public tau_decay_coefficient
+  class hardMuonFromTau : public tauDecayCoefficient
   {
-
   public:
-
-    hard_muon_from_tau()
+    hardMuonFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~hard_muon_from_tau()
+    ~hardMuonFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     virtual double
-    operator()( int const muon_energy_power
-                /* the power of the muon's energy for the term. */,
-                int const muon_log_power
-           /* the power of the logarithm of the muon's energy for the term. */,
-                int const tau_energy_power
-                /* the power of the tau lepton's energy for the term. */,
-                int const tau_log_power
-     /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const Emin
-         /* the minimum of the range of the tau lepton energies considered. */,
-                double const Emax
-         /* the maximum of the range of the tau lepton energies considered. */,
-                bool const is_inside_range )
+    operator()( int const visibleProductEnergyPower
+                /* the power of the visible product's energy for the term. */,
+               int const visibleProductLogPower
+/* the power of the logarithm of the visible product's energy for the term. */,
+               int const tauLeptonEnergyPower
+               /* the power of the tau lepton's energy for the term. */,
+               int const tauLeptonLogPower
+    /* the power of the logarithm of the tau lepton's energy for the term. */,
+               double const tauMinEnergy
+        /* the minimum of the range of the tau lepton energies considered. */,
+               double const tauMaxEnergy
+        /* the maximum of the range of the tau lepton energies considered. */,
+               bool const isInsideRange )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
-    //protected:
-
-      // nothing.
-
+  //protected:
+    // nothing.
   };
 
-  /* this functor returns the coefficient for the muon distribution which would
+  /* this functor returns the coefficientValue for the muon distribution which would
    * come from a right-handed tau lepton distribution of the given power of the
    * tau lepton's energy & power of logarithm thereof, for requested integer
    * powers of the muon's energy or logarithm thereof, which also depends on
    * whether the muon's energy is inside the range of the tau lepton's energy
    * for this segment.
    */
-  class soft_muon_from_tau : public tau_decay_coefficient
+  class softMuonFromTau : public tauDecayCoefficient
   {
-
   public:
-
-    soft_muon_from_tau()
+    softMuonFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~soft_muon_from_tau()
+    ~softMuonFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     virtual double
-    operator()( int const muon_energy_power
-                /* the power of the muon's energy for the term. */,
-                int const muon_log_power
-           /* the power of the logarithm of the muon's energy for the term. */,
-                int const tau_energy_power
-                /* the power of the tau lepton's energy for the term. */,
-                int const tau_log_power
-     /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const Emin
-         /* the minimum of the range of the tau lepton energies considered. */,
-                double const Emax
-         /* the maximum of the range of the tau lepton energies considered. */,
-                bool const is_inside_range )
+    operator()( int const visibleProductEnergyPower
+                /* the power of the visible product's energy for the term. */,
+               int const visibleProductLogPower
+/* the power of the logarithm of the visible product's energy for the term. */,
+               int const tauLeptonEnergyPower
+               /* the power of the tau lepton's energy for the term. */,
+               int const tauLeptonLogPower
+    /* the power of the logarithm of the tau lepton's energy for the term. */,
+               double const tauMinEnergy
+        /* the minimum of the range of the tau lepton energies considered. */,
+               double const tauMaxEnergy
+        /* the maximum of the range of the tau lepton energies considered. */,
+               bool const isInsideRange )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
-    //protected:
-
-      // nothing.
-
+  //protected:
+    // nothing.
   };
 
-  /* this functor returns the coefficient for the pion distribution which would
+  /* this functor returns the coefficientValue for the pion distribution which would
    * come from a right-handed tau lepton distribution of the given power of the
    * tau lepton's energy & power of logarithm thereof, for requested integer
    * powers of the pion's energy or logarithm thereof, which also depends on
    * whether the pion's energy is inside the range of the tau lepton's energy
    * for this segment.
    */
-  class hard_pion_from_tau : public tau_decay_coefficient
+  class hardPionFromTau : public tauDecayCoefficient
   {
 
   public:
 
-    hard_pion_from_tau()
+    hardPionFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual
-    ~hard_pion_from_tau()
+    ~hardPionFromTau()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
     virtual double
-    operator()( int const pion_energy_power
-                /* the power of the pion's energy for the term. */,
-                int const pion_log_power
-           /* the power of the logarithm of the pion's energy for the term. */,
-                int const tau_energy_power
-                /* the power of the tau lepton's energy for the term. */,
-                int const tau_log_power
-     /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const Emin
-         /* the minimum of the range of the tau lepton energies considered. */,
-                double const Emax
-         /* the maximum of the range of the tau lepton energies considered. */,
-                bool const is_inside_range )
+    operator()( int const visibleProductEnergyPower
+                /* the power of the visible product's energy for the term. */,
+               int const visibleProductLogPower
+/* the power of the logarithm of the visible product's energy for the term. */,
+               int const tauLeptonEnergyPower
+               /* the power of the tau lepton's energy for the term. */,
+               int const tauLeptonLogPower
+    /* the power of the logarithm of the tau lepton's energy for the term. */,
+               double const tauMinimumEnergy
+        /* the minimum of the range of the tau lepton energies considered. */,
+               double const tauMaximumEnergy
+        /* the maximum of the range of the tau lepton energies considered. */,
+               bool const isInsideRange )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -437,14 +478,14 @@ namespace LHC_FASER
 
   };
 
-  /* this functor returns the coefficient for the pion distribution which would
+  /* this functor returns the coefficientValue for the pion distribution which would
    * come from a left-handed tau lepton distribution of the given power of the
    * tau lepton's energy & power of logarithm thereof, for requested integer
    * powers of the pion's energy or logarithm thereof, which also depends on
    * whether the pion's energy is inside the range of the tau lepton's energy
    * for this segment.
    */
-  class soft_pion_from_tau : public tau_decay_coefficient
+  class soft_pion_from_tau : public tauDecayCoefficient
   {
 
   public:
@@ -458,44 +499,43 @@ namespace LHC_FASER
 
 
     virtual double
-    operator()( int const pion_energy_power
-                /* the power of the pion's energy for the term. */,
-                int const pion_log_power
-           /* the power of the logarithm of the pion's energy for the term. */,
-                int const tau_energy_power
-                /* the power of the tau lepton's energy for the term. */,
-                int const tau_log_power
-     /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const Emin
-         /* the minimum of the range of the tau lepton energies considered. */,
-                double const Emax
-         /* the maximum of the range of the tau lepton energies considered. */,
-                bool const is_inside_range )
+    operator()( int const visibleProductEnergyPower
+                /* the power of the visible product's energy for the term. */,
+               int const visibleProductLogPower
+/* the power of the logarithm of the visible product's energy for the term. */,
+               int const tauLeptonEnergyPower
+               /* the power of the tau lepton's energy for the term. */,
+               int const tauLeptonLogPower
+    /* the power of the logarithm of the tau lepton's energy for the term. */,
+               double const tauMinimumEnergy
+        /* the minimum of the range of the tau lepton energies considered. */,
+               double const tauMaximumEnergy
+        /* the maximum of the range of the tau lepton energies considered. */,
+               bool const isInsideRange )
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
-    //protected:
-
-      // nothing.
+  //protected:
+    // nothing.
 
   };
 
 
-  /* this holds together a pair of segment_term_set pointers for the 2 parts of
-   * of the distribution for the visible decay productParticle of a tau lepton with
-   * distribution given by the 3rd segment_term_set pointer the
+  /* this holds together a pair of segmentTermSet pointers for the 2 parts of
+   * of the distribution for the visible decay product of a tau lepton with
+   * distribution given by the 3rd segmentTermSet pointer the
    * tau_segment_triple has. it performs the role of updating the visible decay
-   * productParticle terms based on the reference terms.
+   * product terms based on the reference terms.
    */
   class tau_segment_triple
   {
 
   public:
 
-    tau_segment_triple( std::vector< segment_term_set* >* given_segment_set,
-                        segment_term_set* given_segment,
-                        tau_decay_coefficient const* const given_tau_decay )
+    tau_segment_triple( std::vector< segmentTermSet* >* given_segment_set,
+                        segmentTermSet* given_segment,
+                        tauDecayCoefficient const* const given_tau_decay )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     ~tau_segment_triple()
@@ -509,16 +549,16 @@ namespace LHC_FASER
 
   protected:
 
-    segment_term_set* reference_segment;
-    segment_term_set* low_segment;
-    segment_term_set* high_segment;
-    tau_decay_coefficient const* const tau_decay;
+    segmentTermSet* reference_segment;
+    segmentTermSet* low_segment;
+    segmentTermSet* high_segment;
+    tauDecayCoefficient const* const tau_decay;
 
   };
 
   /* this class is just an abstract base class for some polymorphic derived
    * classes. However, it does do most of the work, the derived classes just
-   * set up the lepton_distribution_expansion_term objects properly.
+   * set up the leptonDistributionExpansionTerm objects properly.
    */
   class leptonEnergyDistribution : public getsReadiedForNewPoint
   {
@@ -542,15 +582,15 @@ namespace LHC_FASER
     double
     getMaximumEnergy()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    std::vector< segment_term_set* >*
+    std::vector< segmentTermSet* >*
     getSegments()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    std::vector< segment_term_set* > const*
+    std::vector< segmentTermSet* > const*
     inspectSegments()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
-    valueAt( double const givenEnergy )
+    valueAt( double const inputEnergy )
     // this returns the value of the distribution at the given value, with
     // arbitrary normalization (different for each distribution).
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -562,7 +602,7 @@ namespace LHC_FASER
     double minimumEnergy;
     double maximumEnergy;
 
-    std::vector< segment_term_set* > segments;
+    std::vector< segmentTermSet* > segments;
 
     CppSLHA::particle_property_set const* const firstParticle;
     effectiveSquarkMassHolder* const effectiveSquarkMass;
@@ -585,12 +625,12 @@ namespace LHC_FASER
     double fourthMass;
     // the lightest neutralino mass in the standard decay, but could be
     // something else in some crazy cascade.
-    double normalization;
-    // this is *an overall denominator*, rather than multiplicative
+    double normalizingDivisor;
+    // this is *an overall denominator*, rather than a multiplicative
     // normalization.
-    double normalizationInverse;
-    // this is *an overall multiplicative normalization*
-    // (= 1.0 / normalization).
+    double normalizingFactor;
+    // this *is* an overall multiplicative normalization
+    // (= 1.0 / normalizingDivisor ).
     // this is not strictly necessary, but is handy for distributions from
     // on-shell cascades:
     double productionFrameEnergy;
@@ -625,7 +665,7 @@ namespace LHC_FASER
 
     visible_tau_decay_product( readierForNewPoint* const given_readier,
                       leptonEnergyDistribution* const given_tau_distribution,
-                               tau_decay_coefficient const* const tau_decay )
+                               tauDecayCoefficient const* const tau_decay )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual
@@ -667,260 +707,316 @@ namespace LHC_FASER
 
 
 
-  inline lepton_distribution_expansion_term const*
-  lepton_distribution_expansion_term::get_reference_term()
+  inline leptonDistributionExpansionTerm const*
+  leptonDistributionExpansionTerm::getReferenceTerm()
   const
   {
-
-    return reference_term;
-
+    return referenceTerm;
   }
 
   inline int
-  lepton_distribution_expansion_term::get_power_of_energy()
+  leptonDistributionExpansionTerm::getPowerOfEnergy()
   const
   {
-
-    return power_of_energy;
-
+    return powerOfEnergy;
   }
 
   inline int
-  lepton_distribution_expansion_term::get_power_of_logarithm()
+  leptonDistributionExpansionTerm::getPowerOfLogarithm()
   const
   {
-
-    return power_of_logarithm;
-
+    return powerOfLogarithm;
   }
 
   inline double
-  lepton_distribution_expansion_term::get_coefficient()
+  leptonDistributionExpansionTerm::getCoefficient()
   const
   {
-
-    return coefficient;
-
+    return coefficientValue;
   }
 
   inline void
-  lepton_distribution_expansion_term::set_coefficient(
-                                                     double const given_value )
+  leptonDistributionExpansionTerm::setCoefficient(
+                                                double const coefficientValue )
   {
-
-     coefficient = given_value;
-
+     this->coefficientValue = coefficientValue;
   }
 
   inline void
-  lepton_distribution_expansion_term::normalize_coefficient(
-                                           double const inverse_normalization )
-  // this just divides coefficient by normalization.
+  leptonDistributionExpansionTerm::normalizeCoefficient(
+                                               double const normalizingFactor )
+  // this just multiplies coefficientValue by normalizingFactor.
   {
-
-    coefficient *= inverse_normalization;
-
+    coefficientValue *= normalizingFactor;
   }
 
 
 
   inline double
-  segment_term_set::get_segment_start()
+  leptonDistributionInverseTerm::evaluate( double const inputEnergy )
   const
+  // this evaluates this term for the given input energy.
   {
-
-    return segment_start;
-
-  }
-
-  inline void
-  segment_term_set::set_segment_start( double const given_value )
-  {
-
-    segment_start = given_value;
-
+    return ( coefficientValue / inputEnergy );
   }
 
   inline double
-  segment_term_set::get_segment_end()
+  leptonDistributionInverseTerm::leptonDistributionExpansionTerm::getArea(
+                                                            double startEnergy,
+                                                             double endEnergy )
   const
+  // this gives the definite integral of the term from startEnergy to
+  // endEnergy.
   {
-
-    return segment_end;
-
-  }
-
-  inline void
-  segment_term_set::set_segment_end( double const given_value )
-  {
-
-    segment_end = given_value;
-
-  }
-
-  inline void
-  segment_term_set::set_segment_range( double const given_start,
-                                       double const given_end )
-  {
-
-    segment_start = given_start;
-    segment_end = given_end;
-
-  }
-
-  inline std::vector< lepton_distribution_expansion_term* > const*
-  segment_term_set::get_terms()
-  const
-  {
-
-    return &segment_terms;
-
-  }
-
-  inline int
-  segment_term_set::get_number_of_terms()
-  const
-  {
-
-    return segment_terms.size();
-
-  }
-
-  inline lepton_distribution_expansion_term*
-  segment_term_set::add_term(
-                         lepton_distribution_expansion_term* const given_term )
-  {
-
-    segment_terms.push_back( given_term );
-
-    return given_term;
-
-  }
-
-  inline void
-  segment_term_set::normalize_coefficients(
-                                           double const inverse_normalization )
-  // this goes through each term & gets it to multiply its coefficient by
-  // inverse_normalization.
-  {
-
-    for( std::vector< lepton_distribution_expansion_term* >::iterator
-         term_iterator = segment_terms.begin();
-         segment_terms.end() > term_iterator;
-         ++term_iterator )
+    double returnValue( 0.0 );
+    if( 0.0 != coefficientValue )
+    {
+      if( minimumInputEnergy > startEnergy )
       {
-
-        (*term_iterator)->normalize_coefficient( inverse_normalization );
-
+        startEnergy = minimumInputEnergy;
       }
 
+      if( endEnergy > startEnergy )
+      {
+        returnValue
+        = ( coefficientValue * log( ( endEnergy / startEnergy ) ) );
+      }
+    }
+    return returnValue;
+  }
+
+
+
+  inline double
+  leptonDistributionConstantTerm::evaluate( double const inputEnergy )
+  const
+  // this evaluates this term for the given input energy.
+  {
+    return coefficientValue;
   }
 
   inline double
-  segment_term_set::get_coefficient( int const powerOfEnergy,
-                                     int const powerOfLogarithm )
+  leptonDistributionConstantTerm::leptonDistributionExpansionTerm::getArea(
+                                                            double startEnergy,
+                                                             double endEnergy )
+  const
+  // this gives the definite integral of the term from startEnergy to
+  // endEnergy.
+  {
+    double returnValue( 0.0 );
+    if( 0.0 != coefficientValue )
+    {
+      if( minimumInputEnergy > startEnergy )
+      {
+        startEnergy = minimumInputEnergy;
+      }
+
+      if( endEnergy > startEnergy )
+      {
+        returnValue
+        = ( coefficientValue * ( endEnergy - startEnergy ) );
+      }
+    }
+    return returnValue;
+  }
+
+
+
+  inline double
+  leptonDistributionPowerTerm::evaluate( double const inputEnergy )
+  const
+  // this evaluates this term for the given input energy.
+  {
+    if( 0.0 != coefficientValue )
+    {
+      double returnValue( coefficientValue );
+
+      for( int powerCount( powerOfEnergy );
+           0 < powerCount;
+           --powerCount )
+      {
+        returnValue *= inputEnergy;
+      }
+      return returnValue;
+    }
+    else
+    {
+      return 0.0;
+    }
+  }
+
+
+
+  inline double
+  segmentTermSet::getSegmentStart()
+  const
+  {
+    return segmentStart;
+  }
+
+  inline void
+  segmentTermSet::setSegmentStart( double const inputValue )
+  {
+    segmentStart = inputValue;
+  }
+
+  inline double
+  segmentTermSet::getSegmentEnd()
+  const
+  {
+    return segmentEnd;
+  }
+
+  inline void
+  segmentTermSet::setSegmentEnd( double const inputValue )
+  {
+    segmentEnd = inputValue;
+  }
+
+  inline void
+  segmentTermSet::setSegmentRange( double const rangeStart,
+                                   double const rangeEnd )
+  {
+    segmentStart = rangeStart;
+    segmentEnd = rangeEnd;
+  }
+
+  inline std::vector< leptonDistributionExpansionTerm* > const*
+  segmentTermSet::getTerms()
+  const
+  {
+    return &segmentTerms;
+  }
+
+  inline int
+  segmentTermSet::getNumberOfTerms()
+  const
+  {
+    return (int)segmentTerms.size();
+  }
+
+  inline leptonDistributionExpansionTerm*
+  segmentTermSet::addTerm( leptonDistributionExpansionTerm* const termToAdd )
+  {
+    segmentTerms.push_back( termToAdd );
+    return termToAdd;
+  }
+
+  inline void
+  segmentTermSet::normalizeCoefficients( double const normalizingFactor )
+  // this goes through each term & gets it to multiply its coefficientValue by
+  // normalizingFactor.
+  {
+    for( std::vector< leptonDistributionExpansionTerm* >::iterator
+         termIterator( segmentTerms.begin() );
+         segmentTerms.end() > termIterator;
+         ++termIterator )
+    {
+      (*termIterator)->normalizeCoefficient( normalizingFactor );
+    }
+  }
+
+  inline double
+  segmentTermSet::getCoefficient( int const powerOfEnergy,
+                                  int const powerOfLogarithm )
   const
   {
     double returnValue( 0.0 );
-    // start by assuming that the coefficient is zero.
-    for( std::vector< lepton_distribution_expansion_term* >::const_iterator
-         termIterator( segment_terms.begin() );
-         segment_terms.end() > termIterator;
+    // start by assuming that the coefficientValue is zero.
+    for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
+         termIterator( segmentTerms.begin() );
+         segmentTerms.end() > termIterator;
          ++termIterator )
       // go through all the terms...
       {
-        if( ( powerOfEnergy == (*termIterator)->get_power_of_energy() )
+        if( ( powerOfEnergy == (*termIterator)->getPowerOfEnergy() )
             &&
-            ( powerOfLogarithm == (*termIterator)->get_power_of_logarithm() ) )
-          // if we find the requested term with a non-zero coefficient...
+            ( powerOfLogarithm == (*termIterator)->getPowerOfLogarithm() ) )
+          // if we find the requested term with a non-zero coefficientValue...
         {
-          returnValue = (*termIterator)->get_coefficient();
-          // note the coefficient to return.
-          termIterator = segment_terms.end();
+          returnValue = (*termIterator)->getCoefficient();
+          // note the coefficientValue to return.
+          termIterator = segmentTerms.end();
           // stop looking.
         }
       }
     return returnValue;
   }
 
+  inline double
+  segmentTermSet::getArea()
+  const
+  // this evaluates the sum of the areas of the set of terms for the segment's
+  // range.
+  {
+    double returnValue( 0.0 );
+    for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
+        summationIterator( segmentTerms.begin() );
+        summationIterator < segmentTerms.end();
+        ++summationIterator )
+    {
+      returnValue += (*summationIterator)->getArea( segmentStart,
+                                                    segmentEnd );
+    }
+    return returnValue;
+  }
+
+
 
   inline double
-  leptonEnergyDistribution::valueAt( double const givenEnergy )
+  leptonEnergyDistribution::valueAt( double const inputEnergy )
   // this returns the value of the distribution at the given value, with
   // arbitrary normalization (different for each distribution).
   {
-
     if( needsToPrepareForThisPoint() )
-      {
-
-        reset();
-        finishPreparingForThisPoint();
-
-      }
-
-    double return_value = 0.0;
-
-    for( std::vector< segment_term_set* >::const_iterator
-         summation_iterator = segments.begin();
-         summation_iterator != segments.end();
-         ++summation_iterator )
-      {
-
-        return_value += (*summation_iterator)->evaluate( givenEnergy );
-
-      }
-
-    return return_value;
-
+    {
+      reset();
+      finishPreparingForThisPoint();
+    }
+    double returnValue( 0.0 );
+    for( std::vector< segmentTermSet* >::const_iterator
+         summationIterator( segments.begin() );
+         segments.end() > summationIterator;
+         ++summationIterator )
+    {
+      returnValue += (*summationIterator)->evaluate( inputEnergy );
+    }
+    return returnValue;
   }
 
   inline double
   leptonEnergyDistribution::getMinimumEnergy()
   {
-
     if( needsToPrepareForThisPoint() )
-      {
-
-        reset();
-        finishPreparingForThisPoint();
-
-      }
-
+    {
+      reset();
+      finishPreparingForThisPoint();
+    }
     return minimumEnergy;
-
   }
 
   inline double
   leptonEnergyDistribution::getMaximumEnergy()
   {
-
     if( needsToPrepareForThisPoint() )
-      {
-
-        reset();
-        finishPreparingForThisPoint();
-
-      }
-
+    {
+      reset();
+      finishPreparingForThisPoint();
+    }
     return maximumEnergy;
-
   }
 
-  inline std::vector< segment_term_set* >*
+  inline std::vector< segmentTermSet* >*
   leptonEnergyDistribution::getSegments()
   {
-
     return &segments;
-
   }
 
-  inline std::vector< segment_term_set* > const*
+  inline std::vector< segmentTermSet* > const*
   leptonEnergyDistribution::inspectSegments()
   const
   {
-
     return &segments;
-
   }
 
   inline void
@@ -928,19 +1024,22 @@ namespace LHC_FASER
   // this goes through each segment & gets it to divide its terms' coefficients
   // by normalization.
   {
-
-    normalizationInverse = ( 1.0 / normalization );
-
-    for( std::vector< segment_term_set* >::iterator
-         segment_iterator = segments.begin();
-         segments.end() > segment_iterator;
-         ++segment_iterator )
-      {
-
-        (*segment_iterator)->normalize_coefficients( normalizationInverse );
-
-      }
-
+    normalizingDivisor = 0.0;
+    for( std::vector< segmentTermSet* >::iterator
+         segmentIterator = segments.begin();
+         segments.end() > segmentIterator;
+         ++segmentIterator )
+    {
+      normalizingDivisor += (*segmentIterator)->getArea();
+    }
+    normalizingFactor = ( 1.0 / normalizingDivisor );
+    for( std::vector< segmentTermSet* >::iterator
+         segmentIterator = segments.begin();
+         segments.end() > segmentIterator;
+         ++segmentIterator )
+    {
+      (*segmentIterator)->normalizeCoefficients( normalizingFactor );
+    }
   }
 
 }  // end of LHC_FASER namespace.

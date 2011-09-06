@@ -567,15 +567,15 @@ namespace LHC_FASER
     getEwsbBosonsAndMassiveVectorBosons()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    hard_muon_from_tau const*
+    hardMuonFromTau const*
     getHardMuonFromTau()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    soft_muon_from_tau const*
+    softMuonFromTau const*
     getSoftMuonFromTau()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-    hard_pion_from_tau const*
+    hardPionFromTau const*
     getHardPionFromTau()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -732,9 +732,9 @@ namespace LHC_FASER
     //decayCheckerHandler* decayCheckers;
     exclusiveBrHandler* exclusiveBrs;
 
-    hard_muon_from_tau hardMuonFromTauFunction;
-    soft_muon_from_tau softMuonFromTauFunction;
-    hard_pion_from_tau hardPionFromTauFunction;
+    hardMuonFromTau hardMuonFromTauFunction;
+    softMuonFromTau softMuonFromTauFunction;
+    hardPionFromTau hardPionFromTauFunction;
     soft_pion_from_tau softPionFromTauFunction;
 
     void
@@ -1545,21 +1545,21 @@ namespace LHC_FASER
     return &ewsbBosonsAndMassiveVectorBosons;
   }
 
-  inline hard_muon_from_tau const*
+  inline hardMuonFromTau const*
   inputHandler::getHardMuonFromTau()
   const
   {
     return &hardMuonFromTauFunction;
   }
 
-  inline soft_muon_from_tau const*
+  inline softMuonFromTau const*
   inputHandler::getSoftMuonFromTau()
   const
   {
     return &softMuonFromTauFunction;
   }
 
-  inline hard_pion_from_tau const*
+  inline hardPionFromTau const*
   inputHandler::getHardPionFromTau()
   const
   {

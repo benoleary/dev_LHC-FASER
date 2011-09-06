@@ -59,9 +59,9 @@ public:
 
   distribution_set( LHC_FASER::readierForNewPoint* const readier ) :
     readier( readier ),
-    hard_muon( new LHC_FASER::hard_muon_from_tau() ),
-    soft_muon( new LHC_FASER::soft_muon_from_tau() ),
-    hard_pion( new LHC_FASER::hard_pion_from_tau() ),
+    hard_muon( new LHC_FASER::hardMuonFromTau() ),
+    soft_muon( new LHC_FASER::softMuonFromTau() ),
+    hard_pion( new LHC_FASER::hardPionFromTau() ),
     soft_pion( new LHC_FASER::soft_pion_from_tau() )
   {
 
@@ -163,10 +163,10 @@ public:
 
 protected:
   LHC_FASER::readierForNewPoint* readier;
-  LHC_FASER::tau_decay_coefficient const* const hard_muon;
-  LHC_FASER::tau_decay_coefficient const* const soft_muon;
-  LHC_FASER::tau_decay_coefficient const* const hard_pion;
-  LHC_FASER::tau_decay_coefficient const* const soft_pion;
+  LHC_FASER::tauDecayCoefficient const* const hard_muon;
+  LHC_FASER::tauDecayCoefficient const* const soft_muon;
+  LHC_FASER::tauDecayCoefficient const* const hard_pion;
+  LHC_FASER::tauDecayCoefficient const* const soft_pion;
 
   std::vector< LHC_FASER::leptonEnergyDistribution* >
   distributions_vector;
