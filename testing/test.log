@@ -1,122 +1,135 @@
 
 CppSLHA::read_file() (using "SPS1a_spectrum.out") has been called
 
-constructing test_UI took 0.00056 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^0 to high.
 
-adding Atlas4jMET0l7TeV took 1.57524 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^1 to high.
 
-adding Atlas3jMET1l7TeV took 0.000101 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^3 L^0 to high.
 
-count = 1
-copying SPS1a_spectrum.out took 0.002954 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^0 to high.
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.002828 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^1 to high.
 
-calculating the point's value for Atlas4jMET0l7TeV: 869.281; took 0.359008 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^2 L^0 to high.
 
-calculating the point's value for Atlas3jMET1l7TeV: 198.517; took 0.366824 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^3 L^0 to high.
 
-copying SPS1b_spectrum.out took 0.003292 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^0 to high.
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.003147 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^1 to high.
 
-calculating the point's value for Atlas4jMET0l7TeV: 40.0761; took 0.277926 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^1 L^0 to high.
 
-calculating the point's value for Atlas3jMET1l7TeV: 7.76196; took 0.265124 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^1 L^1 to high.
 
-copying SPS2_spectrum.out took 0.00329 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^0 to high.
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.004723 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^1 L^0 to high.
 
-calculating the point's value for Atlas4jMET0l7TeV: 16.2911; took 0.070318 seconds.
+debugging:
+tauSegmentTriple::tauSegmentTriple(...) adding E^1 L^1 to high.
 
-calculating the point's value for Atlas3jMET1l7TeV: 3.30749; took 0.063204 seconds.
+debugging: flat_near_muon_plus_antimuon constructor has
+firstMass = 574.013
+secondMass = 180.802
+productionFrameEnergy = 33.0088
+minimumEnergy = 10.3971
+maximumEnergy = 104.797
 
-copying SPS3_spectrum.out took 0.003363 seconds.
+flat_near_ll: 10.3971 to 104.797
+area = 1.25
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.004859 seconds.
+flat_near_tLm: 0 to 104.797
 
-calculating the point's value for Atlas4jMET0l7TeV: 30.3773; took 0.312398 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = -0.0141243
 
-calculating the point's value for Atlas3jMET1l7TeV: 6.17104; took 0.307125 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = -0.0141243
 
-copying SPS5_spectrum.out took 0.003376 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = -0.0141243
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.003783 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = -0.0141243
+area = nan
 
-calculating the point's value for Atlas4jMET0l7TeV: 238.675; took 0.138714 seconds.
+flat_near_tRm: 0 to 104.797
 
-calculating the point's value for Atlas3jMET1l7TeV: 70.8521; took 0.130552 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = -0.0211864
 
-copying SPS6_spectrum.out took 0.003351 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = -0.0211864
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.004848 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = -0.0211864
 
-calculating the point's value for Atlas4jMET0l7TeV: 328.2; took 0.328792 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = -0.0211864
+area = nan
 
-calculating the point's value for Atlas3jMET1l7TeV: 87.5647; took 0.313632 seconds.
+flat_near_tLp: 0 to 104.797
 
-copying SPS7_spectrum.out took 0.00308 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 0 ) called. coefficientValue = inf
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.003897 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = -0.0423729
 
-calculating the point's value for Atlas4jMET0l7TeV: 21.8054; took 0.276484 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = -0.000404333
 
-calculating the point's value for Atlas3jMET1l7TeV: 4.31514; took 0.297119 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = -0.0423729
 
-copying SPS8_spectrum.out took 0.003935 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = -0.000404333
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.004011 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = -0.0423729
 
-calculating the point's value for Atlas4jMET0l7TeV: 28.2672; took 0.33532 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = -0.000404333
 
-calculating the point's value for Atlas3jMET1l7TeV: 6.24931; took 0.322795 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = -0.0423729
 
-copying SPS9_spectrum.out took 0.003299 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = -0.000404333
+area = nan
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.003975 seconds.
+flat_near_tRp: 0 to 104.797
 
-calculating the point's value for Atlas4jMET0l7TeV: 0.148935; took 0.007567 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 0 ) called. coefficientValue = -inf
 
-calculating the point's value for Atlas3jMET1l7TeV: 0.130258; took 0.00301 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = 0.000404333
 
-copying LM1_spectrum.out took 0.003015 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = 0.000404333
 
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.005497 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = 0.000404333
 
-calculating the point's value for Atlas4jMET0l7TeV: 713.411; took 0.375104 seconds.
-
-calculating the point's value for Atlas3jMET1l7TeV: 50.1852; took 0.383081 seconds.
-
-copying SU4_spectrum.out took 0.003387 seconds.
-
-reading it in & updating
-CppSLHA::read_file() (using "test_spectrum.out") has been called
- took 0.003125 seconds.
-
-calculating the point's value for Atlas4jMET0l7TeV: 3683.92; took 0.092741 seconds.
-
-calculating the point's value for Atlas3jMET1l7TeV: 644.735; took 0.086725 seconds.
+debugging:
+leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = 0.000404333
+area = nan
 
 
 ended successfully, I hope

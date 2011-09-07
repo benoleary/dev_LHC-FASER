@@ -112,6 +112,13 @@ namespace LHC_FASER
   const
   // this evaluates this term for the given input energy.
   {
+    // debugging:
+    std::cout << std::endl << "debugging:"
+    << std::endl
+    << "leptonDistributionExpansionTerm::evaluate( " << inputEnergy
+    << " ) called. coefficientValue = " << coefficientValue;
+    std::cout << std::endl;
+
     if( 0.0 != coefficientValue )
     {
       double returnValue( coefficientValue );
@@ -128,13 +135,23 @@ namespace LHC_FASER
            0 < logarithmCounter;
            --logarithmCounter )
       {
-        return_value *= logarithmOfEnergy;
+        returnValue *= logarithmOfEnergy;
       }
 
+      // debugging:
+      std::cout << std::endl << "debugging:"
+      << std::endl
+      << "returning " << returnValue;
+      std::cout << std::endl;
       return returnValue;
     }
     else
     {
+      // debugging:
+      std::cout << std::endl << "debugging:"
+      << std::endl
+      << "returning 0.0";
+      std::cout << std::endl;
       return 0.0;
     }
   }
@@ -159,9 +176,14 @@ namespace LHC_FASER
 
       if( endEnergy > startEnergy )
       {
-        double energyPowerPlusOne( ( 1.0 + (double)powerOfEnergy ) );
-        double integralToStart( ( coefficientValue / energyPowerPlusOne ) );
-        double integralToEnd( integralToStart );
+        int energyPowerPlusOne( ( 1 + powerOfEnergy ) );
+        int
+        predivisorOfPowersOfEnergyPowerPlusOne( -energyPowerPlusOne
+                                                * energyPowerPlusOne );
+        double minusEnergyPowerMinusOne( -(double)energyPowerPlusOne );
+        // the terms in the sum alternate sign, so I put it here.
+        double integralToStart( coefficientValue );
+        double integralToEnd( coefficientValue );
 
         for( int powerCount( powerOfEnergy );
              0 <= powerCount;
@@ -172,21 +194,17 @@ namespace LHC_FASER
         }
         /* now integralToStart is
          * coefficientValue * startEnergy^( 1 + powerOfEnergy )
-         *                  / ( 1 + powerOfEnergy )
          * & similar for integralToEnd.
          */
 
-        energyPowerPlusOne *= -1.0;
-        // the terms in the sum alternate sign, so I put it here.
-        double
-        predivisorOfInversePowersOfEnergyPowerPlusOne( energyPowerPlusOne );
         double logarithmOfStartEnergy( log( startEnergy ) );
         double logarithmOfEndEnergy( log( endEnergy ) );
 
         int logPowerFactorial( 1 );
-        double commonSumFactor( energyPowerPlusOne );
-        double startSumTerm( energyPowerPlusOne * logarithmOfStartEnergy );
-        double endSumTerm( energyPowerPlusOne * logarithmOfEndEnergy );
+        double commonSumFactor;
+        double
+        startSumTerm( minusEnergyPowerMinusOne * logarithmOfStartEnergy );
+        double endSumTerm( minusEnergyPowerMinusOne * logarithmOfEndEnergy );
         double startSum( 1.0 + startSumTerm );
         double endSum( 1.0 + endSumTerm );
         /* now startSum is the sum of the terms corresponding to the lowest 2
@@ -195,12 +213,12 @@ namespace LHC_FASER
          * these need to be summed with the terms with powers of
          * ln( startEnergy ) from 2 to powerOfLogarithm.
          * logPowerFactorial = 1!, &
-         * predivisorOfInversePowersOfEnergyPowerPlusOne already has its 1st
-         * factor of energyPowerPlusOne. logPowerFactorial needs multiplying by
+         * predivisorOfPowersOfEnergyPowerPlusOne already has its 1st 2 factors
+         * of energyPowerPlusOneAsInt. logPowerFactorial needs multiplying by
          * the integers 2 to powerOfLogarithm (to end up as powerOfLogarithm!)
-         * & predivisorOfInversePowersOfEnergyPowerPlusOne needs to be
-         * multiplied by energyPowerPlusOne ( powerOfLogarithm - 1 ) more
-         * times (to end up as energyPowerPlusOne^powerOfLogarithm).
+         * & predivisorOfPowersOfEnergyPowerPlusOne needs to be multiplied by
+         * energyPowerPlusOneAsDouble ( powerOfLogarithm - 1 ) more times (to
+         * end up as energyPowerPlusOneAsDouble^powerOfLogarithm).
          * the following loop goes over the integers 2 to powerOfLogarithm,
          * hence ( powerOfLogarithm - 1 ) iterations.
          */
@@ -209,9 +227,10 @@ namespace LHC_FASER
              ++logarithmCounter )
         {
           logPowerFactorial *= ( logPowerFactorial + 1 );
-          predivisorOfInversePowersOfEnergyPowerPlusOne *= energyPowerPlusOne;
+          predivisorOfPowersOfEnergyPowerPlusOne *= energyPowerPlusOne;
 
-          commonSumFactor *= ( energyPowerPlusOne / (double)powerOfLogarithm );
+          commonSumFactor
+          = ( minusEnergyPowerMinusOne / (double)powerOfLogarithm );
           startSumTerm *= ( logarithmOfStartEnergy * commonSumFactor );
           startSum += startSumTerm;
           endSumTerm *= ( logarithmOfEndEnergy * commonSumFactor );
@@ -219,15 +238,22 @@ namespace LHC_FASER
         }
         integralToStart
         *= ( ( (double)logPowerFactorial
-               / predivisorOfInversePowersOfEnergyPowerPlusOne )
+               / (double)predivisorOfPowersOfEnergyPowerPlusOne )
              * startSum );
         integralToEnd
         *= ( ( (double)logPowerFactorial
-               / predivisorOfInversePowersOfEnergyPowerPlusOne )
+               / (double)predivisorOfPowersOfEnergyPowerPlusOne )
              * endSum );
         returnValue = ( integralToEnd - integralToStart );
       }
     }
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "leptonDistributionExpansionTerm::getArea( " << startEnergy << ", "
+    << endEnergy << " ) returning " << returnValue;
+    std::cout << std::endl;/**/
+
     return returnValue;
   }
 
@@ -280,6 +306,14 @@ namespace LHC_FASER
                                      coefficientValue,
                                      referenceTerm )
   {
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "leptonDistributionPowerTerm::leptonDistributionPowerTerm( "
+    << powerOfEnergy << ", " << coefficientValue << ", " << referenceTerm
+    << " ) called.";
+    std::cout << std::endl;/**/
+
     // just an initialization.
   }
 
@@ -328,6 +362,12 @@ namespace LHC_FASER
             / energyPowerPlusOne );
       }
     }
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "leptonDistributionPowerTerm::getArea( " << startEnergy << ", "
+    << endEnergy << " ) returning " << returnValue;
+    std::cout << std::endl;/**/
     return returnValue;
   }
 
@@ -379,10 +419,10 @@ namespace LHC_FASER
     }
     else
     {
-      termAdder = new leptonDistributionTerm( powerOfEnergy,
-                                              powerOfLogarithm,
-                                              coefficientValue,
-                                              referenceTerm );
+      termAdder = new leptonDistributionExpansionTerm( powerOfEnergy,
+                                                       powerOfLogarithm,
+                                                       coefficientValue,
+                                                       referenceTerm );
     }
     segmentTerms.push_back( termAdder );
     return termAdder;
@@ -403,6 +443,8 @@ namespace LHC_FASER
 
     // only evaluate if the input is within the segment's range:
     if( ( inputEnergy >= segmentStart )
+        &&
+        ( 0.0 < inputEnergy )
         &&
         ( inputEnergy <= segmentEnd ) )
       {
@@ -464,7 +506,7 @@ namespace LHC_FASER
                       /* the power of the tau lepton's energy for the term. */,
                                int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                               double const tauMinEnergy
+                               double tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
                                double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
@@ -490,6 +532,11 @@ namespace LHC_FASER
     << " ) called";
     std::cout << std::endl;**/
 
+    if( leptonDistributionExpansionTerm::minimumInputEnergy > tauMinEnergy )
+    {
+      tauMinEnergy = leptonDistributionExpansionTerm::minimumInputEnergy;
+    }
+
     double returnValue( 0.0 );
 
     if( ( -1 == tauLeptonEnergyPower )
@@ -506,8 +553,8 @@ namespace LHC_FASER
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
-          &&
-          ( 0 == visibleProductLogPower ) )
+               &&
+               ( 0 == visibleProductLogPower ) )
       {
         returnValue = ( -4.0 / ( 3.0 * tauMaxEnergy ) );
         if( !isInsideRange )
@@ -516,8 +563,8 @@ namespace LHC_FASER
         }
       }
       else if( ( 3 == visibleProductEnergyPower )
-          &&
-          ( 0 == visibleProductLogPower ) )
+               &&
+               ( 0 == visibleProductLogPower ) )
       {
         returnValue = ( 1.0 / ( 3.0 * tauMaxEnergy * tauMaxEnergy
                                     * tauMaxEnergy * tauMaxEnergy ) );
@@ -765,7 +812,7 @@ namespace LHC_FASER
                        /* the power of the tau lepton's energyfor the term. */,
                                int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                               double const tauMinEnergy
+                               double tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
                                double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
@@ -779,6 +826,10 @@ namespace LHC_FASER
    * segment.
    */
   {
+    if( leptonDistributionExpansionTerm::minimumInputEnergy > tauMinEnergy )
+    {
+      tauMinEnergy = leptonDistributionExpansionTerm::minimumInputEnergy;
+    }
     double returnValue( 0.0 );
     if( ( -1 == tauLeptonEnergyPower )
         &&
@@ -1116,9 +1167,9 @@ namespace LHC_FASER
                       /* the power of the tau lepton's energy for the term. */,
                                int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                               double const tauMinimumEnergy
+                               double tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
-                               double const tauMaximumEnergy
+                               double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
                                bool const isInsideRange )
   const
@@ -1130,6 +1181,10 @@ namespace LHC_FASER
    * for this segment.
    */
   {
+    if( leptonDistributionExpansionTerm::minimumInputEnergy > tauMinEnergy )
+    {
+      tauMinEnergy = leptonDistributionExpansionTerm::minimumInputEnergy;
+    }
     double returnValue( 0.0 );
     if( ( -1 == tauLeptonEnergyPower )
         &&
@@ -1148,22 +1203,22 @@ namespace LHC_FASER
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( ( -1.0 * ( 1.0 + 2.0 * log( tauMaximumEnergy ) ) )
-                        / ( tauMaximumEnergy * tauMaximumEnergy ) );
+        returnValue = ( ( -1.0 * ( 1.0 + 2.0 * log( tauMaxEnergy ) ) )
+                        / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( ( ( 1.0 + 2.0 * log( tauMinimumEnergy ) ) )
-                           / ( tauMinimumEnergy * tauMinimumEnergy ) );
+          returnValue += ( ( ( 1.0 + 2.0 * log( tauMinEnergy ) ) )
+                           / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( 2.0 / ( tauMaximumEnergy * tauMaximumEnergy ) );
+        returnValue = ( 2.0 / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue -= ( 2.0 / ( tauMinimumEnergy * tauMinimumEnergy ) );
+          returnValue -= ( 2.0 / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
     }  // end of if( -1 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1185,21 +1240,21 @@ namespace LHC_FASER
                ( 0 == visibleProductLogPower ) )
       {
         returnValue
-        = ( ( -4.0 * ( 1.0 + log( tauMaximumEnergy ) ) ) / tauMaximumEnergy );
+        = ( ( -4.0 * ( 1.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( ( 4.0 * ( 1.0 + log( tauMinimumEnergy ) ) )
-                           / tauMinimumEnergy );
+          returnValue += ( ( 4.0 * ( 1.0 + log( tauMinEnergy ) ) )
+                           / tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 / tauMaximumEnergy );
+        returnValue = ( 4.0 / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( 4.0 / tauMinimumEnergy );
+          returnValue -= ( 4.0 / tauMinEnergy );
         }
       }
     }  // end of if( 0 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1229,16 +1284,16 @@ namespace LHC_FASER
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        double logOfTauMaxEnergy( log( tauMaximumEnergy ) );
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue = ( ( -4.0 * ( 2.0 + 2.0 * logOfTauMaxEnergy
                                    + logOfTauMaxEnergy * logOfTauMaxEnergy ) )
-                        / tauMaximumEnergy );
+                        / tauMaxEnergy );
         if( !isInsideRange )
         {
-          double logOfTauMinEnergy( log( tauMinimumEnergy ) );
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue += ( ( 4.0 * ( 2.0 + 2.0 * logOfTauMinEnergy
                                     + logOfTauMinEnergy * logOfTauMinEnergy ) )
-                           / tauMinimumEnergy );
+                           / tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1246,11 +1301,11 @@ namespace LHC_FASER
                ( 1 == visibleProductLogPower ) )
       {
         returnValue
-        = ( ( 4.0 * ( 1.0 + log( tauMaximumEnergy ) ) ) / tauMaximumEnergy );
+        = ( ( 4.0 * ( 1.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( ( 4.0 * ( 1.0 + log( tauMinimumEnergy ) ) )
-                           / tauMinimumEnergy );
+          returnValue -= ( ( 4.0 * ( 1.0 + log( tauMinEnergy ) ) )
+                           / tauMinEnergy );
         }
       }
     }  // end of if( 0 == tau_energy_power ) && ( 1 == tau_log_power )
@@ -1262,11 +1317,11 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        double logOfTauMaxEnergy( log( tauMaximumEnergy ) );
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue = ( 2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy );
         if( !isInsideRange )
         {
-          double logOfTauMinEnergy( log( tauMinimumEnergy ) );
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue -= ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy );
         }
       }
@@ -1274,10 +1329,10 @@ namespace LHC_FASER
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 * log( tauMaximumEnergy ) );
+        returnValue = ( -4.0 * log( tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 * log( tauMinimumEnergy ) );
+          returnValue += ( 4.0 * log( tauMinEnergy ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1298,13 +1353,13 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        double logOfTauMaxEnergy( log( tauMaximumEnergy ) );
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue
         = ( ( 4.0 * logOfTauMaxEnergy * logOfTauMaxEnergy * logOfTauMaxEnergy )
             / 3.0 );
         if( !isInsideRange )
         {
-          double logOfTauMinEnergy( log( tauMinimumEnergy ) );
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue -= ( ( 4.0 * logOfTauMinEnergy
                              * logOfTauMinEnergy * logOfTauMinEnergy ) / 3.0 );
         }
@@ -1313,11 +1368,11 @@ namespace LHC_FASER
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        double logOfTauMaxEnergy( log( tauMaximumEnergy ) );
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue = ( -2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy );
         if( !isInsideRange )
         {
-          double logOfTauMinEnergy( log( tauMinimumEnergy ) );
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue += ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy );
         }
       }
@@ -1340,21 +1395,21 @@ namespace LHC_FASER
           ( 0 == visibleProductLogPower ) )
       {
         returnValue
-        = ( 4.0 * tauMaximumEnergy * ( log( tauMaximumEnergy ) - 1.0 ) );
+        = ( 4.0 * tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) );
         if( !isInsideRange )
         {
           returnValue
-          += ( 4.0 * tauMinimumEnergy * ( 1.0 - log( tauMinimumEnergy ) ) );
+          += ( 4.0 * tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 * tauMaximumEnergy );
+        returnValue = ( -4.0 * tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 * tauMinimumEnergy );
+          returnValue += ( 4.0 * tauMinEnergy );
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
@@ -1393,9 +1448,9 @@ namespace LHC_FASER
                        /* the power of the tau lepton's energyfor the term. */,
                                int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                               double const tauMinimumEnergy
+                               double tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
-                               double const tauMaximumEnergy
+                               double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
                                bool const isInsideRange )
   const
@@ -1407,6 +1462,10 @@ namespace LHC_FASER
    * for this segment.
    */
   {
+    if( leptonDistributionExpansionTerm::minimumInputEnergy > tauMinEnergy )
+    {
+      tauMinEnergy = leptonDistributionExpansionTerm::minimumInputEnergy;
+    }
     double returnValue = 0.0;
     if( ( -1 == tauLeptonEnergyPower )
         &&
@@ -1425,32 +1484,32 @@ namespace LHC_FASER
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 / tauMaximumEnergy );
+        returnValue = ( -4.0 / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 / tauMinimumEnergy );
+          returnValue += ( 4.0 / tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( ( 2.0 * log( tauMaximumEnergy ) + 3.0 )
-                        / ( tauMaximumEnergy * tauMaximumEnergy ) );
+        returnValue = ( ( 2.0 * log( tauMaxEnergy ) + 3.0 )
+                        / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue -= ( ( 2.0 * log( tauMinimumEnergy ) + 3.0 )
-                           / ( tauMinimumEnergy * tauMinimumEnergy ) );
+          returnValue -= ( ( 2.0 * log( tauMinEnergy ) + 3.0 )
+                           / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( -2.0 / ( tauMaximumEnergy * tauMaximumEnergy ) );
+        returnValue = ( -2.0 / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( 2.0 / ( tauMinimumEnergy * tauMinimumEnergy ) );
+          returnValue += ( 2.0 / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
     }  // end of if( -1 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1462,14 +1521,14 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 * log( tauMaximumEnergy ) );
+        returnValue = ( 4.0 * log( tauMaxEnergy ) );
         if( isInsideRange )
         {
           returnValue -= 8.0;
         }
         else
         {
-          returnValue -= ( 4.0 * log( tauMinimumEnergy ) );
+          returnValue -= ( 4.0 * log( tauMinEnergy ) );
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
@@ -1486,21 +1545,21 @@ namespace LHC_FASER
                ( 0 == visibleProductLogPower ) )
       {
         returnValue
-        = ( ( 4.0 * ( 2.0 + log( tauMaximumEnergy ) ) ) / tauMaximumEnergy );
+        = ( ( 4.0 * ( 2.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( ( 4.0 * ( 2.0 + log( tauMinimumEnergy ) ) )
-                           / tauMinimumEnergy );
+          returnValue -= ( ( 4.0 * ( 2.0 + log( tauMinEnergy ) ) )
+                           / tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 / tauMaximumEnergy );
+        returnValue = ( -4.0 / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 / tauMinimumEnergy );
+          returnValue += ( 4.0 / tauMinEnergy );
         }
       }
     }  // end of if( 0 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1512,7 +1571,7 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        double logOfTauMaxEnergy( log( tauMaximumEnergy ) );
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue = ( 2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy );
         if( isInsideRange )
         {
@@ -1520,7 +1579,7 @@ namespace LHC_FASER
         }
         else
         {
-          double logOfTauMinEnergy( log( tauMinimumEnergy ) );
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue -= ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy );
         }
       }
@@ -1546,16 +1605,16 @@ namespace LHC_FASER
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        double logOfTauMaxEnergy( log( tauMaximumEnergy ) );
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue = ( ( 4.0 * ( 3.0 + 3.0 * logOfTauMaxEnergy
                                   + logOfTauMaxEnergy * logOfTauMaxEnergy ) )
-                        / tauMaximumEnergy );
+                        / tauMaxEnergy );
         if( !isInsideRange )
         {
-          double logOfTauMinEnergy( log( tauMinimumEnergy ) );
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue -= ( ( 4.0 * ( 3.0 + 3.0 * logOfTauMinEnergy
                                     + logOfTauMinEnergy * logOfTauMinEnergy ) )
-                           / tauMinimumEnergy );
+                           / tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1563,11 +1622,11 @@ namespace LHC_FASER
                ( 1 == visibleProductLogPower ) )
       {
         returnValue
-        = ( ( -4.0 * ( 1.0 + log( tauMaximumEnergy ) ) ) / tauMaximumEnergy );
+        = ( ( -4.0 * ( 1.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( ( 4.0 * ( 1.0 + log( tauMinimumEnergy ) ) )
-                           / tauMinimumEnergy );
+          returnValue += ( ( 4.0 * ( 1.0 + log( tauMinEnergy ) ) )
+                           / tauMinEnergy );
         }
       }
     }  // end of if( 0 == tau_energy_power ) && ( 1 == tau_log_power )
@@ -1579,17 +1638,17 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 * tauMaximumEnergy );
+        returnValue = ( 4.0 * tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( 4.0 * tauMinimumEnergy );
+          returnValue -= ( 4.0 * tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        double logOfTauMaxEnergy( log( tauMaximumEnergy ) );
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue
         = ( -2.0 * logOfTauMaxEnergy * ( logOfTauMaxEnergy + 2.0 ) );
         if( isInsideRange )
@@ -1598,7 +1657,7 @@ namespace LHC_FASER
         }
         else
         {
-          double logOfTauMinEnergy( log( tauMinimumEnergy ) );
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue
           += ( 2.0 * logOfTauMinEnergy * ( logOfTauMinEnergy + 2.0 ) );
         }
@@ -1607,14 +1666,14 @@ namespace LHC_FASER
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 * log( tauMaximumEnergy ) );
+        returnValue = ( 4.0 * log( tauMaxEnergy ) );
         if( isInsideRange )
         {
           returnValue += 4.0;
         }
         else
         {
-          returnValue -= ( 4.0 * log( tauMinimumEnergy ) );
+          returnValue -= ( 4.0 * log( tauMinEnergy ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1636,18 +1695,18 @@ namespace LHC_FASER
           ( 0 == visibleProductLogPower ) )
       {
         returnValue
-        = ( 4.0 * tauMaximumEnergy * ( log( tauMaximumEnergy ) - 1.0 ) );
+        = ( 4.0 * tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) );
         if( !isInsideRange )
         {
           returnValue
-          += ( 4.0 * tauMinimumEnergy * ( 1.0 - log( tauMinimumEnergy ) ) );
+          += ( 4.0 * tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        double logOfTauMaxEnergy( log( tauMaximumEnergy ) );
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue = ( ( -2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy
                                * ( 3.0 + 2.0 * logOfTauMaxEnergy ) ) / 3.0 );
         if( isInsideRange )
@@ -1656,7 +1715,7 @@ namespace LHC_FASER
         }
         else
         {
-          double logOfTauMinEnergy( log( tauMinimumEnergy ) );
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue += ( ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy
                                  * ( 3.0 + 2.0 * logOfTauMinEnergy ) ) / 3.0 );
         }
@@ -1665,7 +1724,7 @@ namespace LHC_FASER
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        double logOfTauMaxEnergy( log( tauMaximumEnergy ) );
+        double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue = ( 2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy );
         if( isInsideRange )
         {
@@ -1673,7 +1732,7 @@ namespace LHC_FASER
         }
         else
         {
-          double logOfTauMinEnergy( log( tauMinimumEnergy ) );
+          double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue -= ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy );
         }
       }
@@ -1704,30 +1763,30 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 2.0 * tauMaximumEnergy * tauMaximumEnergy );
+        returnValue = ( 2.0 * tauMaxEnergy * tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( 2.0 * tauMinimumEnergy * tauMinimumEnergy );
+          returnValue -= ( 2.0 * tauMinEnergy * tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 * tauMaximumEnergy * log( tauMaximumEnergy ) );
+        returnValue = ( -4.0 * tauMaxEnergy * log( tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 * tauMinimumEnergy * log( tauMinimumEnergy ) );
+          returnValue += ( 4.0 * tauMinEnergy * log( tauMinEnergy ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                 &&
                 ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 * tauMaximumEnergy );
+        returnValue = ( 4.0 * tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( 4.0 * tauMinimumEnergy );
+          returnValue -= ( 4.0 * tauMinEnergy );
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
@@ -1761,11 +1820,11 @@ namespace LHC_FASER
          referenceSegment->getTerms()->end() > termIterator;
          ++termIterator )
     {
-      for( int energyPowerCounter = -1;
+      for( int energyPowerCounter( -1 );
            3 >= energyPowerCounter;
            ++energyPowerCounter )
       {
-        for( int logPowerCounter = 0;
+        for( int logPowerCounter( 0 );
              3 >= logPowerCounter;
              ++logPowerCounter )
         {
@@ -1785,9 +1844,15 @@ namespace LHC_FASER
                                             false );
           if( 0.0 != coefficientChecker )
           {
+            // debugging:
+            /**std::cout << std::endl << "debugging:"
+            << std::endl
+            << "tauSegmentTriple::tauSegmentTriple(...) adding E^"
+            << energyPowerCounter << " L^" << logPowerCounter << " to low.";
+            std::cout << std::endl;**/
+
             lowSegment->addTerm( energyPowerCounter,
                                  logPowerCounter,
-                                 CppSLHA::CppSLHA_global::really_wrong_value,
                                  *termIterator );
           }
           coefficientChecker = (*tauDecay)( energyPowerCounter,
@@ -1799,10 +1864,15 @@ namespace LHC_FASER
                                             true );
           if( 0.0 != coefficientChecker )
           {
-                    highSegment->addTerm( energyPowerCounter,
-                                          logPowerCounter,
-                                   CppSLHA::CppSLHA_global::really_wrong_value,
-                                          *termIterator );
+            // debugging:
+            /**std::cout << std::endl << "debugging:"
+            << std::endl
+            << "tauSegmentTriple::tauSegmentTriple(...) adding E^"
+            << energyPowerCounter << " L^" << logPowerCounter << " to high.";
+            std::cout << std::endl;**/
+            highSegment->addTerm( energyPowerCounter,
+                                  logPowerCounter,
+                                  *termIterator );
           }
         }  // end of loop over powers of log( energy ).
       }  // end of loop over powers of energy.
@@ -1825,52 +1895,63 @@ namespace LHC_FASER
   void
   tauSegmentTriple::updateSegments()
   {
-
     lowSegment->setSegmentEnd( referenceSegment->getSegmentStart() );
     highSegment->setSegmentRange( referenceSegment->getSegmentStart(),
-                                     referenceSegment->getSegmentEnd() );
+                                  referenceSegment->getSegmentEnd() );
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "tauSegmentTriple::updateSegments() called. lowSegment = "
+    << lowSegment->getSegmentStart() << " to " << lowSegment->getSegmentEnd()
+    << ", highSegment = " << highSegment->getSegmentStart() << " to "
+    << highSegment->getSegmentEnd();
+    std::cout << std::endl;/**/
 
     for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
          term_iterator( lowSegment->getTerms()->begin() );
          lowSegment->getTerms()->end() > term_iterator;
          ++term_iterator )
-      {
-
-        (*term_iterator)->setCoefficient( referenceSegment->getCoefficient(
-                                       (*term_iterator)->getPowerOfEnergy(),
-                                   (*term_iterator)->getPowerOfLogarithm() )
-                       * (*tauDecay)( (*term_iterator)->getPowerOfEnergy(),
-                                    (*term_iterator)->getPowerOfLogarithm(),
-                                       (*term_iterator)->getReferenceTerm(
-                                                      )->getPowerOfEnergy(),
-                                       (*term_iterator)->getReferenceTerm(
-                                                   )->getPowerOfLogarithm(),
-                                       0.0,
-                                       lowSegment->getSegmentEnd(),
-                                       false ) );
-
-      }
+    {
+      (*term_iterator)->setCoefficient(
+                         (*term_iterator)->getReferenceTerm()->getCoefficient()
+                           * (*tauDecay)( (*term_iterator)->getPowerOfEnergy(),
+                                       (*term_iterator)->getPowerOfLogarithm(),
+                      (*term_iterator)->getReferenceTerm()->getPowerOfEnergy(),
+                   (*term_iterator)->getReferenceTerm()->getPowerOfLogarithm(),
+                                        referenceSegment->getSegmentStart(),
+                                        referenceSegment->getSegmentEnd(),
+                                        false ) );
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "(lowSegment) reference term: "
+      << (*term_iterator)->getReferenceTerm()->getCoefficient()
+      << " * E^"
+      << (*term_iterator)->getReferenceTerm()->getPowerOfEnergy()
+      << " * L^"
+      << (*term_iterator)->getReferenceTerm()->getPowerOfLogarithm()
+      << std::endl
+      << "=> " << (*term_iterator)->getCoefficient()
+      << " * E^" << (*term_iterator)->getPowerOfEnergy()
+      << " * L^" << (*term_iterator)->getPowerOfLogarithm();
+      std::cout << std::endl;/**/
+    }
     for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
          term_iterator( highSegment->getTerms()->begin() );
          highSegment->getTerms()->end() > term_iterator;
          ++term_iterator )
-      {
-
-        (*term_iterator)->setCoefficient( referenceSegment->getCoefficient(
-                                       (*term_iterator)->getPowerOfEnergy(),
-                                   (*term_iterator)->getPowerOfLogarithm() )
-                       * (*tauDecay)( (*term_iterator)->getPowerOfEnergy(),
-                                    (*term_iterator)->getPowerOfLogarithm(),
-                                       (*term_iterator)->getReferenceTerm(
-                                                      )->getPowerOfEnergy(),
-                                       (*term_iterator)->getReferenceTerm(
-                                                   )->getPowerOfLogarithm(),
-                                       highSegment->getSegmentStart(),
-                                       highSegment->getSegmentEnd(),
+    {
+      (*term_iterator)->setCoefficient(
+                         (*term_iterator)->getReferenceTerm()->getCoefficient()
+                           * (*tauDecay)( (*term_iterator)->getPowerOfEnergy(),
+                                       (*term_iterator)->getPowerOfLogarithm(),
+                      (*term_iterator)->getReferenceTerm()->getPowerOfEnergy(),
+                   (*term_iterator)->getReferenceTerm()->getPowerOfLogarithm(),
+                                       referenceSegment->getSegmentStart(),
+                                       referenceSegment->getSegmentEnd(),
                                        true ) );
-
-      }
-
+    }
   }
 
 
@@ -1942,6 +2023,7 @@ namespace LHC_FASER
       fourthMass = CppSLHA::CppSLHA_global::really_wrong_value;
     }
     calculateCoefficients();
+    normalizeCoefficients();
   }
 
 

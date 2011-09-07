@@ -52,126 +52,100 @@
 
 
 // this holds the set of distributions & handles adding them.
-class distribution_set
+class distributionSet
 {
-
 public:
-
-  distribution_set( LHC_FASER::readierForNewPoint* const readier ) :
+  distributionSet( LHC_FASER::readierForNewPoint* const readier ) :
     readier( readier ),
-    hard_muon( new LHC_FASER::hardMuonFromTau() ),
-    soft_muon( new LHC_FASER::softMuonFromTau() ),
-    hard_pion( new LHC_FASER::hardPionFromTau() ),
-    soft_pion( new LHC_FASER::softPionFromTau() )
+    hardMuon( new LHC_FASER::hardMuonFromTau() ),
+    softMuon( new LHC_FASER::softMuonFromTau() ),
+    hardPion( new LHC_FASER::hardPionFromTau() ),
+    softPion( new LHC_FASER::softPionFromTau() )
   {
-
     // just an initialization list.
-
   }
-
-  virtual
-  ~distribution_set()
+  ~distributionSet()
   {
-
     for( std::vector< LHC_FASER::leptonEnergyDistribution* >::iterator
-           deletion_iterator = distributions_vector.begin();
-         distributions_vector.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
+         deletionIterator( distributionsVector.begin() );
+         distributionsVector.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
     for( std::vector< std::string* >::iterator
-           deletion_iterator = names_vector.begin();
-         names_vector.end() > deletion_iterator;
-         ++deletion_iterator )
-      {
-
-        delete *deletion_iterator;
-
-      }
-
+         deletionIterator( namesVector.begin() );
+         namesVector.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
   }
 
 
   void
-  add_distributions(
-         LHC_FASER::leptonEnergyDistribution* const given_distribution,
-                     std::string given_name )
+  addDistributions(
+                  LHC_FASER::leptonEnergyDistribution* const inputDistribution,
+                    std::string distributionName )
   {
-
-    std::string* test_name = new std::string( given_name );
-    test_name->append( "_ll" );
-    distributions_vector.push_back( given_distribution );
-    names_vector.push_back( test_name );
-
-    LHC_FASER::leptonEnergyDistribution* tau_distribution
-    = new LHC_FASER::visibleTauDecayProduct( readier,
-                                                given_distribution,
-                                                hard_muon );
-    test_name = new std::string( given_name );
-    test_name->append( "_tLm" );
-    distributions_vector.push_back( tau_distribution );
-    names_vector.push_back( test_name );
-    tau_distribution
-    = new LHC_FASER::visibleTauDecayProduct( readier,
-                                                given_distribution,
-                                                soft_muon );
-    test_name = new std::string( given_name );
-    test_name->append( "_tRm" );
-    distributions_vector.push_back( tau_distribution );
-    names_vector.push_back( test_name );
-    tau_distribution
-    = new LHC_FASER::visibleTauDecayProduct( readier,
-                                                given_distribution,
-                                                soft_pion );
-    test_name = new std::string( given_name );
-    test_name->append( "_tLp" );
-    distributions_vector.push_back( tau_distribution );
-    names_vector.push_back( test_name );
-    tau_distribution
-    = new LHC_FASER::visibleTauDecayProduct( readier,
-                                                given_distribution,
-                                                hard_pion );
-    test_name = new std::string( given_name );
-    test_name->append( "_tRp" );
-    distributions_vector.push_back( tau_distribution );
-    names_vector.push_back( test_name );
-
+    std::string* testName = new std::string( distributionName );
+    testName->append( "_ll" );
+    distributionsVector.push_back( inputDistribution );
+    namesVector.push_back( testName );
+    LHC_FASER::leptonEnergyDistribution*
+    tauDistribution = new LHC_FASER::visibleTauDecayProduct( readier,
+                                                             inputDistribution,
+                                                             hardMuon );
+    testName = new std::string( distributionName );
+    testName->append( "_tLm" );
+    distributionsVector.push_back( tauDistribution );
+    namesVector.push_back( testName );
+    tauDistribution = new LHC_FASER::visibleTauDecayProduct( readier,
+                                                             inputDistribution,
+                                                             softMuon );
+    testName = new std::string( distributionName );
+    testName->append( "_tRm" );
+    distributionsVector.push_back( tauDistribution );
+    namesVector.push_back( testName );
+    tauDistribution = new LHC_FASER::visibleTauDecayProduct( readier,
+                                                             inputDistribution,
+                                                             softPion );
+    testName = new std::string( distributionName );
+    testName->append( "_tLp" );
+    distributionsVector.push_back( tauDistribution );
+    namesVector.push_back( testName );
+    tauDistribution = new LHC_FASER::visibleTauDecayProduct( readier,
+                                                             inputDistribution,
+                                                             hardPion );
+    testName = new std::string( distributionName );
+    testName->append( "_tRp" );
+    distributionsVector.push_back( tauDistribution );
+    namesVector.push_back( testName );
   }
 
   std::vector< LHC_FASER::leptonEnergyDistribution* > const*
-  get_distributions_vector()
+  getDistributionsVector()
   const
   {
-
-    return &distributions_vector;
-
+    return &distributionsVector;
   }
 
   std::vector< std::string* > const*
-  get_names_vector()
+  getNamesVector()
   const
   {
-
-    return &names_vector;
-
+    return &namesVector;
   }
-
 
 protected:
   LHC_FASER::readierForNewPoint* readier;
-  LHC_FASER::tauDecayCoefficient const* const hard_muon;
-  LHC_FASER::tauDecayCoefficient const* const soft_muon;
-  LHC_FASER::tauDecayCoefficient const* const hard_pion;
-  LHC_FASER::tauDecayCoefficient const* const soft_pion;
-
+  LHC_FASER::tauDecayCoefficient const* const hardMuon;
+  LHC_FASER::tauDecayCoefficient const* const softMuon;
+  LHC_FASER::tauDecayCoefficient const* const hardPion;
+  LHC_FASER::tauDecayCoefficient const* const softPion;
   std::vector< LHC_FASER::leptonEnergyDistribution* >
-  distributions_vector;
-  std::vector< std::string* > names_vector;
-
+  distributionsVector;
+  std::vector< std::string* > namesVector;
 };
 
 class squarkMassReturner : public LHC_FASER::effectiveSquarkMassHolder
@@ -182,7 +156,6 @@ public:
   {
     // just an initialization list.
   }
-
   virtual
   ~squarkMassReturner()
   {
@@ -205,199 +178,194 @@ protected:
 int main( int argumentCount,
           char* argumentStrings[] )
 {
-
-  int recalculation_amount = 10;
+  int recalculationAmount( 10 );
 
   if( 2 != argumentCount )
     // if the input was definitely wrong...
     {
-
       std::cout
       << std::endl
       << "error! this program requires an integer as its argument, as the"
       << " number of times to re-calculate all the points. defaulting to 10.";
       std::cout << std::endl;  // let the user know the format.
-
     }
   else  // otherwise, do what is supposed to be done.
     {
-
-      std::string argument_interpretter( argumentStrings[ 1 ] );
-      std::stringstream argument_stream( argument_interpretter );
-      argument_stream >> recalculation_amount;
-
+      std::string argumentInterpretter( argumentStrings[ 1 ] );
+      std::stringstream argumentStream( argumentInterpretter );
+      argumentStream >> recalculationAmount;
     }
 
-  CppSLHA::CppSLHA2 SLHA_data( "SPS1a_spectrum.out" );
-  SLHA_data.read_file();
-  LHC_FASER::readierForNewPoint test_readier;
-  LHC_FASER::inputHandler test_input_handler( &SLHA_data,
-                                         SLHA_data.get_particle_spectrum(),
-                                         "./grids",
-                                         &test_readier );
-
+  CppSLHA::CppSLHA2 slhaData( "SPS1a_spectrum.out" );
+  slhaData.read_file();
+  LHC_FASER::readierForNewPoint testReadier;
+  LHC_FASER::inputHandler testInputHandler( &slhaData,
+                                            slhaData.get_particle_spectrum(),
+                                            "./grids",
+                                            &testReadier );
   std::string bluh( "bluh" );
 
-  /* testing the lepton energy distributions in the squark rest frame: (slight changes of input) *//**/
+  /* testing the lepton energy distributions in the squark rest frame:
+   * (slight changes of input) *//**/
 
-  distribution_set distributions( &test_readier );
+  distributionSet distributions( &testReadier );
 
   CppSLHA::EW_scale_spectrum* const
-  spectrum = SLHA_data.get_particle_spectrum();
+  spectrum( slhaData.get_particle_spectrum() );
   CppSLHA::particle_property_set const* const
-  sdown_L_pointer
+  sdownLPointer
   = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::sdown_L );
-  squarkMassReturner sdownLMass( sdown_L_pointer );
+  squarkMassReturner sdownLMass( sdownLPointer );
   CppSLHA::particle_property_set const* const
-  neutralino_four_pointer
+  neutralinoFourPointer
   = spectrum->inspect_particle_property_set(
                                           CppSLHA::PDG_code::neutralino_four );
   CppSLHA::particle_property_set* const
-  neutralino_three_pointer
+  neutralinoThreePointer
   = spectrum->get_particle_property_set( CppSLHA::PDG_code::neutralino_three );
   CppSLHA::particle_property_set const* const
-  neutralino_two_pointer
+  neutralinoTwoPointer
   = spectrum->inspect_particle_property_set(
                                            CppSLHA::PDG_code::neutralino_two );
   CppSLHA::particle_property_set const* const
-  chargino_two_pointer
+  charginoTwoPointer
   = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::chargino_two );
   CppSLHA::particle_property_set const* const
-  chargino_one_pointer
+  charginoOnePointer
   = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::chargino_one );
   CppSLHA::particle_property_set const* const
-  smuon_L_pointer
+  smuonLPointer
   = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::smuon_L );
   CppSLHA::particle_property_set const* const
-  smuon_R_pointer
+  smuonRPointer
   = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::smuon_R );
   CppSLHA::particle_property_set const* const
-  muon_sneutrino_L_pointer
+  muonSneutrinoLPointer
   = spectrum->inspect_particle_property_set(
                                          CppSLHA::PDG_code::muon_sneutrino_L );
   CppSLHA::particle_property_set const* const
-  muon_sneutrino_R_pointer
+  muonSneutrinoRPointer
   = spectrum->inspect_particle_property_set(
                                          CppSLHA::PDG_code::muon_sneutrino_R );
   CppSLHA::particle_property_set const* const
-  light_neutral_EWSB_scalar_pointer
+  lightNeutralEwsbScalarPointer
   = spectrum->inspect_particle_property_set(
                                 CppSLHA::PDG_code::light_neutral_EWSB_scalar );
   CppSLHA::particle_property_set* const
-  charged_EWSB_scalar_pointer
+  chargedEwsbScalarPointer
   = spectrum->get_particle_property_set(
                                       CppSLHA::PDG_code::charged_EWSB_scalar );
   CppSLHA::particle_property_set const* const
-  Z_pointer
+  zPointer
   = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::Z );
   CppSLHA::particle_property_set const* const
-  W_pointer
+  wPointer
   = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::W_plus );
   CppSLHA::particle_property_set const* const
-  neutralino_one_pointer
+  neutralinoOnePointer
   = spectrum->inspect_particle_property_set(
                                            CppSLHA::PDG_code::neutralino_one );
 
   // here we set n3 to have enough mass to decay to a h/Z + n1:
-  neutralino_three_pointer->set_mass( ( 20.0
-                       + light_neutral_EWSB_scalar_pointer->get_absolute_mass()
-                             + neutralino_one_pointer->get_absolute_mass() ) );
+  neutralinoThreePointer->set_mass( ( 20.0
+                           + lightNeutralEwsbScalarPointer->get_absolute_mass()
+                               + neutralinoOnePointer->get_absolute_mass() ) );
 
   // here we set H+ to be light enough for x2 to decay into it plus n1:
-  charged_EWSB_scalar_pointer->set_mass( (
-                                      chargino_two_pointer->get_absolute_mass()
-                                  - neutralino_one_pointer->get_absolute_mass()
+  chargedEwsbScalarPointer->set_mass( (
+                                      charginoTwoPointer->get_absolute_mass()
+                                  - neutralinoOnePointer->get_absolute_mass()
                                            - 20.0 ) );
 
   LHC_FASER::leptonEnergyDistribution*
   currentDistribution
-  = new LHC_FASER::flat_near_muon_plus_antimuon( &test_readier,
-                                                 &SLHA_data,
-                                                 sdown_L_pointer,
+  = new LHC_FASER::flat_near_muon_plus_antimuon( &testReadier,
+                                                 &slhaData,
+                                                 sdownLPointer,
                                                  &sdownLMass,
-                                                 neutralino_two_pointer,
-                                                 smuon_R_pointer );
-  distributions.add_distributions( currentDistribution,
+                                                 neutralinoTwoPointer,
+                                                 smuonRPointer );
+  distributions.addDistributions( currentDistribution,
                                    "flat_near" );
-  currentDistribution
-  = new LHC_FASER::same_chirality_near_muon( &test_readier,
-                                             &SLHA_data,
-                                             sdown_L_pointer,
+  /*currentDistribution
+  = new LHC_FASER::same_chirality_near_muon( &testReadier,
+                                             &slhaData,
+                                             sdownLPointer,
                                              &sdownLMass,
-                                             neutralino_two_pointer,
-                                             smuon_R_pointer );
-  distributions.add_distributions( currentDistribution,
+                                             neutralinoTwoPointer,
+                                             smuonRPointer );
+  distributions.addDistributions( currentDistribution,
                                    "same_near" );
   currentDistribution
-  = new LHC_FASER::opposite_chirality_near_muon( &test_readier,
-                                                 &SLHA_data,
-                                                 sdown_L_pointer,
+  = new LHC_FASER::opposite_chirality_near_muon( &testReadier,
+                                                 &slhaData,
+                                                 sdownLPointer,
                                                  &sdownLMass,
-                                                 neutralino_two_pointer,
-                                                 smuon_R_pointer );
-  distributions.add_distributions( currentDistribution,
+                                                 neutralinoTwoPointer,
+                                                 smuonRPointer );
+  distributions.addDistributions( currentDistribution,
                                    "opp_near" );
   currentDistribution
-  = new LHC_FASER::flat_far_muon_plus_antimuon( &test_readier,
-                                                &SLHA_data,
-                                                sdown_L_pointer,
+  = new LHC_FASER::flat_far_muon_plus_antimuon( &testReadier,
+                                                &slhaData,
+                                                sdownLPointer,
                                                 &sdownLMass,
-                                                neutralino_two_pointer,
-                                                smuon_R_pointer,
-                                                neutralino_one_pointer );
-  distributions.add_distributions( currentDistribution,
+                                                neutralinoTwoPointer,
+                                                smuonRPointer,
+                                                neutralinoOnePointer );
+  distributions.addDistributions( currentDistribution,
                                    "flat_far" );
   currentDistribution
-  = new LHC_FASER::same_chirality_far_muon( &test_readier,
-                                            &SLHA_data,
-                                            sdown_L_pointer,
+  = new LHC_FASER::same_chirality_far_muon( &testReadier,
+                                            &slhaData,
+                                            sdownLPointer,
                                             &sdownLMass,
-                                            neutralino_two_pointer,
-                                            smuon_R_pointer,
-                                            neutralino_one_pointer );
-  distributions.add_distributions( currentDistribution,
+                                            neutralinoTwoPointer,
+                                            smuonRPointer,
+                                            neutralinoOnePointer );
+  distributions.addDistributions( currentDistribution,
                                    "same_far" );
   currentDistribution
-  = new LHC_FASER::opposite_chirality_far_muon( &test_readier,
-                                                &SLHA_data,
-                                                sdown_L_pointer,
+  = new LHC_FASER::opposite_chirality_far_muon( &testReadier,
+                                                &slhaData,
+                                                sdownLPointer,
                                                 &sdownLMass,
-                                                neutralino_two_pointer,
-                                                smuon_R_pointer,
-                                                neutralino_one_pointer );
-  distributions.add_distributions( currentDistribution,
+                                                neutralinoTwoPointer,
+                                                smuonRPointer,
+                                                neutralinoOnePointer );
+  distributions.addDistributions( currentDistribution,
                                    "opp_far" );
   currentDistribution
-  = new LHC_FASER::Higgs_muon_plus_antimuon( &test_readier,
-                                             &SLHA_data,
-                                             sdown_L_pointer,
+  = new LHC_FASER::Higgs_muon_plus_antimuon( &testReadier,
+                                             &slhaData,
+                                             sdownLPointer,
                                              &sdownLMass,
-                                             neutralino_four_pointer,
-                                             light_neutral_EWSB_scalar_pointer,
-                                             neutralino_one_pointer );
-  distributions.add_distributions( currentDistribution,
+                                             neutralinoFourPointer,
+                                             lightNeutralEwsbScalarPointer,
+                                             neutralinoOnePointer );
+  distributions.addDistributions( currentDistribution,
                                    "hn4" );
   currentDistribution
-  = new LHC_FASER::Higgs_muon_plus_antimuon( &test_readier,
-                                             &SLHA_data,
-                                             sdown_L_pointer,
+  = new LHC_FASER::Higgs_muon_plus_antimuon( &testReadier,
+                                             &slhaData,
+                                             sdownLPointer,
                                              &sdownLMass,
-                                             neutralino_three_pointer,
-                                             light_neutral_EWSB_scalar_pointer,
-                                             neutralino_one_pointer );
-  distributions.add_distributions( currentDistribution,
+                                             neutralinoThreePointer,
+                                             lightNeutralEwsbScalarPointer,
+                                             neutralinoOnePointer );
+  distributions.addDistributions( currentDistribution,
                                    "hn3" );
   currentDistribution
-  = new LHC_FASER::Higgs_muon_plus_antimuon( &test_readier,
-                                             &SLHA_data,
-                                             sdown_L_pointer,
+  = new LHC_FASER::Higgs_muon_plus_antimuon( &testReadier,
+                                             &slhaData,
+                                             sdownLPointer,
                                              &sdownLMass,
-                                             chargino_two_pointer,
-                                             charged_EWSB_scalar_pointer,
-                                             neutralino_one_pointer );
-  distributions.add_distributions( currentDistribution,
+                                             charginoTwoPointer,
+                                             chargedEwsbScalarPointer,
+                                             neutralinoOnePointer );
+  distributions.addDistributions( currentDistribution,
                                    "H+" );
-  /*currentDistribution
+  currentDistribution
   = new LHC_FASER::Z_muon_plus_antimuon( &test_readier,
                                          &SLHA_data,
                                          sdownLPointer,
@@ -405,7 +373,7 @@ int main( int argumentCount,
                                          neutralinoThreePointer,
                                          zPointer,
                                          neutralinoOnePointer );
-  distributions.add_distributions( currentDistribution,
+  distributions.addDistributions( currentDistribution,
                                    "Zn4" );
   currentDistribution
   = new LHC_FASER::Z_muon_plus_antimuon( &test_readier,
@@ -415,7 +383,7 @@ int main( int argumentCount,
                                          neutralinoFourPointer,
                                          zPointer,
                                          neutralinoOnePointer );
-  distributions.add_distributions( currentDistribution,
+  distributions.addDistributions( currentDistribution,
                                    "Zn3" );
   currentDistribution
   = new LHC_FASER::W_minus_plus_up_L_type_muon( &test_readier,
@@ -425,7 +393,7 @@ int main( int argumentCount,
                                                 charginoOnePointer,
                                                 W_pointer,
                                                 neutralinoOnePointer );
-  distributions.add_distributions( currentDistribution,
+  distributions.addDistributions( currentDistribution,
                                    "LWx1" );
   currentDistribution
   = new LHC_FASER::W_minus_plus_up_R_type_muon( &test_readier,
@@ -435,7 +403,7 @@ int main( int argumentCount,
                                                 charginoOnePointer,
                                                 W_pointer,
                                                 neutralinoOnePointer );
-  distributions.add_distributions( currentDistribution,
+  distributions.addDistributions( currentDistribution,
                                    "RWx1" );
   currentDistribution
   = new LHC_FASER::W_minus_plus_up_L_type_muon( &test_readier,
@@ -445,7 +413,7 @@ int main( int argumentCount,
                                                 charginoTwoPointer,
                                                 W_pointer,
                                                 neutralinoOnePointer );
-  distributions.add_distributions( currentDistribution,
+  distributions.addDistributions( currentDistribution,
                                    "LWx2" );
   currentDistribution
   = new LHC_FASER::W_minus_plus_up_R_type_muon( &test_readier,
@@ -455,7 +423,7 @@ int main( int argumentCount,
                                                 charginoTwoPointer,
                                                 W_pointer,
                                                 neutralinoOnePointer );
-  distributions.add_distributions( currentDistribution,
+  distributions.addDistributions( currentDistribution,
                                    "RWx2" );
   currentDistribution
   = new LHC_FASER::neutralino_three_body_decay( &test_readier,
@@ -466,7 +434,7 @@ int main( int argumentCount,
                                                 neutralinoOnePointer,
                                                 smuonLPointer,
                                                 smuonRPointer );
-  distributions.add_distributions( currentDistribution,
+  distributions.addDistributions( currentDistribution,
                                    "nn3b" );
   currentDistribution
   = new LHC_FASER::chargino_three_body_decay( &test_readier,
@@ -479,132 +447,98 @@ int main( int argumentCount,
                                               smuonRPointer,
                                               muonSneutrinoLPointer,
                                               muonSneutrinoRPointer );
-  distributions.add_distributions( currentDistribution,
+  distributions.addDistributions( currentDistribution,
                                    "xx3b" );*/
 
 
-  std::ofstream* gnuplot_file = new std::ofstream();
-  gnuplot_file->open( "./lepton_distributions/test_plotter.input" );
-
-
-  if( gnuplot_file->is_open() )
+  std::ofstream* gnuplotCommandFile( new std::ofstream() );
+  gnuplotCommandFile->open( "./lepton_distributions/test_plotter.input" );
+  if( gnuplotCommandFile->is_open() )
     // if the file was successfully opened...
+  {
+    *gnuplotCommandFile
+    << "set term postscript enhanced color solid" << std::endl;
+    std::string gnuplotDataFileName;
+    for( int graphCount( 0 );
+         distributions.getDistributionsVector()->size() > graphCount;
+         ++graphCount )
     {
+      // open a file for writing out the data points.
+      std::ofstream* gnuplotDataFile( new std::ofstream() );
+      gnuplotDataFileName.assign( "./lepton_distributions/" );
+      gnuplotDataFileName.append(
+                         *(distributions.getNamesVector()->at( graphCount )) );
+      gnuplotDataFileName.append( ".dat" );
+      gnuplotDataFile->open( gnuplotDataFileName.c_str() );
+      int const numberOfBins( 4 );
+      double binSize;
+      double binPosition;
+      double plotValue;
+      double areaSum;
+      if( gnuplotDataFile->is_open() )
+        // if the file was successfully opened...
+      {
+        *gnuplotCommandFile
+        << "set output \""
+        << *(distributions.getNamesVector()->at( graphCount ))
+        << ".eps\"" << std::endl
+        << "set style line 1 lt rgb \"red\" lw 3" << std::endl
+        << "plot '"
+        << *(distributions.getNamesVector()->at( graphCount ))
+        << ".dat' index 0 notitle with lines ls 1" << std::endl;
 
-      *gnuplot_file << "set term postscript enhanced color solid" << std::endl;
-
-      std::string file_name;
-
-      for( int graph_maker = 0;
-           distributions.get_distributions_vector()->size() > graph_maker;
-           ++graph_maker )
-        {
-
-          // open a file for writing out the data points.
-          std::ofstream* output_file = new std::ofstream();
-          file_name.assign( "./lepton_distributions/" );
-          file_name.append(
-                      *(distributions.get_names_vector()->at( graph_maker )) );
-          file_name.append( ".dat" );
-          output_file->open( file_name.c_str() );
-
-          if( output_file->is_open() )
-            // if the file was successfully opened...
-            {
-
-              *gnuplot_file
-              << "set output \""
-              << *(distributions.get_names_vector()->at( graph_maker ))
-              << ".eps\"" << std::endl
-              << "set style line 1 lt rgb \"red\" lw 3" << std::endl
-              << "plot '"
-              << *(distributions.get_names_vector()->at( graph_maker ))
-              << ".dat' index 0 notitle with lines ls 1" << std::endl;
-
-              std::cout
-              << std::endl
-              << *(distributions.get_names_vector()->at( graph_maker ))
-              << ": "
-              << distributions.get_distributions_vector()->at( graph_maker
+        std::cout
+        << std::endl
+        << *(distributions.getNamesVector()->at( graphCount ))
+        << ": "
+        << distributions.getDistributionsVector()->at( graphCount
                                                           )->getMinimumEnergy()
-              << " to "
-              << distributions.get_distributions_vector()->at( graph_maker
+        << " to "
+        << distributions.getDistributionsVector()->at( graphCount
                                                          )->getMaximumEnergy();
-              std::cout << std::endl;
+        std::cout << std::endl;
 
-
-              int const number_of_bins = 100;
-
-              double
-              bin_size
-              = ( ( distributions.get_distributions_vector()->at( graph_maker
+        binSize = ( ( distributions.getDistributionsVector()->at( graphCount
                                                           )->getMaximumEnergy()
-                    - distributions.get_distributions_vector()->at( graph_maker
+                      - distributions.getDistributionsVector()->at( graphCount
                                                         )->getMinimumEnergy() )
-                  / number_of_bins );
-
-              double bin_position;
-
-              double plot_value;
-
-              double area = 0.0;
-
-              for( int bin_counter = 0;
-                   number_of_bins >= bin_counter;
-                   ++bin_counter )
-                {
-
-                  bin_position
-                  = ( (double)bin_counter * bin_size
-                      + distributions.get_distributions_vector()->at(
-                                           graph_maker )->getMinimumEnergy() );
-
-                  plot_value
-                  = distributions.get_distributions_vector()->at( graph_maker
-                                                   )->valueAt( bin_position );
-
-                  area += ( plot_value * bin_size );
-
-                  *output_file
-                  << bin_position << " " << plot_value << std::endl;
-
-                }
-
-              output_file->close();
-
-              std::cout << "area = " << area;
-              std::cout << std::endl;
-
-            }
-          else
-            {
-
-              std::cout
-              << std::endl << "error!  output file could not be opened!";
-
-              exit( EXIT_FAILURE );
-
-            }
-
-          delete output_file;
-
+                    / numberOfBins );
+        areaSum = 0.0;
+        for( int binCounter( 0 );
+             numberOfBins >= binCounter;
+             ++binCounter )
+        {
+          binPosition
+          = ( (double)binCounter * binSize
+              + distributions.getDistributionsVector()->at(
+                                            graphCount )->getMinimumEnergy() );
+          plotValue
+          = distributions.getDistributionsVector()->at( graphCount
+                                                     )->valueAt( binPosition );
+          areaSum += ( plotValue * binSize );
+          *gnuplotDataFile << binPosition << " " << plotValue << std::endl;
         }
-
-      gnuplot_file->close();
-
+        gnuplotDataFile->close();
+        std::cout << "area = " << areaSum;
+        std::cout << std::endl;
+      }
+      else
+      {
+        std::cout
+        << std::endl << "error!  output file could not be opened!";
+        exit( EXIT_FAILURE );
+      }
+      delete gnuplotDataFile;
     }
+    gnuplotCommandFile->close();
+  }
   else
-    {
-
-      std::cout << std::endl << "error! gnuplot file could not be opened!";
-
-      exit( EXIT_FAILURE );
-
-    }
-
+  {
+    std::cout << std::endl << "error! gnuplot file could not be opened!";
+    exit( EXIT_FAILURE );
+  }
   // clean up:
-
-  delete gnuplot_file;
+  delete gnuplotCommandFile;
   /**/
 
 

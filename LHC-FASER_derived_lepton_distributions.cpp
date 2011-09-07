@@ -75,7 +75,9 @@ namespace LHC_FASER
                               given_third_particle,
                               NULL ),
     MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
-                                              0 ) )
+                                              0,
+                                              NULL,
+                                              1.0 ) )
   {
     segments.push_back( &MINtoMAX_segment );
   }
@@ -89,40 +91,32 @@ namespace LHC_FASER
   void
   flat_near_muon_plus_antimuon::calculateCoefficients()
   {
-
     productionFrameEnergy
     = ( ( ( secondMass * secondMass ) - ( thirdMass * thirdMass ) )
         / ( 2.0 * secondMass ) );
-
-    minimumEnergy
-    = ( ( secondMass / firstMass ) * productionFrameEnergy );
-
-    maximumEnergy
-    = ( ( firstMass / secondMass ) * productionFrameEnergy );
+    minimumEnergy = ( ( secondMass / firstMass ) * productionFrameEnergy );
+    maximumEnergy = ( ( firstMass / secondMass ) * productionFrameEnergy );
 
 
     // now we set up the coefficients of various terms.
 
-
     // debugging:
-    /**std::cout
+    /**/std::cout
     << std::endl
     << "debugging: flat_near_muon_plus_antimuon constructor has"
-    << std::endl << "first_mass = " << first_mass
-    << std::endl << "second_mass = " << second_mass
-    << std::endl << "production_frame_energy = " << production_frame_energy
-    << std::endl << "minimum_energy = " << minimum_energy
-    << std::endl << "maximum_energy = " << maximum_energy;
-    std::cout << std::endl;**/
+    << std::endl << "firstMass = " << firstMass
+    << std::endl << "secondMass = " << secondMass
+    << std::endl << "productionFrameEnergy = " << productionFrameEnergy
+    << std::endl << "minimumEnergy = " << minimumEnergy
+    << std::endl << "maximumEnergy = " << maximumEnergy;
+    std::cout << std::endl;/**/
 
 
     // finally we update the sets of terms, segment by segment:
 
     // MIN to MAX segment:
     MINtoMAX_segment.setSegmentRange( minimumEnergy,
-                                        maximumEnergy );
-
-    normalizeCoefficients();
+                                      maximumEnergy );
   }
 
 
@@ -182,9 +176,6 @@ namespace LHC_FASER
     MINtoMAX_const->setCoefficient( -minimumEnergy );
 
     MINtoMAX_lin->setCoefficient( 1.0 );
-
-    normalizeCoefficients();
-
   }
 
 
@@ -233,8 +224,6 @@ namespace LHC_FASER
     maximumEnergy
     = ( ( firstMass / secondMass ) * productionFrameEnergy );
 
-    normalization = ( maximumEnergy - minimumEnergy );
-
 
     // now we set up the coefficients of various terms, & use them to determine
     // the normalization:
@@ -246,8 +235,6 @@ namespace LHC_FASER
     MINtoMAX_const->setCoefficient( maximumEnergy );
 
     MINtoMAX_lin->setCoefficient( -1.0 );
-
-    normalizeCoefficients();
   }
 
 
@@ -357,8 +344,6 @@ namespace LHC_FASER
     HKtoMAX_const->setCoefficient( log( maximumEnergy ) );
 
     HKtoMAX_log->setCoefficient( -1.0 );
-
-    normalizeCoefficients();
 
     // debugging:
     /**std::cout
@@ -544,9 +529,6 @@ namespace LHC_FASER
     HKtoMAX_inv->setCoefficient(
         ( ( mNSq * mq * ( mlSq - mXSq ) )
           / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
-
-    normalizeCoefficients();
-
 
     // debugging:
     /**std::cout
@@ -739,9 +721,6 @@ namespace LHC_FASER
         ( ( mNSq * mq * ( mlSq - mXSq ) )
           / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
 
-    normalizeCoefficients();
-
-
     // debugging:
     /**std::cout
     << std::endl
@@ -875,8 +854,6 @@ namespace LHC_FASER
 
     HKtoMAX_const->setCoefficient( log( maximumEnergy ) );
     HKtoMAX_log->setCoefficient( -1.0 );
-
-    normalizeCoefficients();
 
     // debugging:
     /**std::cout
@@ -2828,8 +2805,6 @@ namespace LHC_FASER
 
     HKtoMAX_sq->setCoefficient( current_term_coefficient );
 
-    normalizeCoefficients();
-
     // debugging:
     /**std::cout
     << std::endl
@@ -2909,8 +2884,6 @@ namespace LHC_FASER
 
     //normalization
     //= ( ( energyDifference * energyDifference * energyDifference ) / 6.0 );
-    normalizeCoefficients();
-
   }
 
 
@@ -3084,9 +3057,6 @@ namespace LHC_FASER
     // MIN to MAX segment:
     MINtoMAX_segment.setSegmentRange( minimumEnergy,
                                         maximumEnergy );
-
-    normalizeCoefficients();
-
   }
 
 
@@ -3142,8 +3112,6 @@ namespace LHC_FASER
     // MIN to MAX segment:
     MINtoMAX_segment.setSegmentRange( minimumEnergy,
                                         maximumEnergy );
-
-    normalizeCoefficients();
   }
 
 }  // end of LHC_FASER namespace.

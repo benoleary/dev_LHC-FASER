@@ -114,6 +114,9 @@ namespace LHC_FASER
   class leptonDistributionExpansionTerm
   {
   public:
+    static double const minimumInputEnergy;
+    // this is used to prevent trying to take logarithms of 0.0 or less.
+
     leptonDistributionExpansionTerm( int const powerOfEnergy,
                                      int const powerOfLogarithm,
                                      double const coefficientValue,
@@ -165,8 +168,6 @@ namespace LHC_FASER
     double coefficientValue;
     leptonDistributionExpansionTerm* const referenceTerm;
     // this is for ease of updating coefficients in tauon-decay distributions.
-    static double const minimumInputEnergy;
-    // this is used to prevent trying to take logarithms of 0.0 or less.
   };
 
   class leptonDistributionInverseTerm : public leptonDistributionExpansionTerm
@@ -226,7 +227,8 @@ namespace LHC_FASER
   class leptonDistributionPowerTerm : public leptonDistributionExpansionTerm
   {
   public:
-    leptonDistributionPowerTerm( double const coefficientValue,
+    leptonDistributionPowerTerm( int const powerOfEnergy,
+                                 double const coefficientValue,
                   leptonDistributionExpansionTerm* const referenceTerm = NULL )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
@@ -351,7 +353,7 @@ namespace LHC_FASER
                 /* the power of the tau lepton's energy for the term. */,
                 int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const tauMinEnergy
+                double tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
                 double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
@@ -392,7 +394,7 @@ namespace LHC_FASER
                 /* the power of the tau lepton's energy for the term. */,
                 int const tauLeptonLogPower
     /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const tauMinEnergy
+                double tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
                 double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
@@ -429,7 +431,7 @@ namespace LHC_FASER
                 /* the power of the tau lepton's energy for the term. */,
                 int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const tauMinEnergy
+                double tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
                 double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
@@ -466,9 +468,9 @@ namespace LHC_FASER
                 /* the power of the tau lepton's energy for the term. */,
                 int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const tauMinimumEnergy
+                double tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
-                double const tauMaximumEnergy
+                double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
                 bool const isInsideRange )
     const
@@ -503,9 +505,9 @@ namespace LHC_FASER
                 /* the power of the tau lepton's energy for the term. */,
                 int const tauLeptonLogPower
      /* the power of the logarithm of the tau lepton's energy for the term. */,
-                double const tauMinimumEnergy
+                double tauMinEnergy
          /* the minimum of the range of the tau lepton energies considered. */,
-                double const tauMaximumEnergy
+                double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
                 bool const isInsideRange )
     const
@@ -739,9 +741,8 @@ namespace LHC_FASER
   }
 
   inline double
-  leptonDistributionInverseTerm::leptonDistributionExpansionTerm::getArea(
-                                                            double startEnergy,
-                                                             double endEnergy )
+  leptonDistributionInverseTerm::getArea( double startEnergy,
+                                          double endEnergy )
   const
   // this gives the definite integral of the term from startEnergy to
   // endEnergy.
@@ -760,6 +761,12 @@ namespace LHC_FASER
         = ( coefficientValue * log( ( endEnergy / startEnergy ) ) );
       }
     }
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "leptonDistributionInverseTerm::getArea( " << startEnergy << ", "
+    << endEnergy << " ) returning " << returnValue;
+    std::cout << std::endl;/**/
     return returnValue;
   }
 
@@ -774,9 +781,8 @@ namespace LHC_FASER
   }
 
   inline double
-  leptonDistributionConstantTerm::leptonDistributionExpansionTerm::getArea(
-                                                            double startEnergy,
-                                                             double endEnergy )
+  leptonDistributionConstantTerm::getArea( double startEnergy,
+                                           double endEnergy )
   const
   // this gives the definite integral of the term from startEnergy to
   // endEnergy.
@@ -795,6 +801,12 @@ namespace LHC_FASER
         = ( coefficientValue * ( endEnergy - startEnergy ) );
       }
     }
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "leptonDistributionConstantTerm::getArea( " << startEnergy << ", "
+    << endEnergy << " ) returning " << returnValue;
+    std::cout << std::endl;/**/
     return returnValue;
   }
 
@@ -995,9 +1007,15 @@ namespace LHC_FASER
   // this goes through each segment & gets it to divide its terms' coefficients
   // by normalization.
   {
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "leptonEnergyDistribution::normalizeCoefficients() called.";
+    std::cout << std::endl;/**/
+
     normalizingDivisor = 0.0;
     for( std::vector< segmentTermSet* >::iterator
-         segmentIterator = segments.begin();
+         segmentIterator( segments.begin() );
          segments.end() > segmentIterator;
          ++segmentIterator )
     {
@@ -1005,7 +1023,7 @@ namespace LHC_FASER
     }
     normalizingFactor = ( 1.0 / normalizingDivisor );
     for( std::vector< segmentTermSet* >::iterator
-         segmentIterator = segments.begin();
+         segmentIterator( segments.begin() );
          segments.end() > segmentIterator;
          ++segmentIterator )
     {
