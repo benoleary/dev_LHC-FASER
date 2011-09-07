@@ -216,6 +216,9 @@ int main( int argumentCount,
   sdownLPointer
   = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::sdown_L );
   squarkMassReturner sdownLMass( sdownLPointer );
+  CppSLHA::particle_property_set* const
+  scharmLPointer
+  = spectrum->get_particle_property_set( CppSLHA::PDG_code::scharm_L );
   CppSLHA::particle_property_set const* const
   neutralinoFourPointer
   = spectrum->inspect_particle_property_set(
@@ -276,10 +279,14 @@ int main( int argumentCount,
                                       charginoTwoPointer->get_absolute_mass()
                                   - neutralinoOnePointer->get_absolute_mass()
                                            - 20.0 ) );
+  // here we set scL to be light enough for sdL to decay to it + W-:
+  scharmLPointer->set_mass( sdownLPointer->get_absolute_mass()
+                            - wPointer->get_absolute_mass()
+                            - 20.0 );
 
   LHC_FASER::leptonEnergyDistribution*
   currentDistribution
-  = new LHC_FASER::flat_near_muon_plus_antimuon( &testReadier,
+  /*= new LHC_FASER::flat_near_muon_plus_antimuon( &testReadier,
                                                  &slhaData,
                                                  sdownLPointer,
                                                  &sdownLMass,
@@ -287,7 +294,7 @@ int main( int argumentCount,
                                                  smuonRPointer );
   distributions.addDistributions( currentDistribution,
                                    "flat_near" );
-  /*currentDistribution
+  currentDistribution
   = new LHC_FASER::same_chirality_near_muon( &testReadier,
                                              &slhaData,
                                              sdownLPointer,
@@ -366,68 +373,133 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "H+" );
   currentDistribution
-  = new LHC_FASER::Z_muon_plus_antimuon( &test_readier,
-                                         &SLHA_data,
-                                         sdownLPointer,
-                                         &sdownLMass,
-                                         neutralinoThreePointer,
-                                         zPointer,
-                                         neutralinoOnePointer );
+  = new LHC_FASER::Z_handed_muon( &testReadier,
+                                  &slhaData,
+                                  sdownLPointer,
+                                  &sdownLMass,
+                                  neutralinoThreePointer,
+                                  zPointer,
+                                  neutralinoOnePointer,
+                                  true,
+                                  false );
   distributions.addDistributions( currentDistribution,
-                                   "Zn4" );
+                                   "Zn3L" );
   currentDistribution
-  = new LHC_FASER::Z_muon_plus_antimuon( &test_readier,
-                                         &SLHA_data,
-                                         sdownLPointer,
-                                         &sdownLMass,
-                                         neutralinoFourPointer,
-                                         zPointer,
-                                         neutralinoOnePointer );
+  = new LHC_FASER::Z_handed_muon( &testReadier,
+                                  &slhaData,
+                                  sdownLPointer,
+                                  &sdownLMass,
+                                  neutralinoThreePointer,
+                                  zPointer,
+                                  neutralinoOnePointer,
+                                  false,
+                                  false );
   distributions.addDistributions( currentDistribution,
-                                   "Zn3" );
+                                   "Zn3R" );
   currentDistribution
-  = new LHC_FASER::W_minus_plus_up_L_type_muon( &test_readier,
-                                                &SLHA_data,
-                                                sdownLPointer,
-                                                &sdownLMass,
-                                                charginoOnePointer,
-                                                W_pointer,
-                                                neutralinoOnePointer );
+  = new LHC_FASER::Z_handed_muon( &testReadier,
+                                  &slhaData,
+                                  sdownLPointer,
+                                  &sdownLMass,
+                                  neutralinoThreePointer,
+                                  zPointer,
+                                  neutralinoOnePointer,
+                                  false,
+                                  true );
   distributions.addDistributions( currentDistribution,
-                                   "LWx1" );
-  currentDistribution
-  = new LHC_FASER::W_minus_plus_up_R_type_muon( &test_readier,
-                                                &SLHA_data,
-                                                sdownLPointer,
-                                                &sdownLMass,
-                                                charginoOnePointer,
-                                                W_pointer,
-                                                neutralinoOnePointer );
+                                   "Zn3summed" );
+  currentDistribution*/
+  = new LHC_FASER::Z_handed_muon( &testReadier,
+                                  &slhaData,
+                                  sdownLPointer,
+                                  &sdownLMass,
+                                  neutralinoFourPointer,
+                                  zPointer,
+                                  neutralinoOnePointer,
+                                  true,
+                                  false );
   distributions.addDistributions( currentDistribution,
-                                   "RWx1" );
+                                   "Zn4L" );
   currentDistribution
-  = new LHC_FASER::W_minus_plus_up_L_type_muon( &test_readier,
-                                                &SLHA_data,
-                                                sdownLPointer,
-                                                &sdownLMass,
-                                                charginoTwoPointer,
-                                                W_pointer,
-                                                neutralinoOnePointer );
+  = new LHC_FASER::Z_handed_muon( &testReadier,
+                                  &slhaData,
+                                  sdownLPointer,
+                                  &sdownLMass,
+                                  neutralinoFourPointer,
+                                  zPointer,
+                                  neutralinoOnePointer,
+                                  false,
+                                  false );
   distributions.addDistributions( currentDistribution,
-                                   "LWx2" );
+                                   "Zn4R" );
   currentDistribution
-  = new LHC_FASER::W_minus_plus_up_R_type_muon( &test_readier,
-                                                &SLHA_data,
-                                                sdownLPointer,
-                                                &sdownLMass,
-                                                charginoTwoPointer,
-                                                W_pointer,
-                                                neutralinoOnePointer );
+  = new LHC_FASER::Z_handed_muon( &testReadier,
+                                  &slhaData,
+                                  sdownLPointer,
+                                  &sdownLMass,
+                                  neutralinoFourPointer,
+                                  zPointer,
+                                  neutralinoOnePointer,
+                                  false,
+                                  true );
   distributions.addDistributions( currentDistribution,
-                                   "RWx2" );
+                                   "Zn4summed" );
   currentDistribution
-  = new LHC_FASER::neutralino_three_body_decay( &test_readier,
-                                                &SLHA_data,
+  = new LHC_FASER::vector_from_squark_to_muon( &testReadier,
+                                               &slhaData,
+                                               sdownLPointer,
+                                               &sdownLMass,
+                                               scharmLPointer,
+                                               wPointer );
+  distributions.addDistributions( currentDistribution,
+                                   "sdscW" );
+  /*currentDistribution
+  = new LHC_FASER::W_minus_handed_muon( &testReadier,
+                                        &slhaData,
+                                        sdownLPointer,
+                                        &sdownLMass,
+                                        charginoOnePointer,
+                                        wPointer,
+                                        neutralinoOnePointer,
+                                        true );
+  distributions.addDistributions( currentDistribution,
+                                   "Wx1L" );
+  currentDistribution
+  = new LHC_FASER::W_minus_handed_muon( &testReadier,
+                                        &slhaData,
+                                        sdownLPointer,
+                                        &sdownLMass,
+                                        charginoOnePointer,
+                                        wPointer,
+                                        neutralinoOnePointer,
+                                        true );
+  distributions.addDistributions( currentDistribution,
+                                   "Wx1R" );
+  currentDistribution
+  = new LHC_FASER::W_minus_handed_muon( &testReadier,
+                                        &slhaData,
+                                        sdownLPointer,
+                                        &sdownLMass,
+                                        charginoTwoPointer,
+                                        wPointer,
+                                        neutralinoOnePointer,
+                                        true );
+  distributions.addDistributions( currentDistribution,
+                                   "Wx2L" );
+  currentDistribution
+  = new LHC_FASER::W_minus_handed_muon( &testReadier,
+                                        &slhaData,
+                                        sdownLPointer,
+                                        &sdownLMass,
+                                        charginoTwoPointer,
+                                        wPointer,
+                                        neutralinoOnePointer,
+                                        true );
+  distributions.addDistributions( currentDistribution,
+                                   "Wx2R" );
+  currentDistribution
+  = new LHC_FASER::neutralino_three_body_decay( &testReadier,
+                                                &slhaData,
                                                 sdownLPointer,
                                                 &sdownLMass,
                                                 neutralinoTwoPointer,
@@ -437,8 +509,8 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "nn3b" );
   currentDistribution
-  = new LHC_FASER::chargino_three_body_decay( &test_readier,
-                                              &SLHA_data,
+  = new LHC_FASER::chargino_three_body_decay( &testReadier,
+                                              &slhaData,
                                               sdownLPointer,
                                               &sdownLMass,
                                               charginoOnePointer,
@@ -460,7 +532,8 @@ int main( int argumentCount,
     << "set term postscript enhanced color solid" << std::endl;
     std::string gnuplotDataFileName;
     for( int graphCount( 0 );
-         distributions.getDistributionsVector()->size() > graphCount;
+         distributions.getDistributionsVector()->size()
+         > (unsigned int)graphCount;
          ++graphCount )
     {
       // open a file for writing out the data points.
@@ -470,7 +543,7 @@ int main( int argumentCount,
                          *(distributions.getNamesVector()->at( graphCount )) );
       gnuplotDataFileName.append( ".dat" );
       gnuplotDataFile->open( gnuplotDataFileName.c_str() );
-      int const numberOfBins( 4 );
+      int const numberOfBins( 100 );
       double binSize;
       double binPosition;
       double plotValue;

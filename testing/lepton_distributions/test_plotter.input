@@ -1,16 +1,61 @@
 set term postscript enhanced color solid
-set output "flat_near_ll.eps"
+set output "Zn4L_ll.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'flat_near_ll.dat' index 0 notitle with lines ls 1
-set output "flat_near_tLm.eps"
+plot 'Zn4L_ll.dat' index 0 notitle with lines ls 1
+set output "Zn4L_tLm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'flat_near_tLm.dat' index 0 notitle with lines ls 1
-set output "flat_near_tRm.eps"
+plot 'Zn4L_tLm.dat' index 0 notitle with lines ls 1
+set output "Zn4L_tRm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'flat_near_tRm.dat' index 0 notitle with lines ls 1
-set output "flat_near_tLp.eps"
+plot 'Zn4L_tRm.dat' index 0 notitle with lines ls 1
+set output "Zn4L_tLp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'flat_near_tLp.dat' index 0 notitle with lines ls 1
-set output "flat_near_tRp.eps"
+plot 'Zn4L_tLp.dat' index 0 notitle with lines ls 1
+set output "Zn4L_tRp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'flat_near_tRp.dat' index 0 notitle with lines ls 1
+plot 'Zn4L_tRp.dat' index 0 notitle with lines ls 1
+set output "Zn4R_ll.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4R_ll.dat' index 0 notitle with lines ls 1
+set output "Zn4R_tLm.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4R_tLm.dat' index 0 notitle with lines ls 1
+set output "Zn4R_tRm.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4R_tRm.dat' index 0 notitle with lines ls 1
+set output "Zn4R_tLp.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4R_tLp.dat' index 0 notitle with lines ls 1
+set output "Zn4R_tRp.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4R_tRp.dat' index 0 notitle with lines ls 1
+set output "Zn4summed_ll.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4summed_ll.dat' index 0 notitle with lines ls 1
+set output "Zn4summed_tLm.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4summed_tLm.dat' index 0 notitle with lines ls 1
+set output "Zn4summed_tRm.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4summed_tRm.dat' index 0 notitle with lines ls 1
+set output "Zn4summed_tLp.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4summed_tLp.dat' index 0 notitle with lines ls 1
+set output "Zn4summed_tRp.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'Zn4summed_tRp.dat' index 0 notitle with lines ls 1
+set output "sdscW_ll.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'sdscW_ll.dat' index 0 notitle with lines ls 1
+set output "sdscW_tLm.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'sdscW_tLm.dat' index 0 notitle with lines ls 1
+set output "sdscW_tRm.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'sdscW_tRm.dat' index 0 notitle with lines ls 1
+set output "sdscW_tLp.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'sdscW_tLp.dat' index 0 notitle with lines ls 1
+set output "sdscW_tRp.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'sdscW_tRp.dat' index 0 notitle with lines ls 1

@@ -761,12 +761,6 @@ namespace LHC_FASER
         = ( coefficientValue * log( ( endEnergy / startEnergy ) ) );
       }
     }
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "leptonDistributionInverseTerm::getArea( " << startEnergy << ", "
-    << endEnergy << " ) returning " << returnValue;
-    std::cout << std::endl;/**/
     return returnValue;
   }
 
@@ -801,12 +795,6 @@ namespace LHC_FASER
         = ( coefficientValue * ( endEnergy - startEnergy ) );
       }
     }
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "leptonDistributionConstantTerm::getArea( " << startEnergy << ", "
-    << endEnergy << " ) returning " << returnValue;
-    std::cout << std::endl;/**/
     return returnValue;
   }
 
@@ -1007,12 +995,6 @@ namespace LHC_FASER
   // this goes through each segment & gets it to divide its terms' coefficients
   // by normalization.
   {
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "leptonEnergyDistribution::normalizeCoefficients() called.";
-    std::cout << std::endl;/**/
-
     normalizingDivisor = 0.0;
     for( std::vector< segmentTermSet* >::iterator
          segmentIterator( segments.begin() );

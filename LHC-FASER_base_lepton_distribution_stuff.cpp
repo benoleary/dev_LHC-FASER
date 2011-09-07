@@ -113,11 +113,11 @@ namespace LHC_FASER
   // this evaluates this term for the given input energy.
   {
     // debugging:
-    std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "leptonDistributionExpansionTerm::evaluate( " << inputEnergy
     << " ) called. coefficientValue = " << coefficientValue;
-    std::cout << std::endl;
+    std::cout << std::endl;**/
 
     if( 0.0 != coefficientValue )
     {
@@ -139,19 +139,19 @@ namespace LHC_FASER
       }
 
       // debugging:
-      std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "returning " << returnValue;
-      std::cout << std::endl;
+      std::cout << std::endl;**/
       return returnValue;
     }
     else
     {
       // debugging:
-      std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "returning 0.0";
-      std::cout << std::endl;
+      std::cout << std::endl;**/
       return 0.0;
     }
   }
@@ -176,11 +176,10 @@ namespace LHC_FASER
 
       if( endEnergy > startEnergy )
       {
-        int energyPowerPlusOne( ( 1 + powerOfEnergy ) );
-        int
-        predivisorOfPowersOfEnergyPowerPlusOne( -energyPowerPlusOne
-                                                * energyPowerPlusOne );
-        double minusEnergyPowerMinusOne( -(double)energyPowerPlusOne );
+        int const energyPowerPlusOne( ( 1 + powerOfEnergy ) );
+        int predivisorOfPowersOfEnergyPowerPlusOne( -energyPowerPlusOne
+                                                    * energyPowerPlusOne );
+        double const minusEnergyPowerMinusOne( -(double)energyPowerPlusOne );
         // the terms in the sum alternate sign, so I put it here.
         double integralToStart( coefficientValue );
         double integralToEnd( coefficientValue );
@@ -227,7 +226,7 @@ namespace LHC_FASER
              ++logarithmCounter )
         {
           logPowerFactorial *= ( logPowerFactorial + 1 );
-          predivisorOfPowersOfEnergyPowerPlusOne *= energyPowerPlusOne;
+          predivisorOfPowersOfEnergyPowerPlusOne *= -energyPowerPlusOne;
 
           commonSumFactor
           = ( minusEnergyPowerMinusOne / (double)powerOfLogarithm );
@@ -248,11 +247,12 @@ namespace LHC_FASER
       }
     }
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "leptonDistributionExpansionTerm::getArea( " << startEnergy << ", "
-    << endEnergy << " ) returning " << returnValue;
-    std::cout << std::endl;/**/
+    << endEnergy << " ) for " << coefficientValue << " E^" << powerOfEnergy
+    << " L^" << powerOfLogarithm << " returning " << returnValue;
+    std::cout << std::endl;**/
 
     return returnValue;
   }
@@ -307,12 +307,12 @@ namespace LHC_FASER
                                      referenceTerm )
   {
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "leptonDistributionPowerTerm::leptonDistributionPowerTerm( "
     << powerOfEnergy << ", " << coefficientValue << ", " << referenceTerm
     << " ) called.";
-    std::cout << std::endl;/**/
+    std::cout << std::endl;**/
 
     // just an initialization.
   }
@@ -363,11 +363,11 @@ namespace LHC_FASER
       }
     }
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "leptonDistributionPowerTerm::getArea( " << startEnergy << ", "
     << endEnergy << " ) returning " << returnValue;
-    std::cout << std::endl;/**/
+    std::cout << std::endl;**/
     return returnValue;
   }
 
@@ -1900,13 +1900,13 @@ namespace LHC_FASER
                                   referenceSegment->getSegmentEnd() );
 
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "tauSegmentTriple::updateSegments() called. lowSegment = "
     << lowSegment->getSegmentStart() << " to " << lowSegment->getSegmentEnd()
     << ", highSegment = " << highSegment->getSegmentStart() << " to "
     << highSegment->getSegmentEnd();
-    std::cout << std::endl;/**/
+    std::cout << std::endl;**/
 
     for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
          term_iterator( lowSegment->getTerms()->begin() );
@@ -1923,7 +1923,7 @@ namespace LHC_FASER
                                         referenceSegment->getSegmentEnd(),
                                         false ) );
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "(lowSegment) reference term: "
       << (*term_iterator)->getReferenceTerm()->getCoefficient()
@@ -1935,7 +1935,7 @@ namespace LHC_FASER
       << "=> " << (*term_iterator)->getCoefficient()
       << " * E^" << (*term_iterator)->getPowerOfEnergy()
       << " * L^" << (*term_iterator)->getPowerOfLogarithm();
-      std::cout << std::endl;/**/
+      std::cout << std::endl;**/
     }
     for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
          term_iterator( highSegment->getTerms()->begin() );

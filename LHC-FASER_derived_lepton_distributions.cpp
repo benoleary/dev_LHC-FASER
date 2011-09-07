@@ -101,15 +101,15 @@ namespace LHC_FASER
     // now we set up the coefficients of various terms.
 
     // debugging:
-    /**/std::cout
+    /**std::cout
     << std::endl
-    << "debugging: flat_near_muon_plus_antimuon constructor has"
+    << "debugging: flat_near_muon_plus_antimuon::calculateCoefficients has"
     << std::endl << "firstMass = " << firstMass
     << std::endl << "secondMass = " << secondMass
     << std::endl << "productionFrameEnergy = " << productionFrameEnergy
     << std::endl << "minimumEnergy = " << minimumEnergy
     << std::endl << "maximumEnergy = " << maximumEnergy;
-    std::cout << std::endl;/**/
+    std::cout << std::endl;**/
 
 
     // finally we update the sets of terms, segment by segment:
@@ -1041,11 +1041,9 @@ namespace LHC_FASER
 
     // symmetric bit positive for both vector & axial coupling:
     // 0.0
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     // 0.0
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1057,11 +1055,9 @@ namespace LHC_FASER
         current_term_coefficient
         = ( same_handedness_factor
             * ( 4.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         // 0.0
-        // tick!
 
       }
     else
@@ -1081,14 +1077,12 @@ namespace LHC_FASER
     = ( ElMin * mQsq * mQCsqDiff
         * ( EightmCEVElMin * ( lnElMin - lnmQC ) * mVsq
             - 4.0 * ElMin * mC * ( EightmCEVElMin - 4.0 * ElMinsq * mC ) ) );
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     current_term_coefficient
     += ( axial_coupling_factor
          * ( EightmCXElMinmQsq * ElMin * ( lnmQC - lnElMin )
              * mQCsqDiff * mVsq ) );
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1122,15 +1116,12 @@ namespace LHC_FASER
                            + 2.0 * mCsq * ( EightmCEVElMin
                                             + 8.0 * ElMin * mCsq )
                            - 4.0 * mC * mQCsqSum * mVsq ) ) ) );
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         current_term_coefficient
         += ( same_handedness_factor * axial_coupling_factor
              * ( EightmCXElMinmQsq * ElMin * mVsq
                  * ( 2.0 * mCsq + ( lnmQC - lnElMin ) * mQCsqSum ) ) );
-        // tick!
-
       }
 
     MINtoLK_const->setCoefficient( current_term_coefficient );
@@ -1141,13 +1132,11 @@ namespace LHC_FASER
     // symmetric bit positive for both vector & axial coupling:
     current_term_coefficient
     = ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     current_term_coefficient
     += ( axial_coupling_factor
          * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq ) );
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1166,14 +1155,11 @@ namespace LHC_FASER
         += ( same_handedness_factor
              * ( 2.0 * ElMin * mQsq * mCsq * mVsq
                    * ( EightmCEVElMin + 4.0 * ElMin * mQCsqSum ) ) );
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         current_term_coefficient
         += ( same_handedness_factor * axial_coupling_factor
              * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
-        // tick!
-
       }
 
     MINtoLK_log->setCoefficient( current_term_coefficient );
@@ -1184,11 +1170,9 @@ namespace LHC_FASER
     // symmetric bit positive for both vector & axial coupling:
     current_term_coefficient
     = ( 4.0 * EightmCEVElMin * ElMin * mQcu * mQCsqDiff );
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     // 0.0
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1217,14 +1201,11 @@ namespace LHC_FASER
                            + 2.0 * ElMin * ( ( lnElMin - lnmQC ) * mCsq
                                              + mQsq ) )
                            - 2.0 * mCsq * mVsq ) ) );
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         current_term_coefficient
         += ( same_handedness_factor * axial_coupling_factor
              * ( -2.0 * EightmCXElMinmQsq * mC * mQ * mVsq ) );
-        // tick!
-
       }
 
     MINtoLK_lin->setCoefficient( current_term_coefficient );
@@ -1234,11 +1215,9 @@ namespace LHC_FASER
 
     // symmetric bit positive for both vector & axial coupling:
     // 0.0
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     // 0.0
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1252,13 +1231,9 @@ namespace LHC_FASER
                * ( 32.0 * ElMinsq * mCsq * mQcu * mVsq ) )*/
         current_term_coefficient
         = ( same_handedness_factor * ( 32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-        // tick! tick!
-
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         // 0.0
-        // tick!
-
       }
     else
       {
@@ -1275,11 +1250,9 @@ namespace LHC_FASER
     // symmetric bit positive for both vector & axial coupling:
     current_term_coefficient
     = ( -16.0 * ElMinsq * mQsq * mQsq * mQCsqDiff );
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     // 0.0
-    // tick!
 
     /*if( 0.0 != same_handedness_factor )
       {
@@ -1289,11 +1262,9 @@ namespace LHC_FASER
          * VvSqPlusAaSq):
          *//*
         // 0.0
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         // 0.0
-        // tick!
 
       }*/
 
@@ -1317,14 +1288,12 @@ namespace LHC_FASER
                 * ( ElMin * ( lnElMin - lnVsqOverFourElMinsq ) + mC )
                 - 4.0 * EightmCEVElMin * ElMinsq * mC
                 + mCsq * ( 16.0 * ElMinsq * ElMinsq - mVsq * mVsq ) ) );
-        // tick!
 
         // symmetric bit positive for vector & negative for axial coupling:
         current_term_coefficient
         += ( axial_coupling_factor
              * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
                  * ( lnVsqOverFourElMinsq - lnElMin ) ) );
-        // tick!
 
         if( 0.0 != same_handedness_factor )
           {
@@ -1351,7 +1320,6 @@ namespace LHC_FASER
                      * ( ( EightmCEVElMin + 8.0 * ElMin * mCsq )
                          * ( lnVsqOverFourElMinsq - lnElMin )
                          + 8.0 * mC * ( 4.0 * ElMinsq - mVsq ) ) ) );
-            // tick! tick!
 
             // antisymmetric bit positive for vector & negative for axial
             // coupling:
@@ -1359,8 +1327,6 @@ namespace LHC_FASER
             += ( same_handedness_factor * axial_coupling_factor
                  * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq
                      * ( lnVsqOverFourElMinsq - lnElMin ) ) );
-            // tick!
-
           }
 
         LKtoHK_const->setCoefficient( current_term_coefficient );
@@ -1370,11 +1336,9 @@ namespace LHC_FASER
 
         // symmetric bit positive for both vector & axial coupling:
         // 0.0
-        // tick!
 
         // symmetric bit positive for vector & negative for axial coupling:
         // 0.0
-        // tick!
 
         if( 0.0 != same_handedness_factor )
           {
@@ -1408,15 +1372,12 @@ namespace LHC_FASER
                                          * ( lnElMin - lnVsqOverFourElMinsq )
                                              + mC ) )
                         + 2.0 * mC * mVsq * mVsq ) ) );
-            // tick! tick!
 
             // antisymmetric bit positive for vector & negative for axial coupling:
             current_term_coefficient
             += ( same_handedness_factor * axial_coupling_factor
                  * ( 2.0 * EightmCXElMinmQsq * mC * mQ
                      * (4.0 * ElMinsq - mVsq ) ) );
-            // tick!
-
           }
         else
           {
@@ -1432,11 +1393,9 @@ namespace LHC_FASER
 
         // symmetric bit positive for both vector & axial coupling:
         // 0.0
-        // tick!
 
         // symmetric bit positive for vector & negative for axial coupling:
         // 0.0
-        // tick!
 
         /*if( 0.0 != same_handedness_factor )
           {
@@ -1446,11 +1405,9 @@ namespace LHC_FASER
              * VvPlusJjAaAllSq & VvSqPlusAaSq):
              *//*
             // 0.0
-            // tick! tick!
 
             // antisymmetric bit positive for vector & negative for axial coupling:
             // 0.0
-            // tick!
 
           }*/
 
@@ -1466,13 +1423,11 @@ namespace LHC_FASER
         // symmetric bit positive for both vector & axial coupling:
         current_term_coefficient
         = ( -2.0 * EightmCEVElMin * ElMin * lnmQC * mQsq * mQCsqDiff * mVsq );
-        // tick!
 
         // symmetric bit positive for vector & negative for axial coupling:
         current_term_coefficient
         += ( axial_coupling_factor
             * ( 2.0 * EightmCXElMinmQsq * ElMin * lnmQC * mQCsqDiff * mVsq ) );
-        // tick!
 
         if( 0.0 != same_handedness_factor )
           {
@@ -1496,7 +1451,6 @@ namespace LHC_FASER
                  * ( 2.0 * ElMin * mQsq * mVsq
                      * ( EightmCEVElMin + 8.0 * ElMin * mCsq )
                      * ( lnmQC * mQCsqSum - mQCsqDiff ) ) );
-            // tick! tick!
 
             // antisymmetric bit positive for vector & negative for axial
             // coupling:
@@ -1504,8 +1458,6 @@ namespace LHC_FASER
             += ( same_handedness_factor * axial_coupling_factor
                  * ( 2.0 * EightmCXElMinmQsq * ElMin * mVsq
                      * ( lnmQC * mQCsqSum - mQCsqDiff ) ) );
-            // tick!
-
           }
 
         LKtoHK_const->setCoefficient( current_term_coefficient );
@@ -1516,11 +1468,9 @@ namespace LHC_FASER
         // symmetric bit positive for both vector & axial coupling:
         current_term_coefficient
         = ( 4.0 * EightmCEVElMin * ElMin * mQ * mQCsqDiff * mQCsqDiff );
-        // tick!
 
         // symmetric bit positive for vector & negative for axial coupling:
         // 0.0
-        // tick!
 
         if( 0.0 != same_handedness_factor )
           {
@@ -1539,12 +1489,10 @@ namespace LHC_FASER
                  * ( 16.0 * ElMinsq * mQ * mVsq
                      * ( 4.0 * mQsq * mCsq * lnmQC
                          - mQCsqDiff * mQCsqSum ) ) );
-            // tick! tick!
 
             // antisymmetric bit positive for vector & negative for axial
             // coupling:
             // 0.0
-            // tick!
 
           }
 
@@ -1556,11 +1504,9 @@ namespace LHC_FASER
         // symmetric bit positive for both vector & axial coupling:
         current_term_coefficient
         = ( -16.0 * ElMinsq * mQCsqDiff * mQCsqDiff * mQCsqSum );
-        // tick!
 
         // symmetric bit positive for vector & negative for axial coupling:
         // 0.0
-        // tick!
 
         /*if( 0.0 != same_handedness_factor )
           {
@@ -1570,11 +1516,9 @@ namespace LHC_FASER
              * VvPlusJjAaAllSq & VvSqPlusAaSq):
              *//*
             // 0.0
-            // tick! tick!
 
             // antisymmetric bit positive for vector & negative for axial coupling:
             // 0.0
-            // tick!
 
           }*/
 
@@ -1591,11 +1535,9 @@ namespace LHC_FASER
 
     // symmetric bit positive for both vector & axial coupling:
     // 0.0
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     // 0.0
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1610,11 +1552,9 @@ namespace LHC_FASER
         current_term_coefficient
         = ( same_handedness_factor
             * ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq ) );
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         // 0.0
-        // tick!
 
       }
     else
@@ -1634,14 +1574,12 @@ namespace LHC_FASER
     = ( mQsq * mQCsqDiff * mVsq
         * ( EightmCEVElMin * ( mC - ElMin * ( lnmQC + lnVsqOverFourElMinsq ) )
             - mCsq * mVsq ) );
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     current_term_coefficient
     += ( axial_coupling_factor
         * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
             * ( lnmQC + lnVsqOverFourElMinsq ) ) );
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1671,7 +1609,6 @@ namespace LHC_FASER
                     + 4.0 * mC
                       * ( 4.0 * ElMin * ( ElMin * mQCsqSum - mC * mQsq )
                           - mQCsqSum * mVsq ) ) ) );
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         current_term_coefficient
@@ -1679,8 +1616,6 @@ namespace LHC_FASER
             * ( EightmCXElMinmQsq * ElMin * mVsq
                 * ( ( lnmQC + lnVsqOverFourElMinsq ) * mQCsqSum
                     - 2.0 * mQsq ) ) );
-        // tick!
-
       }
 
     HKtoMAX_const->setCoefficient( current_term_coefficient );
@@ -1691,13 +1626,11 @@ namespace LHC_FASER
     // symmetric bit positive for both vector & axial coupling:
     current_term_coefficient
     = ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     current_term_coefficient
     += ( axial_coupling_factor
          * ( -EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq ) );
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1716,14 +1649,11 @@ namespace LHC_FASER
         += ( same_handedness_factor
              * ( -ElMin * mQsq * mQCsqSum * mVsq
                  * ( EightmCEVElMin + 8.0 * ElMin * mCsq ) ) );
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         current_term_coefficient
         += ( same_handedness_factor * axial_coupling_factor
              * ( -EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
-        // tick!
-
       }
 
     HKtoMAX_log->setCoefficient( current_term_coefficient );
@@ -1734,11 +1664,9 @@ namespace LHC_FASER
     // symmetric bit positive for both vector & axial coupling:
     current_term_coefficient
     = ( -4.0 * EightmCEVElMin * ElMin * mCsq * mQ * mQCsqDiff );
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     // 0.0
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1763,14 +1691,11 @@ namespace LHC_FASER
                     + 8.0 * mQsq
                       * ( EightmCEVElMin
                           + 8.0 * ElMin * mC * ( mC - ElMin ) ) ) ) );
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         current_term_coefficient
         += ( same_handedness_factor * axial_coupling_factor
              * ( 8.0 * EightmCXElMinmQsq * ElMinsq * mC * mQ ) );
-        // tick!
-
       }
 
     HKtoMAX_lin->setCoefficient( current_term_coefficient );
@@ -1780,11 +1705,9 @@ namespace LHC_FASER
 
     // symmetric bit positive for both vector & axial coupling:
     // 0.0
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     // 0.0
-    // tick!
 
     if( 0.0 != same_handedness_factor )
       {
@@ -1799,12 +1722,9 @@ namespace LHC_FASER
         current_term_coefficient
         = ( same_handedness_factor
             * ( -32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-        // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         // 0.0
-        // tick!
-
       }
     else
       {
@@ -1820,11 +1740,9 @@ namespace LHC_FASER
 
     // symmetric bit positive for both vector & axial coupling:
     current_term_coefficient = ( 16.0 * ElMinsq * mCsq * mCsq * mQCsqDiff );
-    // tick!
 
     // symmetric bit positive for vector & negative for axial coupling:
     // 0.0
-    // tick!
 
     /*if( 0.0 != same_handedness_factor )
       {
@@ -1834,33 +1752,42 @@ namespace LHC_FASER
          * VvSqPlusAaSq):
          *//*
         // 0.0
-    // tick! tick!
 
         // antisymmetric bit positive for vector & negative for axial coupling:
         // 0.0
-    // tick!
 
       }*/
 
     HKtoMAX_sq->setCoefficient( current_term_coefficient );
 
     // debugging:
-    /**std::cout
+    /**/
+    normalizeCoefficients();
+    std::cout
     << std::endl
-    << "debugging: lepton_distribution_same_chirality_far_muon:";
-    std::cout << std::endl << "normalization = " << normalization;
-    std::cout << std::endl << "minimum_energy = " << minimum_energy;
-    std::cout << std::endl << "Elk = " << Elk;
-    std::cout << std::endl << "Ehk = " << Ehk;
-    std::cout << std::endl << "maximum_energy = " << maximum_energy;
-    std::cout << std::endl << "MINtoLK_lin = " << MINtoLK_lin;
-    std::cout << std::endl << "MINtoLK_log = " << MINtoLK_log;
-    std::cout << std::endl << "MINtoLK_const = " << MINtoLK_const;
-    std::cout << std::endl << "MINtoLK_inv = " << MINtoLK_inv;
-    std::cout << std::endl << "LKtoHK_const = " << LKtoHK_const;
-    std::cout << std::endl << "LKtoHK_inv = " << LKtoHK_inv;
-    std::cout << std::endl;**/
-
+    << "debugging: Z_handed_muon:calculateCoefficients() produced "
+    << std::endl << "firstMass = " << firstMass
+    << std::endl << "secondMass = " << secondMass
+    << std::endl << "energy_limited_cosines = " << energy_limited_cosines
+    << std::endl << "(true = " << true << ")"
+    << std::endl << "minimumEnergy = " << minimumEnergy
+    << std::endl << "maximumEnergy = " << maximumEnergy
+    << std::endl << "MINtoLK_inv = " << MINtoLK_inv->getCoefficient()
+    << std::endl << "MINtoLK_const = " << MINtoLK_const->getCoefficient()
+    << std::endl << "MINtoLK_log = " << MINtoLK_log->getCoefficient()
+    << std::endl << "MINtoLK_lin = " << MINtoLK_lin->getCoefficient()
+    << std::endl << "MINtoLK_linlog = " << MINtoLK_linlog->getCoefficient()
+    << std::endl << "MINtoLK_sq = " << MINtoLK_sq->getCoefficient()
+    << std::endl << "LKtoHK_const = " << LKtoHK_const->getCoefficient()
+    << std::endl << "LKtoHK_lin = " << LKtoHK_lin->getCoefficient()
+    << std::endl << "LKtoHK_sq = " << LKtoHK_sq->getCoefficient()
+    << std::endl << "HKtoMAX_inv = " << HKtoMAX_inv->getCoefficient()
+    << std::endl << "HKtoMAX_const = " << HKtoMAX_const->getCoefficient()
+    << std::endl << "HKtoMAX_log = " << HKtoMAX_log->getCoefficient()
+    << std::endl << "HKtoMAX_lin = " << HKtoMAX_lin->getCoefficient()
+    << std::endl << "HKtoMAX_linlog = " << HKtoMAX_linlog->getCoefficient()
+    << std::endl << "HKtoMAX_sq = " << HKtoMAX_sq->getCoefficient();
+    std::cout << std::endl;/**/
   }
 
 
@@ -2859,25 +2786,20 @@ namespace LHC_FASER
   void
   vector_from_squark_to_muon::calculateCoefficients()
   {
-
     mQhSq = ( firstMass * firstMass );
-    mVSq = ( secondMass * secondMass );
-    mQlSq = ( thirdMass * thirdMass );
-    gammaV = ( ( mQhSq - mQlSq + mVSq ) / ( firstMass * secondMass ) );
+    mQlSq = ( secondMass * secondMass );
+    mVSq = ( thirdMass * thirdMass );
+    gammaV = ( ( mQhSq - mQlSq + mVSq ) / ( 2.0 * firstMass * thirdMass ) );
     betaV = sqrt( ( 1.0 - ( 1.0 / ( gammaV * gammaV ) ) ) );
-    productionFrameEnergy = ( 0.5 * secondMass );
+    productionFrameEnergy = ( 0.5 * thirdMass );
     minimumEnergy = ( gammaV * ( 1.0 - betaV ) * productionFrameEnergy );
     maximumEnergy = ( gammaV * ( 1.0 + betaV ) * productionFrameEnergy );
     energyDifference = ( maximumEnergy - minimumEnergy );
 
-
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization:
-
+    // now we set up the coefficients of various terms:
     // MIN to MAX segment:
     MINtoMAX_segment.setSegmentRange( minimumEnergy,
-                                        maximumEnergy );
-
+                                      maximumEnergy );
     MINtoMAX_const->setCoefficient( -minimumEnergy * maximumEnergy );
     MINtoMAX_lin->setCoefficient( minimumEnergy + maximumEnergy );
     MINtoMAX_sq->setCoefficient( -1.0 );
@@ -3030,7 +2952,9 @@ namespace LHC_FASER
     left_sfermion( given_left_sfermion ),
     right_sfermion( given_right_sfermion ),
     MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
-                                              0 ) )
+                                              0,
+                                              NULL,
+                                              1.0 ) )
   {
     segments.push_back( &MINtoMAX_segment );
   }
@@ -3084,7 +3008,9 @@ namespace LHC_FASER
     leftDownIsospinSfermion( leftDownIsospinSfermion ),
     rightDownIsospinSfermion( rightDownIsospinSfermion ),
     MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
-                                              0 ) )
+                                              0,
+                                              NULL,
+                                              1.0 ) )
   {
     segments.push_back( &MINtoMAX_segment );
   }
