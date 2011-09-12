@@ -1010,6 +1010,9 @@ namespace LHC_FASER
     else
       {
         energy_limited_cosines = false;
+        // for comparison with the Mathematica notebook: underlap is Ehk > Elk
+        // => if( energy_limited_cosines ){ [use overlap] }
+
         // debugging:
         /**/std::cout << std::endl << "debugging:"
         << std::endl
@@ -1057,6 +1060,12 @@ namespace LHC_FASER
 
 
 
+    /* ends up in order:
+     * low (MINtoLK),
+     * over (LKtoHK, true == energy_limited_cosines),
+     * under (LKtoHK, false == energy_limited_cosines),
+     * high (HKtoMAX)
+     */
 
     // VvPlusJjAaAllSqSymDistribution:
     MINtoLK_inv->setCoefficient( 0.0 );
@@ -1154,150 +1163,103 @@ namespace LHC_FASER
     << std::endl << HKtoMAX_sq->getCoefficient() << "E^2";
     std::cout << std::endl;/**/
 
-    // TwiceVvAaSymDistribution:
-    current_term_coefficient
-    = ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
-    MINtoLK_inv->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "TwiceVvAaSymDistribution:"
-    << std::endl << "MINtoLK: "
-    << std::endl << current_term_coefficient << "/E";
+
+    // VvSqMinusAaSqSymDistribution:
+
+    // inv: 0.0
 
     current_term_coefficient
-    = ( ElMin * mQsq
-        * ( 2.0 * EightmCEVElMin
-                * ( mVsq * ( mQsq * ( lnElMin - lnmQC ) - mCsq )
-                    - 4.0 * ElMin * mC * mQsq )
-            + 4.0 * mC
-              * ( 2.0 * ElMin * mC
-                  * ( 4.0 * ElMinsq * mQsq
-                      + mVsq * ( mQCsqSum * ( lnElMin - lnmQC )
-                                 - 2.0 * mCsq ) )
-                  + mQCsqSum * mVsq * mVsq ) ) );
+    = ( EightmCXElMinmQsq * ElMin * ( lnmQC - lnElMin ) * mQCsqDiff * mVsq );
     MINtoLK_const->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient;
 
-    //STILL TO CHECK!
-    current_term_coefficient = -100.0;
+    to here!
+
+    current_term_coefficient
+    = ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
     MINtoLK_log->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "L";
 
-    //STILL TO CHECK!
-        current_term_coefficient = -100.0;
+    current_term_coefficient
+    = ( 4.0 * EightmCEVElMin * ElMin * mQcu * mQCsqDiff );
     MINtoLK_lin->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "E";
 
     MINtoLK_linlog->setCoefficient( 0.0 );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "EL";
 
-    //STILL TO CHECK!
-        current_term_coefficient = -100.0;
+    current_term_coefficient
+    = ( -16.0 * ElMinsq * mQsq * mQsq * mQCsqDiff );
     MINtoLK_sq->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "E^2";
 
     if( energy_limited_cosines )
     {
-      //STILL TO CHECK!
-          current_term_coefficient = -100.0;
+      current_term_coefficient
+      = ( mQsq * mQCsqDiff
+          * ( EightmCEVElMin * mVsq
+              * ( ElMin * ( lnElMin - lnVsqOverFourElMinsq ) + mC )
+              - 4.0 * EightmCEVElMin * ElMinsq * mC
+              + mCsq * ( 16.0 * ElMinsq * ElMinsq - mVsq * mVsq ) ) );
       LKtoHK_const->setCoefficient( current_term_coefficient );
-      // debugging:
-      /**/std::cout
-      << std::endl << "LKtoHK: "
-      << std::endl << current_term_coefficient;
-      //STILL TO CHECK!
-          current_term_coefficient = -100.0;
+
       LKtoHK_lin->setCoefficient( 0.0 );
-      // debugging:
-      /**/std::cout
-      << std::endl << current_term_coefficient << "E";
-      //STILL TO CHECK!
-      current_term_coefficient = -100.0;
       LKtoHK_sq->setCoefficient( 0.0 );
-      // debugging:
-      /**/std::cout
-      << std::endl << current_term_coefficient << "E^2";
     }
     else
     {
-      //STILL TO CHECK!
-          current_term_coefficient = -100.0;
+      current_term_coefficient
+      = ( -2.0 * EightmCEVElMin * ElMin * lnmQC * mQsq * mQCsqDiff * mVsq );
       LKtoHK_const->setCoefficient( current_term_coefficient );
-      // debugging:
-      /**/std::cout
-      << std::endl << "LKtoHK: "
-      << std::endl << current_term_coefficient;
 
-      //STILL TO CHECK!
-          current_term_coefficient = -100.0;
+      current_term_coefficient
+      = ( 4.0 * EightmCEVElMin * ElMin * mQ * mQCsqDiff * mQCsqDiff );
       LKtoHK_lin->setCoefficient( current_term_coefficient );
-      // debugging:
-      /**/std::cout
-      << std::endl << current_term_coefficient << "E";
 
-      //STILL TO CHECK!
-          current_term_coefficient = -100.0;
+      current_term_coefficient
+      = ( -16.0 * ElMinsq * mQCsqDiff * mQCsqDiff * mQCsqSum );
       LKtoHK_sq->setCoefficient( current_term_coefficient );
-      // debugging:
-      /**/std::cout
-      << std::endl << current_term_coefficient << "E^2";
     }
-    //STILL TO CHECK!
-        current_term_coefficient = -100.0;
+
     HKtoMAX_inv->setCoefficient( 0.0 );
-    // debugging:
-    /**/std::cout
-    << std::endl << "HKtoMAX: "
-    << std::endl << current_term_coefficient << "/E";
 
-    //STILL TO CHECK!
-        current_term_coefficient = -100.0;
+    current_term_coefficient
+    = ( mQsq * mQCsqDiff * mVsq
+        * ( EightmCEVElMin * ( mC - ElMin * ( lnmQC + lnVsqOverFourElMinsq ) )
+            - mCsq * mVsq ) );
     HKtoMAX_const->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient;
 
-    //STILL TO CHECK!
-        current_term_coefficient = -100.0;
+    current_term_coefficient
+    = ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
     HKtoMAX_log->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "L";
 
-    //STILL TO CHECK!
-        current_term_coefficient = -100.0;
+    current_term_coefficient
+    = ( -4.0 * EightmCEVElMin * ElMin * mCsq * mQ * mQCsqDiff );
     HKtoMAX_lin->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "E";
 
-    //STILL TO CHECK!
-        current_term_coefficient = -100.0;
     HKtoMAX_linlog->setCoefficient( 0.0 );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "EL";
 
-    //STILL TO CHECK!
-        current_term_coefficient = -100.0;
+    current_term_coefficient = ( 16.0 * ElMinsq * mCsq * mCsq * mQCsqDiff );
     HKtoMAX_sq->setCoefficient( current_term_coefficient );
+
     // debugging:
-    /**/std::cout
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "VvPlusJjAaAllSqSymDistribution:"
+    << std::endl << "MINtoLK: "
+    << std::endl << MINtoLK_inv->getCoefficient() << "/E"
+    << std::endl << MINtoLK_const->getCoefficient()
+    << std::endl << MINtoLK_log->getCoefficient() << "L"
+    << std::endl << MINtoLK_lin->getCoefficient() << "E"
+    << std::endl << MINtoLK_linlog->getCoefficient() << "EL"
+    << std::endl << MINtoLK_sq->getCoefficient() << "E^2"
+    << std::endl << "LKtoHK: "
+    << std::endl << LKtoHK_const->getCoefficient()
+    << std::endl << LKtoHK_lin->getCoefficient() << "E"
+    << std::endl << LKtoHK_sq->getCoefficient() << "E^2"
+    << std::endl << "HKtoMAX: "
+    << std::endl << HKtoMAX_inv->getCoefficient() << "/E"
+    << std::endl << HKtoMAX_const->getCoefficient()
+    << std::endl << HKtoMAX_log->getCoefficient() << "L"
+    << std::endl << HKtoMAX_lin->getCoefficient() << "E"
+    << std::endl << HKtoMAX_linlog->getCoefficient() << "EL"
     << std::endl << HKtoMAX_sq->getCoefficient() << "E^2";
     std::cout << std::endl;/**/
-
-
 
 
 
@@ -3096,6 +3058,210 @@ namespace LHC_FASER
     lnElk = log( Elk );
     lnEhk = log( Ehk );
     lnEmax = log( maximumEnergy );
+
+
+
+
+
+    // TwiceVvAaSymDistribution:
+    current_term_coefficient
+    = ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
+    MINtoLK_inv->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "TwiceVvAaSymDistribution:"
+    << std::endl << "MINtoLK: "
+    << std::endl << current_term_coefficient << "/E";
+
+    current_term_coefficient
+    = ( ElMin * mQsq
+        * ( 2.0 * EightmCEVElMin
+                * ( mVsq * ( mQsq * ( lnElMin - lnmQC ) - mCsq )
+                    - 4.0 * ElMin * mC * mQsq )
+            + 4.0 * mC
+              * ( 2.0 * ElMin * mC
+                  * ( 4.0 * ElMinsq * mQsq
+                      + mVsq * ( mQCsqSum * ( lnElMin - lnmQC )
+                                 - 2.0 * mCsq ) )
+                  + mQCsqSum * mVsq * mVsq ) ) );
+    MINtoLK_const->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient;
+
+    current_term_coefficient
+    = ( -2.0 * ElMin * mQsq * ( EightmCEVElMin * mQsq + 4.0 * mCsq * mQCsqSum )
+        * mVsq );
+    MINtoLK_log->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient << "L";
+
+    current_term_coefficient
+    = ( 2.0 * mQcu
+        * ( 4.0 * EightmCEVElMin * ElMin
+            * ( ( lnElMin - lnmQC ) * mCsq + mQsq )
+            + EightmCEVElMin * mC * mVsq
+            - 2.0 * mCsq * ( 4.0 * ElMin * mC * ( 4.0 * ElMinsq - mVsq )
+                             + mVsq * mVsq) ) );
+    MINtoLK_lin->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient << "E";
+
+    current_term_coefficient
+    = ( -8.0 * EightmCEVElMin * ElMin * mCsq * mQcu );
+    MINtoLK_linlog->setCoefficient( 0.0 );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient << "EL";
+
+    current_term_coefficient
+    = ( -32.0 * ElMinsq * mQsq * mQsq * ( mQCsqDiff - mCsq ) );
+    MINtoLK_sq->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient << "E^2";
+
+    if( energy_limited_cosines )
+    {
+      current_term_coefficient
+      = ( 2.0 * mQsq
+          * ( EightmCEVElMin * mQsq
+              * ( mC * ( mVsq - 4.0 * ElMinsq )
+                  + ElMin * mVsq * ( lnElMin - lnVsqOverFourElMinsq ) )
+              + mC * ( 16.0 * ElMinsq * ElMinsq * mC * mQsq
+                       - 4.0 * ElMinsq * mQCsqSum * mVsq
+                         * ( 2.0 * ElMin
+                             + ( lnVsqOverFourElMinsq - lnElMin ) * mC )
+                       - ( mC * mQsq
+                           - 2.0 * ElMin * mQCsqSum ) * mVsq * mVsq ) ) );
+      LKtoHK_const->setCoefficient( current_term_coefficient );
+      // debugging:
+      /**/std::cout
+      << std::endl << "LKtoHK: "
+      << std::endl << current_term_coefficient;
+      current_term_coefficient
+      = ( 2.0 * mC * mQcu
+          * ( EightmCEVElMin
+              * ( mVsq
+                  - 4.0 * ElMin * ( ( lnVsqOverFourElMinsq - lnElMin ) * mC
+                                    + ElMin ) )
+              + 2.0 * mC * ( 8.0 * ElMin
+                             * ( 2.0 * ElMinsq * ( ElMin - 2.0 * mC )
+                                 + mC * mVsq )
+                             - mVsq * mVsq ) ) );
+      LKtoHK_lin->setCoefficient( current_term_coefficient );
+      // debugging:
+      /**/std::cout
+      << std::endl << current_term_coefficient << "E";
+      current_term_coefficient = 0.0;
+      LKtoHK_sq->setCoefficient( 0.0 );
+      // debugging:
+      /**/std::cout
+      << std::endl << current_term_coefficient << "E^2";
+    }
+    else
+    {
+      current_term_coefficient
+      = ( 2.0 * ElMin * mQsq * mVsq
+          * ( mQCsqDiff
+              * ( EightmCEVElMin + 8.0 * ElMin * mCsq )
+              - 8.0 * lnmQC * ( 4.0 * mQCsqSum * mCsq * ElMin
+                                + mQsq * EightmCEVElMin ) ) );
+      LKtoHK_const->setCoefficient( current_term_coefficient );
+      // debugging:
+      /**/std::cout
+      << std::endl << "LKtoHK: "
+      << std::endl << current_term_coefficient;
+
+      current_term_coefficient
+      = ( 8.0 * EightmCEVElMin * ElMin * mQcu
+          * ( mQCsqDiff - 2.0 * lnmQC * mCsq ) );
+      LKtoHK_lin->setCoefficient( current_term_coefficient );
+      // debugging:
+      /**/std::cout
+      << std::endl << current_term_coefficient << "E";
+
+      current_term_coefficient
+      = ( -32.0 * ElMinsq * mQsq * mQCsqDiff * mQCsqDiff );
+      LKtoHK_sq->setCoefficient( current_term_coefficient );
+      // debugging:
+      /**/std::cout
+      << std::endl << current_term_coefficient << "E^2";
+    }
+
+    current_term_coefficient = ( 4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
+    HKtoMAX_inv->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << "HKtoMAX: "
+    << std::endl << current_term_coefficient << "/E";
+
+    current_term_coefficient
+    = ( 2.0 * mQsq * mVsq
+        * ( EightmCEVElMin * ElMin * mQsq
+            * ( 1.0 - lnmQC - lnVsqOverFourElMinsq )
+            - 4.0 * ElMinsq * mCsq
+              * ( ( lnmQC + lnVsqOverFourElMinsq ) * mQCsqSum - 2.0 * mQsq )
+            - 8.0 * ElMin * ElMinsq * mC * mQCsqSum
+            + mC * mQsq * ( EightmCEVElMin - mC * mVsq ) ) );
+    HKtoMAX_const->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient;
+
+    current_term_coefficient
+    = ( 2.0 * ElMin * mQsq * mVsq
+        * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) );
+    HKtoMAX_log->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient << "L";
+
+    current_term_coefficient
+    = ( 8.0  * ElMin * mC * mQcu
+        * ( 2.0 * mC * ( 4.0 * ElMinsq * ( ElMin - mC ) + mC * mVsq )
+            - EightmCEVElMin
+            * ( ElMin + ( 1.0 + lnmQC + lnVsqOverFourElMinsq ) * mC ) ) );
+    HKtoMAX_lin->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient << "E";
+
+    current_term_coefficient = ( 8.0 * EightmCEVElMin * ElMin * mCsq * mQcu );
+    HKtoMAX_linlog->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient << "EL";
+
+    current_term_coefficient = ( -32.0 * ElMinsq * mCsq * mCsq * mQsq );
+    HKtoMAX_sq->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**/std::cout
+    << std::endl << current_term_coefficient << "E^2";
+    std::cout << std::endl;/**/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // MIN to LK:
     MINtoLK_segment.setSegmentRange( minimumEnergy,

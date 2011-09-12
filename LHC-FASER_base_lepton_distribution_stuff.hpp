@@ -146,6 +146,9 @@ namespace LHC_FASER
     setCoefficient( double const coefficientValue )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
+    addToCoefficient( double const coefficientValue )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
     normalizeCoefficient( double const normalizingFactor )
     // this just multiplies coefficientValue by normalizingFactor.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -720,6 +723,13 @@ namespace LHC_FASER
                                                 double const coefficientValue )
   {
      this->coefficientValue = coefficientValue;
+  }
+
+  inline void
+  leptonDistributionExpansionTerm::addToCoefficient(
+                                                double const coefficientValue )
+  {
+     this->coefficientValue += coefficientValue;
   }
 
   inline void
