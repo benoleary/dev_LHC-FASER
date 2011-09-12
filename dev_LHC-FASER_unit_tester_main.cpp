@@ -373,7 +373,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "H+" );
   currentDistribution
-  = new LHC_FASER::Z_handed_muon( &testReadier,
+  = new LHC_FASER::zHandedMuon( &testReadier,
                                   &slhaData,
                                   sdownLPointer,
                                   &sdownLMass,
@@ -385,7 +385,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "Zn3L" );
   currentDistribution
-  = new LHC_FASER::Z_handed_muon( &testReadier,
+  = new LHC_FASER::zHandedMuon( &testReadier,
                                   &slhaData,
                                   sdownLPointer,
                                   &sdownLMass,
@@ -397,7 +397,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "Zn3R" );
   currentDistribution
-  = new LHC_FASER::Z_handed_muon( &testReadier,
+  = new LHC_FASER::zHandedMuon( &testReadier,
                                   &slhaData,
                                   sdownLPointer,
                                   &sdownLMass,
@@ -409,7 +409,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "Zn3summed" );
   currentDistribution*/
-  = new LHC_FASER::Z_handed_muon( &testReadier,
+  = new LHC_FASER::zHandedMuon( &testReadier,
                                   &slhaData,
                                   sdownLPointer,
                                   &sdownLMass,
@@ -421,7 +421,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "Zn4L" );
   currentDistribution
-  = new LHC_FASER::Z_handed_muon( &testReadier,
+  = new LHC_FASER::zHandedMuon( &testReadier,
                                   &slhaData,
                                   sdownLPointer,
                                   &sdownLMass,
@@ -433,7 +433,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "Zn4R" );
   currentDistribution
-  = new LHC_FASER::Z_handed_muon( &testReadier,
+  = new LHC_FASER::zHandedMuon( &testReadier,
                                   &slhaData,
                                   sdownLPointer,
                                   &sdownLMass,

@@ -873,22 +873,24 @@ namespace LHC_FASER
 
 
 
-  Z_handed_muon::Z_handed_muon( readierForNewPoint* const given_readier,
-                                CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  zHandedMuon::zHandedMuon( readierForNewPoint* const readier,
+                                CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle,
-                                bool const negative_muon_is_same_handedness,
-                                bool const should_sum_over_handedness ) :
-    leptonEnergyDistribution( given_readier,
-                              given_spectrum,
-                              given_first_particle,
+             CppSLHA::particle_property_set const* const secondParticle,
+              CppSLHA::particle_property_set const* const thirdParticle,
+          CppSLHA::particle_property_set const* const fourthParticle,
+                                bool const negativeMuonIsSameHandednessAsJet,
+                                bool const shouldSumOverHandedness ) :
+    leptonEnergyDistribution( readier,
+                              spectrumData,
+                              firstParticle,
                               effectiveSquarkMass,
-                              given_second_particle,
-                              given_third_particle,
-                              given_fourth_particle ),
+                              secondParticle,
+                              thirdParticle,
+                              fourthParticle ),
+    negativeMuonIsSameHandednessAsJet( negativeMuonIsSameHandednessAsJet ),
+    shouldNotSumOverHandedness( !shouldSumOverHandedness ),
     MINtoLK_inv( MINtoLK_segment.addTerm( -1,
                                           0 ) ),
     MINtoLK_const( MINtoLK_segment.addTerm( 0,
@@ -920,42 +922,25 @@ namespace LHC_FASER
     HKtoMAX_sq( HKtoMAX_segment.addTerm( 2,
                                          0 ) )
   {
-    if( should_sum_over_handedness )
-    {
-      same_handedness_factor = 0.0;
-    }
-    else
-    {
-      if( negative_muon_is_same_handedness )
-      {
-        same_handedness_factor = 1.0;
-      }
-      else
-      {
-        same_handedness_factor = -1.0;
-      }
-    }
     segments.push_back( &MINtoLK_segment );
     segments.push_back( &LKtoHK_segment );
     segments.push_back( &HKtoMAX_segment );
   }
 
-  Z_handed_muon::~Z_handed_muon()
+  zHandedMuon::~zHandedMuon()
   {
-
     // does nothing.
-
   }
 
 
   void
-  Z_handed_muon::calculateCoefficients()
+  zHandedMuon::calculateCoefficients()
   {
     /* it doesn't matter if the neutralino mass is negative, since only the
      * absolute square appears, & the couplings are only affected by it as an
      * overall phase.  I (BOL) assume no CP violation, so the neutralino mixing
      * matrices are strictly real. just as a quirk of the way I did my
-     * workings, axial_coupling_factor needs to be +1 when the Z couples as a
+     * workings, axialCouplingFactor needs to be +1 when the Z couples as a
      * vector to the neutralinos, & -1 when it couples as an axial vector.
      */
     if( ( ( 0.0 < secondParticle->get_mass() )
@@ -968,11 +953,11 @@ namespace LHC_FASER
       // if the relative phases end up such that the product of couplings is
       // purely imaginary...
     {
-      axial_coupling_factor = -1.0;
+      couplesAsVectorNotAxial = false;
     }
     else
     {
-      axial_coupling_factor = 1.0;
+      couplesAsVectorNotAxial = true;
     }
     mQ = firstMass;  // this is just for compact equations.
     mQsq = ( mQ * mQ );
@@ -994,31 +979,31 @@ namespace LHC_FASER
        * range of energies which can be reached for all squark-rest-frame polar
        * muon momentum angles...
        */
-      {
-        // we swap the energies (borrowing current_term_coefficient for a
-        // moment) & note that we had to swap them:
-        current_term_coefficient = Elk;
-        Elk = Ehk;
-        Ehk = current_term_coefficient;
-        energy_limited_cosines = true;
-        // debugging:
-        /**/std::cout << std::endl << "debugging:"
-        << std::endl
-        << "energy_limited_cosines = true";
-        std::cout << std::endl;/**/
-      }
+    {
+      // we swap the energies (borrowing currentLkToHkLinCoefficient for a
+      // moment) & note that we had to swap them:
+      currentLkToHkLinCoefficient = Elk;
+      Elk = Ehk;
+      Ehk = currentLkToHkLinCoefficient;
+      cosinesLimitedByEnergy = true;
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "cosinesLimitedByEnergy = true";
+      std::cout << std::endl;/**/
+    }
     else
-      {
-        energy_limited_cosines = false;
-        // for comparison with the Mathematica notebook: underlap is Ehk > Elk
-        // => if( energy_limited_cosines ){ [use overlap] }
+    {
+      cosinesLimitedByEnergy = false;
+      // for comparison with the Mathematica notebook: underlap is Ehk > Elk
+      // => if( cosinesLimitedByEnergy ){ [use overlap] }
 
-        // debugging:
-        /**/std::cout << std::endl << "debugging:"
-        << std::endl
-        << "energy_limited_cosines = false";
-        std::cout << std::endl;/**/
-      }
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "cosinesLimitedByEnergy = false";
+      std::cout << std::endl;/**/
+    }
     mQCsqDiff = ( mQsq - mCsq );
     mQCsqSum = ( mQsq + mCsq );
     EightmCEVElMin = ( 8.0 * mC * EV * ElMin );
@@ -1059,85 +1044,107 @@ namespace LHC_FASER
      */
 
 
-
-    /* ends up in order:
+    /* ends up in the order:
      * low (MINtoLK),
-     * over (LKtoHK, true == energy_limited_cosines),
-     * under (LKtoHK, false == energy_limited_cosines),
+     * over (LKtoHK, true == cosinesLimitedByEnergy),
+     * under (LKtoHK, false == cosinesLimitedByEnergy),
      * high (HKtoMAX)
      */
 
-    // VvPlusJjAaAllSqSymDistribution:
-    MINtoLK_inv->setCoefficient( 0.0 );
 
-    current_term_coefficient
+    // VvPlusJjAaAllSqSymDistribution:
+
+    // MIN to LK:
+
+    currentMinToLkConstCoefficient
     = ( ElMin * mQsq * mQCsqDiff
         * ( EightmCEVElMin * ( lnElMin - lnmQC ) * mVsq
             - 4.0 * ElMin * mC * ( EightmCEVElMin - 4.0 * ElMinsq * mC ) ) );
-    MINtoLK_const->setCoefficient( current_term_coefficient );
+    // right!
 
-    current_term_coefficient
+    currentMinToLkLogCoefficient
     = ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
-    MINtoLK_log->setCoefficient( current_term_coefficient );
+    // right!
 
-    current_term_coefficient
+    currentMinToLkLinCoefficient
     = ( 4.0 * EightmCEVElMin * ElMin * mQcu * mQCsqDiff );
-    MINtoLK_lin->setCoefficient( current_term_coefficient );
+    // right!
 
-    MINtoLK_linlog->setCoefficient( 0.0 );
-
-    current_term_coefficient
+    currentMinToLkSqCoefficient
     = ( -16.0 * ElMinsq * mQsq * mQsq * mQCsqDiff );
-    MINtoLK_sq->setCoefficient( current_term_coefficient );
+    // right!
 
-    if( energy_limited_cosines )
+
+    // LK to HK:
+
+    if( cosinesLimitedByEnergy )
     {
-      current_term_coefficient
+      currentLkToHkConstCoefficient
       = ( mQsq * mQCsqDiff
-          * ( EightmCEVElMin * mVsq
-              * ( ElMin * ( lnElMin - lnVsqOverFourElMinsq ) + mC )
-              - 4.0 * EightmCEVElMin * ElMinsq * mC
+          * ( EightmCEVElMin
+              * ( mC * ( mVsq - 4.0 * ElMinsq )
+                  - ElMin * lnVsqOverFourElMinsq * mVsq )
               + mCsq * ( 16.0 * ElMinsq * ElMinsq - mVsq * mVsq ) ) );
-      LKtoHK_const->setCoefficient( current_term_coefficient );
-
-      LKtoHK_lin->setCoefficient( 0.0 );
-      LKtoHK_sq->setCoefficient( 0.0 );
+      // dunno...
+      currentLkToHkLinCoefficient = 0.0;
+      // dunno...
+      currentLkToHkSqCoefficient = 0.0;
+      // dunno...
     }
     else
     {
-      current_term_coefficient
+      currentLkToHkConstCoefficient
       = ( -2.0 * EightmCEVElMin * ElMin * lnmQC * mQsq * mQCsqDiff * mVsq );
-      LKtoHK_const->setCoefficient( current_term_coefficient );
+      // right!
 
-      current_term_coefficient
+      currentLkToHkLinCoefficient
       = ( 4.0 * EightmCEVElMin * ElMin * mQ * mQCsqDiff * mQCsqDiff );
-      LKtoHK_lin->setCoefficient( current_term_coefficient );
+      // right!
 
-      current_term_coefficient
+      currentLkToHkSqCoefficient
       = ( -16.0 * ElMinsq * mQCsqDiff * mQCsqDiff * mQCsqSum );
-      LKtoHK_sq->setCoefficient( current_term_coefficient );
+      // right!
     }
 
-    HKtoMAX_inv->setCoefficient( 0.0 );
 
-    current_term_coefficient
+    // HK to MAX:
+
+    currentHkToMaxConstCoefficient
     = ( mQsq * mQCsqDiff * mVsq
-        * ( EightmCEVElMin * ( mC - ElMin * ( lnmQC + lnVsqOverFourElMinsq ) )
+        * ( EightmCEVElMin
+            * ( mC - ElMin * ( lnmQC + lnVsqOverFourElMinsq + lnElMin ) )
             - mCsq * mVsq ) );
-    HKtoMAX_const->setCoefficient( current_term_coefficient );
+    // right!
 
-    current_term_coefficient
+    currentHkToMaxLogCoefficient
     = ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
-    HKtoMAX_log->setCoefficient( current_term_coefficient );
+    // right!
 
-    current_term_coefficient
+    currentHkToMaxLinCoefficient
     = ( -4.0 * EightmCEVElMin * ElMin * mCsq * mQ * mQCsqDiff );
-    HKtoMAX_lin->setCoefficient( current_term_coefficient );
+    // right!
 
+    currentHkToMaxSqCoefficient = ( 16.0 * ElMinsq * mCsq * mCsq * mQCsqDiff );
+    // right!
+
+
+    MINtoLK_inv->setCoefficient( 0.0 );
+    MINtoLK_const->setCoefficient( currentMinToLkConstCoefficient );
+    MINtoLK_log->setCoefficient( currentMinToLkLogCoefficient );
+    MINtoLK_lin->setCoefficient( currentMinToLkLinCoefficient );
+    MINtoLK_linlog->setCoefficient( 0.0 );
+    MINtoLK_sq->setCoefficient( currentMinToLkSqCoefficient );
+
+    LKtoHK_const->setCoefficient( currentLkToHkConstCoefficient );
+    LKtoHK_lin->setCoefficient( currentLkToHkLinCoefficient );
+    LKtoHK_sq->setCoefficient( currentLkToHkSqCoefficient );
+
+    HKtoMAX_inv->setCoefficient( 0.0 );
+    HKtoMAX_const->setCoefficient( currentHkToMaxConstCoefficient );
+    HKtoMAX_log->setCoefficient( currentHkToMaxLogCoefficient );
+    HKtoMAX_lin->setCoefficient( currentHkToMaxLinCoefficient );
     HKtoMAX_linlog->setCoefficient( 0.0 );
-
-    current_term_coefficient = ( 16.0 * ElMinsq * mCsq * mCsq * mQCsqDiff );
-    HKtoMAX_sq->setCoefficient( current_term_coefficient );
+    HKtoMAX_sq->setCoefficient( currentHkToMaxSqCoefficient );
 
     // debugging:
     /**/std::cout << std::endl << "debugging:"
@@ -1166,1622 +1173,549 @@ namespace LHC_FASER
 
     // VvSqMinusAaSqSymDistribution:
 
-    // inv: 0.0
+    // MIN to LK:
 
-    current_term_coefficient
+    // debugging:
+    currentMinToLkInvCoefficient = 0.0;
+    // right!
+
+    currentMinToLkConstCoefficient
     = ( EightmCXElMinmQsq * ElMin * ( lnmQC - lnElMin ) * mQCsqDiff * mVsq );
-    MINtoLK_const->setCoefficient( current_term_coefficient );
+    // right!
 
-    to here!
+    currentMinToLkLogCoefficient
+    = ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq );
+    // right!
 
-    current_term_coefficient
-    = ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
-    MINtoLK_log->setCoefficient( current_term_coefficient );
+    // debugging:
+    currentMinToLkLinCoefficient = 0.0;
+    // right!
 
-    current_term_coefficient
-    = ( 4.0 * EightmCEVElMin * ElMin * mQcu * mQCsqDiff );
-    MINtoLK_lin->setCoefficient( current_term_coefficient );
+    // debugging:
+    currentMinToLkLinLogCoefficient = 0.0;
+    // right!
 
-    MINtoLK_linlog->setCoefficient( 0.0 );
+    // debugging:
+    currentMinToLkSqCoefficient = 0.0;
+    // right!
 
-    current_term_coefficient
-    = ( -16.0 * ElMinsq * mQsq * mQsq * mQCsqDiff );
-    MINtoLK_sq->setCoefficient( current_term_coefficient );
 
-    if( energy_limited_cosines )
+    // LK to HK:
+
+    if( cosinesLimitedByEnergy )
     {
-      current_term_coefficient
-      = ( mQsq * mQCsqDiff
-          * ( EightmCEVElMin * mVsq
-              * ( ElMin * ( lnElMin - lnVsqOverFourElMinsq ) + mC )
-              - 4.0 * EightmCEVElMin * ElMinsq * mC
-              + mCsq * ( 16.0 * ElMinsq * ElMinsq - mVsq * mVsq ) ) );
-      LKtoHK_const->setCoefficient( current_term_coefficient );
-
-      LKtoHK_lin->setCoefficient( 0.0 );
-      LKtoHK_sq->setCoefficient( 0.0 );
+      currentLkToHkConstCoefficient = ( EightmCXElMinmQsq * ElMin * mQCsqDiff
+                                        * mVsq * lnVsqOverFourElMinsq );
+      // dunno...
     }
     else
     {
-      current_term_coefficient
-      = ( -2.0 * EightmCEVElMin * ElMin * lnmQC * mQsq * mQCsqDiff * mVsq );
-      LKtoHK_const->setCoefficient( current_term_coefficient );
-
-      current_term_coefficient
-      = ( 4.0 * EightmCEVElMin * ElMin * mQ * mQCsqDiff * mQCsqDiff );
-      LKtoHK_lin->setCoefficient( current_term_coefficient );
-
-      current_term_coefficient
-      = ( -16.0 * ElMinsq * mQCsqDiff * mQCsqDiff * mQCsqSum );
-      LKtoHK_sq->setCoefficient( current_term_coefficient );
+      currentLkToHkConstCoefficient
+      = ( 2.0 * EightmCXElMinmQsq * ElMin * lnmQC * mQCsqDiff * mVsq );
+      // right!
     }
 
-    HKtoMAX_inv->setCoefficient( 0.0 );
+    // debugging:
+    currentLkToHkLinCoefficient = 0.0;
+    // right!
 
-    current_term_coefficient
-    = ( mQsq * mQCsqDiff * mVsq
-        * ( EightmCEVElMin * ( mC - ElMin * ( lnmQC + lnVsqOverFourElMinsq ) )
-            - mCsq * mVsq ) );
-    HKtoMAX_const->setCoefficient( current_term_coefficient );
+    // debugging:
+    currentLkToHkSqCoefficient = 0.0;
+    // right!
 
-    current_term_coefficient
-    = ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
-    HKtoMAX_log->setCoefficient( current_term_coefficient );
 
-    current_term_coefficient
-    = ( -4.0 * EightmCEVElMin * ElMin * mCsq * mQ * mQCsqDiff );
-    HKtoMAX_lin->setCoefficient( current_term_coefficient );
+    // HK to MAX:
 
-    HKtoMAX_linlog->setCoefficient( 0.0 );
+    // debugging:
+    currentHkToMaxInvCoefficient = 0.0;
+    // right!
 
-    current_term_coefficient = ( 16.0 * ElMinsq * mCsq * mCsq * mQCsqDiff );
-    HKtoMAX_sq->setCoefficient( current_term_coefficient );
+    currentHkToMaxConstCoefficient
+    = ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
+        * ( lnmQC + lnVsqOverFourElMinsq + lnElMin ) );
+    // right!
+
+    currentHkToMaxLogCoefficient = -currentMinToLkLogCoefficient;
+    // right!
+
+    // debugging:
+    currentHkToMaxLinCoefficient = 0.0;
+    // right!
+
+    // debugging:
+    currentHkToMaxLinLogCoefficient = 0.0;
+    // right!
+
+    // debugging:
+    currentHkToMaxSqCoefficient = 0.0;
+    // right!
+
+
+    if( couplesAsVectorNotAxial )
+    {
+      MINtoLK_const->addToCoefficient( currentMinToLkConstCoefficient );
+      MINtoLK_log->addToCoefficient( currentMinToLkLogCoefficient );
+
+      LKtoHK_const->addToCoefficient( currentLkToHkConstCoefficient );
+
+      HKtoMAX_const->addToCoefficient( currentHkToMaxConstCoefficient );
+      HKtoMAX_log->addToCoefficient( currentHkToMaxLogCoefficient );
+    }
+    else
+    {
+      MINtoLK_const->addToCoefficient( -currentMinToLkConstCoefficient );
+      MINtoLK_log->addToCoefficient( -currentMinToLkLogCoefficient );
+
+      LKtoHK_const->addToCoefficient( -currentLkToHkConstCoefficient );
+
+      HKtoMAX_const->addToCoefficient( -currentHkToMaxConstCoefficient );
+      HKtoMAX_log->addToCoefficient( -currentHkToMaxLogCoefficient );
+    }
 
     // debugging:
     /**/std::cout << std::endl << "debugging:"
     << std::endl
-    << "VvPlusJjAaAllSqSymDistribution:"
+    << "VvSqMinusAaSqSymDistribution:"
     << std::endl << "MINtoLK: "
-    << std::endl << MINtoLK_inv->getCoefficient() << "/E"
-    << std::endl << MINtoLK_const->getCoefficient()
-    << std::endl << MINtoLK_log->getCoefficient() << "L"
-    << std::endl << MINtoLK_lin->getCoefficient() << "E"
-    << std::endl << MINtoLK_linlog->getCoefficient() << "EL"
-    << std::endl << MINtoLK_sq->getCoefficient() << "E^2"
+    << std::endl << currentMinToLkInvCoefficient << "/E"
+    << std::endl << currentMinToLkConstCoefficient
+    << std::endl << currentMinToLkLogCoefficient << "L"
+    << std::endl << currentMinToLkLinCoefficient << "E"
+    << std::endl << currentMinToLkLinLogCoefficient << "EL"
+    << std::endl << currentMinToLkSqCoefficient << "E^2"
     << std::endl << "LKtoHK: "
-    << std::endl << LKtoHK_const->getCoefficient()
-    << std::endl << LKtoHK_lin->getCoefficient() << "E"
-    << std::endl << LKtoHK_sq->getCoefficient() << "E^2"
+    << std::endl << currentLkToHkConstCoefficient
+    << std::endl << currentLkToHkLinCoefficient << "E"
+    << std::endl << currentLkToHkSqCoefficient << "E^2"
     << std::endl << "HKtoMAX: "
-    << std::endl << HKtoMAX_inv->getCoefficient() << "/E"
-    << std::endl << HKtoMAX_const->getCoefficient()
-    << std::endl << HKtoMAX_log->getCoefficient() << "L"
-    << std::endl << HKtoMAX_lin->getCoefficient() << "E"
-    << std::endl << HKtoMAX_linlog->getCoefficient() << "EL"
-    << std::endl << HKtoMAX_sq->getCoefficient() << "E^2";
-    std::cout << std::endl;/**/
-
-
-
-
-    // MIN to LK:
-    MINtoLK_segment.setSegmentRange( minimumEnergy,
-                                     Elk );
-
-    // inv:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        current_term_coefficient
-        = ( same_handedness_factor
-            * ( 4.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-      }
-    else
-      {
-
-        current_term_coefficient = 0.0;
-
-      }
-
-    MINtoLK_inv->setCoefficient( current_term_coefficient );
-
-
-    // const:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    current_term_coefficient
-    += ( axial_coupling_factor
-         * ( EightmCXElMinmQsq * ElMin * ( lnmQC - lnElMin )
-             * mQCsqDiff * mVsq ) );
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-             * ( ( ElMin * mQsq * mVsq * mQCsqDiff
-                   * ( EightmCEVElMin * ( lnElMin - lnmQC )
-                       - 16.0 * ElMinsq * mC ) )
-
-                 + ElMin * mQsq * mVsq
-                   * ( 32.0 * ElMinsq * mC * mQsq
-                       + ( EightmCEVElMin * mQsq
-                           + 4.0 * ElMin * mCsq * mQCsqSum )
-                         * 2.0 * ( lnmQC - lnElMin )
-                       + 2.0 * mCsq * ( EightmCEVElMin + 4.0 * ElMin * mCsq )
-                       - 4.0 * mC * mQCsqSum * mVsq ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-             * ( ( ElMin * mQsq * mVsq
-                   * ( mQCsqDiff * ( EightmCEVElMin * ( lnElMin - lnmQC )
-                                     - 16.0 * ElMinsq * mC ) )
-                       + ( 32.0 * ElMinsq * mC * mQsq
-                           + ( EightmCEVElMin * mQsq
-                               + 4.0 * ElMin * mCsq * mQCsqSum )
-                             * 2.0 * ( lnmQC - lnElMin )
-                           + 2.0 * mCsq * ( EightmCEVElMin
-                                            + 8.0 * ElMin * mCsq )
-                           - 4.0 * mC * mQCsqSum * mVsq ) ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( EightmCXElMinmQsq * ElMin * mVsq
-                 * ( 2.0 * mCsq + ( lnmQC - lnElMin ) * mQCsqSum ) ) );
-      }
-
-    MINtoLK_const->setCoefficient( current_term_coefficient );
-
-
-    // log:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    current_term_coefficient
-    += ( axial_coupling_factor
-         * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq ) );
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-             * ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq
-                 + 2.0 * ElMin * mQsq * mVsq
-                   * ( EightmCEVElMin * mQsq
-                       + 4.0 * ElMin * mCsq * mQCsqSum ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-             * ( 2.0 * ElMin * mQsq * mCsq * mVsq
-                   * ( EightmCEVElMin + 4.0 * ElMin * mQCsqSum ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
-      }
-
-    MINtoLK_log->setCoefficient( current_term_coefficient );
-
-
-    // lin:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-             * ( 16.0 * ElMinsq * mQcu * mQCsqDiff * mVsq
-                 - 2.0 * mQcu * mVsq
-                   * ( EightmCEVElMin * mC
-                       + 8.0 * ElMin * ( mCsq * mC
-                                         + 2.0 * ElMin
-                                           * ( ( lnElMin - lnmQC ) * mCsq
-                                               + mQsq ) )
-                       - 2.0 * mCsq * mVsq ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-             * ( 2.0 * mQcu * mVsq
-                 * ( 8.0 * ElMinsq * mQCsqDiff
-                     - EightmCEVElMin * mC
-                     + 8.0 * ElMin
-                       * ( mC * mCsq
-                           + 2.0 * ElMin * ( ( lnElMin - lnmQC ) * mCsq
-                                             + mQsq ) )
-                           - 2.0 * mCsq * mVsq ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( -2.0 * EightmCXElMinmQsq * mC * mQ * mVsq ) );
-      }
-
-    MINtoLK_lin->setCoefficient( current_term_coefficient );
-
-
-    // linlog:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /* 0.0
-         * + ( same_handedness_factor
-               * ( 32.0 * ElMinsq * mCsq * mQcu * mVsq ) )*/
-        current_term_coefficient
-        = ( same_handedness_factor * ( 32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-      }
-    else
-      {
-
-        current_term_coefficient = 0.0;
-
-      }
-
-    MINtoLK_linlog->setCoefficient( current_term_coefficient );
-
-
-    // sq:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    /*if( 0.0 != same_handedness_factor )
-      {
-
-        *//* antisymmetric bit positive for both vector & axial coupling (this
-         * is the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         *//*
-        // 0.0
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-      }*/
-
-    MINtoLK_sq->setCoefficient( current_term_coefficient );
-
-
-    // LK to HK:
-    LKtoHK_segment.setSegmentRange( Elk,
-                                      Ehk );
-
-    if( energy_limited_cosines )
-      // if the cosine limits are limited by kinematics...
-      {
-
-        // const:
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( axial_coupling_factor
-             * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
-                 * ( lnVsqOverFourElMinsq - lnElMin ) ) );
-
-        if( 0.0 != same_handedness_factor )
-          {
-
-            /* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             */
-            /*current_term_coefficient
-            += ( same_handedness_factor
-                 * ( ElMin * mQsq * mQCsqDiff * mVsq
-                     * ( EightmCEVElMin * ( lnElMin - lnVsqOverFourElMinsq )
-                         + 4.0 * mC * ( mVsq - 4.0 * ElMinsq ) )
-                     + 2.0 * ElMin * mQsq * mVsq
-                       * ( EightmCEVElMin * mQsq
-                           * ( lnVsqOverFourElMinsq - lnElMin )
-                           + 8.0 * ElMinsq * mC * ( mCsq + 3.0 * mQsq )
-                           - 4.0 * ElMin * mCsq * mQCsqSum
-                             * ( lnElMin - lnVsqOverFourElMinsq )
-                           - 2.0 * mC * ( mCsq + 3.0 * mQsq ) * mVsq ) ) );*/
-            current_term_coefficient
-            += ( same_handedness_factor
-                 * ( ElMin * mQsq * mQCsqSum * mVsq
-                     * ( ( EightmCEVElMin + 8.0 * ElMin * mCsq )
-                         * ( lnVsqOverFourElMinsq - lnElMin )
-                         + 8.0 * mC * ( 4.0 * ElMinsq - mVsq ) ) ) );
-
-            // antisymmetric bit positive for vector & negative for axial
-            // coupling:
-            current_term_coefficient
-            += ( same_handedness_factor * axial_coupling_factor
-                 * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq
-                     * ( lnVsqOverFourElMinsq - lnElMin ) ) );
-          }
-
-        LKtoHK_const->setCoefficient( current_term_coefficient );
-
-
-        // lin:
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-        if( 0.0 != same_handedness_factor )
-          {
-
-            /* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             */
-            /* 0.0
-               + ( same_handedness_factor
-                 * ( 2.0 * mC * mQcu
-                     * ( 4.0 * ElMinsq
-                         * ( EightmCEVElMin
-                             + 8.0 * ElMin * mC * ( mC - ElMin ) )
-                         - mVsq * ( EightmCEVElMin
-                                    + 8.0 * ElMin * mC
-                                      * ( 2.0 * ElMin
-                                          * ( lnElMin - lnVsqOverFourElMinsq )
-                                          + mC ) )
-                       - 2.0 * mC * mVsq * mVsq ) ) )
-             */
-            current_term_coefficient
-            = ( same_handedness_factor
-                * ( 2.0 * mC * mQcu
-                    * ( 4.0 * ElMinsq
-                        * ( EightmCEVElMin
-                            + 8.0 * ElMin * mC * ( mC - ElMin ) )
-                        - mVsq * ( EightmCEVElMin
-                                   + 8.0 * ElMin * mC
-                                     * ( 2.0 * ElMin
-                                         * ( lnElMin - lnVsqOverFourElMinsq )
-                                             + mC ) )
-                        + 2.0 * mC * mVsq * mVsq ) ) );
-
-            // antisymmetric bit positive for vector & negative for axial coupling:
-            current_term_coefficient
-            += ( same_handedness_factor * axial_coupling_factor
-                 * ( 2.0 * EightmCXElMinmQsq * mC * mQ
-                     * (4.0 * ElMinsq - mVsq ) ) );
-          }
-        else
-          {
-
-            current_term_coefficient = 0.0;
-
-          }
-
-        LKtoHK_lin->setCoefficient( current_term_coefficient );
-
-
-        // sq:
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-        /*if( 0.0 != same_handedness_factor )
-          {
-
-            *//* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             *//*
-            // 0.0
-
-            // antisymmetric bit positive for vector & negative for axial coupling:
-            // 0.0
-
-          }*/
-
-        LKtoHK_sq->setCoefficient( 0.0 );
-
-      }
-    else
-      // otherwise, if the cosine limits are not limited by kinematics...
-      {
-
-        // const:
-
-        // symmetric bit positive for both vector & axial coupling:
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( axial_coupling_factor
-            * ( 2.0 * EightmCXElMinmQsq * ElMin * lnmQC * mQCsqDiff * mVsq ) );
-
-        if( 0.0 != same_handedness_factor )
-          {
-
-            /* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             */
-            /*current_term_coefficient
-            += ( same_handedness_factor
-                 * ( -2.0 * EightmCEVElMin* ElMin * lnmQC * mQsq * mQCsqDiff
-                     * mVsq
-                     + 2.0 * ElMin * mQsq * mVsq
-                       * ( EightmCEVElMin * mCsq
-                           + 8.0 * ElMin * ( 1.0 + lnmQC ) * mCsq * mCsq
-                           + ( EightmCEVElMin * ( 2.0 * lnmQC - 1.0 )
-                               + 8.0 * ElMin * mQsq
-                                 * ( lnmQC - 1.0 ) * mCsq ) ) ) );*/
-            current_term_coefficient
-            += ( same_handedness_factor
-                 * ( 2.0 * ElMin * mQsq * mVsq
-                     * ( EightmCEVElMin + 8.0 * ElMin * mCsq )
-                     * ( lnmQC * mQCsqSum - mQCsqDiff ) ) );
-
-            // antisymmetric bit positive for vector & negative for axial
-            // coupling:
-            current_term_coefficient
-            += ( same_handedness_factor * axial_coupling_factor
-                 * ( 2.0 * EightmCXElMinmQsq * ElMin * mVsq
-                     * ( lnmQC * mQCsqSum - mQCsqDiff ) ) );
-          }
-
-        LKtoHK_const->setCoefficient( current_term_coefficient );
-
-
-        // lin:
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-        if( 0.0 != same_handedness_factor )
-          {
-
-            /* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             */
-            /*current_term_coefficient
-            += ( same_handedness_factor
-                 * ( 16.0 * ElMinsq * mQ * mQCsqDiff * mQCsqDiff * mVsq
-                     + 32.0 * ElMinsq * mQcu * mVsq
-                       * ( 2.0 * mCsq * lnmQC - mQCsqDiff ) ) );*/
-            current_term_coefficient
-            += ( same_handedness_factor
-                 * ( 16.0 * ElMinsq * mQ * mVsq
-                     * ( 4.0 * mQsq * mCsq * lnmQC
-                         - mQCsqDiff * mQCsqSum ) ) );
-
-            // antisymmetric bit positive for vector & negative for axial
-            // coupling:
-            // 0.0
-
-          }
-
-        LKtoHK_lin->setCoefficient( current_term_coefficient );
-
-
-        // sq:
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-        /*if( 0.0 != same_handedness_factor )
-          {
-
-            *//* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             *//*
-            // 0.0
-
-            // antisymmetric bit positive for vector & negative for axial coupling:
-            // 0.0
-
-          }*/
-
-        LKtoHK_sq->setCoefficient( current_term_coefficient );
-
-      }
-
-
-    // HK to MAX:
-    HKtoMAX_segment.setSegmentRange( Ehk,
-                                       maximumEnergy );
-
-    // inv:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /* 0.0
-           + ( same_handedness_factor
-               * ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq ) );*/
-        current_term_coefficient
-        = ( same_handedness_factor
-            * ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-      }
-    else
-      {
-
-        current_term_coefficient = 0.0;
-
-      }
-
-    HKtoMAX_inv->setCoefficient( current_term_coefficient );
-
-
-    // const:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    current_term_coefficient
-    += ( axial_coupling_factor
-        * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
-            * ( lnmQC + lnVsqOverFourElMinsq ) ) );
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-            * ( ElMin * mQsq * mQCsqDiff * mVsq
-                * ( 4.0 * mC * mVsq
-                    - EightmCEVElMin * ( lnmQC + lnVsqOverFourElMinsq ) )
-                + 2.0 * ElMin * mQsq * mVsq
-                  * ( 4.0 * ElMin * mCsq
-                      * ( ( lnmQC + lnVsqOverFourElMinsq ) * mCsq
-                          + ( lnmQC - 2.0 + lnVsqOverFourElMinsq ) * mQsq )
-                      + 8.0 * ElMinsq * mC * mQCsqSum
-                      + mQsq * ( EightmCEVElMin
-                                 * ( lnmQC - 1.0 + lnVsqOverFourElMinsq )
-                                 - 4.0 * mC * mVsq ) ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-            * ( ElMin * mQsq * mVsq
-                * ( ( lnmQC + lnVsqOverFourElMinsq ) * mQCsqSum
-                    * ( EightmCEVElMin + 8.0 * ElMin * mCsq )
-                    + 4.0 * mC
-                      * ( 4.0 * ElMin * ( ElMin * mQCsqSum - mC * mQsq )
-                          - mQCsqSum * mVsq ) ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-            * ( EightmCXElMinmQsq * ElMin * mVsq
-                * ( ( lnmQC + lnVsqOverFourElMinsq ) * mQCsqSum
-                    - 2.0 * mQsq ) ) );
-      }
-
-    HKtoMAX_const->setCoefficient( current_term_coefficient );
-
-
-    // log:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    current_term_coefficient
-    += ( axial_coupling_factor
-         * ( -EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq ) );
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-             * ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq
-                 - 2.0 * ElMin * mQsq * mVsq
-                   * ( EightmCEVElMin * mQsq
-                       + 4.0 * ElMin * mCsq * mQCsqSum ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-             * ( -ElMin * mQsq * mQCsqSum * mVsq
-                 * ( EightmCEVElMin + 8.0 * ElMin * mCsq ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( -EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
-      }
-
-    HKtoMAX_log->setCoefficient( current_term_coefficient );
-
-
-    // lin:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-            * ( -16.0 * ElMinsq * mCsq * mQ * mQCsqDiff * mVsq
-                + 8.0 * ElMinsq * mC * mQcu
-                  * ( EightmCEVElMin + 8.0 * ElMin * mC * ( mC - ElMin )
-                      + 4.0 * mC * mVsq
-                        * ( 1.0 + lnmQC + lnVsqOverFourElMinsq ) ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-            * ( 8.0 * ElMinsq * mC * mQ
-                * ( 2.0 * mC * mVsq
-                    * ( 2.0 * mQsq * ( lnmQC + lnVsqOverFourElMinsq )
-                        + mQCsqSum )
-                    + 8.0 * mQsq
-                      * ( EightmCEVElMin
-                          + 8.0 * ElMin * mC * ( mC - ElMin ) ) ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( 8.0 * EightmCXElMinmQsq * ElMinsq * mC * mQ ) );
-      }
-
-    HKtoMAX_lin->setCoefficient( current_term_coefficient );
-
-
-    // linlog:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /* 0.0
-           + ( same_handedness_factor
-               * ( -32.0 * ElMinsq * mCsq * mQcu * mVsq ) );*/
-        current_term_coefficient
-        = ( same_handedness_factor
-            * ( -32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-      }
-    else
-      {
-
-        current_term_coefficient = 0.0;
-
-      }
-
-    HKtoMAX_linlog->setCoefficient( current_term_coefficient );
-
-
-    // sq:
-
-    // symmetric bit positive for both vector & axial coupling:
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    /*if( 0.0 != same_handedness_factor )
-      {
-
-        *//* antisymmetric bit positive for both vector & axial coupling (this
-         * is the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         *//*
-        // 0.0
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-      }*/
-
-    HKtoMAX_sq->setCoefficient( current_term_coefficient );
-
-    // debugging:
-    /**/
-    normalizeCoefficients();
-    std::cout
-    << std::endl
-    << "debugging: Z_handed_muon:calculateCoefficients() produced "
-    << std::endl << "firstMass = " << firstMass
-    << std::endl << "secondMass = " << secondMass
-    << std::endl << "energy_limited_cosines = " << energy_limited_cosines
-    << std::endl << "(true = " << true << ")"
-    << std::endl << "minimumEnergy = " << minimumEnergy
-    << std::endl << "maximumEnergy = " << maximumEnergy
-    << std::endl << "MINtoLK_inv = " << MINtoLK_inv->getCoefficient()
-    << std::endl << "MINtoLK_const = " << MINtoLK_const->getCoefficient()
-    << std::endl << "MINtoLK_log = " << MINtoLK_log->getCoefficient()
-    << std::endl << "MINtoLK_lin = " << MINtoLK_lin->getCoefficient()
-    << std::endl << "MINtoLK_linlog = " << MINtoLK_linlog->getCoefficient()
-    << std::endl << "MINtoLK_sq = " << MINtoLK_sq->getCoefficient()
-    << std::endl << "LKtoHK_const = " << LKtoHK_const->getCoefficient()
-    << std::endl << "LKtoHK_lin = " << LKtoHK_lin->getCoefficient()
-    << std::endl << "LKtoHK_sq = " << LKtoHK_sq->getCoefficient()
-    << std::endl << "HKtoMAX_inv = " << HKtoMAX_inv->getCoefficient()
-    << std::endl << "HKtoMAX_const = " << HKtoMAX_const->getCoefficient()
-    << std::endl << "HKtoMAX_log = " << HKtoMAX_log->getCoefficient()
-    << std::endl << "HKtoMAX_lin = " << HKtoMAX_lin->getCoefficient()
-    << std::endl << "HKtoMAX_linlog = " << HKtoMAX_linlog->getCoefficient()
-    << std::endl << "HKtoMAX_sq = " << HKtoMAX_sq->getCoefficient();
-    std::cout << std::endl;/**/
-  }
-
-
-  void
-  old_Z_handed_muon::calculateCoefficients()
-  {
-    /* it doesn't matter if the neutralino mass is negative, since only the
-     * absolute square appears, & the couplings are only affected by it as an
-     * overall phase.  I (BOL) assume no CP violation, so the neutralino mixing
-     * matrices are strictly real. just as a quirk of the way I did my
-     * workings, axial_coupling_factor needs to be +1 when the Z couples as a
-     * vector to the neutralinos, & -1 when it couples as an axial vector.
-     */
-    if( ( ( 0.0 < secondParticle->get_mass() )
-          &&
-          ( 0.0 > fourthParticle->get_mass() ) )
-        ||
-        ( ( 0.0 < secondParticle->get_mass() )
-          &&
-          ( 0.0 > fourthParticle->get_mass() ) ) )
-      // if the relative phases end up such that the product of couplings is
-      // purely imaginary...
+    << std::endl << currentHkToMaxInvCoefficient << "/E"
+    << std::endl << currentHkToMaxConstCoefficient
+    << std::endl << currentHkToMaxLogCoefficient << "L"
+    << std::endl << currentHkToMaxLinCoefficient << "E"
+    << std::endl << currentHkToMaxLinLogCoefficient << "EL"
+    << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
+
+
+    if( shouldNotSumOverHandedness )
     {
-      axial_coupling_factor = -1.0;
-    }
-    else
-    {
-      axial_coupling_factor = 1.0;
-    }
-    mQ = firstMass;  // this is just for compact equations.
-    mQsq = ( mQ * mQ );
-    mQcu = ( mQ * mQsq );
-    mC = secondMass;  // this is just for compact equations.
-    mCsq = ( mC * mC );
-    mVsq = ( thirdMass * thirdMass );
-    mCmX = ( mC * fourthMass );
-    mXsq = ( fourthMass * fourthMass );
+      // VvPlusJjAaAllSqAntiDistribution:
 
-    EV = ( ( mCsq + mVsq - mXsq ) / ( 2.0 * mC ) );
-    ElMin = ( 0.5 * EV * ( 1.0 - sqrt( 1 - ( mVsq / ( EV * EV ) ) ) ) );
-    minimumEnergy = ( ElMin * ( mC / mQ ) );
-    Elk = ( ElMin * ( mQ / mC ) );
-    Ehk = ( mVsq / ( 4.0 * Elk ) );
-    maximumEnergy = ( mVsq / ( 4.0 * minimumEnergy ) );
-    if( Ehk < Elk )
-      /* if we're in the regime where the kinematics mean that there is no
-       * range of energies which can be reached for all squark-rest-frame polar
-       * muon momentum angles...
-       */
+      // MIN to LK:
+
+      // debugging:
+      currentMinToLkInvCoefficient = 0.0;
+      // right!
+
+      currentMinToLkConstCoefficient
+      =  ( ElMin * ( EightmCEVElMin * ( lnElMin - lnmQC )
+                     - 16.0 * ElMinsq * mC ) * mQsq * mQCsqDiff * mVsq );
+      // right!
+
+      currentMinToLkLogCoefficient
+      = ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
+      // right!
+
+      currentMinToLkLinCoefficient
+      = ( 16.0 * ElMinsq * mQcu * mQCsqDiff * mVsq );
+      // right!
+
+      // debugging:
+      currentMinToLkLinLogCoefficient = 0.0;
+      // right!
+
+      // debugging:
+      currentMinToLkSqCoefficient = 0.0;
+      // right!
+
+
+      // LK to HK:
+
+      if( cosinesLimitedByEnergy )
       {
-        // we swap the energies (borrowing current_term_coefficient for a
-        // moment) & note that we had to swap them:
-        current_term_coefficient = Elk;
-        Elk = Ehk;
-        Ehk = current_term_coefficient;
-        energy_limited_cosines = true;
+        currentLkToHkConstCoefficient
+        = ( ElMin * mQsq * mQCsqDiff * mVsq
+            * ( 4.0 * mC * ( mVsq - 4.0 * ElMinsq )
+                - EightmCEVElMin * lnVsqOverFourElMinsq ) );
+        // dunno...
+        currentLkToHkLinCoefficient = 0.0;
+        // dunno...
       }
-    else
+      else
       {
-        energy_limited_cosines = false;
-      }
-    mQCsqDiff = ( mQsq - mCsq );
-    mQCsqSum = ( mQsq + mCsq );
-    EightmCEVElMin = ( 8.0 * mC * EV * ElMin );
-    lnElMin = log( ElMin );
-    ElMinsq = ( ElMin * ElMin );
-    lnmQC = log( ( mQ / mC ) );
-    lnVsqOverFourElMinsq = log( ( mVsq / ( 4.0 * ElMinsq ) ) );
-    EightmCXElMinmQsq = ( 8.0 * mC * fourthMass * ElMin * mQsq );
-    lnEmin = log( minimumEnergy );
-    lnElk = log( Elk );
-    lnEhk = log( Ehk );
-    lnEmax = log( maximumEnergy );
-
-    // VvPlusJjAaAllSqSymDistribution:
-    MINtoLK_inv->setCoefficient( 0.0 );
-
-    current_term_coefficient
-    = ( ElMin * mQsq * mQCsqDiff
-        * ( EightmCEVElMin * ( lnElMin - lnmQC ) * mVsq
-            - 4.0 * ElMin * mC * ( EightmCEVElMin - 4.0 * ElMinsq * mC ) ) );
-    MINtoLK_const->setCoefficient( current_term_coefficient );
-
-    current_term_coefficient
-    = ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
-    MINtoLK_log->setCoefficient( current_term_coefficient );
-
-    current_term_coefficient
-    = ( 4.0 * EightmCEVElMin * ElMin * mQcu * mQCsqDiff );
-    MINtoLK_lin->setCoefficient( current_term_coefficient );
-
-    MINtoLK_linlog->setCoefficient( 0.0 );
-
-    current_term_coefficient
-    = ( -16.0 * ElMinsq * mQsq * mQsq * mQCsqDiff );
-    MINtoLK_sq->setCoefficient( current_term_coefficient );
-
-    // MIN to LK:
-    MINtoLK_segment.setSegmentRange( minimumEnergy,
-                                     Elk );
-    // inv:
-
-    // symmetric bit positive for both vector & axial coupling:
-    // 0.0
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        current_term_coefficient
-        = ( same_handedness_factor
-            * ( 4.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-      }
-    else
-      {
-
-        current_term_coefficient = 0.0;
-
-      }
-
-    MINtoLK_inv->setCoefficient( current_term_coefficient );
-
-
-    // const:
-
-    // symmetric bit positive for both vector & axial coupling:
-    current_term_coefficient
-    = ( ElMin * mQsq * mQCsqDiff
-        * ( EightmCEVElMin * ( lnElMin - lnmQC ) * mVsq
-            - 4.0 * ElMin * mC * ( EightmCEVElMin - 4.0 * ElMinsq * mC ) ) );
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    current_term_coefficient
-    += ( axial_coupling_factor
-         * ( EightmCXElMinmQsq * ElMin * ( lnmQC - lnElMin )
-             * mQCsqDiff * mVsq ) );
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-             * ( ( ElMin * mQsq * mVsq * mQCsqDiff
-                   * ( EightmCEVElMin * ( lnElMin - lnmQC )
-                       - 16.0 * ElMinsq * mC ) )
-
-                 + ElMin * mQsq * mVsq
-                   * ( 32.0 * ElMinsq * mC * mQsq
-                       + ( EightmCEVElMin * mQsq
-                           + 4.0 * ElMin * mCsq * mQCsqSum )
-                         * 2.0 * ( lnmQC - lnElMin )
-                       + 2.0 * mCsq * ( EightmCEVElMin + 4.0 * ElMin * mCsq )
-                       - 4.0 * mC * mQCsqSum * mVsq ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-             * ( ( ElMin * mQsq * mVsq
-                   * ( mQCsqDiff * ( EightmCEVElMin * ( lnElMin - lnmQC )
-                                     - 16.0 * ElMinsq * mC ) )
-                       + ( 32.0 * ElMinsq * mC * mQsq
-                           + ( EightmCEVElMin * mQsq
-                               + 4.0 * ElMin * mCsq * mQCsqSum )
-                             * 2.0 * ( lnmQC - lnElMin )
-                           + 2.0 * mCsq * ( EightmCEVElMin
-                                            + 8.0 * ElMin * mCsq )
-                           - 4.0 * mC * mQCsqSum * mVsq ) ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( EightmCXElMinmQsq * ElMin * mVsq
-                 * ( 2.0 * mCsq + ( lnmQC - lnElMin ) * mQCsqSum ) ) );
-      }
-
-    MINtoLK_const->setCoefficient( current_term_coefficient );
-
-
-    // log:
-
-    // symmetric bit positive for both vector & axial coupling:
-    current_term_coefficient
-    = ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    current_term_coefficient
-    += ( axial_coupling_factor
-         * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq ) );
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-             * ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq
-                 + 2.0 * ElMin * mQsq * mVsq
-                   * ( EightmCEVElMin * mQsq
-                       + 4.0 * ElMin * mCsq * mQCsqSum ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-             * ( 2.0 * ElMin * mQsq * mCsq * mVsq
-                   * ( EightmCEVElMin + 4.0 * ElMin * mQCsqSum ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
-      }
-
-    MINtoLK_log->setCoefficient( current_term_coefficient );
-
-
-    // lin:
-
-    // symmetric bit positive for both vector & axial coupling:
-    current_term_coefficient
-    = ( 4.0 * EightmCEVElMin * ElMin * mQcu * mQCsqDiff );
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-             * ( 16.0 * ElMinsq * mQcu * mQCsqDiff * mVsq
-                 - 2.0 * mQcu * mVsq
-                   * ( EightmCEVElMin * mC
-                       + 8.0 * ElMin * ( mCsq * mC
-                                         + 2.0 * ElMin
-                                           * ( ( lnElMin - lnmQC ) * mCsq
-                                               + mQsq ) )
-                       - 2.0 * mCsq * mVsq ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-             * ( 2.0 * mQcu * mVsq
-                 * ( 8.0 * ElMinsq * mQCsqDiff
-                     - EightmCEVElMin * mC
-                     + 8.0 * ElMin
-                       * ( mC * mCsq
-                           + 2.0 * ElMin * ( ( lnElMin - lnmQC ) * mCsq
-                                             + mQsq ) )
-                           - 2.0 * mCsq * mVsq ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( -2.0 * EightmCXElMinmQsq * mC * mQ * mVsq ) );
-      }
-
-    MINtoLK_lin->setCoefficient( current_term_coefficient );
-
-
-    // linlog:
-
-    // symmetric bit positive for both vector & axial coupling:
-    // 0.0
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /* 0.0
-         * + ( same_handedness_factor
-               * ( 32.0 * ElMinsq * mCsq * mQcu * mVsq ) )*/
-        current_term_coefficient
-        = ( same_handedness_factor * ( 32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-      }
-    else
-      {
-
-        current_term_coefficient = 0.0;
-
-      }
-
-    MINtoLK_linlog->setCoefficient( current_term_coefficient );
-
-
-    // sq:
-
-    // symmetric bit positive for both vector & axial coupling:
-    current_term_coefficient
-    = ( -16.0 * ElMinsq * mQsq * mQsq * mQCsqDiff );
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    /*if( 0.0 != same_handedness_factor )
-      {
-
-        *//* antisymmetric bit positive for both vector & axial coupling (this
-         * is the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         *//*
-        // 0.0
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-      }*/
-
-    MINtoLK_sq->setCoefficient( current_term_coefficient );
-
-
-    // LK to HK:
-    LKtoHK_segment.setSegmentRange( Elk,
-                                      Ehk );
-
-    if( energy_limited_cosines )
-      // if the cosine limits are limited by kinematics...
-      {
-
-        // const:
-
-        // symmetric bit positive for both vector & axial coupling:
-        current_term_coefficient
-        = ( mQsq * mQCsqDiff
-            * ( EightmCEVElMin * mVsq
-                * ( ElMin * ( lnElMin - lnVsqOverFourElMinsq ) + mC )
-                - 4.0 * EightmCEVElMin * ElMinsq * mC
-                + mCsq * ( 16.0 * ElMinsq * ElMinsq - mVsq * mVsq ) ) );
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( axial_coupling_factor
-             * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
-                 * ( lnVsqOverFourElMinsq - lnElMin ) ) );
-
-        if( 0.0 != same_handedness_factor )
-          {
-
-            /* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             */
-            /*current_term_coefficient
-            += ( same_handedness_factor
-                 * ( ElMin * mQsq * mQCsqDiff * mVsq
-                     * ( EightmCEVElMin * ( lnElMin - lnVsqOverFourElMinsq )
-                         + 4.0 * mC * ( mVsq - 4.0 * ElMinsq ) )
-                     + 2.0 * ElMin * mQsq * mVsq
-                       * ( EightmCEVElMin * mQsq
-                           * ( lnVsqOverFourElMinsq - lnElMin )
-                           + 8.0 * ElMinsq * mC * ( mCsq + 3.0 * mQsq )
-                           - 4.0 * ElMin * mCsq * mQCsqSum
-                             * ( lnElMin - lnVsqOverFourElMinsq )
-                           - 2.0 * mC * ( mCsq + 3.0 * mQsq ) * mVsq ) ) );*/
-            current_term_coefficient
-            += ( same_handedness_factor
-                 * ( ElMin * mQsq * mQCsqSum * mVsq
-                     * ( ( EightmCEVElMin + 8.0 * ElMin * mCsq )
-                         * ( lnVsqOverFourElMinsq - lnElMin )
-                         + 8.0 * mC * ( 4.0 * ElMinsq - mVsq ) ) ) );
-
-            // antisymmetric bit positive for vector & negative for axial
-            // coupling:
-            current_term_coefficient
-            += ( same_handedness_factor * axial_coupling_factor
-                 * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq
-                     * ( lnVsqOverFourElMinsq - lnElMin ) ) );
-          }
-
-        LKtoHK_const->setCoefficient( current_term_coefficient );
-
-
-        // lin:
-
-        // symmetric bit positive for both vector & axial coupling:
-        // 0.0
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-        if( 0.0 != same_handedness_factor )
-          {
-
-            /* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             */
-            /* 0.0
-               + ( same_handedness_factor
-                 * ( 2.0 * mC * mQcu
-                     * ( 4.0 * ElMinsq
-                         * ( EightmCEVElMin
-                             + 8.0 * ElMin * mC * ( mC - ElMin ) )
-                         - mVsq * ( EightmCEVElMin
-                                    + 8.0 * ElMin * mC
-                                      * ( 2.0 * ElMin
-                                          * ( lnElMin - lnVsqOverFourElMinsq )
-                                          + mC ) )
-                       - 2.0 * mC * mVsq * mVsq ) ) )
-             */
-            current_term_coefficient
-            = ( same_handedness_factor
-                * ( 2.0 * mC * mQcu
-                    * ( 4.0 * ElMinsq
-                        * ( EightmCEVElMin
-                            + 8.0 * ElMin * mC * ( mC - ElMin ) )
-                        - mVsq * ( EightmCEVElMin
-                                   + 8.0 * ElMin * mC
-                                     * ( 2.0 * ElMin
-                                         * ( lnElMin - lnVsqOverFourElMinsq )
-                                             + mC ) )
-                        + 2.0 * mC * mVsq * mVsq ) ) );
-
-            // antisymmetric bit positive for vector & negative for axial coupling:
-            current_term_coefficient
-            += ( same_handedness_factor * axial_coupling_factor
-                 * ( 2.0 * EightmCXElMinmQsq * mC * mQ
-                     * (4.0 * ElMinsq - mVsq ) ) );
-          }
-        else
-          {
-
-            current_term_coefficient = 0.0;
-
-          }
-
-        LKtoHK_lin->setCoefficient( current_term_coefficient );
-
-
-        // sq:
-
-        // symmetric bit positive for both vector & axial coupling:
-        // 0.0
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-        /*if( 0.0 != same_handedness_factor )
-          {
-
-            *//* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             *//*
-            // 0.0
-
-            // antisymmetric bit positive for vector & negative for axial coupling:
-            // 0.0
-
-          }*/
-
-        LKtoHK_sq->setCoefficient( 0.0 );
-
-      }
-    else
-      // otherwise, if the cosine limits are not limited by kinematics...
-      {
-
-        // const:
-
-        // symmetric bit positive for both vector & axial coupling:
-        current_term_coefficient
+        currentLkToHkConstCoefficient
         = ( -2.0 * EightmCEVElMin * ElMin * lnmQC * mQsq * mQCsqDiff * mVsq );
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( axial_coupling_factor
-            * ( 2.0 * EightmCXElMinmQsq * ElMin * lnmQC * mQCsqDiff * mVsq ) );
-
-        if( 0.0 != same_handedness_factor )
-          {
-
-            /* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             */
-            /*current_term_coefficient
-            += ( same_handedness_factor
-                 * ( -2.0 * EightmCEVElMin* ElMin * lnmQC * mQsq * mQCsqDiff
-                     * mVsq
-                     + 2.0 * ElMin * mQsq * mVsq
-                       * ( EightmCEVElMin * mCsq
-                           + 8.0 * ElMin * ( 1.0 + lnmQC ) * mCsq * mCsq
-                           + ( EightmCEVElMin * ( 2.0 * lnmQC - 1.0 )
-                               + 8.0 * ElMin * mQsq
-                                 * ( lnmQC - 1.0 ) * mCsq ) ) ) );*/
-            current_term_coefficient
-            += ( same_handedness_factor
-                 * ( 2.0 * ElMin * mQsq * mVsq
-                     * ( EightmCEVElMin + 8.0 * ElMin * mCsq )
-                     * ( lnmQC * mQCsqSum - mQCsqDiff ) ) );
-
-            // antisymmetric bit positive for vector & negative for axial
-            // coupling:
-            current_term_coefficient
-            += ( same_handedness_factor * axial_coupling_factor
-                 * ( 2.0 * EightmCXElMinmQsq * ElMin * mVsq
-                     * ( lnmQC * mQCsqSum - mQCsqDiff ) ) );
-          }
-
-        LKtoHK_const->setCoefficient( current_term_coefficient );
-
-
-        // lin:
-
-        // symmetric bit positive for both vector & axial coupling:
-        current_term_coefficient
-        = ( 4.0 * EightmCEVElMin * ElMin * mQ * mQCsqDiff * mQCsqDiff );
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-        if( 0.0 != same_handedness_factor )
-          {
-
-            /* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             */
-            /*current_term_coefficient
-            += ( same_handedness_factor
-                 * ( 16.0 * ElMinsq * mQ * mQCsqDiff * mQCsqDiff * mVsq
-                     + 32.0 * ElMinsq * mQcu * mVsq
-                       * ( 2.0 * mCsq * lnmQC - mQCsqDiff ) ) );*/
-            current_term_coefficient
-            += ( same_handedness_factor
-                 * ( 16.0 * ElMinsq * mQ * mVsq
-                     * ( 4.0 * mQsq * mCsq * lnmQC
-                         - mQCsqDiff * mQCsqSum ) ) );
-
-            // antisymmetric bit positive for vector & negative for axial
-            // coupling:
-            // 0.0
-
-          }
-
-        LKtoHK_lin->setCoefficient( current_term_coefficient );
-
-
-        // sq:
-
-        // symmetric bit positive for both vector & axial coupling:
-        current_term_coefficient
-        = ( -16.0 * ElMinsq * mQCsqDiff * mQCsqDiff * mQCsqSum );
-
-        // symmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
-        /*if( 0.0 != same_handedness_factor )
-          {
-
-            *//* antisymmetric bit positive for both vector & axial coupling
-             * (this is the sum of 2 terms in the Mathematica notebook:
-             * VvPlusJjAaAllSq & VvSqPlusAaSq):
-             *//*
-            // 0.0
-
-            // antisymmetric bit positive for vector & negative for axial coupling:
-            // 0.0
-
-          }*/
-
-        LKtoHK_sq->setCoefficient( current_term_coefficient );
-
+        // right!
+        currentLkToHkLinCoefficient
+        = ( 16.0 * ElMinsq * mQ * mQCsqDiff * mQCsqDiff * mVsq );
+        // right!
       }
 
+      // debugging:
+      currentLkToHkSqCoefficient = 0.0;
 
-    // HK to MAX:
-    HKtoMAX_segment.setSegmentRange( Ehk,
-                                       maximumEnergy );
 
-    // inv:
+      // HK to MAX:
 
-    // symmetric bit positive for both vector & axial coupling:
-    // 0.0
+      currentHkToMaxInvCoefficient = 0.0;
+      // right!
 
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
+      currentHkToMaxConstCoefficient
+      = ( ElMin * mQsq * mQCsqDiff * mVsq
+          * ( 4.0 * mC * mVsq
+              - EightmCEVElMin
+                * ( lnmQC + lnVsqOverFourElMinsq + lnElMin ) ) );
+      // right!
 
-    if( 0.0 != same_handedness_factor )
+      currentHkToMaxLogCoefficient
+      = ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
+      // right!
+
+      currentHkToMaxLinCoefficient
+      = ( -16.0 * ElMinsq * mCsq * mQ * mQCsqDiff * mVsq );
+      // right!
+
+      // debugging:
+      currentHkToMaxLinLogCoefficient = 0.0;
+      // right!
+
+      // debugging:
+      currentHkToMaxSqCoefficient = 0.0;
+      // right!
+
+
+      MINtoLK_const->addToCoefficient( currentMinToLkConstCoefficient );
+      MINtoLK_log->addToCoefficient( currentMinToLkLogCoefficient );
+      MINtoLK_lin->addToCoefficient( currentMinToLkLinCoefficient );
+
+      LKtoHK_const->addToCoefficient( currentLkToHkConstCoefficient );
+      LKtoHK_lin->addToCoefficient( currentLkToHkLinCoefficient );
+
+      HKtoMAX_const->addToCoefficient( currentHkToMaxConstCoefficient );
+      HKtoMAX_log->addToCoefficient( currentHkToMaxLogCoefficient );
+      HKtoMAX_lin->addToCoefficient( currentHkToMaxLinCoefficient );
+
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "VvPlusJjAaAllSqAntiDistribution:"
+      << std::endl << "MINtoLK: "
+      << std::endl << currentMinToLkInvCoefficient << "/E"
+      << std::endl << currentMinToLkConstCoefficient
+      << std::endl << currentMinToLkLogCoefficient << "L"
+      << std::endl << currentMinToLkLinCoefficient << "E"
+      << std::endl << currentMinToLkLinLogCoefficient << "EL"
+      << std::endl << currentMinToLkSqCoefficient << "E^2"
+      << std::endl << "LKtoHK: "
+      << std::endl << currentLkToHkConstCoefficient
+      << std::endl << currentLkToHkLinCoefficient << "E"
+      << std::endl << currentLkToHkSqCoefficient << "E^2"
+      << std::endl << "HKtoMAX: "
+      << std::endl << currentHkToMaxInvCoefficient << "/E"
+      << std::endl << currentHkToMaxConstCoefficient
+      << std::endl << currentHkToMaxLogCoefficient << "L"
+      << std::endl << currentHkToMaxLinCoefficient << "E"
+      << std::endl << currentHkToMaxLinLogCoefficient << "EL"
+      << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
+
+
+      // VvSqPlusAaSqAntiDistribution:
+
+      // MIN to LK:
+
+      currentMinToLkInvCoefficient
+      = ( 4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
+      // right!
+
+      currentMinToLkConstCoefficient
+      = ( ElMin * mQsq * mVsq
+          * ( 32.0 * ElMinsq * mC * mQsq
+              + 2.0 * EightmCEVElMin * ( mCsq + ( lnmQC - lnElMin ) * mQsq )
+              + 8.0 * ElMin * mCsq
+                * ( 2.0 * mCsq + ( lnmQC - lnElMin ) * mQCsqSum )
+              - 4.0 * mC * mQCsqSum * mVsq ) );
+      // right!
+
+      currentMinToLkLogCoefficient
+      = ( 2.0 * ElMin * mQsq * mVsq
+              * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) );
+      // right!
+
+      currentMinToLkLinCoefficient
+      = ( 2.0 * mQcu * mVsq
+          * ( 2.0 * mCsq * mVsq
+              - EightmCEVElMin * mC
+              - 8.0 * ElMin
+                * ( mC * mCsq
+                    + 2.0 * ElMin
+                      * ( ( lnElMin - lnmQC ) * mCsq + mQsq ) ) ) );
+      // right!
+
+      currentMinToLkLinLogCoefficient
+      = ( 32.0 * ElMinsq * mCsq * mQcu * mVsq );
+      // right!
+
+      // debugging:
+      currentMinToLkSqCoefficient = 0.0;
+      // right!
+
+
+      // LK to HK:
+
+      if( cosinesLimitedByEnergy )
       {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /* 0.0
-           + ( same_handedness_factor
-               * ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq ) );*/
-        current_term_coefficient
-        = ( same_handedness_factor
-            * ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
-
+        currentLkToHkConstCoefficient
+        = ( 2.0 * ElMin * mQsq * mVsq
+            * ( lnVsqOverFourElMinsq
+                * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum )
+                + 2.0 * mC * ( mCsq + 3.0 * mQsq )
+                  * ( 4.0 * ElMinsq - mVsq ) ) );
+        // dunno...
+        currentLkToHkLinCoefficient
+        = ( 2.0 * mC * mQcu
+            * ( 4.0 * ElMinsq
+                * ( EightmCEVElMin
+                    + 8.0 * ElMin * mC * ( mC - ElMin ) )
+                - mVsq * ( EightmCEVElMin
+                           + 8.0 * ElMin * mC
+                             * ( mC - 2.0 * ElMin * lnVsqOverFourElMinsq ) )
+                + 2.0 * mC * mVsq * mVsq ) );
+        // dunno...
       }
-    else
+      else
       {
-
-        current_term_coefficient = 0.0;
-
-      }
-
-    HKtoMAX_inv->setCoefficient( current_term_coefficient );
-
-
-    // const:
-
-    // symmetric bit positive for both vector & axial coupling:
-    current_term_coefficient
-    = ( mQsq * mQCsqDiff * mVsq
-        * ( EightmCEVElMin * ( mC - ElMin * ( lnmQC + lnVsqOverFourElMinsq ) )
-            - mCsq * mVsq ) );
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    current_term_coefficient
-    += ( axial_coupling_factor
-        * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
-            * ( lnmQC + lnVsqOverFourElMinsq ) ) );
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-            * ( ElMin * mQsq * mQCsqDiff * mVsq
-                * ( 4.0 * mC * mVsq
-                    - EightmCEVElMin * ( lnmQC + lnVsqOverFourElMinsq ) )
-                + 2.0 * ElMin * mQsq * mVsq
-                  * ( 4.0 * ElMin * mCsq
-                      * ( ( lnmQC + lnVsqOverFourElMinsq ) * mCsq
-                          + ( lnmQC - 2.0 + lnVsqOverFourElMinsq ) * mQsq )
-                      + 8.0 * ElMinsq * mC * mQCsqSum
-                      + mQsq * ( EightmCEVElMin
-                                 * ( lnmQC - 1.0 + lnVsqOverFourElMinsq )
-                                 - 4.0 * mC * mVsq ) ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-            * ( ElMin * mQsq * mVsq
-                * ( ( lnmQC + lnVsqOverFourElMinsq ) * mQCsqSum
-                    * ( EightmCEVElMin + 8.0 * ElMin * mCsq )
-                    + 4.0 * mC
-                      * ( 4.0 * ElMin * ( ElMin * mQCsqSum - mC * mQsq )
-                          - mQCsqSum * mVsq ) ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-            * ( EightmCXElMinmQsq * ElMin * mVsq
-                * ( ( lnmQC + lnVsqOverFourElMinsq ) * mQCsqSum
-                    - 2.0 * mQsq ) ) );
-      }
-
-    HKtoMAX_const->setCoefficient( current_term_coefficient );
-
-
-    // log:
-
-    // symmetric bit positive for both vector & axial coupling:
-    current_term_coefficient
-    = ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    current_term_coefficient
-    += ( axial_coupling_factor
-         * ( -EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq ) );
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-             * ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq
-                 - 2.0 * ElMin * mQsq * mVsq
-                   * ( EightmCEVElMin * mQsq
-                       + 4.0 * ElMin * mCsq * mQCsqSum ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-             * ( -ElMin * mQsq * mQCsqSum * mVsq
-                 * ( EightmCEVElMin + 8.0 * ElMin * mCsq ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( -EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
-      }
-
-    HKtoMAX_log->setCoefficient( current_term_coefficient );
-
-
-    // lin:
-
-    // symmetric bit positive for both vector & axial coupling:
-    current_term_coefficient
-    = ( -4.0 * EightmCEVElMin * ElMin * mCsq * mQ * mQCsqDiff );
-
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
-
-    if( 0.0 != same_handedness_factor )
-      {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /*current_term_coefficient
-        += ( same_handedness_factor
-            * ( -16.0 * ElMinsq * mCsq * mQ * mQCsqDiff * mVsq
-                + 8.0 * ElMinsq * mC * mQcu
-                  * ( EightmCEVElMin + 8.0 * ElMin * mC * ( mC - ElMin )
-                      + 4.0 * mC * mVsq
-                        * ( 1.0 + lnmQC + lnVsqOverFourElMinsq ) ) ) );*/
-        current_term_coefficient
-        += ( same_handedness_factor
-            * ( 8.0 * ElMinsq * mC * mQ
-                * ( 2.0 * mC * mVsq
-                    * ( 2.0 * mQsq * ( lnmQC + lnVsqOverFourElMinsq )
-                        + mQCsqSum )
-                    + 8.0 * mQsq
-                      * ( EightmCEVElMin
-                          + 8.0 * ElMin * mC * ( mC - ElMin ) ) ) ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        current_term_coefficient
-        += ( same_handedness_factor * axial_coupling_factor
-             * ( 8.0 * EightmCXElMinmQsq * ElMinsq * mC * mQ ) );
+        currentLkToHkConstCoefficient
+           = ( 2.0 * ElMin * mQsq * mVsq
+               * ( 2.0 * mQsq * lnmQC
+                   * ( EightmCEVElMin + 4.0 * ElMin * mCsq )
+                   - mQCsqDiff * ( 8.0 * ElMin * mCsq + EightmCEVElMin )
+                   + 8.0 * ElMin * mCsq * mCsq * lnmQC ) );
+        // right!
+        currentLkToHkLinCoefficient = ( 32.0 * ElMinsq * mQcu * mVsq
+                                        * ( 2.0 * mCsq * lnmQC - mQCsqDiff ) );
+        // right!
       }
 
-    HKtoMAX_lin->setCoefficient( current_term_coefficient );
+      // debugging:
+      currentLkToHkSqCoefficient = 0.0;
+      // right!
 
 
-    // linlog:
+      // HK to MAX:
 
-    // symmetric bit positive for both vector & axial coupling:
-    // 0.0
+      currentHkToMaxInvCoefficient = -currentMinToLkInvCoefficient;
+      // depends...
 
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
+      currentHkToMaxConstCoefficient
+      = ( 2.0 * ElMin * mQsq * mVsq
+          * ( 4.0 * ElMin * mCsq
+              * ( ( lnmQC + lnVsqOverFourElMinsq + lnElMin ) * mQCsqSum
+                  - 2.0 * mQsq )
+              + 8.0 * ElMinsq * mC * mQCsqSum
+              + mQsq * ( EightmCEVElMin
+                         * ( lnmQC + lnVsqOverFourElMinsq + lnElMin - 1.0 )
+                         - 4.0 * mC * mVsq ) ) );
+      // right!
 
-    if( 0.0 != same_handedness_factor )
+      currentHkToMaxLogCoefficient
+      = ( -2.0 * ElMin * mQsq * mVsq
+          * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) );
+      // right!
+
+      currentHkToMaxLinCoefficient
+      = ( 8.0 * ElMinsq * mC * mQcu
+          * ( EightmCEVElMin + 8.0 * ElMin * mC * ( mC - ElMin )
+              + 4.0 * mC * mVsq
+                * ( 1.0 + lnmQC + lnVsqOverFourElMinsq + lnElMin ) ) );
+      // right!
+
+      currentHkToMaxLinLogCoefficient = -currentMinToLkLinLogCoefficient;
+      // right!
+
+      // debugging:
+      currentHkToMaxSqCoefficient = 0.0;
+      // right!
+
+
+      MINtoLK_inv->addToCoefficient( currentMinToLkInvCoefficient );
+      MINtoLK_const->addToCoefficient( currentMinToLkConstCoefficient );
+      MINtoLK_log->addToCoefficient( currentMinToLkLogCoefficient );
+      MINtoLK_lin->addToCoefficient( currentMinToLkLinCoefficient );
+      MINtoLK_linlog->addToCoefficient( currentMinToLkLinLogCoefficient );
+
+      LKtoHK_const->addToCoefficient( currentLkToHkConstCoefficient );
+      LKtoHK_lin->addToCoefficient( currentLkToHkLinCoefficient );
+
+      HKtoMAX_inv->addToCoefficient( currentHkToMaxInvCoefficient );
+      HKtoMAX_const->addToCoefficient( currentHkToMaxConstCoefficient );
+      HKtoMAX_log->addToCoefficient( currentHkToMaxLogCoefficient );
+      HKtoMAX_lin->addToCoefficient( currentHkToMaxLinCoefficient );
+      HKtoMAX_linlog->addToCoefficient( currentHkToMaxLinLogCoefficient );
+
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "VvSqPlusAaSqAntiDistribution:"
+      << std::endl << "MINtoLK: "
+      << std::endl << currentMinToLkInvCoefficient << "/E"
+      << std::endl << currentMinToLkConstCoefficient
+      << std::endl << currentMinToLkLogCoefficient << "L"
+      << std::endl << currentMinToLkLinCoefficient << "E"
+      << std::endl << currentMinToLkLinLogCoefficient << "EL"
+      << std::endl << currentMinToLkSqCoefficient << "E^2"
+      << std::endl << "LKtoHK: "
+      << std::endl << currentLkToHkConstCoefficient
+      << std::endl << currentLkToHkLinCoefficient << "E"
+      << std::endl << currentLkToHkSqCoefficient << "E^2"
+      << std::endl << "HKtoMAX: "
+      << std::endl << currentHkToMaxInvCoefficient << "/E"
+      << std::endl << currentHkToMaxConstCoefficient
+      << std::endl << currentHkToMaxLogCoefficient << "L"
+      << std::endl << currentHkToMaxLinCoefficient << "E"
+      << std::endl << currentHkToMaxLinLogCoefficient << "EL"
+      << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
+
+
+      // VvSqMinusAaSqAntiDistribution
+
+      // MIN to LK:
+
+      // debugging:
+      currentMinToLkInvCoefficient = 0.0;
+      // right!
+
+      currentMinToLkConstCoefficient
+      = ( EightmCXElMinmQsq * ElMin * mVsq
+          * ( ( 1.0 - lnElMin + lnmQC ) * mQCsqSum - mQCsqDiff ) );
+      // right!
+
+      currentMinToLkLogCoefficient
+      = ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq );
+      // right!
+
+      currentMinToLkLinCoefficient
+      = ( -2.0 * EightmCXElMinmQsq * mC * mQ * mVsq );
+      // right!
+
+      // debugging:
+      currentMinToLkLinLogCoefficient = 0.0;
+      // right!
+
+      // debugging:
+      currentMinToLkSqCoefficient = 0.0;
+      // right!
+
+
+      // LK to HK:
+
+      if( cosinesLimitedByEnergy )
       {
-
-        /* antisymmetric bit positive for both vector & axial coupling (this is
-         * the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         */
-        /* 0.0
-           + ( same_handedness_factor
-               * ( -32.0 * ElMinsq * mCsq * mQcu * mVsq ) );*/
-        current_term_coefficient
-        = ( same_handedness_factor
-            * ( -32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
+        currentLkToHkConstCoefficient = ( EightmCXElMinmQsq * ElMin * mQCsqSum
+                                          * mVsq * lnVsqOverFourElMinsq );
+        // dunno...
+        currentLkToHkLinCoefficient
+        = ( 2.0 * EightmCXElMinmQsq * mC * mQ * ( 4.0 * ElMinsq - mVsq ) );
+        // dunno...
       }
-    else
+      else
       {
-
-        current_term_coefficient = 0.0;
-
+        currentLkToHkConstCoefficient
+        = ( 2.0 * EightmCXElMinmQsq * ElMin * mVsq
+            * ( lnmQC * mQCsqSum - mQCsqDiff ) );
+        // right!
+        currentLkToHkLinCoefficient = 0.0;
+        // right!
       }
 
-    HKtoMAX_linlog->setCoefficient( current_term_coefficient );
+      // debugging:
+      currentLkToHkSqCoefficient = 0.0;
+      // right!
 
 
-    // sq:
+      // HK to MAX:
 
-    // symmetric bit positive for both vector & axial coupling:
-    current_term_coefficient = ( 16.0 * ElMinsq * mCsq * mCsq * mQCsqDiff );
+      currentHkToMaxInvCoefficient = 0.0;
+      // right!
 
-    // symmetric bit positive for vector & negative for axial coupling:
-    // 0.0
+      currentHkToMaxConstCoefficient
+      = ( EightmCXElMinmQsq * ElMin * mVsq
+          * ( ( lnVsqOverFourElMinsq + lnElMin + lnmQC - 1.0 ) * mQCsqSum
+              - mQCsqDiff ) );
+      // right!
 
-    /*if( 0.0 != same_handedness_factor )
+      currentHkToMaxLogCoefficient = -currentMinToLkLogCoefficient;
+      // right!
+
+      currentHkToMaxLinCoefficient
+      = ( 8.0 * EightmCXElMinmQsq * mC * mQ * ElMinsq );
+      // right!
+
+      // debugging:
+      currentHkToMaxLinLogCoefficient = 0.0;
+      // right!
+
+      // debugging:
+      currentHkToMaxSqCoefficient = 0.0;
+      // right!
+
+
+      if( couplesAsVectorNotAxial )
       {
+        MINtoLK_const->addToCoefficient( currentMinToLkConstCoefficient );
+        MINtoLK_log->addToCoefficient( currentMinToLkLogCoefficient );
+        MINtoLK_lin->addToCoefficient( currentMinToLkLinCoefficient );
 
-        *//* antisymmetric bit positive for both vector & axial coupling (this
-         * is the sum of 2 terms in the Mathematica notebook: VvPlusJjAaAllSq &
-         * VvSqPlusAaSq):
-         *//*
-        // 0.0
+        LKtoHK_const->addToCoefficient( currentLkToHkConstCoefficient );
+        LKtoHK_lin->addToCoefficient( currentLkToHkLinCoefficient );
 
-        // antisymmetric bit positive for vector & negative for axial coupling:
-        // 0.0
+        HKtoMAX_const->addToCoefficient( currentHkToMaxConstCoefficient );
+        HKtoMAX_log->addToCoefficient( currentHkToMaxLogCoefficient );
+        HKtoMAX_lin->addToCoefficient( currentHkToMaxLinCoefficient );
+      }
+      else
+      {
+        MINtoLK_const->addToCoefficient( -currentMinToLkConstCoefficient );
+        MINtoLK_log->addToCoefficient( -currentMinToLkLogCoefficient );
+        MINtoLK_lin->addToCoefficient( -currentMinToLkLinCoefficient );
 
-      }*/
+        LKtoHK_const->addToCoefficient( -currentLkToHkConstCoefficient );
+        LKtoHK_lin->addToCoefficient( -currentLkToHkLinCoefficient );
 
-    HKtoMAX_sq->setCoefficient( current_term_coefficient );
+        HKtoMAX_const->addToCoefficient( -currentHkToMaxConstCoefficient );
+        HKtoMAX_log->addToCoefficient( -currentHkToMaxLogCoefficient );
+        HKtoMAX_lin->addToCoefficient( -currentHkToMaxLinCoefficient );
+      }
+
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "VvSqMinusAaSqAntiDistribution:"
+      << std::endl << "MINtoLK: "
+      << std::endl << currentMinToLkInvCoefficient << "/E"
+      << std::endl << currentMinToLkConstCoefficient
+      << std::endl << currentMinToLkLogCoefficient << "L"
+      << std::endl << currentMinToLkLinCoefficient << "E"
+      << std::endl << currentMinToLkLinLogCoefficient << "EL"
+      << std::endl << currentMinToLkSqCoefficient << "E^2"
+      << std::endl << "LKtoHK: "
+      << std::endl << currentLkToHkConstCoefficient
+      << std::endl << currentLkToHkLinCoefficient << "E"
+      << std::endl << currentLkToHkSqCoefficient << "E^2"
+      << std::endl << "HKtoMAX: "
+      << std::endl << currentHkToMaxInvCoefficient << "/E"
+      << std::endl << currentHkToMaxConstCoefficient
+      << std::endl << currentHkToMaxLogCoefficient << "L"
+      << std::endl << currentHkToMaxLinCoefficient << "E"
+      << std::endl << currentHkToMaxLinLogCoefficient << "EL"
+      << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
+    }
 
     // debugging:
-    /**/
-    normalizeCoefficients();
     std::cout
     << std::endl
     << "debugging: Z_handed_muon:calculateCoefficients() produced "
     << std::endl << "firstMass = " << firstMass
     << std::endl << "secondMass = " << secondMass
-    << std::endl << "energy_limited_cosines = " << energy_limited_cosines
+    << std::endl << "cosinesLimitedByEnergy = " << cosinesLimitedByEnergy
     << std::endl << "(true = " << true << ")"
     << std::endl << "minimumEnergy = " << minimumEnergy
     << std::endl << "maximumEnergy = " << maximumEnergy
@@ -3130,11 +2064,11 @@ namespace LHC_FASER
       = ( 2.0 * mQsq
           * ( EightmCEVElMin * mQsq
               * ( mC * ( mVsq - 4.0 * ElMinsq )
-                  + ElMin * mVsq * ( lnElMin - lnVsqOverFourElMinsq ) )
+                  - ElMin * mVsq * lnVsqOverFourElMinsq )
               + mC * ( 16.0 * ElMinsq * ElMinsq * mC * mQsq
                        - 4.0 * ElMinsq * mQCsqSum * mVsq
                          * ( 2.0 * ElMin
-                             + ( lnVsqOverFourElMinsq - lnElMin ) * mC )
+                             + lnVsqOverFourElMinsq * mC )
                        - ( mC * mQsq
                            - 2.0 * ElMin * mQCsqSum ) * mVsq * mVsq ) ) );
       LKtoHK_const->setCoefficient( current_term_coefficient );
@@ -3146,8 +2080,7 @@ namespace LHC_FASER
       = ( 2.0 * mC * mQcu
           * ( EightmCEVElMin
               * ( mVsq
-                  - 4.0 * ElMin * ( ( lnVsqOverFourElMinsq - lnElMin ) * mC
-                                    + ElMin ) )
+                  - 4.0 * ElMin * ( lnVsqOverFourElMinsq * mC + ElMin ) )
               + 2.0 * mC * ( 8.0 * ElMin
                              * ( 2.0 * ElMinsq * ( ElMin - 2.0 * mC )
                                  + mC * mVsq )
@@ -3202,9 +2135,10 @@ namespace LHC_FASER
     current_term_coefficient
     = ( 2.0 * mQsq * mVsq
         * ( EightmCEVElMin * ElMin * mQsq
-            * ( 1.0 - lnmQC - lnVsqOverFourElMinsq )
+            * ( 1.0 - lnmQC - lnVsqOverFourElMinsq - lnElMin )
             - 4.0 * ElMinsq * mCsq
-              * ( ( lnmQC + lnVsqOverFourElMinsq ) * mQCsqSum - 2.0 * mQsq )
+              * ( ( lnmQC + lnVsqOverFourElMinsq + lnElMin ) * mQCsqSum
+                  - 2.0 * mQsq )
             - 8.0 * ElMin * ElMinsq * mC * mQCsqSum
             + mC * mQsq * ( EightmCEVElMin - mC * mVsq ) ) );
     HKtoMAX_const->setCoefficient( current_term_coefficient );
@@ -4034,7 +2968,7 @@ namespace LHC_FASER
              CppSLHA::particle_property_set const* const given_second_particle,
               CppSLHA::particle_property_set const* const given_third_particle,
           CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    Z_handed_muon( given_readier,
+    zHandedMuon( given_readier,
                    given_spectrum,
                    given_first_particle,
                    effectiveSquarkMass,
@@ -4066,7 +3000,7 @@ namespace LHC_FASER
              CppSLHA::particle_property_set const* const given_second_particle,
               CppSLHA::particle_property_set const* const given_third_particle,
           CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    Z_handed_muon( given_readier,
+    zHandedMuon( given_readier,
                    given_spectrum,
                    given_first_particle,
                    effectiveSquarkMass,

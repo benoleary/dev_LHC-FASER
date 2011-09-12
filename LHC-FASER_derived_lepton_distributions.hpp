@@ -474,34 +474,32 @@ namespace LHC_FASER
    * squark to a jet of either chirality plus a light lepton-antilepton pair
    * plus a lightest neutralino, keeping chirality effects.
    */
-  class Z_handed_muon : public leptonEnergyDistribution
+  class zHandedMuon : public leptonEnergyDistribution
   {
-
   public:
-
-    Z_handed_muon( readierForNewPoint* const given_readier,
-                   CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
-                   effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-            CppSLHA::particle_property_set const* const given_fourth_particle,
-                   bool const negative_muon_is_same_handedness,
-                   bool const should_sum_over_handedness )
+    zHandedMuon( readierForNewPoint* const readier,
+                 CppSLHA::CppSLHA0 const* const spectrumData,
+                 CppSLHA::particle_property_set const* const firstParticle,
+                 effectiveSquarkMassHolder* const effectiveSquarkMass,
+                 CppSLHA::particle_property_set const* const secondParticle,
+                 CppSLHA::particle_property_set const* const thirdParticle,
+                 CppSLHA::particle_property_set const* const fourthParticle,
+                 bool const negativeMuonIsSameHandednessAsJet,
+                 bool const shouldSumOverHandedness )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~Z_handed_muon()
+    ~zHandedMuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
+    bool const negativeMuonIsSameHandednessAsJet;
+    bool const shouldNotSumOverHandedness;
     double Elk;
     double Ehk;
-    double same_handedness_factor;
-    double axial_coupling_factor;
-    bool energy_limited_cosines;
+    double sameHandednessFactor;
+    double axialCouplingFactor;
+    bool couplesAsVectorNotAxial;
+    bool cosinesLimitedByEnergy;
 
     /* these are for ease of calculating the coefficients (referring to the
      * squark as Q, the neutralino_2 as C, the neutralino_1 as X, the jet as j,
@@ -546,21 +544,33 @@ namespace LHC_FASER
     double EightmCXElMinmQsq;
     // 8 * mC * mX * ElMin * mQ^2.
     double lnEmin;
-    // ln( minimum_energy ).
+    // ln( minimumEnergy ).
     double lnElk;
     // ln( Elk ).
     double lnEhk;
     // ln( Ehk ).
     double lnEmax;
-    // ln( maximum_energy ).
+    // ln( maximumEnergy ).
 
-
-    double current_term_coefficient;
-    // this is for holding the coefficientValue being calculated.
+    // these are for holding the coefficients being calculated:
+    double currentMinToLkInvCoefficient;
+    double currentMinToLkConstCoefficient;
+    double currentMinToLkLogCoefficient;
+    double currentMinToLkLinCoefficient;
+    double currentMinToLkLinLogCoefficient;
+    double currentMinToLkSqCoefficient;
+    double currentLkToHkConstCoefficient;
+    double currentLkToHkLinCoefficient;
+    double currentLkToHkSqCoefficient;
+    double currentHkToMaxInvCoefficient;
+    double currentHkToMaxConstCoefficient;
+    double currentHkToMaxLogCoefficient;
+    double currentHkToMaxLinCoefficient;
+    double currentHkToMaxLinLogCoefficient;
+    double currentHkToMaxSqCoefficient;
 
     segmentTermSet MINtoLK_segment;
     // the terms between minimum_energy & Elk.
-
     leptonDistributionExpansionTerm* const MINtoLK_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
@@ -576,10 +586,8 @@ namespace LHC_FASER
     leptonDistributionExpansionTerm* const MINtoLK_sq;
     // the term quadratic in input_energy in the above segment.
 
-
     segmentTermSet LKtoHK_segment;
     // the terms between Elk & Ehk.
-
     leptonDistributionExpansionTerm* const LKtoHK_const;
     // the term constant with respect to input_energy in the above segment.
     leptonDistributionExpansionTerm* const LKtoHK_lin;
@@ -588,10 +596,8 @@ namespace LHC_FASER
     leptonDistributionExpansionTerm* const LKtoHK_sq;
     // the term quadratic in input_energy in the above segment.
 
-
     segmentTermSet HKtoMAX_segment;
     // the terms between Ehk & maximum_energy.
-
     leptonDistributionExpansionTerm* const HKtoMAX_inv;
     // the term linear in the inverse power of input_energy in the above
     // segment.
@@ -607,11 +613,9 @@ namespace LHC_FASER
     leptonDistributionExpansionTerm* const HKtoMAX_sq;
     // the term quadratic in input_energy in the above segment.
 
-
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
 
@@ -850,7 +854,7 @@ namespace LHC_FASER
 
   // averaging over both jets from the Z boson produces the same distribution
   // as directly-produced light leptons.
-  class Z_direct_jet : public Z_handed_muon
+  class Z_direct_jet : public zHandedMuon
   {
 
   public:
@@ -877,7 +881,7 @@ namespace LHC_FASER
 
   // averaging over both jets from the W boson produces the same distribution
   // which Z bosons produce.
-  class W_minus_direct_jet : public Z_handed_muon
+  class W_minus_direct_jet : public zHandedMuon
 
   {
 

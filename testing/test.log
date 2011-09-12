@@ -2,134 +2,385 @@
 CppSLHA::read_file() (using "SPS1a_spectrum.out") has been called
 
 debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^0 to high.
+cosinesLimitedByEnergy = false
 
 debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^1 to high.
+VvPlusJjAaAllSqSymDistribution:
+MINtoLK: 
+0/E
+-1.22164e+21
+-4.02002e+22L
+1.11004e+22E
+0EL
+-4.4478e+19E^2
+LKtoHK: 
+-3.31724e+22
+6.23669e+21E
+-3.59391e+19E^2
+HKtoMAX: 
+0/E
+4.65275e+23
+4.02002e+22L
+-4.86371e+21E
+0EL
+8.53891e+18E^2
 
 debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^3 L^0 to high.
-
+VvSqMinusAaSqSymDistribution:
+MINtoLK: 
+0/E
+-4.24894e+22
+2.07045e+22L
+0E
+0EL
+0E^2
+LKtoHK: 
+1.70849e+22
+0E
+0E^2
+HKtoMAX: 
+0/E
+1.15683e+23
+-2.07045e+22L
+0E
+0EL
+0E^2
 debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^0 to high.
-
+VvPlusJjAaAllSqAntiDistribution:
+MINtoLK: 
+0/E
+7.74824e+22
+-4.02002e+22L
+6.4431e+20E
+0EL
+0E^2
+LKtoHK: 
+-3.31724e+22
+3.62001e+20E
+0E^2
+HKtoMAX: 
+0/E
+-1.49228e+23
+4.02002e+22L
+-2.82308e+20E
+0EL
+0E^2
 debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^1 to high.
-
+VvSqPlusAaSqAntiDistribution:
+MINtoLK: 
+1.04453e+24/E
+-7.05322e+23
+3.50499e+23L
+-2.10916e+22E
+1.00493e+21EL
+0E^2
+LKtoHK: 
+4.67762e+22
+-4.59367e+20E
+0E^2
+HKtoMAX: 
+-1.04453e+24/E
+1.27133e+24
+-3.50499e+23L
+8.20245e+21E
+-1.00493e+21EL
+0E^2
 debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^2 L^0 to high.
-
-debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^3 L^0 to high.
-
-debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^0 to high.
-
-debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^1 to high.
-
-debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^1 L^0 to high.
-
-debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^1 L^1 to high.
-
-debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^0 L^0 to high.
-
-debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^1 L^0 to high.
-
-debugging:
-tauSegmentTriple::tauSegmentTriple(...) adding E^1 L^1 to high.
-
-debugging: flat_near_muon_plus_antimuon constructor has
+VvSqMinusAaSqAntiDistribution:
+MINtoLK: 
+0/E
+-7.64676e+22
+5.29974e+22L
+-4.14815e+21E
+0EL
+0E^2
+LKtoHK: 
+2.32345e+21
+0E
+0E^2
+HKtoMAX: 
+0/E
+2.22413e+23
+-5.29974e+22L
+2.76007e+20E
+0EL
+0E^2
+debugging: Z_handed_muon:calculateCoefficients() produced 
 firstMass = 574.013
-secondMass = 180.802
-productionFrameEnergy = 33.0088
-minimumEnergy = 10.3971
-maximumEnergy = 104.797
+secondMass = 379.959
+energy_limited_cosines = 0
+(true = 1)
+minimumEnergy = 7.7849
+maximumEnergy = 267.029
+MINtoLK_inv = 1.04453e+24
+MINtoLK_const = -7.48019e+23
+MINtoLK_log = 3.43801e+23
+MINtoLK_lin = -1.3495e+22
+MINtoLK_linlog = 1.00493e+21
+MINtoLK_sq = -4.4478e+19
+LKtoHK_const = -1.60256e+20
+LKtoHK_lin = 6.13932e+21
+LKtoHK_sq = -3.59391e+19
+HKtoMAX_inv = -1.04453e+24
+HKtoMAX_const = 1.92548e+24
+HKtoMAX_log = -3.43801e+23
+HKtoMAX_lin = 3.33244e+21
+HKtoMAX_linlog = -1.00493e+21
+HKtoMAX_sq = 8.53891e+18
 
-flat_near_ll: 10.3971 to 104.797
-area = 1.25
+Zn4L_ll: 7.7849 to 267.029
+area = 0.999738
 
-flat_near_tLm: 0 to 104.797
+Zn4L_tLm: 0 to 267.029
+area = 0.974212
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = -0.0141243
+Zn4L_tRm: 0 to 267.029
+area = 0.961317
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = -0.0141243
+Zn4L_tLp: 0 to 267.029
+area = -0.035612
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = -0.0141243
-
-debugging:
-leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = -0.0141243
-area = nan
-
-flat_near_tRm: 0 to 104.797
-
-debugging:
-leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = -0.0211864
-
-debugging:
-leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = -0.0211864
-
-debugging:
-leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = -0.0211864
-
-debugging:
-leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = -0.0211864
-area = nan
-
-flat_near_tLp: 0 to 104.797
+Zn4L_tRp: 0 to 267.029
+area = 0.0355394
 
 debugging:
-leptonDistributionExpansionTerm::evaluate( 0 ) called. coefficientValue = inf
+cosinesLimitedByEnergy = false
 
 debugging:
-leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = -0.0423729
+VvPlusJjAaAllSqSymDistribution:
+MINtoLK: 
+0/E
+-1.22164e+21
+-4.02002e+22L
+1.11004e+22E
+0EL
+-4.4478e+19E^2
+LKtoHK: 
+-3.31724e+22
+6.23669e+21E
+-3.59391e+19E^2
+HKtoMAX: 
+0/E
+4.65275e+23
+4.02002e+22L
+-4.86371e+21E
+0EL
+8.53891e+18E^2
 
 debugging:
-leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = -0.000404333
+VvSqMinusAaSqSymDistribution:
+MINtoLK: 
+0/E
+-4.24894e+22
+2.07045e+22L
+0E
+0EL
+0E^2
+LKtoHK: 
+1.70849e+22
+0E
+0E^2
+HKtoMAX: 
+0/E
+1.15683e+23
+-2.07045e+22L
+0E
+0EL
+0E^2
+debugging:
+VvPlusJjAaAllSqAntiDistribution:
+MINtoLK: 
+0/E
+7.74824e+22
+-4.02002e+22L
+6.4431e+20E
+0EL
+0E^2
+LKtoHK: 
+-3.31724e+22
+3.62001e+20E
+0E^2
+HKtoMAX: 
+0/E
+-1.49228e+23
+4.02002e+22L
+-2.82308e+20E
+0EL
+0E^2
+debugging:
+VvSqPlusAaSqAntiDistribution:
+MINtoLK: 
+1.04453e+24/E
+-7.05322e+23
+3.50499e+23L
+-2.10916e+22E
+1.00493e+21EL
+0E^2
+LKtoHK: 
+4.67762e+22
+-4.59367e+20E
+0E^2
+HKtoMAX: 
+-1.04453e+24/E
+1.27133e+24
+-3.50499e+23L
+8.20245e+21E
+-1.00493e+21EL
+0E^2
+debugging:
+VvSqMinusAaSqAntiDistribution:
+MINtoLK: 
+0/E
+-7.64676e+22
+5.29974e+22L
+-4.14815e+21E
+0EL
+0E^2
+LKtoHK: 
+2.32345e+21
+0E
+0E^2
+HKtoMAX: 
+0/E
+2.22413e+23
+-5.29974e+22L
+2.76007e+20E
+0EL
+0E^2
+debugging: Z_handed_muon:calculateCoefficients() produced 
+firstMass = 574.013
+secondMass = 379.959
+energy_limited_cosines = 0
+(true = 1)
+minimumEnergy = 7.7849
+maximumEnergy = 267.029
+MINtoLK_inv = 1.04453e+24
+MINtoLK_const = -7.48019e+23
+MINtoLK_log = 3.43801e+23
+MINtoLK_lin = -1.3495e+22
+MINtoLK_linlog = 1.00493e+21
+MINtoLK_sq = -4.4478e+19
+LKtoHK_const = -1.60256e+20
+LKtoHK_lin = 6.13932e+21
+LKtoHK_sq = -3.59391e+19
+HKtoMAX_inv = -1.04453e+24
+HKtoMAX_const = 1.92548e+24
+HKtoMAX_log = -3.43801e+23
+HKtoMAX_lin = 3.33244e+21
+HKtoMAX_linlog = -1.00493e+21
+HKtoMAX_sq = 8.53891e+18
+
+Zn4R_ll: 7.7849 to 267.029
+area = 0.999738
+
+Zn4R_tLm: 0 to 267.029
+area = 0.974212
+
+Zn4R_tRm: 0 to 267.029
+area = 0.961317
+
+Zn4R_tLp: 0 to 267.029
+area = -0.035612
+
+Zn4R_tRp: 0 to 267.029
+area = 0.0355394
 
 debugging:
-leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = -0.0423729
+cosinesLimitedByEnergy = false
 
 debugging:
-leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = -0.000404333
+VvPlusJjAaAllSqSymDistribution:
+MINtoLK: 
+0/E
+-1.22164e+21
+-4.02002e+22L
+1.11004e+22E
+0EL
+-4.4478e+19E^2
+LKtoHK: 
+-3.31724e+22
+6.23669e+21E
+-3.59391e+19E^2
+HKtoMAX: 
+0/E
+4.65275e+23
+4.02002e+22L
+-4.86371e+21E
+0EL
+8.53891e+18E^2
 
 debugging:
-leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = -0.0423729
+VvSqMinusAaSqSymDistribution:
+MINtoLK: 
+0/E
+-4.24894e+22
+2.07045e+22L
+0E
+0EL
+0E^2
+LKtoHK: 
+1.70849e+22
+0E
+0E^2
+HKtoMAX: 
+0/E
+1.15683e+23
+-2.07045e+22L
+0E
+0EL
+0E^2
+debugging: Z_handed_muon:calculateCoefficients() produced 
+firstMass = 574.013
+secondMass = 379.959
+energy_limited_cosines = 0
+(true = 1)
+minimumEnergy = 7.7849
+maximumEnergy = 267.029
+MINtoLK_inv = 0
+MINtoLK_const = -4.37111e+22
+MINtoLK_log = -1.94957e+22
+MINtoLK_lin = 1.11004e+22
+MINtoLK_linlog = 0
+MINtoLK_sq = -4.4478e+19
+LKtoHK_const = -1.60875e+22
+LKtoHK_lin = 6.23669e+21
+LKtoHK_sq = -3.59391e+19
+HKtoMAX_inv = 0
+HKtoMAX_const = 5.80958e+23
+HKtoMAX_log = 1.94957e+22
+HKtoMAX_lin = -4.86371e+21
+HKtoMAX_linlog = 0
+HKtoMAX_sq = 8.53891e+18
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = -0.000404333
+Zn4summed_ll: 7.7849 to 267.029
+area = 0.999881
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = -0.0423729
+Zn4summed_tLm: 0 to 267.029
+area = 0.97567
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = -0.000404333
-area = nan
+Zn4summed_tRm: 0 to 267.029
+area = 0.963504
 
-flat_near_tRp: 0 to 104.797
+Zn4summed_tLp: 0 to 267.029
+area = 0.931002
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 0 ) called. coefficientValue = -inf
+Zn4summed_tRp: 0 to 267.029
+area = 0.996725
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 26.1993 ) called. coefficientValue = 0.000404333
+sdscW_ll: 21.2661 to 75.9766
+area = 0.9999
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 52.3985 ) called. coefficientValue = 0.000404333
+sdscW_tLm: 0 to 75.9766
+area = 0.988843
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 78.5978 ) called. coefficientValue = 0.000404333
+sdscW_tRm: 0 to 75.9766
+area = 0.983264
 
-debugging:
-leptonDistributionExpansionTerm::evaluate( 104.797 ) called. coefficientValue = 0.000404333
-area = nan
+sdscW_tLp: 0 to 75.9766
+area = 0.967233
+
+sdscW_tRp: 0 to 75.9766
+area = 0.999396
 
 
 ended successfully, I hope

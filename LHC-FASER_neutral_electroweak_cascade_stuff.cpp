@@ -1229,7 +1229,7 @@ namespace LHC_FASER
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
 
-    directMuonDistribution = new Z_handed_muon( shortcut->getReadier(),
+    directMuonDistribution = new zHandedMuon( shortcut->getReadier(),
                                                 shortcut->getCppSlha(),
                                                 coloredDecayer,
                                                 effectiveSquarkMass,
@@ -1238,7 +1238,7 @@ namespace LHC_FASER
                                                 shortcut->getNeutralinoOne(),
                                                 true,
                                                 true );
-    sameHandedTauDistribution = new Z_handed_muon( shortcut->getReadier(),
+    sameHandedTauDistribution = new zHandedMuon( shortcut->getReadier(),
                                                    shortcut->getCppSlha(),
                                                    coloredDecayer,
                                                    effectiveSquarkMass,
@@ -1247,7 +1247,7 @@ namespace LHC_FASER
                                                   shortcut->getNeutralinoOne(),
                                                    true,
                                                    false );
-    oppositeHandedTauDistribution = new Z_handed_muon( shortcut->getReadier(),
+    oppositeHandedTauDistribution = new zHandedMuon( shortcut->getReadier(),
                                                        shortcut->getCppSlha(),
                                                        coloredDecayer,
                                                        effectiveSquarkMass,
@@ -1618,7 +1618,7 @@ namespace LHC_FASER
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
 
-    directMuonDistribution = new Z_handed_muon( shortcut->getReadier(),
+    directMuonDistribution = new zHandedMuon( shortcut->getReadier(),
                                                 shortcut->getCppSlha(),
                                                 coloredDecayer,
                                                 effectiveSquarkMass,
