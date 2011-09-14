@@ -243,16 +243,17 @@ namespace LHC_FASER
         *= ( ( (double)logPowerFactorial
                / (double)predivisorOfPowersOfEnergyPowerPlusOne )
              * endSum );
+
         returnValue = ( integralToEnd - integralToStart );
       }
     }
     // debugging:
-    /**std::cout << std::endl << "debugging:"
+    /**/std::cout << std::endl << "debugging:"
     << std::endl
     << "leptonDistributionExpansionTerm::getArea( " << startEnergy << ", "
     << endEnergy << " ) for " << coefficientValue << " E^" << powerOfEnergy
     << " L^" << powerOfLogarithm << " returning " << returnValue;
-    std::cout << std::endl;**/
+    std::cout << std::endl;/**/
 
     return returnValue;
   }
@@ -841,39 +842,39 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 1.0;
+          returnValue = 0.5;
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( -2.0 / tauMaxEnergy );
+        returnValue = ( -1.0 / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( 2.0 / tauMinEnergy );
+          returnValue += ( 1.0 / tauMinEnergy );
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 2.0 / ( tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
+        returnValue = ( 1.0 / ( tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
           returnValue
-          -= ( 2.0 / ( tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
+          -= ( 1.0 / ( tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
         }
       }
       else if( ( 3 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( -1.0 / ( tauMaxEnergy * tauMaxEnergy
+        returnValue = ( -0.5 / ( tauMaxEnergy * tauMaxEnergy
                                  * tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( 1.0 / ( tauMinEnergy * tauMinEnergy
+          returnValue += ( 0.5 / ( tauMinEnergy * tauMinEnergy
                                    * tauMinEnergy * tauMinEnergy ) );
         }
       }
@@ -886,14 +887,14 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 2.0 * log( tauMaxEnergy ) );
+        returnValue = log( tauMaxEnergy );
         if( isInsideRange )
         {
-          returnValue -= ( 5.0 / 3.0 );
+          returnValue -= ( 5.0 / 6.0 );
         }
         else
         {
-          returnValue -= ( 2.0 * log( tauMinEnergy ) );
+          returnValue -= log( tauMinEnergy );
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
@@ -902,17 +903,17 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = -2.0;
+          returnValue = -1.0;
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 3.0 / ( tauMaxEnergy * tauMaxEnergy ) );
+        returnValue = ( 1.5 / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue -= ( 3.0 / ( tauMinEnergy * tauMinEnergy ) );
+          returnValue -= ( 1.5 / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
       else if( ( 3 == visibleProductEnergyPower )
@@ -920,11 +921,11 @@ namespace LHC_FASER
                ( 0 == visibleProductLogPower ) )
       {
         returnValue
-        = ( -4.0 / ( 3.0 * tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
+        = ( -2.0 / ( 3.0 * tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
           returnValue
-          += ( 4.0 / ( 3.0 * tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
+          += ( 2.0 / ( 3.0 * tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
         }
       }
     }  // end of if( 0 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -937,15 +938,15 @@ namespace LHC_FASER
           ( 0 == visibleProductLogPower ) )
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
-        returnValue = ( logOfTauMaxEnergy * logOfTauMaxEnergy );
+        returnValue = ( 0.5 * logOfTauMaxEnergy * logOfTauMaxEnergy );
         if( isInsideRange )
         {
-          returnValue -= ( 19.0 / 18.0 );
+          returnValue -= ( 19.0 / 36.0 );
         }
         else
         {
           double logOfTauMinEnergy = log( tauMinEnergy );
-          returnValue -= ( logOfTauMinEnergy * logOfTauMinEnergy );
+          returnValue -= ( 0.5 * logOfTauMinEnergy * logOfTauMinEnergy );
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
@@ -954,7 +955,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = ( -5.0 / 3.0 );
+          returnValue = ( -5.0 / 6.0 );
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
@@ -963,18 +964,18 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = -1.0;
+          returnValue = -0.5;
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( ( 1.5 + 3.0 * log( tauMaxEnergy ) )
+        returnValue = ( ( 0.75 + 1.5 * log( tauMaxEnergy ) )
                         / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue -= ( ( 1.5 + 3.0 * log( tauMinEnergy ) )
+          returnValue -= ( ( 0.75 + 1.5 * log( tauMinEnergy ) )
                            / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
@@ -982,11 +983,11 @@ namespace LHC_FASER
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( ( -4.0 * ( 1.0 + 3.0 * log( tauMaxEnergy ) ) )
+        returnValue = ( ( -2.0 * ( 1.0 + 3.0 * log( tauMaxEnergy ) ) )
                       / ( 9.0 * tauMaxEnergy * tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( ( 4.0 * ( 1.0 + 3.0 * log( tauMinEnergy ) ) )
+          returnValue += ( ( 2.0 * ( 1.0 + 3.0 * log( tauMinEnergy ) ) )
                       / ( 9.0 * tauMinEnergy * tauMinEnergy * tauMinEnergy ) );
         }
       }
@@ -999,55 +1000,10 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 2.0 * tauMaxEnergy );
+        returnValue = tauMaxEnergy;
         if( !isInsideRange )
         {
-          returnValue -= ( 2.0 * tauMinEnergy );
-        }
-      }
-      else if( ( 1 == visibleProductEnergyPower )
-               &&
-               ( 0 == visibleProductLogPower ) )
-      {
-        if( isInsideRange )
-        {
-          returnValue = -6.0;
-        }
-      }
-      else if( ( 2 == visibleProductEnergyPower )
-               &&
-               ( 0 == visibleProductLogPower ) )
-      {
-        returnValue = ( 6.0 / tauMaxEnergy );
-        if( !isInsideRange )
-        {
-          returnValue -= ( 6.0 / tauMinEnergy );
-        }
-      }
-      else if( ( 3 == visibleProductEnergyPower )
-               &&
-               ( 0 == visibleProductLogPower ) )
-      {
-        returnValue = ( -2.0 / ( tauMaxEnergy * tauMaxEnergy ) );
-        if( !isInsideRange )
-        {
-          returnValue += ( 2.0 / ( tauMinEnergy * tauMinEnergy ) );
-        }
-      }
-    }  // end of if( 1 == tau_energy_power ) && ( 0 == tau_log_power )
-    else if( ( 1 == tauLeptonEnergyPower )
-             &&
-             ( 1 == tauLeptonLogPower ) )
-    {
-      if( ( 0 == visibleProductEnergyPower )
-          &&
-          ( 0 == visibleProductLogPower ) )
-      {
-        returnValue = ( 2.0 * tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) );
-        if( !isInsideRange )
-        {
-          returnValue
-          += ( 2.0 * tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) );
+          returnValue -= tauMinEnergy;
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1059,13 +1015,58 @@ namespace LHC_FASER
           returnValue = -3.0;
         }
       }
+      else if( ( 2 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( 3.0 / tauMaxEnergy );
+        if( !isInsideRange )
+        {
+          returnValue -= ( 3.0 / tauMinEnergy );
+        }
+      }
+      else if( ( 3 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( -1.0 / ( tauMaxEnergy * tauMaxEnergy ) );
+        if( !isInsideRange )
+        {
+          returnValue += ( 1.0 / ( tauMinEnergy * tauMinEnergy ) );
+        }
+      }
+    }  // end of if( 1 == tau_energy_power ) && ( 0 == tau_log_power )
+    else if( ( 1 == tauLeptonEnergyPower )
+             &&
+             ( 1 == tauLeptonLogPower ) )
+    {
+      if( ( 0 == visibleProductEnergyPower )
+          &&
+          ( 0 == visibleProductLogPower ) )
+      {
+        returnValue = ( tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) );
+        if( !isInsideRange )
+        {
+          returnValue
+          += ( tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) );
+        }
+      }
+      else if( ( 1 == visibleProductEnergyPower )
+               &&
+               ( 0 == visibleProductLogPower ) )
+      {
+        if( isInsideRange )
+        {
+          returnValue = -1.5;
+        }
+      }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
         if( isInsideRange )
         {
-          returnValue = -6.0;
+          returnValue = -3.0;
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
@@ -1073,22 +1074,22 @@ namespace LHC_FASER
                ( 0 == visibleProductLogPower ) )
       {
         returnValue
-        = ( ( 6.0 * ( 1.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
+        = ( ( 3.0 * ( 1.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
         if( !isInsideRange )
         {
           returnValue
-          -= ( ( 6.0 * ( 1.0 + log( tauMinEnergy ) ) ) / tauMinEnergy );
+          -= ( ( 3.0 * ( 1.0 + log( tauMinEnergy ) ) ) / tauMinEnergy );
         }
       }
       else if( ( 3 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( ( -1.0 * ( 1.0 + 2.0 * log( tauMaxEnergy ) ) )
+        returnValue = ( ( -0.5 - log( tauMaxEnergy ) )
                         / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( ( 1.0 + 2.0 * log( tauMinEnergy ) )
+          returnValue += ( ( 0.5 + log( tauMinEnergy ) )
                            / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
@@ -1101,24 +1102,24 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( tauMaxEnergy * tauMaxEnergy );
+        returnValue = ( 0.5 * tauMaxEnergy * tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( tauMinEnergy * tauMinEnergy );
+          returnValue -= ( 0.5 * tauMinEnergy * tauMinEnergy );
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( -6.0 * log( tauMaxEnergy ) );
+        returnValue = ( -3.0 * log( tauMaxEnergy ) );
         if( isInsideRange )
         {
-          returnValue += 3.0;
+          returnValue += 1.5;
         }
         else
         {
-          returnValue += ( 6.0 * log( tauMinEnergy ) );
+          returnValue += ( 3.0 * log( tauMinEnergy ) );
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
@@ -1127,17 +1128,17 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 6.0;
+          returnValue = 3.0;
         }
       }
       else if( ( 3 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 / ( tauMaxEnergy ) );
+        returnValue = ( -2.0 / ( tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 / ( tauMinEnergy ) );
+          returnValue += ( 2.0 / ( tauMinEnergy ) );
         }
       }
     }  // end of if( 2 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1196,18 +1197,18 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 1.0;
+          returnValue = 0.25;
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( ( -1.0 * ( 1.0 + 2.0 * log( tauMaxEnergy ) ) )
+        returnValue = ( ( -0.25 - 0.5 * log( tauMaxEnergy ) )
                         / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( ( ( 1.0 + 2.0 * log( tauMinEnergy ) ) )
+          returnValue += ( ( 0.25 + 0.5 * log( tauMinEnergy ) )
                            / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
@@ -1215,10 +1216,10 @@ namespace LHC_FASER
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( 2.0 / ( tauMaxEnergy * tauMaxEnergy ) );
+        returnValue = ( 0.5 / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue -= ( 2.0 / ( tauMinEnergy * tauMinEnergy ) );
+          returnValue -= ( 0.5 / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
     }  // end of if( -1 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1232,18 +1233,17 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 4.0;
+          returnValue = 1.0;
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue
-        = ( ( -4.0 * ( 1.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
+        returnValue = ( ( -1.0 - log( tauMaxEnergy ) ) / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( ( 4.0 * ( 1.0 + log( tauMinEnergy ) ) )
+          returnValue += ( ( 1.0 + log( tauMinEnergy ) )
                            / tauMinEnergy );
         }
       }
@@ -1251,10 +1251,10 @@ namespace LHC_FASER
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 / tauMaxEnergy );
+        returnValue = ( 1.0 / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( 4.0 / tauMinEnergy );
+          returnValue -= ( 1.0 / tauMinEnergy );
         }
       }
     }  // end of if( 0 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1268,7 +1268,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 8.0;
+          returnValue = 2.0;
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
@@ -1277,7 +1277,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 4.0;
+          returnValue = 1.0;
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1285,27 +1285,25 @@ namespace LHC_FASER
                ( 0 == visibleProductLogPower ) )
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
-        returnValue = ( ( -4.0 * ( 2.0 + 2.0 * logOfTauMaxEnergy
-                                   + logOfTauMaxEnergy * logOfTauMaxEnergy ) )
-                        / tauMaxEnergy );
+        returnValue
+        = ( ( -2.0 - logOfTauMaxEnergy * ( 2.0 + logOfTauMaxEnergy ) )
+            / tauMaxEnergy );
         if( !isInsideRange )
         {
           double logOfTauMinEnergy( log( tauMinEnergy ) );
-          returnValue += ( ( 4.0 * ( 2.0 + 2.0 * logOfTauMinEnergy
-                                    + logOfTauMinEnergy * logOfTauMinEnergy ) )
-                           / tauMinEnergy );
+          returnValue
+          += ( ( 2.0 + logOfTauMinEnergy * ( 2.0 + logOfTauMinEnergy ) )
+               / tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue
-        = ( ( 4.0 * ( 1.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
+        returnValue = ( ( 1.0 + log( tauMaxEnergy ) ) / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( ( 4.0 * ( 1.0 + log( tauMinEnergy ) ) )
-                           / tauMinEnergy );
+          returnValue -= ( ( 1.0 + log( tauMinEnergy ) ) / tauMinEnergy );
         }
       }
     }  // end of if( 0 == tau_energy_power ) && ( 1 == tau_log_power )
@@ -1318,21 +1316,21 @@ namespace LHC_FASER
           ( 0 == visibleProductLogPower ) )
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
-        returnValue = ( 2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy );
+        returnValue = ( 0.5 * logOfTauMaxEnergy * logOfTauMaxEnergy );
         if( !isInsideRange )
         {
           double logOfTauMinEnergy( log( tauMinEnergy ) );
-          returnValue -= ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy );
+          returnValue -= ( 0.5 * logOfTauMinEnergy * logOfTauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 * log( tauMaxEnergy ) );
+        returnValue = -log( tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 * log( tauMinEnergy ) );
+          returnValue += log( tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1341,7 +1339,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 2.0;
+          returnValue = 0.5;
         }
       }
     }  // end of if( 1 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1355,12 +1353,12 @@ namespace LHC_FASER
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue
-        = ( ( 4.0 * logOfTauMaxEnergy * logOfTauMaxEnergy * logOfTauMaxEnergy )
+        = ( ( logOfTauMaxEnergy * logOfTauMaxEnergy * logOfTauMaxEnergy )
             / 3.0 );
         if( !isInsideRange )
         {
           double logOfTauMinEnergy( log( tauMinEnergy ) );
-          returnValue -= ( ( 4.0 * logOfTauMinEnergy
+          returnValue -= ( ( logOfTauMinEnergy
                              * logOfTauMinEnergy * logOfTauMinEnergy ) / 3.0 );
         }
       }
@@ -1369,11 +1367,11 @@ namespace LHC_FASER
                ( 1 == visibleProductLogPower ) )
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
-        returnValue = ( -2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy );
+        returnValue = ( -0.5 * logOfTauMaxEnergy * logOfTauMaxEnergy );
         if( !isInsideRange )
         {
           double logOfTauMinEnergy( log( tauMinEnergy ) );
-          returnValue += ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy );
+          returnValue += ( 0.5 * logOfTauMinEnergy * logOfTauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1382,7 +1380,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = ( 2.0 / 3.0 );
+          returnValue = ( 1.0 / 6.0 );
         }
       }
     }  // end of if( 1 == tau_energy_power ) && ( 1 == tau_log_power )
@@ -1394,22 +1392,20 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue
-        = ( 4.0 * tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) );
+        returnValue = ( tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) );
         if( !isInsideRange )
         {
-          returnValue
-          += ( 4.0 * tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) );
+          returnValue += ( tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 * tauMaxEnergy );
+        returnValue = -tauMaxEnergy;
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 * tauMinEnergy );
+          returnValue += tauMinEnergy;
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
@@ -1418,7 +1414,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 4.0;
+          returnValue = 1.0;
         }
       }
     }  // end of if( 2 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1477,28 +1473,28 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 1.0;
+          returnValue = 0.25;
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 / tauMaxEnergy );
+        returnValue = ( -1.0 / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 / tauMinEnergy );
+          returnValue += ( 1.0 / tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( ( 2.0 * log( tauMaxEnergy ) + 3.0 )
+        returnValue = ( ( 0.5 * log( tauMaxEnergy ) + 0.75 )
                         / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue -= ( ( 2.0 * log( tauMinEnergy ) + 3.0 )
+          returnValue -= ( ( 0.5 * log( tauMinEnergy ) + 0.75 )
                            / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
@@ -1506,10 +1502,10 @@ namespace LHC_FASER
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( -2.0 / ( tauMaxEnergy * tauMaxEnergy ) );
+        returnValue = ( -0.5 / ( tauMaxEnergy * tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( 2.0 / ( tauMinEnergy * tauMinEnergy ) );
+          returnValue += ( 0.5 / ( tauMinEnergy * tauMinEnergy ) );
         }
       }
     }  // end of if( -1 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1521,14 +1517,14 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 * log( tauMaxEnergy ) );
+        returnValue = log( tauMaxEnergy );
         if( isInsideRange )
         {
-          returnValue -= 8.0;
+          returnValue -= 2.0;
         }
         else
         {
-          returnValue -= ( 4.0 * log( tauMinEnergy ) );
+          returnValue -= log( tauMinEnergy );
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
@@ -1537,29 +1533,27 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = -4.0;
+          returnValue = -1.0;
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue
-        = ( ( 4.0 * ( 2.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
+        returnValue = ( ( 2.0 + log( tauMaxEnergy ) ) / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( ( 4.0 * ( 2.0 + log( tauMinEnergy ) ) )
-                           / tauMinEnergy );
+          returnValue -= ( ( 2.0 + log( tauMinEnergy ) ) / tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 / tauMaxEnergy );
+        returnValue = ( -1.0 / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 / tauMinEnergy );
+          returnValue += ( 1.0 / tauMinEnergy );
         }
       }
     }  // end of if( 0 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1572,15 +1566,15 @@ namespace LHC_FASER
           ( 0 == visibleProductLogPower ) )
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
-        returnValue = ( 2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy );
+        returnValue = ( 0.5 * logOfTauMaxEnergy * logOfTauMaxEnergy );
         if( isInsideRange )
         {
-          returnValue -= 12.0;
+          returnValue -= 3.0;
         }
         else
         {
           double logOfTauMinEnergy( log( tauMinEnergy ) );
-          returnValue -= ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy );
+          returnValue -= ( 0.5 * logOfTauMinEnergy * logOfTauMinEnergy );
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
@@ -1589,7 +1583,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = -8.0;
+          returnValue = -2.0;
         }
       }
       else if( ( 0 == visibleProductEnergyPower )
@@ -1598,7 +1592,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = -2.0;
+          returnValue = -0.5;
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1606,27 +1600,25 @@ namespace LHC_FASER
                ( 0 == visibleProductLogPower ) )
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
-        returnValue = ( ( 4.0 * ( 3.0 + 3.0 * logOfTauMaxEnergy
-                                  + logOfTauMaxEnergy * logOfTauMaxEnergy ) )
-                        / tauMaxEnergy );
+        returnValue
+        = ( ( 3.0 + logOfTauMaxEnergy * ( 3.0 + logOfTauMaxEnergy ) )
+            / tauMaxEnergy );
         if( !isInsideRange )
         {
           double logOfTauMinEnergy( log( tauMinEnergy ) );
-          returnValue -= ( ( 4.0 * ( 3.0 + 3.0 * logOfTauMinEnergy
-                                    + logOfTauMinEnergy * logOfTauMinEnergy ) )
-                           / tauMinEnergy );
+          returnValue
+          -= ( ( 3.0 + logOfTauMinEnergy * ( 3.0 + logOfTauMinEnergy ) )
+               / tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue
-        = ( ( -4.0 * ( 1.0 + log( tauMaxEnergy ) ) ) / tauMaxEnergy );
+        returnValue = ( ( -1.0 - log( tauMaxEnergy ) ) / tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue += ( ( 4.0 * ( 1.0 + log( tauMinEnergy ) ) )
-                           / tauMinEnergy );
+          returnValue += ( ( 1.0 + log( tauMinEnergy ) ) / tauMinEnergy );
         }
       }
     }  // end of if( 0 == tau_energy_power ) && ( 1 == tau_log_power )
@@ -1638,10 +1630,10 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 * tauMaxEnergy );
+        returnValue = tauMaxEnergy;
         if( !isInsideRange )
         {
-          returnValue -= ( 4.0 * tauMinEnergy );
+          returnValue -= tauMinEnergy;
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1650,30 +1642,30 @@ namespace LHC_FASER
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
         returnValue
-        = ( -2.0 * logOfTauMaxEnergy * ( logOfTauMaxEnergy + 2.0 ) );
+        = ( -logOfTauMaxEnergy * ( 0.5 * logOfTauMaxEnergy + 1.0 ) );
         if( isInsideRange )
         {
-          returnValue -= 4.0;
+          returnValue -= 1.0;
         }
         else
         {
           double logOfTauMinEnergy( log( tauMinEnergy ) );
           returnValue
-          += ( 2.0 * logOfTauMinEnergy * ( logOfTauMinEnergy + 2.0 ) );
+          += ( logOfTauMinEnergy * ( 0.5 * logOfTauMinEnergy + 1.0 ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 * log( tauMaxEnergy ) );
+        returnValue = log( tauMaxEnergy );
         if( isInsideRange )
         {
-          returnValue += 4.0;
+          returnValue += 1.0;
         }
         else
         {
-          returnValue -= ( 4.0 * log( tauMinEnergy ) );
+          returnValue -= log( tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1682,7 +1674,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = -2.0;
+          returnValue = -0.5;
         }
       }
     }  // end of if( 1 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1695,11 +1687,11 @@ namespace LHC_FASER
           ( 0 == visibleProductLogPower ) )
       {
         returnValue
-        = ( 4.0 * tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) );
+        = ( tauMaxEnergy * ( log( tauMaxEnergy ) - 1.0 ) );
         if( !isInsideRange )
         {
           returnValue
-          += ( 4.0 * tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) );
+          += ( tauMinEnergy * ( 1.0 - log( tauMinEnergy ) ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1707,17 +1699,17 @@ namespace LHC_FASER
                ( 0 == visibleProductLogPower ) )
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
-        returnValue = ( ( -2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy
-                               * ( 3.0 + 2.0 * logOfTauMaxEnergy ) ) / 3.0 );
+        returnValue = ( ( -logOfTauMaxEnergy * logOfTauMaxEnergy
+                          * ( 1.5 + logOfTauMaxEnergy ) ) / 3.0 );
         if( isInsideRange )
         {
-          returnValue += 4.0;
+          returnValue += 1.0;
         }
         else
         {
           double logOfTauMinEnergy( log( tauMinEnergy ) );
-          returnValue += ( ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy
-                                 * ( 3.0 + 2.0 * logOfTauMinEnergy ) ) / 3.0 );
+          returnValue += ( ( logOfTauMinEnergy * logOfTauMinEnergy
+                             * ( 1.5 + logOfTauMinEnergy ) ) / 3.0 );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1725,15 +1717,15 @@ namespace LHC_FASER
                ( 1 == visibleProductLogPower ) )
       {
         double logOfTauMaxEnergy( log( tauMaxEnergy ) );
-        returnValue = ( 2.0 * logOfTauMaxEnergy * logOfTauMaxEnergy );
+        returnValue = ( 0.5 * logOfTauMaxEnergy * logOfTauMaxEnergy );
         if( isInsideRange )
         {
-          returnValue -= 4.0;
+          returnValue -= 1.0;
         }
         else
         {
           double logOfTauMinEnergy( log( tauMinEnergy ) );
-          returnValue -= ( 2.0 * logOfTauMinEnergy * logOfTauMinEnergy );
+          returnValue -= ( 0.5 * logOfTauMinEnergy * logOfTauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1742,7 +1734,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = 2.0;
+          returnValue = 0.5;
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
@@ -1751,7 +1743,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = ( -2.0 / 3.0 );
+          returnValue = ( -1 / 6.0 );
         }
       }
     }  // end of if( 1 == tau_energy_power ) && ( 1 == tau_log_power )
@@ -1763,30 +1755,30 @@ namespace LHC_FASER
           &&
           ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( 2.0 * tauMaxEnergy * tauMaxEnergy );
+        returnValue = ( 0.5 * tauMaxEnergy * tauMaxEnergy );
         if( !isInsideRange )
         {
-          returnValue -= ( 2.0 * tauMinEnergy * tauMinEnergy );
+          returnValue -= ( 0.5 * tauMinEnergy * tauMinEnergy );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                &&
                ( 0 == visibleProductLogPower ) )
       {
-        returnValue = ( -4.0 * tauMaxEnergy * log( tauMaxEnergy ) );
+        returnValue = ( -tauMaxEnergy * log( tauMaxEnergy ) );
         if( !isInsideRange )
         {
-          returnValue += ( 4.0 * tauMinEnergy * log( tauMinEnergy ) );
+          returnValue += ( tauMinEnergy * log( tauMinEnergy ) );
         }
       }
       else if( ( 1 == visibleProductEnergyPower )
                 &&
                 ( 1 == visibleProductLogPower ) )
       {
-        returnValue = ( 4.0 * tauMaxEnergy );
+        returnValue = tauMaxEnergy;
         if( !isInsideRange )
         {
-          returnValue -= ( 4.0 * tauMinEnergy );
+          returnValue -= tauMinEnergy;
         }
       }
       else if( ( 2 == visibleProductEnergyPower )
@@ -1795,7 +1787,7 @@ namespace LHC_FASER
       {
         if( isInsideRange )
         {
-          returnValue = -2.0;
+          returnValue = -0.5;
         }
       }
     }  // end of if( 2 == tau_energy_power ) && ( 0 == tau_log_power )
@@ -1813,7 +1805,8 @@ namespace LHC_FASER
   {
     double coefficientChecker;
     lowSegment = new segmentTermSet();
-    lowSegment->setSegmentStart( 0.0 );
+    lowSegment->setSegmentStart(
+                         leptonDistributionExpansionTerm::minimumInputEnergy );
     highSegment = new segmentTermSet();
     for( std::vector< leptonDistributionExpansionTerm* >::const_iterator
          termIterator( referenceSegment->getTerms()->begin() );
@@ -2033,15 +2026,14 @@ namespace LHC_FASER
                       leptonEnergyDistribution* const given_tau_distribution,
                                tauDecayCoefficient const* const tau_decay ) :
     leptonEnergyDistribution( given_readier,
-                                NULL,
-                                NULL,
-                                NULL,
-                                NULL,
-                                NULL,
-                                NULL ),
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL ),
     tauDistribution( given_tau_distribution )
   {
-
     // debugging:
     /**std::cout
     << std::endl
@@ -2050,18 +2042,17 @@ namespace LHC_FASER
     << tauDistribution << ", " << tauDecay << " )";
     std::cout
     << std::endl;**/
-
-    minimumEnergy = 0.0;
+    minimumEnergy = leptonDistributionExpansionTerm::minimumInputEnergy;
 
     for( std::vector< segmentTermSet* >::iterator
-         segment_iterator = given_tau_distribution->getSegments()->begin();
-         given_tau_distribution->getSegments()->end() > segment_iterator;
-         ++segment_iterator )
+         segmentIterator( given_tau_distribution->getSegments()->begin() );
+         given_tau_distribution->getSegments()->end() > segmentIterator;
+         ++segmentIterator )
       {
 
         tauTriples.push_back( new tauSegmentTriple( &segments,
-                                                       *segment_iterator,
-                                                       tau_decay ) );
+                                                    *segmentIterator,
+                                                    tau_decay ) );
 
       }  // end of loop through segments.
 
