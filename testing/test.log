@@ -150,6 +150,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.00343286 E^0 L^1 returning -0.0863872
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -2.05219
+ = startSumTerm = 2.10573
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.0051493 E^0 L^2 returning -0.329479
 
 debugging:
@@ -165,6 +171,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.00343286 E^0 L^1 returning 2.69405
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -4.76218
+ = startSumTerm = 11.3392
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.0051493 E^0 L^2 returning 21.1807
 
 debugging:
@@ -178,6 +190,12 @@ leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.022407 E^0 L^1
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.00858216 E^0 L^1 returning -0.215968
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -2.05219
+ = startSumTerm = 2.10573
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.0051493 E^0 L^2 returning -0.329479
@@ -199,6 +217,12 @@ leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.0576779 E^0 L^1 
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.00858216 E^0 L^1 returning 6.73512
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -4.76218
+ = startSumTerm = 11.3392
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.0051493 E^0 L^2 returning 21.1807
@@ -243,6 +267,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.0205972 E^0 L^1 returning -0.518323
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -2.05219
+ = startSumTerm = 2.10573
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.0051493 E^0 L^2 returning -0.329479
 
 debugging:
@@ -252,16 +282,40 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.00156741 E^1 L^1 returning -0.514438
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.000202122 E^1 L^2 returning 0.172
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 9.45116e-05 E^1 L^1 returning 0.0310196
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 1.50515e-05 E^1 L^2 returning 0.0128084
 
 debugging:
-leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -5.01715e-06 E^1 L^3 returning -0.0082547
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
+logarithmCounter = 3
+predivisorOfPowersOfEnergyPowerPlusOne = -16
+commonSumFactor: -0.666667 * logarithmOfStartEnergy: 2.05219 * startSumTerm: 8.42293
+ = startSumTerm = -11.5236
+
+debugging:
+leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -5.01715e-06 E^1 L^3 returning -0.011147
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -2.36723e-05 E^1 L^1 returning -0.00776947
@@ -283,6 +337,12 @@ leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for 4.10298e-08 E^1 L^1
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for 0.00105969 E^1 L^1 returning 30.5163
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.87737 * startSumTerm: -5.75473
+ = startSumTerm = 16.5585
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for -9.19521e-05 E^1 L^2 returning -11.5049
@@ -321,6 +381,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.0205972 E^0 L^1 returning 16.1643
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -4.76218
+ = startSumTerm = 11.3392
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.0051493 E^0 L^2 returning 21.1807
 
 debugging:
@@ -330,22 +396,46 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.000657573 E^1 L^1 returning 100.085
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -4.99118e-05 E^1 L^2 returning -40.2083
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.000439782 E^1 L^1 returning -66.9362
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -1.50515e-05 E^1 L^2 returning -12.1253
 
 debugging:
-leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 5.01715e-06 E^1 L^3 returning 14.6681
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
+logarithmCounter = 3
+predivisorOfPowersOfEnergyPowerPlusOne = -16
+commonSumFactor: -0.666667 * logarithmOfStartEnergy: 4.76218 * startSumTerm: 45.3567
+ = startSumTerm = -143.998
+
+debugging:
+leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 5.01715e-06 E^1 L^3 returning 21.4294
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 6.83018e-05 E^1 L^1 returning 10.3957
 
 Zn4L_tLp: 0.001 to 267.029
-area = -0.0415564
+area = 1.08193
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 0.001, 7.7849 ) for -0.000208582 E^1 L^1 returning -0.0098106
@@ -381,13 +471,31 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.00116316 E^1 L^1 returning 0.381761
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.000202122 E^1 L^2 returning -0.172
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.000124615 E^1 L^1 returning -0.0408997
 
 debugging:
-leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 5.01715e-06 E^1 L^3 returning 0.0082547
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
+logarithmCounter = 3
+predivisorOfPowersOfEnergyPowerPlusOne = -16
+commonSumFactor: -0.666667 * logarithmOfStartEnergy: 2.05219 * startSumTerm: 8.42293
+ = startSumTerm = -11.5236
+
+debugging:
+leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 5.01715e-06 E^1 L^3 returning 0.011147
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 2.36723e-05 E^1 L^1 returning 0.00776947
@@ -406,6 +514,12 @@ leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for -4.10298e-08 E^1 L^
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for -0.000875784 E^1 L^1 returning -25.2203
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.87737 * startSumTerm: -5.75473
+ = startSumTerm = 16.5585
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for 9.19521e-05 E^1 L^2 returning 11.5049
@@ -447,19 +561,37 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.00055775 E^1 L^1 returning -84.8913
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 4.99118e-05 E^1 L^2 returning 40.2083
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.000469885 E^1 L^1 returning 71.518
 
 debugging:
-leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -5.01715e-06 E^1 L^3 returning -14.6681
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
+logarithmCounter = 3
+predivisorOfPowersOfEnergyPowerPlusOne = -16
+commonSumFactor: -0.666667 * logarithmOfStartEnergy: 4.76218 * startSumTerm: 45.3567
+ = startSumTerm = -143.998
+
+debugging:
+leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -5.01715e-06 E^1 L^3 returning -21.4294
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -6.83018e-05 E^1 L^1 returning -10.3957
 
 Zn4L_tRp: 0.001 to 267.029
-area = 0.0355405
+area = 0.996331
 
 debugging:
 cosinesLimitedByEnergy = false
@@ -610,6 +742,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.00343286 E^0 L^1 returning -0.0863872
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -2.05219
+ = startSumTerm = 2.10573
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.0051493 E^0 L^2 returning -0.329479
 
 debugging:
@@ -625,6 +763,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.00343286 E^0 L^1 returning 2.69405
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -4.76218
+ = startSumTerm = 11.3392
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.0051493 E^0 L^2 returning 21.1807
 
 debugging:
@@ -638,6 +782,12 @@ leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.022407 E^0 L^1
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.00858216 E^0 L^1 returning -0.215968
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -2.05219
+ = startSumTerm = 2.10573
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.0051493 E^0 L^2 returning -0.329479
@@ -659,6 +809,12 @@ leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.0576779 E^0 L^1 
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.00858216 E^0 L^1 returning 6.73512
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -4.76218
+ = startSumTerm = 11.3392
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.0051493 E^0 L^2 returning 21.1807
@@ -703,6 +859,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.0205972 E^0 L^1 returning -0.518323
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -2.05219
+ = startSumTerm = 2.10573
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.0051493 E^0 L^2 returning -0.329479
 
 debugging:
@@ -712,16 +874,40 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.00156741 E^1 L^1 returning -0.514438
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.000202122 E^1 L^2 returning 0.172
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 9.45116e-05 E^1 L^1 returning 0.0310196
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 1.50515e-05 E^1 L^2 returning 0.0128084
 
 debugging:
-leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -5.01715e-06 E^1 L^3 returning -0.0082547
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
+logarithmCounter = 3
+predivisorOfPowersOfEnergyPowerPlusOne = -16
+commonSumFactor: -0.666667 * logarithmOfStartEnergy: 2.05219 * startSumTerm: 8.42293
+ = startSumTerm = -11.5236
+
+debugging:
+leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -5.01715e-06 E^1 L^3 returning -0.011147
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -2.36723e-05 E^1 L^1 returning -0.00776947
@@ -743,6 +929,12 @@ leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for 4.10298e-08 E^1 L^1
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for 0.00105969 E^1 L^1 returning 30.5163
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.87737 * startSumTerm: -5.75473
+ = startSumTerm = 16.5585
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for -9.19521e-05 E^1 L^2 returning -11.5049
@@ -781,6 +973,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.0205972 E^0 L^1 returning 16.1643
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -4.76218
+ = startSumTerm = 11.3392
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.0051493 E^0 L^2 returning 21.1807
 
 debugging:
@@ -790,22 +988,46 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.000657573 E^1 L^1 returning 100.085
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -4.99118e-05 E^1 L^2 returning -40.2083
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.000439782 E^1 L^1 returning -66.9362
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -1.50515e-05 E^1 L^2 returning -12.1253
 
 debugging:
-leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 5.01715e-06 E^1 L^3 returning 14.6681
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
+logarithmCounter = 3
+predivisorOfPowersOfEnergyPowerPlusOne = -16
+commonSumFactor: -0.666667 * logarithmOfStartEnergy: 4.76218 * startSumTerm: 45.3567
+ = startSumTerm = -143.998
+
+debugging:
+leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 5.01715e-06 E^1 L^3 returning 21.4294
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 6.83018e-05 E^1 L^1 returning 10.3957
 
 Zn4R_tLp: 0.001 to 267.029
-area = -0.0415564
+area = 1.08193
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 0.001, 7.7849 ) for -0.000208582 E^1 L^1 returning -0.0098106
@@ -841,13 +1063,31 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.00116316 E^1 L^1 returning 0.381761
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.000202122 E^1 L^2 returning -0.172
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.000124615 E^1 L^1 returning -0.0408997
 
 debugging:
-leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 5.01715e-06 E^1 L^3 returning 0.0082547
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
+logarithmCounter = 3
+predivisorOfPowersOfEnergyPowerPlusOne = -16
+commonSumFactor: -0.666667 * logarithmOfStartEnergy: 2.05219 * startSumTerm: 8.42293
+ = startSumTerm = -11.5236
+
+debugging:
+leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 5.01715e-06 E^1 L^3 returning 0.011147
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 2.36723e-05 E^1 L^1 returning 0.00776947
@@ -866,6 +1106,12 @@ leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for -4.10298e-08 E^1 L^
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for -0.000875784 E^1 L^1 returning -25.2203
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.87737 * startSumTerm: -5.75473
+ = startSumTerm = 16.5585
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for 9.19521e-05 E^1 L^2 returning 11.5049
@@ -907,19 +1153,37 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.00055775 E^1 L^1 returning -84.8913
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 4.99118e-05 E^1 L^2 returning 40.2083
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.000469885 E^1 L^1 returning 71.518
 
 debugging:
-leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -5.01715e-06 E^1 L^3 returning -14.6681
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
+
+debugging:
+logarithmCounter = 3
+predivisorOfPowersOfEnergyPowerPlusOne = -16
+commonSumFactor: -0.666667 * logarithmOfStartEnergy: 4.76218 * startSumTerm: 45.3567
+ = startSumTerm = -143.998
+
+debugging:
+leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -5.01715e-06 E^1 L^3 returning -21.4294
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -6.83018e-05 E^1 L^1 returning -10.3957
 
 Zn4R_tRp: 0.001 to 267.029
-area = 0.0355405
+area = 0.996331
 
 debugging:
 cosinesLimitedByEnergy = false
@@ -1010,6 +1274,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.000194665 E^0 L^1 returning 0.00489871
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -2.05219
+ = startSumTerm = 2.10573
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.000291998 E^0 L^2 returning 0.0186836
 
 debugging:
@@ -1025,6 +1295,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.000194665 E^0 L^1 returning -0.15277
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -4.76218
+ = startSumTerm = 11.3392
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.000291998 E^0 L^2 returning -1.20108
 
 debugging:
@@ -1038,6 +1314,12 @@ leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.00130937 E^0 L
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.000486663 E^0 L^1 returning 0.0122468
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -2.05219
+ = startSumTerm = 2.10573
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.000291998 E^0 L^2 returning 0.0186836
@@ -1059,6 +1341,12 @@ leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.0174027 E^0 L^1 
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.000486663 E^0 L^1 returning -0.381925
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -4.76218
+ = startSumTerm = 11.3392
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.000291998 E^0 L^2 returning -1.20108
@@ -1103,6 +1391,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.00116799 E^0 L^1 returning 0.0293923
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -2.05219
+ = startSumTerm = 2.10573
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.000291998 E^0 L^2 returning 0.0186836
 
 debugging:
@@ -1110,6 +1404,12 @@ leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.000127445 E^1 
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.00128928 E^1 L^1 returning 0.423153
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.000166257 E^1 L^2 returning -0.14148
@@ -1143,6 +1443,12 @@ leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for 4.11881e-06 E^1 L^1
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for 0.00107649 E^1 L^1 returning 31.0003
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.87737 * startSumTerm: -5.75473
+ = startSumTerm = 16.5585
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for -9.34104e-05 E^1 L^2 returning -11.6874
@@ -1181,6 +1487,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.00116799 E^0 L^1 returning -0.916619
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 1
+commonSumFactor: -0.5 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -4.76218
+ = startSumTerm = 11.3392
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.000291998 E^0 L^2 returning -1.20108
 
 debugging:
@@ -1188,6 +1500,12 @@ leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -1.44066e-05 E^1 L^
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -0.000959731 E^1 L^1 returning -146.074
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 7.28464e-05 E^1 L^2 returning 58.6841
@@ -1241,6 +1559,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for -0.000956763 E^1 L^1 returning -0.314019
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.05219 * startSumTerm: -4.10437
+ = startSumTerm = 8.42293
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 7.7849, 17.7674 ) for 0.000166257 E^1 L^2 returning 0.14148
 
 debugging:
@@ -1266,6 +1590,12 @@ leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for -4.11881e-06 E^1 L^
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for -0.000889673 E^1 L^1 returning -25.6203
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 2.87737 * startSumTerm: -5.75473
+ = startSumTerm = 16.5585
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 17.7674, 117 ) for 9.34104e-05 E^1 L^2 returning 11.6874
@@ -1305,6 +1635,12 @@ leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 1.44066e-05 E^1 L^1
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for 0.000814038 E^1 L^1 returning 123.899
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 4.76218 * startSumTerm: -9.52436
+ = startSumTerm = 45.3567
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 117, 267.029 ) for -7.28464e-05 E^1 L^2 returning -58.6841
@@ -1358,6 +1694,12 @@ debugging:
 leptonDistributionExpansionTerm::getArea( 21.2661, 75.9766 ) for 0.0189914 E^1 L^1 returning 198.978
 
 debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 3.05711 * startSumTerm: -6.11423
+ = startSumTerm = 18.6919
+
+debugging:
 leptonDistributionExpansionTerm::getArea( 21.2661, 75.9766 ) for -0.00178142 E^1 L^2 returning -73.9886
 
 debugging:
@@ -1380,6 +1722,12 @@ leptonDistributionExpansionTerm::getArea( 21.2661, 75.9766 ) for -0.00077916 E^1
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 21.2661, 75.9766 ) for -0.0154286 E^1 L^1 returning -161.649
+
+debugging:
+logarithmCounter = 2
+predivisorOfPowersOfEnergyPowerPlusOne = 8
+commonSumFactor: -1 * logarithmOfStartEnergy: 3.05711 * startSumTerm: -6.11423
+ = startSumTerm = 18.6919
 
 debugging:
 leptonDistributionExpansionTerm::getArea( 21.2661, 75.9766 ) for 0.00178142 E^1 L^2 returning 73.9886

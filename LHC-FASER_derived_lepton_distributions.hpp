@@ -67,37 +67,29 @@ namespace LHC_FASER
    * which is the "near" lepton in a cascade decay, summing over charges, which
    * averages over the chirality effects & thus produces a flat distribution.
    */
-  class flat_near_muon_plus_antimuon : public leptonEnergyDistribution
+  class flatNearMuonPlusAntimuon : public leptonEnergyDistribution
   {
-
   public:
-
-    flat_near_muon_plus_antimuon( readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    flatNearMuonPlusAntimuon( readierForNewPoint* const readierPointer,
+                              CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-             CppSLHA::particle_property_set const* const given_third_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                    CppSLHA::particle_property_set const* const thirdParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~flat_near_muon_plus_antimuon()
+    ~flatNearMuonPlusAntimuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
-    segmentTermSet MINtoMAX_segment;
-    // the terms between minimum_energy & maximum_energy.
-
-    leptonDistributionExpansionTerm* const MINtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-
+    segmentTermSet minToMaxSegment;
+    // the terms between minimumEnergy & maximumEnergy.
+    leptonDistributionExpansionTerm* const minToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -107,39 +99,31 @@ namespace LHC_FASER
    * practice, this is from a cascade decay of a squark to a chargino & then
    * the chargino to a light lepton plus sneutrino.
    */
-  class same_chirality_near_muon : public leptonEnergyDistribution
+  class sameChiralityNearMuon : public leptonEnergyDistribution
   {
-
   public:
-
-    same_chirality_near_muon( readierForNewPoint* const given_readier,
-                              CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    sameChiralityNearMuon( readierForNewPoint* const readierPointer,
+                           CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-             CppSLHA::particle_property_set const* const given_third_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                    CppSLHA::particle_property_set const* const thirdParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~same_chirality_near_muon()
+    ~sameChiralityNearMuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
-    segmentTermSet MINtoMAX_segment;
-    // the terms between minimum_energy & maximum_energy.
-
-    leptonDistributionExpansionTerm* const MINtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoMAX_lin;
-    // the term linear in input_energy in the above segment.
-
+    segmentTermSet minToMaxSegment;
+    // the terms between minimumEnergy & maximumEnergy.
+    leptonDistributionExpansionTerm* const minToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToMaxLin;
+    // the term linear in inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -149,40 +133,31 @@ namespace LHC_FASER
    * in practice, this is from a cascade decay of a squark to a chargino & then
    * the chargino to a light lepton plus sneutrino.
    */
-  class opposite_chirality_near_muon : public leptonEnergyDistribution
+  class oppositeChiralityNearMuon : public leptonEnergyDistribution
   {
-
-
   public:
-
-    opposite_chirality_near_muon( readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    oppositeChiralityNearMuon( readierForNewPoint* const readierPointer,
+                               CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-             CppSLHA::particle_property_set const* const given_third_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                    CppSLHA::particle_property_set const* const thirdParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~opposite_chirality_near_muon()
+    ~oppositeChiralityNearMuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
-    segmentTermSet MINtoMAX_segment;
-    // the terms between minimum_energy & maximum_energy.
-
-    leptonDistributionExpansionTerm* const MINtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoMAX_lin;
-    // the term linear in input_energy in the above segment.
-
+    segmentTermSet minToMaxSegment;
+    // the terms between minimumEnergy & maximumEnergy.
+    leptonDistributionExpansionTerm* const minToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToMaxLin;
+    // the term linear in inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -190,60 +165,47 @@ namespace LHC_FASER
    * averages over the chirality effects & thus produces a relatively simple
    * distribution.
    */
-  class flat_far_muon_plus_antimuon : public leptonEnergyDistribution
+  class flatFarMuonPlusAntimuon : public leptonEnergyDistribution
   {
-
   public:
-
-    flat_far_muon_plus_antimuon( readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    flatFarMuonPlusAntimuon( readierForNewPoint* const readierPointer,
+                             CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-            CppSLHA::particle_property_set const* const given_fourth_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                   CppSLHA::particle_property_set const* const fourthParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~flat_far_muon_plus_antimuon()
+    ~flatFarMuonPlusAntimuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
     double Elk;
     double Ehk;
 
+    segmentTermSet minToLkSegment;
+    // the terms between minimumEnergy & Elk.
+    leptonDistributionExpansionTerm* const minToLkConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
 
-    segmentTermSet MINtoLK_segment;
-    // the terms between minimum_energy & Elk.
-
-    leptonDistributionExpansionTerm* const MINtoLK_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-
-
-    segmentTermSet LKtoHK_segment;
+    segmentTermSet lkToHkSegment;
     // the terms between Elk & Ehk.
+    leptonDistributionExpansionTerm* const lkToHkConst;
+    // the term constant with respect to inputEnergy in the above segment.
 
-    leptonDistributionExpansionTerm* const LKtoHK_const;
-    // the term constant with respect to input_energy in the above segment.
-
-
-    segmentTermSet HKtoMAX_segment;
-    // the terms between Ehk & maximum_energy.
-
-    leptonDistributionExpansionTerm* const HKtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-
+    segmentTermSet hkToMaxSegment;
+    // the terms between Ehk & maximumEnergy.
+    leptonDistributionExpansionTerm* const hkToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -254,73 +216,60 @@ namespace LHC_FASER
    * the chargino to a neutrino plus slepton which then decays to the light
    * lepton.
    */
-  class same_chirality_far_muon : public leptonEnergyDistribution
+  class sameChiralityFarMuon : public leptonEnergyDistribution
   {
-
   public:
-
-    same_chirality_far_muon( readierForNewPoint* const given_readier,
-                             CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    sameChiralityFarMuon( readierForNewPoint* const readierPointer,
+                          CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-            CppSLHA::particle_property_set const* const given_fourth_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                   CppSLHA::particle_property_set const* const fourthParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~same_chirality_far_muon()
+    ~sameChiralityFarMuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
     double Elk;
     double Ehk;
 
-
-    segmentTermSet MINtoLK_segment;
-    // the terms between minimum_energy & Elk.
-
-    leptonDistributionExpansionTerm* const MINtoLK_inv;
-    // the term linear in the inverse power of input_energy in the above
+    segmentTermSet minToLkSegment;
+    // the terms between minimumEnergy & Elk.
+    leptonDistributionExpansionTerm* const minToLkInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const MINtoLK_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_lin;
-    // the term linear in input_energy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLin;
+    // the term linear in inputEnergy in the above segment.
 
-
-    segmentTermSet LKtoHK_segment;
+    segmentTermSet lkToHkSegment;
     // the terms between Elk & Ehk.
-
-    leptonDistributionExpansionTerm* const LKtoHK_inv;
-    // the term linear in the inverse power of input_energy in the above
+    leptonDistributionExpansionTerm* const lkToHkInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const LKtoHK_const;
-    // the term constant with respect to input_energy in the above segment.
+    leptonDistributionExpansionTerm* const lkToHkConst;
+    // the term constant with respect to inputEnergy in the above segment.
 
-
-    segmentTermSet HKtoMAX_segment;
-    // the terms between Ehk & maximum_energy.
-
-    leptonDistributionExpansionTerm* const HKtoMAX_inv;
-    // the term linear in the inverse power of input_energy in the above
+    segmentTermSet hkToMaxSegment;
+    // the terms between Ehk & maximumEnergy.
+    leptonDistributionExpansionTerm* const hkToMaxInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_lin;
-    // the term linear in input_energy in the above segment.
-
+    leptonDistributionExpansionTerm* const hkToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLin;
+    // the term linear in inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -331,73 +280,61 @@ namespace LHC_FASER
    * the chargino to a neutrino plus slepton which then decays to the light
    * lepton.
    */
-  class opposite_chirality_far_muon : public leptonEnergyDistribution
+  class oppositeChiralityFarMuon : public leptonEnergyDistribution
   {
-
   public:
-
-    opposite_chirality_far_muon( readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    oppositeChiralityFarMuon( readierForNewPoint* const readierPointer,
+                              CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-            CppSLHA::particle_property_set const* const given_fourth_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                   CppSLHA::particle_property_set const* const fourthParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~opposite_chirality_far_muon()
+    ~oppositeChiralityFarMuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
 
   protected:
-
     double Elk;
     double Ehk;
 
-
-    segmentTermSet MINtoLK_segment;
-    // the terms between minimum_energy & Elk.
-
-    leptonDistributionExpansionTerm* const MINtoLK_inv;
-    // the term linear in the inverse power of input_energy in the above
+    segmentTermSet minToLkSegment;
+    // the terms between minimumEnergy & Elk.
+    leptonDistributionExpansionTerm* const minToLkInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const MINtoLK_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_lin;
-    // the term linear in input_energy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLin;
+    // the term linear in inputEnergy in the above segment.
 
-
-    segmentTermSet LKtoHK_segment;
+    segmentTermSet lkToHkSegment;
     // the terms between Elk & Ehk.
-
-    leptonDistributionExpansionTerm* const LKtoHK_inv;
-    // the term linear in the inverse power of input_energy in the above
+    leptonDistributionExpansionTerm* const lkToHkInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const LKtoHK_const;
-    // the term constant with respect to input_energy in the above segment.
+    leptonDistributionExpansionTerm* const lkToHkConst;
+    // the term constant with respect to inputEnergy in the above segment.
 
-
-    segmentTermSet HKtoMAX_segment;
-    // the terms between Ehk & maximum_energy.
-
-    leptonDistributionExpansionTerm* const HKtoMAX_inv;
-    // the term linear in the inverse power of input_energy in the above
+    segmentTermSet hkToMaxSegment;
+    // the terms between Ehk & maximumEnergy.
+    leptonDistributionExpansionTerm* const hkToMaxInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_lin;
-    // the term linear in input_energy in the above segment.
-
+    leptonDistributionExpansionTerm* const hkToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLin;
+    // the term linear in inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   /* the negatively- & positively-charged leptons from neutral EWSB scalar
@@ -410,60 +347,47 @@ namespace LHC_FASER
    * pair plus a lightest neutralino, summing over charges, which averages over
    * the chirality effects & thus produces a relatively simple distribution.
    */
-  class Higgs_muon_plus_antimuon : public leptonEnergyDistribution
+  class HiggsMuonPlusAntimuon : public leptonEnergyDistribution
   {
-
   public:
-
-      Higgs_muon_plus_antimuon( readierForNewPoint* const given_readier,
-                                CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+      HiggsMuonPlusAntimuon( readierForNewPoint* const readierPointer,
+                             CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-            CppSLHA::particle_property_set const* const given_fourth_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                   CppSLHA::particle_property_set const* const fourthParticle )
       /* code after the classes in this .hpp file, or in the .cpp file. */;
-
       virtual
-      ~Higgs_muon_plus_antimuon()
+      ~HiggsMuonPlusAntimuon()
       /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
       double Elk;
       double Ehk;
 
+      segmentTermSet minToLkSegment;
+      // the terms between minimumEnergy & Elk.
+      leptonDistributionExpansionTerm* const minToLkConst;
+      // the term constant with respect to inputEnergy in the above segment.
+      leptonDistributionExpansionTerm* const minToLkLog;
+      // the term linear in the logarithm of inputEnergy in the above segment.
 
-      segmentTermSet MINtoLK_segment;
-      // the terms between minimum_energy & Elk.
-
-      leptonDistributionExpansionTerm* const MINtoLK_const;
-      // the term constant with respect to input_energy in the above segment.
-      leptonDistributionExpansionTerm* const MINtoLK_log;
-      // the term linear in the logarithm of input_energy in the above segment.
-
-
-      segmentTermSet LKtoHK_segment;
+      segmentTermSet lkToHkSegment;
       // the terms between Elk & Ehk.
+      leptonDistributionExpansionTerm* const lkToHkConst;
+      // the term constant with respect to inputEnergy in the above segment.
 
-      leptonDistributionExpansionTerm* const LKtoHK_const;
-      // the term constant with respect to input_energy in the above segment.
-
-
-      segmentTermSet HKtoMAX_segment;
-      // the terms between Ehk & maximum_energy.
-
-      leptonDistributionExpansionTerm* const HKtoMAX_const;
-      // the term constant with respect to input_energy in the above segment.
-      leptonDistributionExpansionTerm* const HKtoMAX_log;
-      // the term linear in the logarithm of input_energy in the above segment.
-
+      segmentTermSet hkToMaxSegment;
+      // the terms between Ehk & maximumEnergy.
+      leptonDistributionExpansionTerm* const hkToMaxConst;
+      // the term constant with respect to inputEnergy in the above segment.
+      leptonDistributionExpansionTerm* const hkToMaxLog;
+      // the term linear in the logarithm of inputEnergy in the above segment.
 
       void
       calculateCoefficients()
       /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   /* specific lepton or antilepton versions of the Z-channel distribution could
@@ -477,7 +401,7 @@ namespace LHC_FASER
   class zHandedMuon : public leptonEnergyDistribution
   {
   public:
-    zHandedMuon( readierForNewPoint* const readier,
+    zHandedMuon( readierForNewPoint* const readierPointer,
                  CppSLHA::CppSLHA0 const* const spectrumData,
                  CppSLHA::particle_property_set const* const firstParticle,
                  effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -569,49 +493,48 @@ namespace LHC_FASER
     double currentHkToMaxLinLogCoefficient;
     double currentHkToMaxSqCoefficient;
 
-    segmentTermSet MINtoLK_segment;
-    // the terms between minimum_energy & Elk.
-    leptonDistributionExpansionTerm* const MINtoLK_inv;
-    // the term linear in the inverse power of input_energy in the above
+    segmentTermSet minToLkSegment;
+    // the terms between minimumEnergy & Elk.
+    leptonDistributionExpansionTerm* const minToLkInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const MINtoLK_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_lin;
-    // the term linear in input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_linlog;
-    // the term linear in input_energy & in the logarithm of input_energy in
+    leptonDistributionExpansionTerm* const minToLkConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLin;
+    // the term linear in inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLinlog;
+    // the term linear in inputEnergy & in the logarithm of inputEnergy in
     // the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_sq;
-    // the term quadratic in input_energy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkSq;
+    // the term quadratic in inputEnergy in the above segment.
 
-    segmentTermSet LKtoHK_segment;
+    segmentTermSet lkToHkSegment;
     // the terms between Elk & Ehk.
-    leptonDistributionExpansionTerm* const LKtoHK_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const LKtoHK_lin;
-    // the term linear in input_energy in the above
-    // segment.
-    leptonDistributionExpansionTerm* const LKtoHK_sq;
-    // the term quadratic in input_energy in the above segment.
+    leptonDistributionExpansionTerm* const lkToHkConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const lkToHkLin;
+    // the term linear in inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const lkToHkSq;
+    // the term quadratic in inputEnergy in the above segment.
 
-    segmentTermSet HKtoMAX_segment;
-    // the terms between Ehk & maximum_energy.
-    leptonDistributionExpansionTerm* const HKtoMAX_inv;
-    // the term linear in the inverse power of input_energy in the above
+    segmentTermSet hkToMaxSegment;
+    // the terms between Ehk & maximumEnergy.
+    leptonDistributionExpansionTerm* const hkToMaxInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_lin;
-    // the term linear in input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_linlog;
-    // the term linear in input_energy & in the logarithm of input_energy in
+    leptonDistributionExpansionTerm* const hkToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLin;
+    // the term linear in inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLinlog;
+    // the term linear in inputEnergy & in the logarithm of inputEnergy in
     // the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_sq;
-    // the term quadratic in input_energy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxSq;
+    // the term quadratic in inputEnergy in the above segment.
 
     void
     calculateCoefficients()
@@ -627,26 +550,21 @@ namespace LHC_FASER
    */
   class W_minus_handed_muon : public leptonEnergyDistribution
   {
-
   public:
-
-    W_minus_handed_muon( readierForNewPoint* const given_readier,
-                         CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    W_minus_handed_muon( readierForNewPoint* const readierPointer,
+                         CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
                          effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-            CppSLHA::particle_property_set const* const given_fourth_particle,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+            CppSLHA::particle_property_set const* const fourthParticle,
                          bool const given_jet_is_left_handed )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
     ~W_minus_handed_muon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   protected:
-
     double Elk;
     double Ehk;
     bool const jet_is_left_handed;
@@ -726,98 +644,85 @@ namespace LHC_FASER
     double EightmCXElMinmQsq;
     // 8 * mC * mX * ElMin * mQ^2.
     double lnEmin;
-    // ln( minimum_energy ).
+    // ln( minimumEnergy ).
     double lnElk;
     // ln( Elk ).
     double lnEhk;
     // ln( Ehk ).
     double lnEmax;
-    // ln( maximum_energy ).
-
+    // ln( maximumEnergy ).
 
     double current_term_coefficient;
     // this is for holding the coefficientValue being calculated.
 
-    segmentTermSet MINtoLK_segment;
-    // the terms between minimum_energy & Elk.
-
-    leptonDistributionExpansionTerm* const MINtoLK_inv;
-    // the term linear in the inverse power of input_energy in the above
+    segmentTermSet minToLkSegment;
+    // the terms between minimumEnergy & Elk.
+    leptonDistributionExpansionTerm* const minToLkInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const MINtoLK_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_lin;
-    // the term linear in input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_linlog;
-    // the term linear in input_energy & in the logarithm of input_energy in
+    leptonDistributionExpansionTerm* const minToLkConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLin;
+    // the term linear in inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkLinlog;
+    // the term linear in inputEnergy & in the logarithm of inputEnergy in
     // the above segment.
-    leptonDistributionExpansionTerm* const MINtoLK_sq;
-    // the term quadratic in input_energy in the above segment.
+    leptonDistributionExpansionTerm* const minToLkSq;
+    // the term quadratic in inputEnergy in the above segment.
 
-
-    segmentTermSet LKtoHK_segment;
+    segmentTermSet lkToHkSegment;
     // the terms between Elk & Ehk.
-
-    leptonDistributionExpansionTerm* const LKtoHK_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const LKtoHK_lin;
-    // the term linear in input_energy in the above
+    leptonDistributionExpansionTerm* const lkToHkConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const lkToHkLin;
+    // the term linear in inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const LKtoHK_sq;
-    // the term quadratic in input_energy in the above segment.
+    leptonDistributionExpansionTerm* const lkToHkSq;
+    // the term quadratic in inputEnergy in the above segment.
 
-
-    segmentTermSet HKtoMAX_segment;
-    // the terms between Ehk & maximum_energy.
-
-    leptonDistributionExpansionTerm* const HKtoMAX_inv;
-    // the term linear in the inverse power of input_energy in the above
+    segmentTermSet hkToMaxSegment;
+    // the terms between Ehk & maximumEnergy.
+    leptonDistributionExpansionTerm* const hkToMaxInv;
+    // the term linear in the inverse power of inputEnergy in the above
     // segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_log;
-    // the term linear in the logarithm of input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_lin;
-    // the term linear in input_energy in the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_linlog;
-    // the term linear in input_energy & in the logarithm of input_energy in
+    leptonDistributionExpansionTerm* const hkToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLog;
+    // the term linear in the logarithm of inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLin;
+    // the term linear in inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const hkToMaxLinlog;
+    // the term linear in inputEnergy & in the logarithm of inputEnergy in
     // the above segment.
-    leptonDistributionExpansionTerm* const HKtoMAX_sq;
-    // the term quadratic in input_energy in the above segment.
-
+    leptonDistributionExpansionTerm* const hkToMaxSq;
+    // the term quadratic in inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   /* this derived class sets up the energy distribution for a light lepton
    * which is from the decay of an on-shell gauge vector boson from the
    * cascade decay of a squark to a lighter squark.
    */
-  class vector_from_squark_to_muon : public leptonEnergyDistribution
+  class vectorFromSquarkToMuon : public leptonEnergyDistribution
   {
-
   public:
-
-    vector_from_squark_to_muon( readierForNewPoint* const given_readier,
-                                CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    vectorFromSquarkToMuon( readierForNewPoint* const readierPointer,
+                            CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-             CppSLHA::particle_property_set const* const given_third_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+             CppSLHA::particle_property_set const* const thirdParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~vector_from_squark_to_muon()
+    ~vectorFromSquarkToMuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
-
     // these are for ease of calculating the coefficients (referring to the
     // decaying squark as Qh & the product squark as Ql):
     double mQhSq;
@@ -833,78 +738,62 @@ namespace LHC_FASER
     // the beta factor of the boost from the Qh rest frame to the vector boson
     // rest frame.
     double energyDifference;
-    // maximum_energy - minimum_energy
+    // maximumEnergy - minimumEnergy
 
-    segmentTermSet MINtoMAX_segment;
-    // the terms between minimum_energy & maximum_energy.
-
-    leptonDistributionExpansionTerm* const MINtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoMAX_lin;
-    // the term linear in input_energy in the above segment.
-    leptonDistributionExpansionTerm* const MINtoMAX_sq;
-    // the term quadratic in input_energy in the above segment.
-
+    segmentTermSet minToMaxSegment;
+    // the terms between minimumEnergy & maximumEnergy.
+    leptonDistributionExpansionTerm* const minToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToMaxLin;
+    // the term linear in inputEnergy in the above segment.
+    leptonDistributionExpansionTerm* const minToMaxSq;
+    // the term quadratic in inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   // averaging over both jets from the Z boson produces the same distribution
   // as directly-produced light leptons.
-  class Z_direct_jet : public zHandedMuon
+  class zDirectJet : public zHandedMuon
   {
-
   public:
-
-    Z_direct_jet( readierForNewPoint* const given_readier,
-                  CppSLHA::CppSLHA0 const* const given_spectrum,
-            CppSLHA::particle_property_set const* const given_first_particle,
-                  effectiveSquarkMassHolder* const effectiveSquarkMass,
-            CppSLHA::particle_property_set const* const given_second_particle,
-            CppSLHA::particle_property_set const* const given_third_particle,
-            CppSLHA::particle_property_set const* const given_fourth_particle )
+    zDirectJet( readierForNewPoint* const readierPointer,
+                CppSLHA::CppSLHA0 const* const spectrumData,
+                CppSLHA::particle_property_set const* const firstParticle,
+                effectiveSquarkMassHolder* const effectiveSquarkMass,
+                CppSLHA::particle_property_set const* const secondParticle,
+                CppSLHA::particle_property_set const* const thirdParticle,
+                CppSLHA::particle_property_set const* const fourthParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~Z_direct_jet()
+    ~zDirectJet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   //protected:
-
     // nothing.
-
   };
 
   // averaging over both jets from the W boson produces the same distribution
   // which Z bosons produce.
-  class W_minus_direct_jet : public zHandedMuon
-
+  class wMinusDirectJet : public zHandedMuon
   {
-
   public:
-
-    W_minus_direct_jet( readierForNewPoint* const given_readier,
-                        CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
-                        effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-            CppSLHA::particle_property_set const* const given_fourth_particle )
+    wMinusDirectJet( readierForNewPoint* const readierPointer,
+                     CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
+                     effectiveSquarkMassHolder* const effectiveSquarkMass,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                   CppSLHA::particle_property_set const* const fourthParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~W_minus_direct_jet()
+    ~wMinusDirectJet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     //protected:
-
       // nothing.
-
   };
 
 
@@ -931,29 +820,23 @@ namespace LHC_FASER
    * boosted more or less compared to the neutral Higgs case, & thus the
    * muon distribution is different.
    */
-  class negatively_charged_Higgs_muon : public Higgs_muon_plus_antimuon
+  class negativelyChargedHiggsMuon : public HiggsMuonPlusAntimuon
   {
-
   public:
-
-    negatively_charged_Higgs_muon( readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    negativelyChargedHiggsMuon( readierForNewPoint* const readierPointer,
+                                CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                   CppSLHA::particle_property_set const* const fourthParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~negatively_charged_Higgs_muon()
+    ~negativelyChargedHiggsMuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     //protected:
-
       // nothing.
-
   };
 
   /* placeholder of neutral Higgs distribution. it's different, because the
@@ -963,29 +846,23 @@ namespace LHC_FASER
    * boosted more or less compared to the neutral Higgs case, & thus the
    * jet distribution is different.
    */
-  class negatively_charged_Higgs_jet : public Higgs_muon_plus_antimuon
+  class negativelyChargedHiggsJet : public HiggsMuonPlusAntimuon
   {
-
   public:
-
-    negatively_charged_Higgs_jet( readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    negativelyChargedHiggsJet( readierForNewPoint* const readierPointer,
+                               CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                   CppSLHA::particle_property_set const* const fourthParticle )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~negatively_charged_Higgs_jet()
+    ~negativelyChargedHiggsJet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
     //protected:
-
       // nothing.
-
   };
 
 
@@ -999,42 +876,34 @@ namespace LHC_FASER
    * currently this is a placeholder guess of a flat distribution from 0.0 GeV
    * to the neutralino mass difference.
    */
-  class neutralino_three_body_decay : public leptonEnergyDistribution
+  class neutralinoThreeBodyDecay : public leptonEnergyDistribution
   {
-
   public:
-
-    neutralino_three_body_decay( readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    neutralinoThreeBodyDecay( readierForNewPoint* const readierPointer,
+                              CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-               CppSLHA::particle_property_set const* const given_left_sfermion,
-             CppSLHA::particle_property_set const* const given_right_sfermion )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                      CppSLHA::particle_property_set const* const leftSfermion,
+                    CppSLHA::particle_property_set const* const rightSfermion )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~neutralino_three_body_decay()
+    ~neutralinoThreeBodyDecay()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
 
   protected:
+    CppSLHA::particle_property_set const* const leftSfermion;
+    CppSLHA::particle_property_set const* const rightSfermion;
 
-    CppSLHA::particle_property_set const* const left_sfermion;
-    CppSLHA::particle_property_set const* const right_sfermion;
-
-    segmentTermSet MINtoMAX_segment;
-    // the terms between minimum_energy & maximum_energy.
-
-    leptonDistributionExpansionTerm* const MINtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-
+    segmentTermSet minToMaxSegment;
+    // the terms between minimumEnergy & maximumEnergy.
+    leptonDistributionExpansionTerm* const minToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
   /* this needs to know the 2 sfermions which appear off-shell in the process.
@@ -1046,46 +915,38 @@ namespace LHC_FASER
    * currently this is a placeholder guess of a flat distribution from 0.0 GeV
    * to the mass difference between the chargino & the neutralino.
    */
-  class chargino_three_body_decay : public leptonEnergyDistribution
+  class charginoThreeBodyDecay : public leptonEnergyDistribution
   {
-
   public:
-
-    chargino_three_body_decay( readierForNewPoint* const given_readier,
-                               CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+    charginoThreeBodyDecay( readierForNewPoint* const readierPointer,
+                            CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
              CppSLHA::particle_property_set const* const leftUpIsospinSfermion,
             CppSLHA::particle_property_set const* const rightUpIsospinSfermion,
            CppSLHA::particle_property_set const* const leftDownIsospinSfermion,
          CppSLHA::particle_property_set const* const rightDownIsospinSfermion )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     virtual
-    ~chargino_three_body_decay()
+    ~charginoThreeBodyDecay()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-
   protected:
-
     CppSLHA::particle_property_set const* const leftUpIsospinSfermion;
     CppSLHA::particle_property_set const* const rightUpIsospinSfermion;
     CppSLHA::particle_property_set const* const leftDownIsospinSfermion;
     CppSLHA::particle_property_set const* const rightDownIsospinSfermion;
 
-    segmentTermSet MINtoMAX_segment;
-    // the terms between minimum_energy & maximum_energy.
-
-    leptonDistributionExpansionTerm* const MINtoMAX_const;
-    // the term constant with respect to input_energy in the above segment.
-
+    segmentTermSet minToMaxSegment;
+    // the terms between minimumEnergy & maximumEnergy.
+    leptonDistributionExpansionTerm* const minToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
 
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
   };
 
 
@@ -1094,7 +955,93 @@ namespace LHC_FASER
 
   // inline functions:
 
-  // none.
+
+  inline void
+  flatNearMuonPlusAntimuon::calculateCoefficients()
+  {
+    productionFrameEnergy
+    = ( ( ( secondMass * secondMass ) - ( thirdMass * thirdMass ) )
+        / ( 2.0 * secondMass ) );
+    minimumEnergy = ( ( secondMass / firstMass ) * productionFrameEnergy );
+    maximumEnergy = ( ( firstMass / secondMass ) * productionFrameEnergy );
+
+    // now we set up the coefficients of various terms:
+    // actually, it just stays constant at 1.0.
+
+    // MIN to MAX segment:
+    minToMaxSegment.setSegmentRange( minimumEnergy,
+                                     maximumEnergy );
+  }
+
+
+
+  inline void
+  sameChiralityNearMuon::calculateCoefficients()
+  {
+    productionFrameEnergy
+    = ( ( ( secondMass * secondMass ) - ( thirdMass * thirdMass ) )
+        / ( 2.0 * secondMass ) );
+    minimumEnergy
+    = ( ( secondMass / firstMass ) * productionFrameEnergy );
+    maximumEnergy
+    = ( ( firstMass / secondMass ) * productionFrameEnergy );
+
+    // now we set up the coefficients of various terms:
+
+    // MIN to MAX segment:
+    minToMaxSegment.setSegmentRange( minimumEnergy,
+                                     maximumEnergy );
+    minToMaxConst->setCoefficient( -minimumEnergy );
+    minToMaxLin->setCoefficient( 1.0 );
+  }
+
+
+
+  inline void
+  oppositeChiralityNearMuon::calculateCoefficients()
+  {
+    productionFrameEnergy
+    = ( ( ( secondMass * secondMass ) - ( thirdMass * thirdMass ) )
+        / ( 2.0 * secondMass ) );
+    minimumEnergy
+    = ( ( secondMass / firstMass ) * productionFrameEnergy );
+    maximumEnergy
+    = ( ( firstMass / secondMass ) * productionFrameEnergy );
+
+    // now we set up the coefficients of various terms:
+
+    // MIN to MAX segment:
+    minToMaxSegment.setSegmentRange( minimumEnergy,
+                                     maximumEnergy );
+    minToMaxConst->setCoefficient( maximumEnergy );
+    minToMaxLin->setCoefficient( -1.0 );
+  }
+
+
+
+  inline void
+  vectorFromSquarkToMuon::calculateCoefficients()
+  {
+    mQhSq = ( firstMass * firstMass );
+    mQlSq = ( secondMass * secondMass );
+    mVSq = ( thirdMass * thirdMass );
+    gammaV = ( ( mQhSq - mQlSq + mVSq ) / ( 2.0 * firstMass * thirdMass ) );
+    betaV = sqrt( ( 1.0 - ( 1.0 / ( gammaV * gammaV ) ) ) );
+    productionFrameEnergy = ( 0.5 * thirdMass );
+    minimumEnergy = ( gammaV * ( 1.0 - betaV ) * productionFrameEnergy );
+    maximumEnergy = ( gammaV * ( 1.0 + betaV ) * productionFrameEnergy );
+    energyDifference = ( maximumEnergy - minimumEnergy );
+
+    // now we set up the coefficients of various terms:
+    // MIN to MAX segment:
+    minToMaxSegment.setSegmentRange( minimumEnergy,
+                                      maximumEnergy );
+    minToMaxConst->setCoefficient( -minimumEnergy * maximumEnergy );
+    minToMaxLin->setCoefficient( minimumEnergy + maximumEnergy );
+    minToMaxSq->setCoefficient( -1.0 );
+    //normalization
+    //= ( ( energyDifference * energyDifference * energyDifference ) / 6.0 );
+  }
 
 }  // end of LHC_FASER namespace.
 

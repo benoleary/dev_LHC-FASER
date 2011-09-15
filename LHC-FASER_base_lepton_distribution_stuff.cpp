@@ -225,35 +225,49 @@ namespace LHC_FASER
              powerOfLogarithm >= logarithmCounter;
              ++logarithmCounter )
         {
-          logPowerFactorial *= ( logPowerFactorial + 1 );
+          logPowerFactorial *= logarithmCounter;
           predivisorOfPowersOfEnergyPowerPlusOne *= -energyPowerPlusOne;
-
           commonSumFactor
-          = ( minusEnergyPowerMinusOne / (double)powerOfLogarithm );
+          = ( minusEnergyPowerMinusOne / (double)logarithmCounter );
+
+          // debugging:
+          /**std::cout << std::endl << "debugging:"
+          << std::endl
+          << "logarithmCounter = " << logarithmCounter
+          << std::endl
+          << "predivisorOfPowersOfEnergyPowerPlusOne = "
+          << predivisorOfPowersOfEnergyPowerPlusOne
+          << std::endl
+          << "commonSumFactor: " << commonSumFactor
+          << " * logarithmOfStartEnergy: " << logarithmOfStartEnergy
+          << " * startSumTerm: " << startSumTerm;
+          std::cout << std::endl;**/
+
           startSumTerm *= ( logarithmOfStartEnergy * commonSumFactor );
           startSum += startSumTerm;
           endSumTerm *= ( logarithmOfEndEnergy * commonSumFactor );
           endSum += endSumTerm;
-        }
-        integralToStart
-        *= ( ( (double)logPowerFactorial
-               / (double)predivisorOfPowersOfEnergyPowerPlusOne )
-             * startSum );
-        integralToEnd
-        *= ( ( (double)logPowerFactorial
-               / (double)predivisorOfPowersOfEnergyPowerPlusOne )
-             * endSum );
 
-        returnValue = ( integralToEnd - integralToStart );
+          // debugging:
+          /**std::cout
+          << " = startSumTerm = " << startSumTerm;
+          std::cout << std::endl;**/
+        }
+        integralToStart *= startSum;
+        integralToEnd *= endSum;
+
+        returnValue
+        = ( ( (double)logPowerFactorial * ( integralToEnd - integralToStart ) )
+            / (double)predivisorOfPowersOfEnergyPowerPlusOne );
       }
     }
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "leptonDistributionExpansionTerm::getArea( " << startEnergy << ", "
     << endEnergy << " ) for " << coefficientValue << " E^" << powerOfEnergy
     << " L^" << powerOfLogarithm << " returning " << returnValue;
-    std::cout << std::endl;/**/
+    std::cout << std::endl;**/
 
     return returnValue;
   }

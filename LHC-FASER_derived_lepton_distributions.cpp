@@ -59,218 +59,129 @@
 
 namespace LHC_FASER
 {
-
-  flat_near_muon_plus_antimuon::flat_near_muon_plus_antimuon(
-                                       readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  flatNearMuonPlusAntimuon::flatNearMuonPlusAntimuon(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-           CppSLHA::particle_property_set const* const given_third_particle ) :
-    leptonEnergyDistribution( given_readier,
-                              given_spectrum,
-                              given_first_particle,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                  CppSLHA::particle_property_set const* const thirdParticle ) :
+    leptonEnergyDistribution( readierPointer,
+                              spectrumData,
+                              firstParticle,
                               effectiveSquarkMass,
-                              given_second_particle,
-                              given_third_particle,
+                              secondParticle,
+                              thirdParticle,
                               NULL ),
-    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
-                                              0,
-                                              NULL,
-                                              1.0 ) )
+    minToMaxConst( minToMaxSegment.addTerm( 0,
+                                            0,
+                                            NULL,
+                                            1.0 ) )
   {
-    segments.push_back( &MINtoMAX_segment );
+    segments.push_back( &minToMaxSegment );
   }
 
-  flat_near_muon_plus_antimuon::~flat_near_muon_plus_antimuon()
+  flatNearMuonPlusAntimuon::~flatNearMuonPlusAntimuon()
   {
     // does nothing.
   }
 
 
-  void
-  flat_near_muon_plus_antimuon::calculateCoefficients()
-  {
-    productionFrameEnergy
-    = ( ( ( secondMass * secondMass ) - ( thirdMass * thirdMass ) )
-        / ( 2.0 * secondMass ) );
-    minimumEnergy = ( ( secondMass / firstMass ) * productionFrameEnergy );
-    maximumEnergy = ( ( firstMass / secondMass ) * productionFrameEnergy );
 
-
-    // now we set up the coefficients of various terms.
-
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: flat_near_muon_plus_antimuon::calculateCoefficients has"
-    << std::endl << "firstMass = " << firstMass
-    << std::endl << "secondMass = " << secondMass
-    << std::endl << "productionFrameEnergy = " << productionFrameEnergy
-    << std::endl << "minimumEnergy = " << minimumEnergy
-    << std::endl << "maximumEnergy = " << maximumEnergy;
-    std::cout << std::endl;**/
-
-
-    // finally we update the sets of terms, segment by segment:
-
-    // MIN to MAX segment:
-    MINtoMAX_segment.setSegmentRange( minimumEnergy,
-                                      maximumEnergy );
-  }
-
-
-
-  same_chirality_near_muon::same_chirality_near_muon(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  sameChiralityNearMuon::sameChiralityNearMuon(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-           CppSLHA::particle_property_set const* const given_third_particle ) :
-    leptonEnergyDistribution( given_readier,
-                                given_spectrum,
-                                given_first_particle,
-                                effectiveSquarkMass,
-                                given_second_particle,
-                                given_third_particle,
-                                NULL ),
-    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
-                                              0 ) ),
-    MINtoMAX_lin( MINtoMAX_segment.addTerm( 1,
-                                            0 ) )
-  {
-    segments.push_back( &MINtoMAX_segment );
-  }
-
-  same_chirality_near_muon::~same_chirality_near_muon()
-  {
-
-    // does nothing.
-
-  }
-
-
-  void
-  same_chirality_near_muon::calculateCoefficients()
-  {
-
-    productionFrameEnergy
-    = ( ( ( secondMass * secondMass ) - ( thirdMass * thirdMass ) )
-        / ( 2.0 * secondMass ) );
-
-    minimumEnergy
-    = ( ( secondMass / firstMass ) * productionFrameEnergy );
-
-    maximumEnergy
-    = ( ( firstMass / secondMass ) * productionFrameEnergy );
-
-
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization:
-
-    // MIN to MAX segment:
-    MINtoMAX_segment.setSegmentRange( minimumEnergy,
-                                        maximumEnergy );
-
-    MINtoMAX_const->setCoefficient( -minimumEnergy );
-
-    MINtoMAX_lin->setCoefficient( 1.0 );
-  }
-
-
-
-  opposite_chirality_near_muon::opposite_chirality_near_muon(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
-                          effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-           CppSLHA::particle_property_set const* const given_third_particle ) :
-    leptonEnergyDistribution( given_readier,
-                                given_spectrum,
-                                given_first_particle,
-                                effectiveSquarkMass,
-                                given_second_particle,
-                                given_third_particle,
-                                NULL ),
-    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
-                                              0 ) ),
-    MINtoMAX_lin( MINtoMAX_segment.addTerm( 1,
-                                            0 ) )
-  {
-    segments.push_back( &MINtoMAX_segment );
-  }
-
-  opposite_chirality_near_muon::~opposite_chirality_near_muon()
-  {
-
-    // does nothing.
-
-  }
-
-
-  void
-  opposite_chirality_near_muon::calculateCoefficients()
-  {
-
-    productionFrameEnergy
-    = ( ( ( secondMass * secondMass ) - ( thirdMass * thirdMass ) )
-        / ( 2.0 * secondMass ) );
-
-    minimumEnergy
-    = ( ( secondMass / firstMass ) * productionFrameEnergy );
-
-    maximumEnergy
-    = ( ( firstMass / secondMass ) * productionFrameEnergy );
-
-
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization:
-
-    // MIN to MAX segment:
-    MINtoMAX_segment.setSegmentRange( minimumEnergy,
-                                        maximumEnergy );
-
-    MINtoMAX_const->setCoefficient( maximumEnergy );
-
-    MINtoMAX_lin->setCoefficient( -1.0 );
-  }
-
-
-
-  flat_far_muon_plus_antimuon::flat_far_muon_plus_antimuon(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
-                          effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    leptonEnergyDistribution( given_readier,
-                                given_spectrum,
-                                given_first_particle,
-                                effectiveSquarkMass,
-                                given_second_particle,
-                                given_third_particle,
-                                given_fourth_particle ),
-    MINtoLK_const( MINtoLK_segment.addTerm( 0,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                  CppSLHA::particle_property_set const* const thirdParticle ) :
+    leptonEnergyDistribution( readierPointer,
+                              spectrumData,
+                              firstParticle,
+                              effectiveSquarkMass,
+                              secondParticle,
+                              thirdParticle,
+                              NULL ),
+    minToMaxConst( minToMaxSegment.addTerm( 0,
                                             0 ) ),
-    MINtoLK_log( MINtoLK_segment.addTerm( 0,
-                                          1 ) ),
-    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+    minToMaxLin( minToMaxSegment.addTerm( 1,
+                                          0 ) )
+  {
+    segments.push_back( &minToMaxSegment );
+  }
+
+  sameChiralityNearMuon::~sameChiralityNearMuon()
+  {
+
+    // does nothing.
+
+  }
+
+
+
+  oppositeChiralityNearMuon::oppositeChiralityNearMuon(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
+                          effectiveSquarkMassHolder* const effectiveSquarkMass,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                  CppSLHA::particle_property_set const* const thirdParticle ) :
+    leptonEnergyDistribution( readierPointer,
+                              spectrumData,
+                              firstParticle,
+                              effectiveSquarkMass,
+                              secondParticle,
+                              thirdParticle,
+                              NULL ),
+    minToMaxConst( minToMaxSegment.addTerm( 0,
+                                            0 ) ),
+    minToMaxLin( minToMaxSegment.addTerm( 1,
+                                          0 ) )
+  {
+    segments.push_back( &minToMaxSegment );
+  }
+
+  oppositeChiralityNearMuon::~oppositeChiralityNearMuon()
+  {
+
+    // does nothing.
+
+  }
+
+
+
+  flatFarMuonPlusAntimuon::flatFarMuonPlusAntimuon(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
+                          effectiveSquarkMassHolder* const effectiveSquarkMass,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                 CppSLHA::particle_property_set const* const fourthParticle ) :
+    leptonEnergyDistribution( readierPointer,
+                              spectrumData,
+                              firstParticle,
+                              effectiveSquarkMass,
+                              secondParticle,
+                              thirdParticle,
+                              fourthParticle ),
+    minToLkConst( minToLkSegment.addTerm( 0,
                                           0 ) ),
-    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
-                                            0 ) ),
-    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
-                                          1 ) )
+    minToLkLog( minToLkSegment.addTerm( 0,
+                                        1 ) ),
+    lkToHkConst( lkToHkSegment.addTerm( 0,
+                                        0 ) ),
+    hkToMaxConst( hkToMaxSegment.addTerm( 0,
+                                          0 ) ),
+    hkToMaxLog( hkToMaxSegment.addTerm( 0,
+                                        1 ) )
   {
-    segments.push_back( &MINtoLK_segment );
-    segments.push_back( &LKtoHK_segment );
-    segments.push_back( &HKtoMAX_segment );
+    segments.push_back( &minToLkSegment );
+    segments.push_back( &lkToHkSegment );
+    segments.push_back( &hkToMaxSegment );
   }
 
-  flat_far_muon_plus_antimuon::~flat_far_muon_plus_antimuon()
+  flatFarMuonPlusAntimuon::~flatFarMuonPlusAntimuon()
   {
 
     // does nothing.
@@ -279,71 +190,49 @@ namespace LHC_FASER
 
 
   void
-  flat_far_muon_plus_antimuon::calculateCoefficients()
+  flatFarMuonPlusAntimuon::calculateCoefficients()
   {
-
-    double mlSq = ( thirdMass * thirdMass );
-    double mXSq = ( fourthMass * fourthMass );
+    double mlSq( thirdMass * thirdMass );
+    double mXSq( fourthMass * fourthMass );
 
     productionFrameEnergy = ( ( mlSq - mXSq ) / ( 2.0 * thirdMass ) );
-
     minimumEnergy = ( ( thirdMass / firstMass ) * productionFrameEnergy );
-
-
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses:
     if( ( firstMass * thirdMass ) > ( secondMass * secondMass ) )
-      {
-
-        Elk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
-                * productionFrameEnergy );
-
-        Ehk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
-                * productionFrameEnergy );
-
-      }
+    {
+      Elk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
+              * productionFrameEnergy );
+      Ehk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
+              * productionFrameEnergy );
+    }
     else
-      {
+    {
+      Elk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
+              * productionFrameEnergy );
+      Ehk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
+              * productionFrameEnergy );
+    }
+    maximumEnergy = ( ( firstMass / thirdMass ) * productionFrameEnergy );
 
-        Elk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
-                * productionFrameEnergy );
-
-        Ehk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
-                * productionFrameEnergy );
-
-      }
-
-
-    maximumEnergy
-    = ( ( firstMass / thirdMass ) * productionFrameEnergy );
-
-
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization:
+    // now we set up the coefficients of various terms:
 
     // MIN to LK segment:
-    MINtoLK_segment.setSegmentRange( minimumEnergy,
-                                       Elk );
-
-    MINtoLK_const->setCoefficient( -log( minimumEnergy ) );
-
-    MINtoLK_log->setCoefficient( 1.0 );
-
+    minToLkSegment.setSegmentRange( minimumEnergy,
+                                    Elk );
+    minToLkConst->setCoefficient( -log( minimumEnergy ) );
+    minToLkLog->setCoefficient( 1.0 );
 
     // LK to HK segment:
-    LKtoHK_segment.setSegmentRange( Elk,
-                                      Ehk );
-
-    LKtoHK_const->setCoefficient( log( ( maximumEnergy / Ehk ) ) );
-
+    lkToHkSegment.setSegmentRange( Elk,
+                                   Ehk );
+    lkToHkConst->setCoefficient( log( ( maximumEnergy / Ehk ) ) );
 
     // HK to MAX segment:
-    HKtoMAX_segment.setSegmentRange( Ehk,
-                                       maximumEnergy );
-
-    HKtoMAX_const->setCoefficient( log( maximumEnergy ) );
-
-    HKtoMAX_log->setCoefficient( -1.0 );
+    hkToMaxSegment.setSegmentRange( Ehk,
+                                    maximumEnergy );
+    hkToMaxConst->setCoefficient( log( maximumEnergy ) );
+    hkToMaxLog->setCoefficient( -1.0 );
 
     // debugging:
     /**std::cout
@@ -359,48 +248,48 @@ namespace LHC_FASER
 
 
 
-  same_chirality_far_muon::same_chirality_far_muon(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  sameChiralityFarMuon::sameChiralityFarMuon(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    leptonEnergyDistribution( given_readier,
-                                given_spectrum,
-                                given_first_particle,
-                                effectiveSquarkMass,
-                                given_second_particle,
-                                given_third_particle,
-                                given_fourth_particle ),
-    MINtoLK_inv( MINtoLK_segment.addTerm( -1,
-                                          0 ) ),
-    MINtoLK_const( MINtoLK_segment.addTerm( 0,
-                                            0 ) ),
-    MINtoLK_log( MINtoLK_segment.addTerm( 0,
-                                          1 ) ),
-    MINtoLK_lin( MINtoLK_segment.addTerm( 1,
-                                          0 ) ),
-    LKtoHK_inv( LKtoHK_segment.addTerm( -1,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                 CppSLHA::particle_property_set const* const fourthParticle ) :
+    leptonEnergyDistribution( readierPointer,
+                              spectrumData,
+                              firstParticle,
+                              effectiveSquarkMass,
+                              secondParticle,
+                              thirdParticle,
+                              fourthParticle ),
+    minToLkInv( minToLkSegment.addTerm( -1,
                                         0 ) ),
-    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+    minToLkConst( minToLkSegment.addTerm( 0,
                                           0 ) ),
-    HKtoMAX_inv( HKtoMAX_segment.addTerm( -1,
+    minToLkLog( minToLkSegment.addTerm( 0,
+                                        1 ) ),
+    minToLkLin( minToLkSegment.addTerm( 1,
+                                        0 ) ),
+    lkToHkInv( lkToHkSegment.addTerm( -1,
+                                      0 ) ),
+    lkToHkConst( lkToHkSegment.addTerm( 0,
+                                        0 ) ),
+    hkToMaxInv( hkToMaxSegment.addTerm( -1,
+                                        0 ) ),
+    hkToMaxConst( hkToMaxSegment.addTerm( 0,
                                           0 ) ),
-    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
-                                            0 ) ),
-    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
-                                          1 ) ),
-    HKtoMAX_lin( HKtoMAX_segment.addTerm( 1,
-                                          0 ) )
+    hkToMaxLog( hkToMaxSegment.addTerm( 0,
+                                        1 ) ),
+    hkToMaxLin( hkToMaxSegment.addTerm( 1,
+                                        0 ) )
   {
-    segments.push_back( &MINtoLK_segment );
-    segments.push_back( &LKtoHK_segment );
-    segments.push_back( &HKtoMAX_segment );
+    segments.push_back( &minToLkSegment );
+    segments.push_back( &lkToHkSegment );
+    segments.push_back( &hkToMaxSegment );
   }
 
-  same_chirality_far_muon::~same_chirality_far_muon()
+  sameChiralityFarMuon::~sameChiralityFarMuon()
   {
 
     // does nothing.
@@ -409,126 +298,104 @@ namespace LHC_FASER
 
 
   void
-  same_chirality_far_muon::calculateCoefficients()
+  sameChiralityFarMuon::calculateCoefficients()
   {
-
-    double mq = firstMass;
-    double mqSq = ( mq * mq );
-    double mNSq = ( secondMass * secondMass );
-    double mlSq = ( thirdMass * thirdMass );
-    double mXSq = ( fourthMass * fourthMass );
+    double mq( firstMass );
+    double mqSq( mq * mq );
+    double mNSq( secondMass * secondMass );
+    double mlSq( thirdMass * thirdMass );
+    double mXSq( fourthMass * fourthMass );
 
     productionFrameEnergy = ( ( mlSq - mXSq ) / ( 2.0 * thirdMass ) );
-
     minimumEnergy
     = ( ( thirdMass / firstMass ) * productionFrameEnergy );
-
 
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses.
     if( ( firstMass * thirdMass ) > ( secondMass * secondMass ) )
-      {
-
-        Elk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
-                * productionFrameEnergy );
-
-        Ehk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
-                * productionFrameEnergy );
-
-      }
+    {
+      Elk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
+              * productionFrameEnergy );
+      Ehk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
+              * productionFrameEnergy );
+    }
     else
-      {
-
-        Elk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
-                * productionFrameEnergy );
-
-        Ehk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
-                * productionFrameEnergy );
-
-      }
-
-
+    {
+      Elk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
+              * productionFrameEnergy );
+      Ehk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
+              * productionFrameEnergy );
+    }
     maximumEnergy = ( ( firstMass / thirdMass ) * productionFrameEnergy );
 
-
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization:
+    // now we set up the coefficients of various terms:
 
     // MIN to LK segment:
-    MINtoLK_segment.setSegmentRange( minimumEnergy,
-                                       Elk );
+    minToLkSegment.setSegmentRange( minimumEnergy,
+                                    Elk );
 
-    MINtoLK_lin->setCoefficient(
-        ( ( 4.0 * mlSq * mNSq * mq )
-          / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) * ( mlSq - mXSq ) ) ) );
+    minToLkLin->setCoefficient( ( 4.0 * mlSq * mNSq * mq )
+                                / ( ( mlSq - mNSq ) * ( mNSq + mqSq )
+                                    * ( mlSq - mXSq ) ) );
 
-    MINtoLK_log->setCoefficient(
-        ( ( 2.0 * mNSq * ( mqSq - mlSq ) )
-          / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
+    minToLkLog->setCoefficient( ( 2.0 * mNSq * ( mqSq - mlSq ) )
+                                / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) );
 
-    MINtoLK_const->setCoefficient(
-        ( ( 2.0 * mNSq
+    minToLkConst->setCoefficient(
+          ( 2.0 * mNSq
             * ( 2.0 * mNSq - mqSq + mlSq
               + ( mqSq - mlSq ) * log( ( ( 2.0 * mq ) / ( mlSq - mXSq ) ) ) ) )
-        / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
+        / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) );
 
-    MINtoLK_inv->setCoefficient(
-        ( ( mNSq * ( 2.0 * mNSq - mqSq ) * ( mlSq - mXSq ) )
-          / ( mq * ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
-
+    minToLkInv->setCoefficient( ( mNSq * ( 2.0 * mNSq - mqSq )
+                                  * ( mlSq - mXSq ) )
+                                / ( mq * ( mlSq - mNSq ) * ( mNSq + mqSq ) ) );
 
     // LK to HK segment:
-    LKtoHK_segment.setSegmentRange( Elk,
-                                      Ehk );
-
+    lkToHkSegment.setSegmentRange( Elk,
+                                   Ehk );
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses.
     if( ( firstMass * thirdMass ) < ( secondMass * secondMass ) )
       // if the assumption that the mass spectrum was SPS1a-like was
       // incorrect...
-      {
-
-        LKtoHK_const->setCoefficient(
-            ( ( 2.0 * ( ( mlSq + mNSq ) * ( mNSq - mqSq )
+    {
+      lkToHkConst->setCoefficient(
+              ( 2.0 * ( ( mlSq + mNSq ) * ( mNSq - mqSq )
                       + mNSq * ( mlSq - mqSq ) * log( ( mNSq / mqSq ) ) ) )
-              / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
+              / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) );
 
-        LKtoHK_inv->setCoefficient(
-            ( ( 2.0 * mNSq * ( mNSq - mqSq ) * ( mlSq - mXSq ) )
-              / ( mq * ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
-
-      }
+      lkToHkInv->setCoefficient(
+                            ( 2.0 * mNSq * ( mNSq - mqSq ) * ( mlSq - mXSq ) )
+                            / ( mq * ( mlSq - mNSq ) * ( mNSq + mqSq ) ) );
+    }
     else
-      {
+    {
 
-        LKtoHK_const->setCoefficient(
-            ( ( 2.0 * ( ( mqSq - mNSq ) * ( mlSq - mNSq )
-                        + mNSq * ( mlSq - mqSq ) * log( ( mlSq / mNSq ) ) ) )
-              / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
+      lkToHkConst->setCoefficient(
+                ( 2.0 * ( ( mqSq - mNSq ) * ( mlSq - mNSq )
+                          + mNSq * ( mlSq - mqSq ) * log( ( mlSq / mNSq ) ) ) )
+              / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) );
 
-        LKtoHK_inv->setCoefficient( 0.0 );
-
-      }
-
+      lkToHkInv->setCoefficient( 0.0 );
+    }
 
     // HK to MAX segment:
-    HKtoMAX_segment.setSegmentRange( Ehk,
-                                       maximumEnergy );
+    hkToMaxSegment.setSegmentRange( Ehk,
+                                    maximumEnergy );
 
-    HKtoMAX_lin->setCoefficient( -MINtoLK_lin->getCoefficient() );
+    hkToMaxLin->setCoefficient( -minToLkLin->getCoefficient() );
 
-    HKtoMAX_log->setCoefficient( -MINtoLK_log->getCoefficient() );
+    hkToMaxLog->setCoefficient( -minToLkLog->getCoefficient() );
 
-    HKtoMAX_const->setCoefficient(
-        ( ( 2.0 * mNSq * ( mlSq + mqSq
-                           + ( mqSq - mlSq )
-                             * log( ( ( 2.0 * mlSq )
-                                      / ( ( mlSq - mXSq ) * mq ) ) ) ) )
-          / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
+    hkToMaxConst->setCoefficient(
+     ( 2.0 * mNSq * ( mlSq + mqSq
+                      + ( mqSq - mlSq ) * log( ( 2.0 * mlSq )
+                                               / ( ( mlSq - mXSq ) * mq ) ) ) )
+          / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) ) );
 
-    HKtoMAX_inv->setCoefficient(
-        ( ( mNSq * mq * ( mlSq - mXSq ) )
-          / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
+    hkToMaxInv->setCoefficient( ( mNSq * mq * ( mlSq - mXSq ) )
+                                / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) );
 
     // debugging:
     /**std::cout
@@ -539,59 +406,59 @@ namespace LHC_FASER
     std::cout << std::endl << "Elk = " << Elk;
     std::cout << std::endl << "Ehk = " << Ehk;
     std::cout << std::endl << "maximum_energy = " << maximum_energy;
-    std::cout << std::endl << "MINtoLK_lin = " << MINtoLK_lin;
-    std::cout << std::endl << "MINtoLK_log = " << MINtoLK_log;
-    std::cout << std::endl << "MINtoLK_const = " << MINtoLK_const;
-    std::cout << std::endl << "MINtoLK_inv = " << MINtoLK_inv;
-    std::cout << std::endl << "LKtoHK_const = " << LKtoHK_const;
-    std::cout << std::endl << "LKtoHK_inv = " << LKtoHK_inv;
+    std::cout << std::endl << "minToLkLin = " << minToLkLin;
+    std::cout << std::endl << "minToLkLog = " << minToLkLog;
+    std::cout << std::endl << "minToLkConst = " << minToLkConst;
+    std::cout << std::endl << "minToLkInv = " << minToLkInv;
+    std::cout << std::endl << "lkToHkConst = " << lkToHkConst;
+    std::cout << std::endl << "lkToHkInv = " << lkToHkInv;
     std::cout << std::endl;**/
   }
 
 
 
-  opposite_chirality_far_muon::opposite_chirality_far_muon(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  oppositeChiralityFarMuon::oppositeChiralityFarMuon(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    leptonEnergyDistribution( given_readier,
-                                given_spectrum,
-                                given_first_particle,
-                                effectiveSquarkMass,
-                                given_second_particle,
-                                given_third_particle,
-                                given_fourth_particle ),
-    MINtoLK_inv( MINtoLK_segment.addTerm( -1,
-                                          0 ) ),
-    MINtoLK_const( MINtoLK_segment.addTerm( 0,
-                                            0 ) ),
-    MINtoLK_log( MINtoLK_segment.addTerm( 0,
-                                          1 ) ),
-    MINtoLK_lin( MINtoLK_segment.addTerm( 1,
-                                          0 ) ),
-    LKtoHK_inv( LKtoHK_segment.addTerm( -1,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                 CppSLHA::particle_property_set const* const fourthParticle ) :
+    leptonEnergyDistribution( readierPointer,
+                              spectrumData,
+                              firstParticle,
+                              effectiveSquarkMass,
+                              secondParticle,
+                              thirdParticle,
+                              fourthParticle ),
+    minToLkInv( minToLkSegment.addTerm( -1,
                                         0 ) ),
-    LKtoHK_const( LKtoHK_segment.addTerm( 0,
-                         0 ) ),
-    HKtoMAX_inv( HKtoMAX_segment.addTerm( -1,
+    minToLkConst( minToLkSegment.addTerm( 0,
                                           0 ) ),
-    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
-                                            0 ) ),
-    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
-                                          1 ) ),
-    HKtoMAX_lin( HKtoMAX_segment.addTerm( 1,
-                                          0 ) )
+    minToLkLog( minToLkSegment.addTerm( 0,
+                                        1 ) ),
+    minToLkLin( minToLkSegment.addTerm( 1,
+                                        0 ) ),
+    lkToHkInv( lkToHkSegment.addTerm( -1,
+                                      0 ) ),
+    lkToHkConst( lkToHkSegment.addTerm( 0,
+                                        0 ) ),
+    hkToMaxInv( hkToMaxSegment.addTerm( -1,
+                                        0 ) ),
+    hkToMaxConst( hkToMaxSegment.addTerm( 0,
+                                          0 ) ),
+    hkToMaxLog( hkToMaxSegment.addTerm( 0,
+                                        1 ) ),
+    hkToMaxLin( hkToMaxSegment.addTerm( 1,
+                                        0 ) )
   {
-    segments.push_back( &MINtoLK_segment );
-    segments.push_back( &LKtoHK_segment );
-    segments.push_back( &HKtoMAX_segment );
+    segments.push_back( &minToLkSegment );
+    segments.push_back( &lkToHkSegment );
+    segments.push_back( &hkToMaxSegment );
   }
 
-  opposite_chirality_far_muon::~opposite_chirality_far_muon()
+  oppositeChiralityFarMuon::~oppositeChiralityFarMuon()
   {
 
     // does nothing.
@@ -600,124 +467,107 @@ namespace LHC_FASER
 
 
   void
-  opposite_chirality_far_muon::calculateCoefficients()
+  oppositeChiralityFarMuon::calculateCoefficients()
   {
-
-    double mq = firstMass;
-    double mqSq = ( mq * mq );
-    double mNSq = ( secondMass * secondMass );
-    double mlSq = ( thirdMass * thirdMass );
-    double mXSq = ( fourthMass * fourthMass );
+    double mq( firstMass );
+    double mqSq( mq * mq );
+    double mNSq( secondMass * secondMass );
+    double mlSq( thirdMass * thirdMass );
+    double mXSq( fourthMass * fourthMass );
 
     productionFrameEnergy = ( ( mlSq - mXSq ) / ( 2.0 * thirdMass ) );
-
     minimumEnergy = ( ( thirdMass / firstMass ) * productionFrameEnergy );
-
-
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses.
     if( ( firstMass * thirdMass ) > ( secondMass * secondMass ) )
-      {
-
-        Elk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
-                * productionFrameEnergy );
-
-        Ehk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
-                * productionFrameEnergy );
-
-      }
+    {
+      Elk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
+              * productionFrameEnergy );
+      Ehk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
+              * productionFrameEnergy );
+    }
     else
-      {
-
-        Elk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
-                * productionFrameEnergy );
-
-        Ehk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
-                * productionFrameEnergy );
-
-      }
-
-
+    {
+      Elk = ( ( ( firstMass / secondMass ) * ( thirdMass / secondMass ) )
+              * productionFrameEnergy );
+      Ehk = ( ( ( secondMass / firstMass ) * ( secondMass / thirdMass ) )
+              * productionFrameEnergy );
+    }
     maximumEnergy = ( ( firstMass / thirdMass ) * productionFrameEnergy );
 
 
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization.
+    // now we set up the coefficients of various terms:
 
     // MIN to LK segment:
-    MINtoLK_segment.setSegmentRange( minimumEnergy,
-                                       Elk );
+    minToLkSegment.setSegmentRange( minimumEnergy,
+                                    Elk );
 
-    MINtoLK_lin->setCoefficient(
+    minToLkLin->setCoefficient(
         ( ( 4.0 * mlSq * mNSq * mq )
           / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) * ( mlSq - mXSq ) ) ) );
 
-    MINtoLK_log->setCoefficient(
+    minToLkLog->setCoefficient(
         ( ( 2.0 * ( mNSq * mNSq - mlSq * mqSq ) )
           / ( ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
 
-    MINtoLK_const->setCoefficient(
+    minToLkConst->setCoefficient(
         ( ( 2.0 * ( mNSq * ( 2.0 * mNSq - mqSq + mlSq )
                   + ( mlSq * mqSq - mNSq * mNSq )
                     * log( ( ( 2.0 * mq ) / ( mlSq - mXSq ) ) ) ) )
           / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
 
-    MINtoLK_inv->setCoefficient(
+    minToLkInv->setCoefficient(
         ( ( mNSq * ( ( 2.0 * mNSq - mqSq ) * ( mlSq - mXSq ) ) )
           / ( mq * ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
 
 
     // LK to HK segment:
-    LKtoHK_segment.setSegmentRange( Elk,
-                                      Ehk );
+    lkToHkSegment.setSegmentRange( Elk,
+                                   Ehk );
 
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses.
     if( ( firstMass * thirdMass ) < ( secondMass * secondMass ) )
       // if the assumption that the mass spectrum was SPS1a-like was
       // incorrect...
-      {
-
-        LKtoHK_const->setCoefficient(
+    {
+      lkToHkConst->setCoefficient(
             ( ( 2.0 * ( ( mlSq + mNSq ) * ( mNSq - mqSq )
                         + ( mNSq * mNSq - mlSq * mqSq )
                           * log( ( mNSq / mqSq ) ) ) )
               / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
 
-        LKtoHK_inv->setCoefficient(
+      lkToHkInv->setCoefficient(
             ( ( 2.0 * mNSq * ( mNSq - mqSq ) * ( mlSq - mXSq ) )
               / ( mq * ( mNSq - mlSq ) * ( mNSq + mqSq ) ) ) );
-
-      }
+    }
     else
-      {
-
-        LKtoHK_const->setCoefficient(
+    {
+      lkToHkConst->setCoefficient(
             ( ( 2.0 * ( ( mqSq - mNSq ) * ( mlSq - mNSq )
                         + ( mNSq * mNSq - mlSq * mqSq )
                           * log( ( mlSq / mNSq ) ) ) )
               / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
 
-        LKtoHK_inv->setCoefficient( 0.0 );
-
-      }
+      lkToHkInv->setCoefficient( 0.0 );
+    }
 
 
     // HK to MAX segment:
-    HKtoMAX_segment.setSegmentRange( Ehk,
-                                       maximumEnergy );
+    hkToMaxSegment.setSegmentRange( Ehk,
+                                    maximumEnergy );
 
-    HKtoMAX_lin->setCoefficient( -MINtoLK_lin->getCoefficient() );
+    hkToMaxLin->setCoefficient( -minToLkLin->getCoefficient() );
 
-    HKtoMAX_log->setCoefficient( -MINtoLK_log->getCoefficient() );
+    hkToMaxLog->setCoefficient( -minToLkLog->getCoefficient() );
 
-    HKtoMAX_const->setCoefficient(
+    hkToMaxConst->setCoefficient(
         ( ( 2.0 * ( ( mNSq * mNSq - mlSq * mqSq )
                     * log( ( ( 2.0 * mlSq ) / ( ( mlSq - mXSq ) * mq ) ) )
                     - mNSq * ( mqSq + mlSq ) ) )
           / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
 
-    HKtoMAX_inv->setCoefficient(
+    hkToMaxInv->setCoefficient(
         ( ( mNSq * mq * ( mlSq - mXSq ) )
           / ( ( mlSq - mNSq ) * ( mNSq + mqSq ) ) ) );
 
@@ -730,7 +580,7 @@ namespace LHC_FASER
     std::cout << std::endl << "Elk = " << Elk;
     std::cout << std::endl << "Ehk = " << Ehk;
     std::cout << std::endl << "maximum_energy = " << maximum_energy;
-    std::cout << std::endl << "LKtoHK_const = " << LKtoHK_const;
+    std::cout << std::endl << "lkToHkConst = " << lkToHkConst;
     std::cout << std::endl
     << "log( ( mlSq / mNSq ) ) = " << log( ( mlSq / mNSq ) );
     std::cout << std::endl
@@ -742,118 +592,101 @@ namespace LHC_FASER
     << ( ( mqSq - mNSq ) * ( mlSq - mNSq )
          + ( mNSq * mNSq - mlSq * mqSq ) * log( ( mlSq / mNSq ) ) );
     std::cout << std::endl;**/
-
   }
 
 
 
-  Higgs_muon_plus_antimuon::Higgs_muon_plus_antimuon(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  HiggsMuonPlusAntimuon::HiggsMuonPlusAntimuon(
+                                    readierForNewPoint* const readierPointer,
+                                 CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    leptonEnergyDistribution( given_readier,
-                                given_spectrum,
-                                given_first_particle,
+             CppSLHA::particle_property_set const* const secondParticle,
+              CppSLHA::particle_property_set const* const thirdParticle,
+          CppSLHA::particle_property_set const* const fourthParticle ) :
+    leptonEnergyDistribution( readierPointer,
+                                spectrumData,
+                                firstParticle,
                                 effectiveSquarkMass,
-                                given_second_particle,
-                                given_third_particle,
-                                given_fourth_particle ),
-    MINtoLK_const( MINtoLK_segment.addTerm( 0,
-                                            0 ) ),
-    MINtoLK_log( MINtoLK_segment.addTerm( 0,
-                                          1 ) ),
-    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+                                secondParticle,
+                                thirdParticle,
+                                fourthParticle ),
+    minToLkConst( minToLkSegment.addTerm( 0,
                                           0 ) ),
-    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
-                                            0 ) ),
-    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
-                                          1 ) )
+    minToLkLog( minToLkSegment.addTerm( 0,
+                                        1 ) ),
+    lkToHkConst( lkToHkSegment.addTerm( 0,
+                                        0 ) ),
+    hkToMaxConst( hkToMaxSegment.addTerm( 0,
+                                          0 ) ),
+    hkToMaxLog( hkToMaxSegment.addTerm( 0,
+                                        1 ) )
   {
-    segments.push_back( &MINtoLK_segment );
-    segments.push_back( &LKtoHK_segment );
-    segments.push_back( &HKtoMAX_segment );
+    segments.push_back( &minToLkSegment );
+    segments.push_back( &lkToHkSegment );
+    segments.push_back( &hkToMaxSegment );
   }
 
-  Higgs_muon_plus_antimuon::~Higgs_muon_plus_antimuon()
+  HiggsMuonPlusAntimuon::~HiggsMuonPlusAntimuon()
   {
-
     // does nothing.
-
   }
 
 
   void
-  Higgs_muon_plus_antimuon::calculateCoefficients()
+  HiggsMuonPlusAntimuon::calculateCoefficients()
   {
-
-    double mq = firstMass;
-    double mN = secondMass;
-    double mNSq = ( mN * mN );
-    double mH = thirdMass;
-    double mHSq = ( mH * mH );
-    double mX = fourthMass;
-    double mXSq = ( mX * mX );
+    double mq( firstMass );
+    double mN( secondMass );
+    double mNSq( mN * mN );
+    double mH( thirdMass );
+    double mHSq( mH * mH );
+    double mX( fourthMass );
+    double mXSq( mX * mX );
 
     productionFrameEnergy = ( 0.5 * mH );
 
-    double EHN = ( ( mNSq + mHSq - mXSq ) / ( 2.0 * mN ) );
-    double gammaNH = ( EHN / mH );
-    double betaNH = sqrt( ( 1.0 - ( 1.0 / ( gammaNH * gammaNH ) ) ) );
-    double EmaxN = ( gammaNH * ( 1.0 + betaNH ) * productionFrameEnergy );
-    double EminN = ( mHSq / ( 4.0 * EmaxN ) );
+    double EHN( ( mNSq + mHSq - mXSq ) / ( 2.0 * mN ) );
+    double gammaNH( EHN / mH );
+    double betaNH( sqrt( ( 1.0 - ( 1.0 / ( gammaNH * gammaNH ) ) ) ) );
+    double EmaxN( gammaNH * ( 1.0 + betaNH ) * productionFrameEnergy );
+    double EminN( mHSq / ( 4.0 * EmaxN ) );
     // using ( EmaxN * EminN ) = ( mHSq / 4 )
 
     minimumEnergy = ( ( mN / mq ) * EminN );
 
-
     // there are 2 kinematic cases for determining the kink energies in terms
     // of the cascade masses:
-
     // 1st make an assumption:
     Elk = ( ( mN / mq ) * EmaxN );
     Ehk = ( ( mq / mN ) * EminN );
-
     // then check:
     if( Elk > Ehk )
-      {
-
-        Elk = Ehk;
-
-        Ehk = ( ( mN / mq ) * EmaxN );
-
-      }
-
+    {
+      Elk = Ehk;
+      Ehk = ( ( mN / mq ) * EmaxN );
+    }
     maximumEnergy = ( ( mq / mN ) * EmaxN );
 
 
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization:
+    // now we set up the coefficients of various terms:
 
     // MIN to LK segment:
-    MINtoLK_segment.setSegmentRange( minimumEnergy,
-                                       Elk );
-
-    MINtoLK_const->setCoefficient( -log( minimumEnergy ) );
-    MINtoLK_log->setCoefficient( 1.0 );
-
-
+    minToLkSegment.setSegmentRange( minimumEnergy,
+                                    Elk );
+    minToLkConst->setCoefficient( -log( minimumEnergy ) );
+    minToLkLog->setCoefficient( 1.0 );
 
     // LK to HK segment:
-    LKtoHK_segment.setSegmentRange( Elk,
-                                      Ehk );
-    LKtoHK_const->setCoefficient( log( ( maximumEnergy / Ehk ) ) );
-
+    lkToHkSegment.setSegmentRange( Elk,
+                                   Ehk );
+    lkToHkConst->setCoefficient( log( ( maximumEnergy / Ehk ) ) );
 
     // HK to MAX segment:
-    HKtoMAX_segment.setSegmentRange( Ehk,
-                                       maximumEnergy );
-
-    HKtoMAX_const->setCoefficient( log( maximumEnergy ) );
-    HKtoMAX_log->setCoefficient( -1.0 );
+    hkToMaxSegment.setSegmentRange( Ehk,
+                                    maximumEnergy );
+    hkToMaxConst->setCoefficient( log( maximumEnergy ) );
+    hkToMaxLog->setCoefficient( -1.0 );
 
     // debugging:
     /**std::cout
@@ -864,24 +697,23 @@ namespace LHC_FASER
     std::cout << std::endl << "Elk = " << Elk;
     std::cout << std::endl << "Ehk = " << Ehk;
     std::cout << std::endl << "maximum_energy = " << maximum_energy;
-    std::cout << std::endl << "MINtoLK_log = " << MINtoLK_log;
-    std::cout << std::endl << "MINtoLK_const = " << MINtoLK_const;
-    std::cout << std::endl << "LKtoHK_const = " << LKtoHK_const;
+    std::cout << std::endl << "minToLkLog = " << minToLkLog;
+    std::cout << std::endl << "minToLkConst = " << minToLkConst;
+    std::cout << std::endl << "lkToHkConst = " << lkToHkConst;
     std::cout << std::endl;**/
-
   }
 
 
 
   zHandedMuon::zHandedMuon( readierForNewPoint* const readier,
-                                CppSLHA::CppSLHA0 const* const spectrumData,
+                            CppSLHA::CppSLHA0 const* const spectrumData,
               CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
              CppSLHA::particle_property_set const* const secondParticle,
               CppSLHA::particle_property_set const* const thirdParticle,
           CppSLHA::particle_property_set const* const fourthParticle,
-                                bool const negativeMuonIsSameHandednessAsJet,
-                                bool const shouldSumOverHandedness ) :
+                            bool const negativeMuonIsSameHandednessAsJet,
+                            bool const shouldSumOverHandedness ) :
     leptonEnergyDistribution( readier,
                               spectrumData,
                               firstParticle,
@@ -891,40 +723,40 @@ namespace LHC_FASER
                               fourthParticle ),
     negativeMuonIsSameHandednessAsJet( negativeMuonIsSameHandednessAsJet ),
     shouldNotSumOverHandedness( !shouldSumOverHandedness ),
-    MINtoLK_inv( MINtoLK_segment.addTerm( -1,
-                                          0 ) ),
-    MINtoLK_const( MINtoLK_segment.addTerm( 0,
-                                            0 ) ),
-    MINtoLK_log( MINtoLK_segment.addTerm( 0,
-                                          1 ) ),
-    MINtoLK_lin( MINtoLK_segment.addTerm( 1,
-                                          0 ) ),
-    MINtoLK_linlog( MINtoLK_segment.addTerm( 1,
-                                             1 ) ),
-    MINtoLK_sq( MINtoLK_segment.addTerm( 2,
-                                         0 ) ),
-    LKtoHK_const( LKtoHK_segment.addTerm( 0,
-                                          0 ) ),
-    LKtoHK_lin( LKtoHK_segment.addTerm( 1,
+    minToLkInv( minToLkSegment.addTerm( -1,
                                         0 ) ),
-    LKtoHK_sq( LKtoHK_segment.addTerm( 2,
+    minToLkConst( minToLkSegment.addTerm( 0,
+                                          0 ) ),
+    minToLkLog( minToLkSegment.addTerm( 0,
+                                        1 ) ),
+    minToLkLin( minToLkSegment.addTerm( 1,
+                                        0 ) ),
+    minToLkLinlog( minToLkSegment.addTerm( 1,
+                                           1 ) ),
+    minToLkSq( minToLkSegment.addTerm( 2,
                                        0 ) ),
-    HKtoMAX_inv( HKtoMAX_segment.addTerm( -1,
+    lkToHkConst( lkToHkSegment.addTerm( 0,
+                                        0 ) ),
+    lkToHkLin( lkToHkSegment.addTerm( 1,
+                                      0 ) ),
+    lkToHkSq( lkToHkSegment.addTerm( 2,
+                                     0 ) ),
+    hkToMaxInv( hkToMaxSegment.addTerm( -1,
+                                        0 ) ),
+    hkToMaxConst( hkToMaxSegment.addTerm( 0,
                                           0 ) ),
-    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
-                                            0 ) ),
-    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
-                                          1 ) ),
-    HKtoMAX_lin( HKtoMAX_segment.addTerm( 1,
-                                          0 ) ),
-    HKtoMAX_linlog( HKtoMAX_segment.addTerm( 1,
-                                             1 ) ),
-    HKtoMAX_sq( HKtoMAX_segment.addTerm( 2,
-                                         0 ) )
+    hkToMaxLog( hkToMaxSegment.addTerm( 0,
+                                        1 ) ),
+    hkToMaxLin( hkToMaxSegment.addTerm( 1,
+                                        0 ) ),
+    hkToMaxLinlog( hkToMaxSegment.addTerm( 1,
+                                           1 ) ),
+    hkToMaxSq( hkToMaxSegment.addTerm( 2,
+                                       0 ) )
   {
-    segments.push_back( &MINtoLK_segment );
-    segments.push_back( &LKtoHK_segment );
-    segments.push_back( &HKtoMAX_segment );
+    segments.push_back( &minToLkSegment );
+    segments.push_back( &lkToHkSegment );
+    segments.push_back( &hkToMaxSegment );
   }
 
   zHandedMuon::~zHandedMuon()
@@ -987,10 +819,10 @@ namespace LHC_FASER
       Ehk = currentLkToHkLinCoefficient;
       cosinesLimitedByEnergy = true;
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "cosinesLimitedByEnergy = true";
-      std::cout << std::endl;/**/
+      std::cout << std::endl;**/
     }
     else
     {
@@ -999,10 +831,10 @@ namespace LHC_FASER
       // => if( cosinesLimitedByEnergy ){ [use overlap] }
 
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "cosinesLimitedByEnergy = false";
-      std::cout << std::endl;/**/
+      std::cout << std::endl;**/
     }
     mQCsqDiff = ( mQsq - mCsq );
     mQCsqSum = ( mQsq + mCsq );
@@ -1017,11 +849,11 @@ namespace LHC_FASER
     lnEhk = log( Ehk );
     lnEmax = log( maximumEnergy );
 
-    MINtoLK_segment.setSegmentRange( minimumEnergy,
+    minToLkSegment.setSegmentRange( minimumEnergy,
                                      Elk );
-    LKtoHK_segment.setSegmentRange( Elk,
+    lkToHkSegment.setSegmentRange( Elk,
                                     Ehk );
-    HKtoMAX_segment.setSegmentRange( Ehk,
+    hkToMaxSegment.setSegmentRange( Ehk,
                                      maximumEnergy );
 
     /* symmetric in lepton-antilepton =>
@@ -1128,47 +960,47 @@ namespace LHC_FASER
     // right!
 
 
-    MINtoLK_inv->setCoefficient( 0.0 );
-    MINtoLK_const->setCoefficient( currentMinToLkConstCoefficient );
-    MINtoLK_log->setCoefficient( currentMinToLkLogCoefficient );
-    MINtoLK_lin->setCoefficient( currentMinToLkLinCoefficient );
-    MINtoLK_linlog->setCoefficient( 0.0 );
-    MINtoLK_sq->setCoefficient( currentMinToLkSqCoefficient );
+    minToLkInv->setCoefficient( 0.0 );
+    minToLkConst->setCoefficient( currentMinToLkConstCoefficient );
+    minToLkLog->setCoefficient( currentMinToLkLogCoefficient );
+    minToLkLin->setCoefficient( currentMinToLkLinCoefficient );
+    minToLkLinlog->setCoefficient( 0.0 );
+    minToLkSq->setCoefficient( currentMinToLkSqCoefficient );
 
-    LKtoHK_const->setCoefficient( currentLkToHkConstCoefficient );
-    LKtoHK_lin->setCoefficient( currentLkToHkLinCoefficient );
-    LKtoHK_sq->setCoefficient( currentLkToHkSqCoefficient );
+    lkToHkConst->setCoefficient( currentLkToHkConstCoefficient );
+    lkToHkLin->setCoefficient( currentLkToHkLinCoefficient );
+    lkToHkSq->setCoefficient( currentLkToHkSqCoefficient );
 
-    HKtoMAX_inv->setCoefficient( 0.0 );
-    HKtoMAX_const->setCoefficient( currentHkToMaxConstCoefficient );
-    HKtoMAX_log->setCoefficient( currentHkToMaxLogCoefficient );
-    HKtoMAX_lin->setCoefficient( currentHkToMaxLinCoefficient );
-    HKtoMAX_linlog->setCoefficient( 0.0 );
-    HKtoMAX_sq->setCoefficient( currentHkToMaxSqCoefficient );
+    hkToMaxInv->setCoefficient( 0.0 );
+    hkToMaxConst->setCoefficient( currentHkToMaxConstCoefficient );
+    hkToMaxLog->setCoefficient( currentHkToMaxLogCoefficient );
+    hkToMaxLin->setCoefficient( currentHkToMaxLinCoefficient );
+    hkToMaxLinlog->setCoefficient( 0.0 );
+    hkToMaxSq->setCoefficient( currentHkToMaxSqCoefficient );
 
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "VvPlusJjAaAllSqSymDistribution:"
     << std::endl << "MINtoLK: "
-    << std::endl << MINtoLK_inv->getCoefficient() << "/E"
-    << std::endl << MINtoLK_const->getCoefficient()
-    << std::endl << MINtoLK_log->getCoefficient() << "L"
-    << std::endl << MINtoLK_lin->getCoefficient() << "E"
-    << std::endl << MINtoLK_linlog->getCoefficient() << "EL"
-    << std::endl << MINtoLK_sq->getCoefficient() << "E^2"
+    << std::endl << minToLkInv->getCoefficient() << "/E"
+    << std::endl << minToLkConst->getCoefficient()
+    << std::endl << minToLkLog->getCoefficient() << "L"
+    << std::endl << minToLkLin->getCoefficient() << "E"
+    << std::endl << minToLkLinlog->getCoefficient() << "EL"
+    << std::endl << minToLkSq->getCoefficient() << "E^2"
     << std::endl << "LKtoHK: "
-    << std::endl << LKtoHK_const->getCoefficient()
-    << std::endl << LKtoHK_lin->getCoefficient() << "E"
-    << std::endl << LKtoHK_sq->getCoefficient() << "E^2"
+    << std::endl << lkToHkConst->getCoefficient()
+    << std::endl << lkToHkLin->getCoefficient() << "E"
+    << std::endl << lkToHkSq->getCoefficient() << "E^2"
     << std::endl << "HKtoMAX: "
-    << std::endl << HKtoMAX_inv->getCoefficient() << "/E"
-    << std::endl << HKtoMAX_const->getCoefficient()
-    << std::endl << HKtoMAX_log->getCoefficient() << "L"
-    << std::endl << HKtoMAX_lin->getCoefficient() << "E"
-    << std::endl << HKtoMAX_linlog->getCoefficient() << "EL"
-    << std::endl << HKtoMAX_sq->getCoefficient() << "E^2";
-    std::cout << std::endl;/**/
+    << std::endl << hkToMaxInv->getCoefficient() << "/E"
+    << std::endl << hkToMaxConst->getCoefficient()
+    << std::endl << hkToMaxLog->getCoefficient() << "L"
+    << std::endl << hkToMaxLin->getCoefficient() << "E"
+    << std::endl << hkToMaxLinlog->getCoefficient() << "EL"
+    << std::endl << hkToMaxSq->getCoefficient() << "E^2";
+    std::cout << std::endl;**/
 
 
     // VvSqMinusAaSqSymDistribution:
@@ -1176,7 +1008,7 @@ namespace LHC_FASER
     // MIN to LK:
 
     // debugging:
-    currentMinToLkInvCoefficient = 0.0;
+    //currentMinToLkInvCoefficient = 0.0;
     // right!
 
     currentMinToLkConstCoefficient
@@ -1188,15 +1020,15 @@ namespace LHC_FASER
     // right!
 
     // debugging:
-    currentMinToLkLinCoefficient = 0.0;
+    //currentMinToLkLinCoefficient = 0.0;
     // right!
 
     // debugging:
-    currentMinToLkLinLogCoefficient = 0.0;
+    //currentMinToLkLinLogCoefficient = 0.0;
     // right!
 
     // debugging:
-    currentMinToLkSqCoefficient = 0.0;
+    //currentMinToLkSqCoefficient = 0.0;
     // right!
 
 
@@ -1216,18 +1048,18 @@ namespace LHC_FASER
     }
 
     // debugging:
-    currentLkToHkLinCoefficient = 0.0;
+    //currentLkToHkLinCoefficient = 0.0;
     // right!
 
     // debugging:
-    currentLkToHkSqCoefficient = 0.0;
+    //currentLkToHkSqCoefficient = 0.0;
     // right!
 
 
     // HK to MAX:
 
     // debugging:
-    currentHkToMaxInvCoefficient = 0.0;
+    //currentHkToMaxInvCoefficient = 0.0;
     // right!
 
     currentHkToMaxConstCoefficient
@@ -1239,41 +1071,41 @@ namespace LHC_FASER
     // right!
 
     // debugging:
-    currentHkToMaxLinCoefficient = 0.0;
+    //currentHkToMaxLinCoefficient = 0.0;
     // right!
 
     // debugging:
-    currentHkToMaxLinLogCoefficient = 0.0;
+    //currentHkToMaxLinLogCoefficient = 0.0;
     // right!
 
     // debugging:
-    currentHkToMaxSqCoefficient = 0.0;
+    //currentHkToMaxSqCoefficient = 0.0;
     // right!
 
 
     if( couplesAsVectorNotAxial )
     {
-      MINtoLK_const->addToCoefficient( currentMinToLkConstCoefficient );
-      MINtoLK_log->addToCoefficient( currentMinToLkLogCoefficient );
+      minToLkConst->addToCoefficient( currentMinToLkConstCoefficient );
+      minToLkLog->addToCoefficient( currentMinToLkLogCoefficient );
 
-      LKtoHK_const->addToCoefficient( currentLkToHkConstCoefficient );
+      lkToHkConst->addToCoefficient( currentLkToHkConstCoefficient );
 
-      HKtoMAX_const->addToCoefficient( currentHkToMaxConstCoefficient );
-      HKtoMAX_log->addToCoefficient( currentHkToMaxLogCoefficient );
+      hkToMaxConst->addToCoefficient( currentHkToMaxConstCoefficient );
+      hkToMaxLog->addToCoefficient( currentHkToMaxLogCoefficient );
     }
     else
     {
-      MINtoLK_const->addToCoefficient( -currentMinToLkConstCoefficient );
-      MINtoLK_log->addToCoefficient( -currentMinToLkLogCoefficient );
+      minToLkConst->addToCoefficient( -currentMinToLkConstCoefficient );
+      minToLkLog->addToCoefficient( -currentMinToLkLogCoefficient );
 
-      LKtoHK_const->addToCoefficient( -currentLkToHkConstCoefficient );
+      lkToHkConst->addToCoefficient( -currentLkToHkConstCoefficient );
 
-      HKtoMAX_const->addToCoefficient( -currentHkToMaxConstCoefficient );
-      HKtoMAX_log->addToCoefficient( -currentHkToMaxLogCoefficient );
+      hkToMaxConst->addToCoefficient( -currentHkToMaxConstCoefficient );
+      hkToMaxLog->addToCoefficient( -currentHkToMaxLogCoefficient );
     }
 
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "VvSqMinusAaSqSymDistribution:"
     << std::endl << "MINtoLK: "
@@ -1293,7 +1125,7 @@ namespace LHC_FASER
     << std::endl << currentHkToMaxLogCoefficient << "L"
     << std::endl << currentHkToMaxLinCoefficient << "E"
     << std::endl << currentHkToMaxLinLogCoefficient << "EL"
-    << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
+    << std::endl << currentHkToMaxSqCoefficient << "E^2";**/
 
 
     if( shouldNotSumOverHandedness )
@@ -1303,7 +1135,7 @@ namespace LHC_FASER
       // MIN to LK:
 
       // debugging:
-      currentMinToLkInvCoefficient = 0.0;
+      //currentMinToLkInvCoefficient = 0.0;
       // right!
 
       currentMinToLkConstCoefficient
@@ -1320,11 +1152,11 @@ namespace LHC_FASER
       // right!
 
       // debugging:
-      currentMinToLkLinLogCoefficient = 0.0;
+      //currentMinToLkLinLogCoefficient = 0.0;
       // right!
 
       // debugging:
-      currentMinToLkSqCoefficient = 0.0;
+      //currentMinToLkSqCoefficient = 0.0;
       // right!
 
 
@@ -1351,12 +1183,12 @@ namespace LHC_FASER
       }
 
       // debugging:
-      currentLkToHkSqCoefficient = 0.0;
+      //currentLkToHkSqCoefficient = 0.0;
 
 
       // HK to MAX:
 
-      currentHkToMaxInvCoefficient = 0.0;
+      //currentHkToMaxInvCoefficient = 0.0;
       // right!
 
       currentHkToMaxConstCoefficient
@@ -1375,27 +1207,27 @@ namespace LHC_FASER
       // right!
 
       // debugging:
-      currentHkToMaxLinLogCoefficient = 0.0;
+      //currentHkToMaxLinLogCoefficient = 0.0;
       // right!
 
       // debugging:
-      currentHkToMaxSqCoefficient = 0.0;
+      //currentHkToMaxSqCoefficient = 0.0;
       // right!
 
 
-      MINtoLK_const->addToCoefficient( currentMinToLkConstCoefficient );
-      MINtoLK_log->addToCoefficient( currentMinToLkLogCoefficient );
-      MINtoLK_lin->addToCoefficient( currentMinToLkLinCoefficient );
+      minToLkConst->addToCoefficient( currentMinToLkConstCoefficient );
+      minToLkLog->addToCoefficient( currentMinToLkLogCoefficient );
+      minToLkLin->addToCoefficient( currentMinToLkLinCoefficient );
 
-      LKtoHK_const->addToCoefficient( currentLkToHkConstCoefficient );
-      LKtoHK_lin->addToCoefficient( currentLkToHkLinCoefficient );
+      lkToHkConst->addToCoefficient( currentLkToHkConstCoefficient );
+      lkToHkLin->addToCoefficient( currentLkToHkLinCoefficient );
 
-      HKtoMAX_const->addToCoefficient( currentHkToMaxConstCoefficient );
-      HKtoMAX_log->addToCoefficient( currentHkToMaxLogCoefficient );
-      HKtoMAX_lin->addToCoefficient( currentHkToMaxLinCoefficient );
+      hkToMaxConst->addToCoefficient( currentHkToMaxConstCoefficient );
+      hkToMaxLog->addToCoefficient( currentHkToMaxLogCoefficient );
+      hkToMaxLin->addToCoefficient( currentHkToMaxLinCoefficient );
 
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "VvPlusJjAaAllSqAntiDistribution:"
       << std::endl << "MINtoLK: "
@@ -1415,7 +1247,7 @@ namespace LHC_FASER
       << std::endl << currentHkToMaxLogCoefficient << "L"
       << std::endl << currentHkToMaxLinCoefficient << "E"
       << std::endl << currentHkToMaxLinLogCoefficient << "EL"
-      << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
+      << std::endl << currentHkToMaxSqCoefficient << "E^2";**/
 
 
       // VvSqPlusAaSqAntiDistribution:
@@ -1455,7 +1287,7 @@ namespace LHC_FASER
       // right!
 
       // debugging:
-      currentMinToLkSqCoefficient = 0.0;
+      //currentMinToLkSqCoefficient = 0.0;
       // right!
 
 
@@ -1496,7 +1328,7 @@ namespace LHC_FASER
       }
 
       // debugging:
-      currentLkToHkSqCoefficient = 0.0;
+      //currentLkToHkSqCoefficient = 0.0;
       // right!
 
 
@@ -1532,27 +1364,27 @@ namespace LHC_FASER
       // right!
 
       // debugging:
-      currentHkToMaxSqCoefficient = 0.0;
+      //currentHkToMaxSqCoefficient = 0.0;
       // right!
 
 
-      MINtoLK_inv->addToCoefficient( currentMinToLkInvCoefficient );
-      MINtoLK_const->addToCoefficient( currentMinToLkConstCoefficient );
-      MINtoLK_log->addToCoefficient( currentMinToLkLogCoefficient );
-      MINtoLK_lin->addToCoefficient( currentMinToLkLinCoefficient );
-      MINtoLK_linlog->addToCoefficient( currentMinToLkLinLogCoefficient );
+      minToLkInv->addToCoefficient( currentMinToLkInvCoefficient );
+      minToLkConst->addToCoefficient( currentMinToLkConstCoefficient );
+      minToLkLog->addToCoefficient( currentMinToLkLogCoefficient );
+      minToLkLin->addToCoefficient( currentMinToLkLinCoefficient );
+      minToLkLinlog->addToCoefficient( currentMinToLkLinLogCoefficient );
 
-      LKtoHK_const->addToCoefficient( currentLkToHkConstCoefficient );
-      LKtoHK_lin->addToCoefficient( currentLkToHkLinCoefficient );
+      lkToHkConst->addToCoefficient( currentLkToHkConstCoefficient );
+      lkToHkLin->addToCoefficient( currentLkToHkLinCoefficient );
 
-      HKtoMAX_inv->addToCoefficient( currentHkToMaxInvCoefficient );
-      HKtoMAX_const->addToCoefficient( currentHkToMaxConstCoefficient );
-      HKtoMAX_log->addToCoefficient( currentHkToMaxLogCoefficient );
-      HKtoMAX_lin->addToCoefficient( currentHkToMaxLinCoefficient );
-      HKtoMAX_linlog->addToCoefficient( currentHkToMaxLinLogCoefficient );
+      hkToMaxInv->addToCoefficient( currentHkToMaxInvCoefficient );
+      hkToMaxConst->addToCoefficient( currentHkToMaxConstCoefficient );
+      hkToMaxLog->addToCoefficient( currentHkToMaxLogCoefficient );
+      hkToMaxLin->addToCoefficient( currentHkToMaxLinCoefficient );
+      hkToMaxLinlog->addToCoefficient( currentHkToMaxLinLogCoefficient );
 
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "VvSqPlusAaSqAntiDistribution:"
       << std::endl << "MINtoLK: "
@@ -1572,7 +1404,7 @@ namespace LHC_FASER
       << std::endl << currentHkToMaxLogCoefficient << "L"
       << std::endl << currentHkToMaxLinCoefficient << "E"
       << std::endl << currentHkToMaxLinLogCoefficient << "EL"
-      << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
+      << std::endl << currentHkToMaxSqCoefficient << "E^2";**/
 
 
       // VvSqMinusAaSqAntiDistribution
@@ -1580,7 +1412,7 @@ namespace LHC_FASER
       // MIN to LK:
 
       // debugging:
-      currentMinToLkInvCoefficient = 0.0;
+      //currentMinToLkInvCoefficient = 0.0;
       // right!
 
       currentMinToLkConstCoefficient
@@ -1597,11 +1429,11 @@ namespace LHC_FASER
       // right!
 
       // debugging:
-      currentMinToLkLinLogCoefficient = 0.0;
+      //currentMinToLkLinLogCoefficient = 0.0;
       // right!
 
       // debugging:
-      currentMinToLkSqCoefficient = 0.0;
+      //currentMinToLkSqCoefficient = 0.0;
       // right!
 
 
@@ -1627,13 +1459,14 @@ namespace LHC_FASER
       }
 
       // debugging:
-      currentLkToHkSqCoefficient = 0.0;
+      //currentLkToHkSqCoefficient = 0.0;
       // right!
 
 
       // HK to MAX:
 
-      currentHkToMaxInvCoefficient = 0.0;
+      // debugging:
+      //currentHkToMaxInvCoefficient = 0.0;
       // right!
 
       currentHkToMaxConstCoefficient
@@ -1650,43 +1483,43 @@ namespace LHC_FASER
       // right!
 
       // debugging:
-      currentHkToMaxLinLogCoefficient = 0.0;
+      //currentHkToMaxLinLogCoefficient = 0.0;
       // right!
 
       // debugging:
-      currentHkToMaxSqCoefficient = 0.0;
+      //currentHkToMaxSqCoefficient = 0.0;
       // right!
 
 
       if( couplesAsVectorNotAxial )
       {
-        MINtoLK_const->addToCoefficient( currentMinToLkConstCoefficient );
-        MINtoLK_log->addToCoefficient( currentMinToLkLogCoefficient );
-        MINtoLK_lin->addToCoefficient( currentMinToLkLinCoefficient );
+        minToLkConst->addToCoefficient( currentMinToLkConstCoefficient );
+        minToLkLog->addToCoefficient( currentMinToLkLogCoefficient );
+        minToLkLin->addToCoefficient( currentMinToLkLinCoefficient );
 
-        LKtoHK_const->addToCoefficient( currentLkToHkConstCoefficient );
-        LKtoHK_lin->addToCoefficient( currentLkToHkLinCoefficient );
+        lkToHkConst->addToCoefficient( currentLkToHkConstCoefficient );
+        lkToHkLin->addToCoefficient( currentLkToHkLinCoefficient );
 
-        HKtoMAX_const->addToCoefficient( currentHkToMaxConstCoefficient );
-        HKtoMAX_log->addToCoefficient( currentHkToMaxLogCoefficient );
-        HKtoMAX_lin->addToCoefficient( currentHkToMaxLinCoefficient );
+        hkToMaxConst->addToCoefficient( currentHkToMaxConstCoefficient );
+        hkToMaxLog->addToCoefficient( currentHkToMaxLogCoefficient );
+        hkToMaxLin->addToCoefficient( currentHkToMaxLinCoefficient );
       }
       else
       {
-        MINtoLK_const->addToCoefficient( -currentMinToLkConstCoefficient );
-        MINtoLK_log->addToCoefficient( -currentMinToLkLogCoefficient );
-        MINtoLK_lin->addToCoefficient( -currentMinToLkLinCoefficient );
+        minToLkConst->addToCoefficient( -currentMinToLkConstCoefficient );
+        minToLkLog->addToCoefficient( -currentMinToLkLogCoefficient );
+        minToLkLin->addToCoefficient( -currentMinToLkLinCoefficient );
 
-        LKtoHK_const->addToCoefficient( -currentLkToHkConstCoefficient );
-        LKtoHK_lin->addToCoefficient( -currentLkToHkLinCoefficient );
+        lkToHkConst->addToCoefficient( -currentLkToHkConstCoefficient );
+        lkToHkLin->addToCoefficient( -currentLkToHkLinCoefficient );
 
-        HKtoMAX_const->addToCoefficient( -currentHkToMaxConstCoefficient );
-        HKtoMAX_log->addToCoefficient( -currentHkToMaxLogCoefficient );
-        HKtoMAX_lin->addToCoefficient( -currentHkToMaxLinCoefficient );
+        hkToMaxConst->addToCoefficient( -currentHkToMaxConstCoefficient );
+        hkToMaxLog->addToCoefficient( -currentHkToMaxLogCoefficient );
+        hkToMaxLin->addToCoefficient( -currentHkToMaxLinCoefficient );
       }
 
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "VvSqMinusAaSqAntiDistribution:"
       << std::endl << "MINtoLK: "
@@ -1706,11 +1539,11 @@ namespace LHC_FASER
       << std::endl << currentHkToMaxLogCoefficient << "L"
       << std::endl << currentHkToMaxLinCoefficient << "E"
       << std::endl << currentHkToMaxLinLogCoefficient << "EL"
-      << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
+      << std::endl << currentHkToMaxSqCoefficient << "E^2";**/
     }
 
     // debugging:
-    std::cout
+    /**std::cout
     << std::endl
     << "debugging: Z_handed_muon:calculateCoefficients() produced "
     << std::endl << "firstMass = " << firstMass
@@ -1719,84 +1552,84 @@ namespace LHC_FASER
     << std::endl << "(true = " << true << ")"
     << std::endl << "minimumEnergy = " << minimumEnergy
     << std::endl << "maximumEnergy = " << maximumEnergy
-    << std::endl << "MINtoLK_inv = " << MINtoLK_inv->getCoefficient()
-    << std::endl << "MINtoLK_const = " << MINtoLK_const->getCoefficient()
-    << std::endl << "MINtoLK_log = " << MINtoLK_log->getCoefficient()
-    << std::endl << "MINtoLK_lin = " << MINtoLK_lin->getCoefficient()
-    << std::endl << "MINtoLK_linlog = " << MINtoLK_linlog->getCoefficient()
-    << std::endl << "MINtoLK_sq = " << MINtoLK_sq->getCoefficient()
-    << std::endl << "LKtoHK_const = " << LKtoHK_const->getCoefficient()
-    << std::endl << "LKtoHK_lin = " << LKtoHK_lin->getCoefficient()
-    << std::endl << "LKtoHK_sq = " << LKtoHK_sq->getCoefficient()
-    << std::endl << "HKtoMAX_inv = " << HKtoMAX_inv->getCoefficient()
-    << std::endl << "HKtoMAX_const = " << HKtoMAX_const->getCoefficient()
-    << std::endl << "HKtoMAX_log = " << HKtoMAX_log->getCoefficient()
-    << std::endl << "HKtoMAX_lin = " << HKtoMAX_lin->getCoefficient()
-    << std::endl << "HKtoMAX_linlog = " << HKtoMAX_linlog->getCoefficient()
-    << std::endl << "HKtoMAX_sq = " << HKtoMAX_sq->getCoefficient();
-    std::cout << std::endl;/**/
+    << std::endl << "minToLkInv = " << minToLkInv->getCoefficient()
+    << std::endl << "minToLkConst = " << minToLkConst->getCoefficient()
+    << std::endl << "minToLkLog = " << minToLkLog->getCoefficient()
+    << std::endl << "minToLkLin = " << minToLkLin->getCoefficient()
+    << std::endl << "minToLkLinlog = " << minToLkLinlog->getCoefficient()
+    << std::endl << "minToLkSq = " << minToLkSq->getCoefficient()
+    << std::endl << "lkToHkConst = " << lkToHkConst->getCoefficient()
+    << std::endl << "lkToHkLin = " << lkToHkLin->getCoefficient()
+    << std::endl << "lkToHkSq = " << lkToHkSq->getCoefficient()
+    << std::endl << "hkToMaxInv = " << hkToMaxInv->getCoefficient()
+    << std::endl << "hkToMaxConst = " << hkToMaxConst->getCoefficient()
+    << std::endl << "hkToMaxLog = " << hkToMaxLog->getCoefficient()
+    << std::endl << "hkToMaxLin = " << hkToMaxLin->getCoefficient()
+    << std::endl << "hkToMaxLinlog = " << hkToMaxLinlog->getCoefficient()
+    << std::endl << "hkToMaxSq = " << hkToMaxSq->getCoefficient();
+    std::cout << std::endl;**/
   }
 
 
 
   W_minus_handed_muon::W_minus_handed_muon(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+                                    readierForNewPoint* const readierPointer,
+                                 CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle,
+             CppSLHA::particle_property_set const* const secondParticle,
+              CppSLHA::particle_property_set const* const thirdParticle,
+          CppSLHA::particle_property_set const* const fourthParticle,
                                         bool const given_jet_is_left_handed ) :
-    leptonEnergyDistribution( given_readier,
-                                given_spectrum,
-                                given_first_particle,
+    leptonEnergyDistribution( readierPointer,
+                                spectrumData,
+                                firstParticle,
                                 effectiveSquarkMass,
-                                given_second_particle,
-                                given_third_particle,
-                                given_fourth_particle ),
+                                secondParticle,
+                                thirdParticle,
+                                fourthParticle ),
     jet_is_left_handed( given_jet_is_left_handed ),
-    MINtoLK_inv( MINtoLK_segment.addTerm( -1,
+    minToLkInv( minToLkSegment.addTerm( -1,
                                           0 ) ),
-    MINtoLK_const( MINtoLK_segment.addTerm( 0,
+    minToLkConst( minToLkSegment.addTerm( 0,
                                             0 ) ),
-    MINtoLK_log( MINtoLK_segment.addTerm( 0,
+    minToLkLog( minToLkSegment.addTerm( 0,
                                           1 ) ),
-    MINtoLK_lin( MINtoLK_segment.addTerm( 1,
+    minToLkLin( minToLkSegment.addTerm( 1,
                                           0 ) ),
-    MINtoLK_linlog( MINtoLK_segment.addTerm( 1,
+    minToLkLinlog( minToLkSegment.addTerm( 1,
                                              1 ) ),
-    MINtoLK_sq( MINtoLK_segment.addTerm( 2,
+    minToLkSq( minToLkSegment.addTerm( 2,
                                          0 ) ),
-    LKtoHK_const( LKtoHK_segment.addTerm( 0,
+    lkToHkConst( lkToHkSegment.addTerm( 0,
                                           0 ) ),
-    LKtoHK_lin( LKtoHK_segment.addTerm( 1,
+    lkToHkLin( lkToHkSegment.addTerm( 1,
                                         0 ) ),
-    LKtoHK_sq( LKtoHK_segment.addTerm( 2,
+    lkToHkSq( lkToHkSegment.addTerm( 2,
                                        0 ) ),
-    HKtoMAX_inv( HKtoMAX_segment.addTerm( -1,
+    hkToMaxInv( hkToMaxSegment.addTerm( -1,
                                           0 ) ),
-    HKtoMAX_const( HKtoMAX_segment.addTerm( 0,
+    hkToMaxConst( hkToMaxSegment.addTerm( 0,
                                             0 ) ),
-    HKtoMAX_log( HKtoMAX_segment.addTerm( 0,
+    hkToMaxLog( hkToMaxSegment.addTerm( 0,
                                           1 ) ),
-    HKtoMAX_lin( HKtoMAX_segment.addTerm( 1,
+    hkToMaxLin( hkToMaxSegment.addTerm( 1,
                                           0 ) ),
-    HKtoMAX_linlog( HKtoMAX_segment.addTerm( 1,
+    hkToMaxLinlog( hkToMaxSegment.addTerm( 1,
                                              1 ) ),
-    HKtoMAX_sq( HKtoMAX_segment.addTerm( 2,
+    hkToMaxSq( hkToMaxSegment.addTerm( 2,
                                          0 ) )
   {
     NMIX = spectrum->inspect_BLOCK( "NMIX" );
     UMIX = spectrum->inspect_BLOCK( "UMIX" );
     VMIX = spectrum->inspect_BLOCK( "VMIX" );
     if( CppSLHA::PDG_code::chargino_one
-        == given_second_particle->get_PDG_code() )
+        == secondParticle->get_PDG_code() )
     {
       which_chargino = 1;
     }
     else if( CppSLHA::PDG_code::chargino_two
-        == given_second_particle->get_PDG_code() )
+        == secondParticle->get_PDG_code() )
     {
       which_chargino = 2;
     }
@@ -1816,22 +1649,22 @@ namespace LHC_FASER
       std::cout << std::endl;
     }
     if( CppSLHA::PDG_code::neutralino_one
-        == given_fourth_particle->get_PDG_code() )
+        == fourthParticle->get_PDG_code() )
     {
       which_neutralino = 1;
     }
     else if( CppSLHA::PDG_code::neutralino_two
-        == given_fourth_particle->get_PDG_code() )
+        == fourthParticle->get_PDG_code() )
     {
       which_neutralino = 2;
     }
     else if( CppSLHA::PDG_code::neutralino_three
-        == given_fourth_particle->get_PDG_code() )
+        == fourthParticle->get_PDG_code() )
     {
       which_neutralino = 3;
     }
     else if( CppSLHA::PDG_code::neutralino_four
-        == given_fourth_particle->get_PDG_code() )
+        == fourthParticle->get_PDG_code() )
     {
       which_neutralino = 4;
     }
@@ -1852,9 +1685,9 @@ namespace LHC_FASER
       << fourthParticle->get_PDG_code() << ")";
       std::cout << std::endl;
     }
-    segments.push_back( &MINtoLK_segment );
-    segments.push_back( &LKtoHK_segment );
-    segments.push_back( &HKtoMAX_segment );
+    segments.push_back( &minToLkSegment );
+    segments.push_back( &lkToHkSegment );
+    segments.push_back( &hkToMaxSegment );
   }
 
   W_minus_handed_muon::~W_minus_handed_muon()
@@ -1868,13 +1701,11 @@ namespace LHC_FASER
   void
   W_minus_handed_muon::calculateCoefficients()
   {
-
     /* it doesn't matter if the neutralino mass is negative, since only the
      * absolute square appears, & the couplings are only affected by it as an
      * overall phase.  I (BOL) assume no CP violation, so the neutralino mixing
      * matrices are strictly real.
      */
-
     Vv = ( NMIX->get_entry( which_neutralino,
                             2 ) * ( UMIX->get_entry( which_chargino,
                                                      1 )
@@ -2000,7 +1831,7 @@ namespace LHC_FASER
     // TwiceVvAaSymDistribution:
     current_term_coefficient
     = ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
-    MINtoLK_inv->setCoefficient( current_term_coefficient );
+    minToLkInv->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout << std::endl << "debugging:"
     << std::endl
@@ -2019,7 +1850,7 @@ namespace LHC_FASER
                       + mVsq * ( mQCsqSum * ( lnElMin - lnmQC )
                                  - 2.0 * mCsq ) )
                   + mQCsqSum * mVsq * mVsq ) ) );
-    MINtoLK_const->setCoefficient( current_term_coefficient );
+    minToLkConst->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient;
@@ -2027,7 +1858,7 @@ namespace LHC_FASER
     current_term_coefficient
     = ( -2.0 * ElMin * mQsq * ( EightmCEVElMin * mQsq + 4.0 * mCsq * mQCsqSum )
         * mVsq );
-    MINtoLK_log->setCoefficient( current_term_coefficient );
+    minToLkLog->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient << "L";
@@ -2039,21 +1870,21 @@ namespace LHC_FASER
             + EightmCEVElMin * mC * mVsq
             - 2.0 * mCsq * ( 4.0 * ElMin * mC * ( 4.0 * ElMinsq - mVsq )
                              + mVsq * mVsq) ) );
-    MINtoLK_lin->setCoefficient( current_term_coefficient );
+    minToLkLin->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient << "E";
 
     current_term_coefficient
     = ( -8.0 * EightmCEVElMin * ElMin * mCsq * mQcu );
-    MINtoLK_linlog->setCoefficient( 0.0 );
+    minToLkLinlog->setCoefficient( 0.0 );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient << "EL";
 
     current_term_coefficient
     = ( -32.0 * ElMinsq * mQsq * mQsq * ( mQCsqDiff - mCsq ) );
-    MINtoLK_sq->setCoefficient( current_term_coefficient );
+    minToLkSq->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient << "E^2";
@@ -2071,7 +1902,7 @@ namespace LHC_FASER
                              + lnVsqOverFourElMinsq * mC )
                        - ( mC * mQsq
                            - 2.0 * ElMin * mQCsqSum ) * mVsq * mVsq ) ) );
-      LKtoHK_const->setCoefficient( current_term_coefficient );
+      lkToHkConst->setCoefficient( current_term_coefficient );
       // debugging:
       /**/std::cout
       << std::endl << "LKtoHK: "
@@ -2085,12 +1916,12 @@ namespace LHC_FASER
                              * ( 2.0 * ElMinsq * ( ElMin - 2.0 * mC )
                                  + mC * mVsq )
                              - mVsq * mVsq ) ) );
-      LKtoHK_lin->setCoefficient( current_term_coefficient );
+      lkToHkLin->setCoefficient( current_term_coefficient );
       // debugging:
       /**/std::cout
       << std::endl << current_term_coefficient << "E";
       current_term_coefficient = 0.0;
-      LKtoHK_sq->setCoefficient( 0.0 );
+      lkToHkSq->setCoefficient( 0.0 );
       // debugging:
       /**/std::cout
       << std::endl << current_term_coefficient << "E^2";
@@ -2103,7 +1934,7 @@ namespace LHC_FASER
               * ( EightmCEVElMin + 8.0 * ElMin * mCsq )
               - 8.0 * lnmQC * ( 4.0 * mQCsqSum * mCsq * ElMin
                                 + mQsq * EightmCEVElMin ) ) );
-      LKtoHK_const->setCoefficient( current_term_coefficient );
+      lkToHkConst->setCoefficient( current_term_coefficient );
       // debugging:
       /**/std::cout
       << std::endl << "LKtoHK: "
@@ -2112,21 +1943,21 @@ namespace LHC_FASER
       current_term_coefficient
       = ( 8.0 * EightmCEVElMin * ElMin * mQcu
           * ( mQCsqDiff - 2.0 * lnmQC * mCsq ) );
-      LKtoHK_lin->setCoefficient( current_term_coefficient );
+      lkToHkLin->setCoefficient( current_term_coefficient );
       // debugging:
       /**/std::cout
       << std::endl << current_term_coefficient << "E";
 
       current_term_coefficient
       = ( -32.0 * ElMinsq * mQsq * mQCsqDiff * mQCsqDiff );
-      LKtoHK_sq->setCoefficient( current_term_coefficient );
+      lkToHkSq->setCoefficient( current_term_coefficient );
       // debugging:
       /**/std::cout
       << std::endl << current_term_coefficient << "E^2";
     }
 
     current_term_coefficient = ( 4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
-    HKtoMAX_inv->setCoefficient( current_term_coefficient );
+    hkToMaxInv->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << "HKtoMAX: "
@@ -2141,7 +1972,7 @@ namespace LHC_FASER
                   - 2.0 * mQsq )
             - 8.0 * ElMin * ElMinsq * mC * mQCsqSum
             + mC * mQsq * ( EightmCEVElMin - mC * mVsq ) ) );
-    HKtoMAX_const->setCoefficient( current_term_coefficient );
+    hkToMaxConst->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient;
@@ -2149,7 +1980,7 @@ namespace LHC_FASER
     current_term_coefficient
     = ( 2.0 * ElMin * mQsq * mVsq
         * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) );
-    HKtoMAX_log->setCoefficient( current_term_coefficient );
+    hkToMaxLog->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient << "L";
@@ -2159,19 +1990,19 @@ namespace LHC_FASER
         * ( 2.0 * mC * ( 4.0 * ElMinsq * ( ElMin - mC ) + mC * mVsq )
             - EightmCEVElMin
             * ( ElMin + ( 1.0 + lnmQC + lnVsqOverFourElMinsq ) * mC ) ) );
-    HKtoMAX_lin->setCoefficient( current_term_coefficient );
+    hkToMaxLin->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient << "E";
 
     current_term_coefficient = ( 8.0 * EightmCEVElMin * ElMin * mCsq * mQcu );
-    HKtoMAX_linlog->setCoefficient( current_term_coefficient );
+    hkToMaxLinlog->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient << "EL";
 
     current_term_coefficient = ( -32.0 * ElMinsq * mCsq * mCsq * mQsq );
-    HKtoMAX_sq->setCoefficient( current_term_coefficient );
+    hkToMaxSq->setCoefficient( current_term_coefficient );
     // debugging:
     /**/std::cout
     << std::endl << current_term_coefficient << "E^2";
@@ -2198,7 +2029,7 @@ namespace LHC_FASER
 
 
     // MIN to LK:
-    MINtoLK_segment.setSegmentRange( minimumEnergy,
+    minToLkSegment.setSegmentRange( minimumEnergy,
                                        Elk );
 
     // inv:
@@ -2224,7 +2055,7 @@ namespace LHC_FASER
     // JjVvSqMinusAaSq
     // 0.0
 
-    MINtoLK_inv->setCoefficient( current_term_coefficient );
+    minToLkInv->setCoefficient( current_term_coefficient );
 
 
     // const:
@@ -2279,7 +2110,7 @@ namespace LHC_FASER
          * ( EightmCXElMinmQsq * ElMin * mVsq
              * ( 2.0 * mCsq + ( lnmQC - lnElMin ) * mQCsqSum ) ) );
 
-    MINtoLK_const->setCoefficient( current_term_coefficient );
+    minToLkConst->setCoefficient( current_term_coefficient );
 
 
     // log:
@@ -2317,7 +2148,7 @@ namespace LHC_FASER
     += ( JjVvSqMinusAaSq
          * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
 
-    MINtoLK_log->setCoefficient( current_term_coefficient );
+    minToLkLog->setCoefficient( current_term_coefficient );
 
 
     // lin:
@@ -2361,7 +2192,7 @@ namespace LHC_FASER
     += ( JjVvSqMinusAaSq
          * ( -2.0 * EightmCXElMinmQsq * mC * mQ * mVsq ) );
 
-    MINtoLK_lin->setCoefficient( current_term_coefficient );
+    minToLkLin->setCoefficient( current_term_coefficient );
 
 
     // linlog:
@@ -2388,7 +2219,7 @@ namespace LHC_FASER
     // JjVvSqMinusAaSq
     // 0.0
 
-    MINtoLK_linlog->setCoefficient( current_term_coefficient );
+    minToLkLinlog->setCoefficient( current_term_coefficient );
 
 
     // sq:
@@ -2415,11 +2246,11 @@ namespace LHC_FASER
     // JjVvSqMinusAaSq
     // 0.0
 
-    MINtoLK_sq->setCoefficient( current_term_coefficient );
+    minToLkSq->setCoefficient( current_term_coefficient );
 
 
     // LK to HK:
-    LKtoHK_segment.setSegmentRange( Elk,
+    lkToHkSegment.setSegmentRange( Elk,
                                       Ehk );
 
     if( energy_limited_cosines )
@@ -2480,7 +2311,7 @@ namespace LHC_FASER
              * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq
                  * ( lnVsqOverFourElMinsq - lnElMin ) ) );
 
-        LKtoHK_const->setCoefficient( current_term_coefficient );
+        lkToHkConst->setCoefficient( current_term_coefficient );
 
 
         // lin:
@@ -2528,7 +2359,7 @@ namespace LHC_FASER
              * ( 2.0 * EightmCXElMinmQsq * mC * mQ
                  * (4.0 * ElMinsq - mVsq ) ) );
 
-        LKtoHK_lin->setCoefficient( current_term_coefficient );
+        lkToHkLin->setCoefficient( current_term_coefficient );
 
 
         // sq:
@@ -2551,7 +2382,7 @@ namespace LHC_FASER
         // JjVvSqMinusAaSq
         // 0.0
 
-        LKtoHK_sq->setCoefficient( 0.0 );
+        lkToHkSq->setCoefficient( 0.0 );
 
       }
     else
@@ -2601,7 +2432,7 @@ namespace LHC_FASER
              * ( 2.0 * EightmCXElMinmQsq * ElMin * mVsq
                  * ( lnmQC * mQCsqSum - mQCsqDiff ) ) );
 
-        LKtoHK_const->setCoefficient( current_term_coefficient );
+        lkToHkConst->setCoefficient( current_term_coefficient );
 
 
         // lin:
@@ -2634,7 +2465,7 @@ namespace LHC_FASER
         // JjVvSqMinusAaSq
         // 0.0
 
-        LKtoHK_lin->setCoefficient( current_term_coefficient );
+        lkToHkLin->setCoefficient( current_term_coefficient );
 
 
         // sq:
@@ -2661,13 +2492,13 @@ namespace LHC_FASER
         // JjVvSqMinusAaSq
         // 0.0
 
-        LKtoHK_sq->setCoefficient( current_term_coefficient );
+        lkToHkSq->setCoefficient( current_term_coefficient );
 
       }
 
 
     // HK to MAX:
-    HKtoMAX_segment.setSegmentRange( Ehk,
+    hkToMaxSegment.setSegmentRange( Ehk,
                                        maximumEnergy );
 
     // inv:
@@ -2694,7 +2525,7 @@ namespace LHC_FASER
     // JjVvSqMinusAaSq
     // 0.0
 
-    HKtoMAX_inv->setCoefficient( current_term_coefficient );
+    hkToMaxInv->setCoefficient( current_term_coefficient );
 
 
     // const:
@@ -2749,7 +2580,7 @@ namespace LHC_FASER
              * ( ( lnmQC + lnVsqOverFourElMinsq ) * mQCsqSum
                  - 2.0 * mQsq ) ) );
 
-    HKtoMAX_const->setCoefficient( current_term_coefficient );
+    hkToMaxConst->setCoefficient( current_term_coefficient );
 
 
     // log:
@@ -2787,7 +2618,7 @@ namespace LHC_FASER
     += ( JjVvSqMinusAaSq
          * ( -EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
 
-    HKtoMAX_log->setCoefficient( current_term_coefficient );
+    hkToMaxLog->setCoefficient( current_term_coefficient );
 
 
     // lin:
@@ -2827,7 +2658,7 @@ namespace LHC_FASER
     += ( JjVvSqMinusAaSq
          * ( 8.0 * EightmCXElMinmQsq * ElMinsq * mC * mQ ) );
 
-    HKtoMAX_lin->setCoefficient( current_term_coefficient );
+    hkToMaxLin->setCoefficient( current_term_coefficient );
 
 
     // linlog:
@@ -2854,7 +2685,7 @@ namespace LHC_FASER
     // JjVvSqMinusAaSq
     // 0.0
 
-    HKtoMAX_linlog->setCoefficient( current_term_coefficient );
+    hkToMaxLinlog->setCoefficient( current_term_coefficient );
 
 
     // sq:
@@ -2881,7 +2712,7 @@ namespace LHC_FASER
     // JjVvSqMinusAaSq
     // 0.0
 
-    HKtoMAX_sq->setCoefficient( current_term_coefficient );
+    hkToMaxSq->setCoefficient( current_term_coefficient );
 
     // debugging:
     /**std::cout
@@ -2892,303 +2723,248 @@ namespace LHC_FASER
     std::cout << std::endl << "Elk = " << Elk;
     std::cout << std::endl << "Ehk = " << Ehk;
     std::cout << std::endl << "maximum_energy = " << maximum_energy;
-    std::cout << std::endl << "MINtoLK_lin = " << MINtoLK_lin;
-    std::cout << std::endl << "MINtoLK_log = " << MINtoLK_log;
-    std::cout << std::endl << "MINtoLK_const = " << MINtoLK_const;
-    std::cout << std::endl << "MINtoLK_inv = " << MINtoLK_inv;
-    std::cout << std::endl << "LKtoHK_const = " << LKtoHK_const;
-    std::cout << std::endl << "LKtoHK_inv = " << LKtoHK_inv;
+    std::cout << std::endl << "minToLkLin = " << minToLkLin;
+    std::cout << std::endl << "minToLkLog = " << minToLkLog;
+    std::cout << std::endl << "minToLkConst = " << minToLkConst;
+    std::cout << std::endl << "minToLkInv = " << minToLkInv;
+    std::cout << std::endl << "lkToHkConst = " << lkToHkConst;
+    std::cout << std::endl << "lkToHkInv = " << lkToHkInv;
     std::cout << std::endl;**/
   }
 
 
 
-  vector_from_squark_to_muon::vector_from_squark_to_muon(
-                                       readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  vectorFromSquarkToMuon::vectorFromSquarkToMuon(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-           CppSLHA::particle_property_set const* const given_third_particle ) :
-    leptonEnergyDistribution( given_readier,
-                              given_spectrum,
-                              given_first_particle,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                  CppSLHA::particle_property_set const* const thirdParticle ) :
+    leptonEnergyDistribution( readierPointer,
+                              spectrumData,
+                              firstParticle,
                               effectiveSquarkMass,
-                              given_second_particle,
-                              given_third_particle,
+                              secondParticle,
+                              thirdParticle,
                               NULL ),
-    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
-                                              0 ) ),
-    MINtoMAX_lin( MINtoMAX_segment.addTerm( 1,
+    minToMaxConst( minToMaxSegment.addTerm( 0,
                                             0 ) ),
-    MINtoMAX_sq( MINtoMAX_segment.addTerm( 2,
-                                           0 ) )
+    minToMaxLin( minToMaxSegment.addTerm( 1,
+                                          0 ) ),
+    minToMaxSq( minToMaxSegment.addTerm( 2,
+                                         0 ) )
   {
-    segments.push_back( &MINtoMAX_segment );
+    segments.push_back( &minToMaxSegment );
   }
 
-  vector_from_squark_to_muon::~vector_from_squark_to_muon()
+  vectorFromSquarkToMuon::~vectorFromSquarkToMuon()
   {
-
     // does nothing.
-
-  }
-
-  void
-  vector_from_squark_to_muon::calculateCoefficients()
-  {
-    mQhSq = ( firstMass * firstMass );
-    mQlSq = ( secondMass * secondMass );
-    mVSq = ( thirdMass * thirdMass );
-    gammaV = ( ( mQhSq - mQlSq + mVSq ) / ( 2.0 * firstMass * thirdMass ) );
-    betaV = sqrt( ( 1.0 - ( 1.0 / ( gammaV * gammaV ) ) ) );
-    productionFrameEnergy = ( 0.5 * thirdMass );
-    minimumEnergy = ( gammaV * ( 1.0 - betaV ) * productionFrameEnergy );
-    maximumEnergy = ( gammaV * ( 1.0 + betaV ) * productionFrameEnergy );
-    energyDifference = ( maximumEnergy - minimumEnergy );
-
-    // now we set up the coefficients of various terms:
-    // MIN to MAX segment:
-    MINtoMAX_segment.setSegmentRange( minimumEnergy,
-                                      maximumEnergy );
-    MINtoMAX_const->setCoefficient( -minimumEnergy * maximumEnergy );
-    MINtoMAX_lin->setCoefficient( minimumEnergy + maximumEnergy );
-    MINtoMAX_sq->setCoefficient( -1.0 );
-
-    //normalization
-    //= ( ( energyDifference * energyDifference * energyDifference ) / 6.0 );
   }
 
 
 
-  Z_direct_jet::Z_direct_jet( readierForNewPoint* const given_readier,
-                              CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  zDirectJet::zDirectJet( readierForNewPoint* const readierPointer,
+                          CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    zHandedMuon( given_readier,
-                   given_spectrum,
-                   given_first_particle,
-                   effectiveSquarkMass,
-                   given_second_particle,
-                   given_third_particle,
-                   given_fourth_particle,
-                   true,
-                   true )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                 CppSLHA::particle_property_set const* const fourthParticle ) :
+    zHandedMuon( readierPointer,
+                 spectrumData,
+                 firstParticle,
+                 effectiveSquarkMass,
+                 secondParticle,
+                 thirdParticle,
+                 fourthParticle,
+                 true,
+                 true )
   {
-
     // just an initialization of the base class object.
-
   }
 
-  Z_direct_jet::~Z_direct_jet()
+  zDirectJet::~zDirectJet()
   {
-
     // does nothing.
-
   }
 
 
 
-  W_minus_direct_jet::W_minus_direct_jet(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  wMinusDirectJet::wMinusDirectJet( readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    zHandedMuon( given_readier,
-                   given_spectrum,
-                   given_first_particle,
-                   effectiveSquarkMass,
-                   given_second_particle,
-                   given_third_particle,
-                   given_fourth_particle,
-                   true,
-                   true )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                 CppSLHA::particle_property_set const* const fourthParticle ) :
+    zHandedMuon( readierPointer,
+                 spectrumData,
+                 firstParticle,
+                 effectiveSquarkMass,
+                 secondParticle,
+                 thirdParticle,
+                 fourthParticle,
+                 true,
+                 true )
   {
-
     // just an initialization of the base class object.
-
   }
 
-  W_minus_direct_jet::~W_minus_direct_jet()
+  wMinusDirectJet::~wMinusDirectJet()
   {
-
     // does nothing.
-
   }
 
 
 
-  negatively_charged_Higgs_muon::negatively_charged_Higgs_muon(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  negativelyChargedHiggsMuon::negativelyChargedHiggsMuon(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    Higgs_muon_plus_antimuon( given_readier,
-                              given_spectrum,
-                              given_first_particle,
-                              effectiveSquarkMass,
-                              given_second_particle,
-                              given_third_particle,
-                              given_fourth_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                 CppSLHA::particle_property_set const* const fourthParticle ) :
+    HiggsMuonPlusAntimuon( readierPointer,
+                           spectrumData,
+                           firstParticle,
+                           effectiveSquarkMass,
+                           secondParticle,
+                           thirdParticle,
+                           fourthParticle )
   {
-
     // just an initialization of the base class object.
-
   }
 
-  negatively_charged_Higgs_muon::~negatively_charged_Higgs_muon()
+  negativelyChargedHiggsMuon::~negativelyChargedHiggsMuon()
   {
-
     // does nothing.
-
   }
 
 
 
-  negatively_charged_Higgs_jet::negatively_charged_Higgs_jet(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  negativelyChargedHiggsJet::negativelyChargedHiggsJet(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-          CppSLHA::particle_property_set const* const given_fourth_particle ) :
-    Higgs_muon_plus_antimuon( given_readier,
-                              given_spectrum,
-                              given_first_particle,
-                              effectiveSquarkMass,
-                              given_second_particle,
-                              given_third_particle,
-                              given_fourth_particle )
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                 CppSLHA::particle_property_set const* const fourthParticle ) :
+    HiggsMuonPlusAntimuon( readierPointer,
+                           spectrumData,
+                           firstParticle,
+                           effectiveSquarkMass,
+                           secondParticle,
+                           thirdParticle,
+                           fourthParticle )
   {
-
     // just an initialization of the base class object.
-
   }
 
-  negatively_charged_Higgs_jet::~negatively_charged_Higgs_jet()
+  negativelyChargedHiggsJet::~negativelyChargedHiggsJet()
   {
-
     // does nothing.
-
   }
 
 
 
-  neutralino_three_body_decay::neutralino_three_body_decay(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  neutralinoThreeBodyDecay::neutralinoThreeBodyDecay(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
-               CppSLHA::particle_property_set const* const given_left_sfermion,
-           CppSLHA::particle_property_set const* const given_right_sfermion ) :
-    leptonEnergyDistribution( given_readier,
-                                given_spectrum,
-                                given_first_particle,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                      CppSLHA::particle_property_set const* const leftSfermion,
+                  CppSLHA::particle_property_set const* const rightSfermion ) :
+    leptonEnergyDistribution( readierPointer,
+                                spectrumData,
+                                firstParticle,
                                 effectiveSquarkMass,
-                                given_second_particle,
-                                given_third_particle,
+                                secondParticle,
+                                thirdParticle,
                                 NULL ),
-    left_sfermion( given_left_sfermion ),
-    right_sfermion( given_right_sfermion ),
-    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
-                                              0,
-                                              NULL,
-                                              1.0 ) )
+    leftSfermion( leftSfermion ),
+    rightSfermion( rightSfermion ),
+    minToMaxConst( minToMaxSegment.addTerm( 0,
+                                            0,
+                                            NULL,
+                                            1.0 ) )
   {
-    segments.push_back( &MINtoMAX_segment );
+    segments.push_back( &minToMaxSegment );
   }
 
-  neutralino_three_body_decay::~neutralino_three_body_decay()
+  neutralinoThreeBodyDecay::~neutralinoThreeBodyDecay()
   {
-
     // does nothing.
-
   }
 
 
   void
-  neutralino_three_body_decay::calculateCoefficients()
+  neutralinoThreeBodyDecay::calculateCoefficients()
   {
-
     minimumEnergy = 0.0;
-
     maximumEnergy = ( secondMass - thirdMass );
 
-
-    // now we set up the coefficients of various terms.
+    // now we set up the coefficients of various terms:
 
     // MIN to MAX segment:
-    MINtoMAX_segment.setSegmentRange( minimumEnergy,
-                                        maximumEnergy );
+    minToMaxSegment.setSegmentRange( minimumEnergy,
+                                     maximumEnergy );
   }
 
 
 
-  chargino_three_body_decay::chargino_three_body_decay(
-                                    readierForNewPoint* const given_readier,
-                                 CppSLHA::CppSLHA0 const* const given_spectrum,
-              CppSLHA::particle_property_set const* const given_first_particle,
+  charginoThreeBodyDecay::charginoThreeBodyDecay(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const given_second_particle,
-              CppSLHA::particle_property_set const* const given_third_particle,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
              CppSLHA::particle_property_set const* const leftUpIsospinSfermion,
             CppSLHA::particle_property_set const* const rightUpIsospinSfermion,
            CppSLHA::particle_property_set const* const leftDownIsospinSfermion,
        CppSLHA::particle_property_set const* const rightDownIsospinSfermion ) :
-    leptonEnergyDistribution( given_readier,
-                              given_spectrum,
-                              given_first_particle,
+    leptonEnergyDistribution( readierPointer,
+                              spectrumData,
+                              firstParticle,
                               effectiveSquarkMass,
-                              given_second_particle,
-                              given_third_particle,
+                              secondParticle,
+                              thirdParticle,
                               NULL ),
     leftUpIsospinSfermion( leftUpIsospinSfermion ),
     rightUpIsospinSfermion( rightUpIsospinSfermion ),
     leftDownIsospinSfermion( leftDownIsospinSfermion ),
     rightDownIsospinSfermion( rightDownIsospinSfermion ),
-    MINtoMAX_const( MINtoMAX_segment.addTerm( 0,
-                                              0,
-                                              NULL,
-                                              1.0 ) )
+    minToMaxConst( minToMaxSegment.addTerm( 0,
+                                            0,
+                                            NULL,
+                                            1.0 ) )
   {
-    segments.push_back( &MINtoMAX_segment );
+    segments.push_back( &minToMaxSegment );
   }
 
-  chargino_three_body_decay::~chargino_three_body_decay()
+  charginoThreeBodyDecay::~charginoThreeBodyDecay()
   {
-
     // does nothing.
-
   }
 
 
   void
-  chargino_three_body_decay::calculateCoefficients()
+  charginoThreeBodyDecay::calculateCoefficients()
   {
-
     minimumEnergy = 0.0;
-
     maximumEnergy = ( secondMass - thirdMass );
 
-
-    // now we set up the coefficients of various terms, & use them to determine
-    // the normalization:
+    // now we set up the coefficients of various terms:
 
     // MIN to MAX segment:
-    MINtoMAX_segment.setSegmentRange( minimumEnergy,
-                                        maximumEnergy );
+    minToMaxSegment.setSegmentRange( minimumEnergy,
+                                     maximumEnergy );
   }
 
 }  // end of LHC_FASER namespace.

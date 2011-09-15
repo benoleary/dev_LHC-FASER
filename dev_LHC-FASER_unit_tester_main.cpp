@@ -286,7 +286,7 @@ int main( int argumentCount,
 
   LHC_FASER::leptonEnergyDistribution*
   currentDistribution
-  /*= new LHC_FASER::flat_near_muon_plus_antimuon( &testReadier,
+  /*= new LHC_FASER::flatNearMuonPlusAntimuon( &testReadier,
                                                  &slhaData,
                                                  sdownLPointer,
                                                  &sdownLMass,
@@ -295,7 +295,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "flat_near" );
   currentDistribution
-  = new LHC_FASER::same_chirality_near_muon( &testReadier,
+  = new LHC_FASER::sameChiralityNearMuon( &testReadier,
                                              &slhaData,
                                              sdownLPointer,
                                              &sdownLMass,
@@ -304,7 +304,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "same_near" );
   currentDistribution
-  = new LHC_FASER::opposite_chirality_near_muon( &testReadier,
+  = new LHC_FASER::oppositeChiralityNearMuon( &testReadier,
                                                  &slhaData,
                                                  sdownLPointer,
                                                  &sdownLMass,
@@ -313,7 +313,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "opp_near" );
   currentDistribution
-  = new LHC_FASER::flat_far_muon_plus_antimuon( &testReadier,
+  = new LHC_FASER::flatFarMuonPlusAntimuon( &testReadier,
                                                 &slhaData,
                                                 sdownLPointer,
                                                 &sdownLMass,
@@ -323,7 +323,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "flat_far" );
   currentDistribution
-  = new LHC_FASER::same_chirality_far_muon( &testReadier,
+  = new LHC_FASER::sameChiralityFarMuon( &testReadier,
                                             &slhaData,
                                             sdownLPointer,
                                             &sdownLMass,
@@ -333,7 +333,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "same_far" );
   currentDistribution
-  = new LHC_FASER::opposite_chirality_far_muon( &testReadier,
+  = new LHC_FASER::oppositeChiralityFarMuon( &testReadier,
                                                 &slhaData,
                                                 sdownLPointer,
                                                 &sdownLMass,
@@ -343,7 +343,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "opp_far" );
   currentDistribution
-  = new LHC_FASER::Higgs_muon_plus_antimuon( &testReadier,
+  = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
                                              &slhaData,
                                              sdownLPointer,
                                              &sdownLMass,
@@ -353,7 +353,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "hn4" );
   currentDistribution
-  = new LHC_FASER::Higgs_muon_plus_antimuon( &testReadier,
+  = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
                                              &slhaData,
                                              sdownLPointer,
                                              &sdownLMass,
@@ -363,7 +363,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "hn3" );
   currentDistribution
-  = new LHC_FASER::Higgs_muon_plus_antimuon( &testReadier,
+  = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
                                              &slhaData,
                                              sdownLPointer,
                                              &sdownLMass,
@@ -408,7 +408,7 @@ int main( int argumentCount,
                                   true );
   distributions.addDistributions( currentDistribution,
                                    "Zn3summed" );
-  currentDistribution*/
+  currentDistribution
   = new LHC_FASER::zHandedMuon( &testReadier,
                                   &slhaData,
                                   sdownLPointer,
@@ -445,7 +445,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "Zn4summed" );
   currentDistribution
-  = new LHC_FASER::vector_from_squark_to_muon( &testReadier,
+  = new LHC_FASER::vectorFromSquarkToMuon( &testReadier,
                                                &slhaData,
                                                sdownLPointer,
                                                &sdownLMass,
@@ -453,8 +453,8 @@ int main( int argumentCount,
                                                wPointer );
   distributions.addDistributions( currentDistribution,
                                    "sdscW" );
-  /*currentDistribution
-  = new LHC_FASER::W_minus_handed_muon( &testReadier,
+  currentDistribution
+  */= new LHC_FASER::W_minus_handed_muon( &testReadier,
                                         &slhaData,
                                         sdownLPointer,
                                         &sdownLMass,
@@ -497,8 +497,8 @@ int main( int argumentCount,
                                         true );
   distributions.addDistributions( currentDistribution,
                                    "Wx2R" );
-  currentDistribution
-  = new LHC_FASER::neutralino_three_body_decay( &testReadier,
+  /*currentDistribution
+  = new LHC_FASER::neutralinoThreeBodyDecay( &testReadier,
                                                 &slhaData,
                                                 sdownLPointer,
                                                 &sdownLMass,
@@ -509,7 +509,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "nn3b" );
   currentDistribution
-  = new LHC_FASER::chargino_three_body_decay( &testReadier,
+  = new LHC_FASER::charginoThreeBodyDecay( &testReadier,
                                               &slhaData,
                                               sdownLPointer,
                                               &sdownLMass,

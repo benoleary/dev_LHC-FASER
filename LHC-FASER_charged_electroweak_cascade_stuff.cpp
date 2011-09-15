@@ -54,14 +54,14 @@ namespace LHC_FASER
     if( sneutrinoVersion )
     {
       sameDistribution
-      = new same_chirality_near_muon( shortcut->getReadier(),
+      = new sameChiralityNearMuon( shortcut->getReadier(),
                                       shortcut->getCppSlha(),
                                       coloredDecayer,
                                       effectiveSquarkMass,
                                       electroweakDecayer,
                                       intermediateDecayer );
       oppositeDistribution
-      = new opposite_chirality_near_muon( shortcut->getReadier(),
+      = new oppositeChiralityNearMuon( shortcut->getReadier(),
                                           shortcut->getCppSlha(),
                                           coloredDecayer,
                                           effectiveSquarkMass,
@@ -71,7 +71,7 @@ namespace LHC_FASER
     else
     {
       sameDistribution
-      = new same_chirality_far_muon( shortcut->getReadier(),
+      = new sameChiralityFarMuon( shortcut->getReadier(),
                                      shortcut->getCppSlha(),
                                      coloredDecayer,
                                      effectiveSquarkMass,
@@ -79,7 +79,7 @@ namespace LHC_FASER
                                      intermediateDecayer,
                                      shortcut->getNeutralinoOne() );
       oppositeDistribution
-      = new opposite_chirality_far_muon( shortcut->getReadier(),
+      = new oppositeChiralityFarMuon( shortcut->getReadier(),
                                          shortcut->getCppSlha(),
                                          coloredDecayer,
                                          effectiveSquarkMass,
@@ -245,14 +245,14 @@ namespace LHC_FASER
     if( sneutrinoVersion )
     {
       sameTauDistribution
-      = new same_chirality_near_muon( shortcut->getReadier(),
+      = new sameChiralityNearMuon( shortcut->getReadier(),
                                       shortcut->getCppSlha(),
                                       coloredDecayer,
                                       effectiveSquarkMass,
                                       electroweakDecayer,
                                       intermediateDecayer );
       oppositeTauDistribution
-      = new opposite_chirality_near_muon( shortcut->getReadier(),
+      = new oppositeChiralityNearMuon( shortcut->getReadier(),
                                           shortcut->getCppSlha(),
                                           coloredDecayer,
                                           effectiveSquarkMass,
@@ -262,7 +262,7 @@ namespace LHC_FASER
     else
     {
       sameTauDistribution
-      = new same_chirality_far_muon( shortcut->getReadier(),
+      = new sameChiralityFarMuon( shortcut->getReadier(),
                                      shortcut->getCppSlha(),
                                      coloredDecayer,
                                      effectiveSquarkMass,
@@ -270,7 +270,7 @@ namespace LHC_FASER
                                      intermediateDecayer,
                                      shortcut->getNeutralinoOne() );
       oppositeTauDistribution
-      = new opposite_chirality_far_muon( shortcut->getReadier(),
+      = new oppositeChiralityFarMuon( shortcut->getReadier(),
                                          shortcut->getCppSlha(),
                                          coloredDecayer,
                                          effectiveSquarkMass,
@@ -572,7 +572,7 @@ namespace LHC_FASER
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
 
-    directJetDistribution = new W_minus_direct_jet( shortcut->getReadier(),
+    directJetDistribution = new wMinusDirectJet( shortcut->getReadier(),
                                                     shortcut->getCppSlha(),
                                                     coloredDecayer,
                                                     effectiveSquarkMass,
@@ -837,7 +837,7 @@ namespace LHC_FASER
     // ratios from the CppSLHA::particle_property_set pointers.
 
     directAntimuonDistribution
-    = new negatively_charged_Higgs_muon( shortcut->getReadier(),
+    = new negativelyChargedHiggsMuon( shortcut->getReadier(),
                                          shortcut->getCppSlha(),
                                          coloredDecayer,
                                          effectiveSquarkMass,
@@ -1059,7 +1059,7 @@ namespace LHC_FASER
     // ratios from the CppSLHA::particle_property_set pointers.
 
     directDownUpDistribution
-    = new chargino_three_body_decay( shortcut->getReadier(),
+    = new charginoThreeBodyDecay( shortcut->getReadier(),
                                      shortcut->getCppSlha(),
                                      coloredDecayer,
                                      effectiveSquarkMass,
@@ -1070,7 +1070,7 @@ namespace LHC_FASER
                                      shortcut->getSdownL(),
                                      shortcut->getSdownR() );
     directStrangeCharmDistribution
-    = new chargino_three_body_decay( shortcut->getReadier(),
+    = new charginoThreeBodyDecay( shortcut->getReadier(),
                                      shortcut->getCppSlha(),
                                      coloredDecayer,
                                      effectiveSquarkMass,
@@ -1081,7 +1081,7 @@ namespace LHC_FASER
                                      shortcut->getSstrangeL(),
                                      shortcut->getSstrangeR() );
     directElectronDistribution
-    = new chargino_three_body_decay( shortcut->getReadier(),
+    = new charginoThreeBodyDecay( shortcut->getReadier(),
                                      shortcut->getCppSlha(),
                                      coloredDecayer,
                                      effectiveSquarkMass,
@@ -1092,7 +1092,7 @@ namespace LHC_FASER
                                      shortcut->getSelectronL(),
                                      shortcut->getSelectronR() );
     directMuonDistribution
-    = new chargino_three_body_decay( shortcut->getReadier(),
+    = new charginoThreeBodyDecay( shortcut->getReadier(),
                                      shortcut->getCppSlha(),
                                      coloredDecayer,
                                      effectiveSquarkMass,
@@ -1103,7 +1103,7 @@ namespace LHC_FASER
                                      shortcut->getSmuonL(),
                                      shortcut->getSmuonR() );
     directTauDistribution
-    = new chargino_three_body_decay( shortcut->getReadier(),
+    = new charginoThreeBodyDecay( shortcut->getReadier(),
                                      shortcut->getCppSlha(),
                                      coloredDecayer,
                                      effectiveSquarkMass,
@@ -1346,7 +1346,7 @@ namespace LHC_FASER
     // ratios from the CppSLHA::particle_property_set pointers.
 
     directMuonDistribution
-    = new vector_from_squark_to_muon( shortcut->getReadier(),
+    = new vectorFromSquarkToMuon( shortcut->getReadier(),
                                       shortcut->getCppSlha(),
                                       coloredDecayer,
                                       effectiveSquarkMass,
