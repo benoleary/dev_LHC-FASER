@@ -575,7 +575,6 @@ namespace LHC_FASER
     CppSLHA::SLHA_BLOCK const* NMIX;
     CppSLHA::SLHA_BLOCK const* UMIX;
     CppSLHA::SLHA_BLOCK const* VMIX;
-
     /* these are for ease of calculating the coefficients (referring to the
      * squark as Q, the chargino as C, the neutralino as X, the jet as j,
      * the W boson as V, the negative muon as l, & the neutrino as v):
