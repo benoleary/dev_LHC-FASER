@@ -397,12 +397,32 @@ namespace LHC_FASER
 
   segmentTermSet::~segmentTermSet()
   {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "segmentTerms.size() = " << segmentTerms.size();
+    std::cout << std::endl;**/
+
     for( std::vector< leptonDistributionExpansionTerm* >::iterator
          deletionIterator( segmentTerms.begin() );
          segmentTerms.end() > deletionIterator;
          ++deletionIterator )
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "~segmentTermSet() deleting a leptonDistributionExpansionTerm "
+      << *deletionIterator << ", "
+      << (*deletionIterator)->getCoefficient()
+      << " E^" << (*deletionIterator)->getPowerOfEnergy()
+      << " L^" << (*deletionIterator)->getPowerOfLogarithm();
+      std::cout << std::endl;**/
       delete *deletionIterator;
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "successfully deleted.";
+      std::cout << std::endl;**/
     }
   }
 
@@ -439,6 +459,12 @@ namespace LHC_FASER
                                                        coefficientValue,
                                                        referenceTerm );
     }
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "segmentTermSet::addTerm adding " << termAdder;
+    std::cout << std::endl;**/
+
     segmentTerms.push_back( termAdder );
     return termAdder;
   }
@@ -1984,13 +2010,7 @@ namespace LHC_FASER
 
   leptonEnergyDistribution::~leptonEnergyDistribution()
   {
-    for( std::vector< segmentTermSet* >::iterator
-         deletionIterator = segments.begin();
-         segments.end() > deletionIterator;
-         ++deletionIterator )
-      {
-        delete *deletionIterator;
-      }
+    // does nothing, because the segmentTermSets are not dynamically allocated.
   }
 
 

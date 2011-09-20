@@ -112,9 +112,7 @@ namespace LHC_FASER
 
   sameChiralityNearMuon::~sameChiralityNearMuon()
   {
-
     // does nothing.
-
   }
 
 
@@ -143,9 +141,7 @@ namespace LHC_FASER
 
   oppositeChiralityNearMuon::~oppositeChiralityNearMuon()
   {
-
     // does nothing.
-
   }
 
 
@@ -183,9 +179,7 @@ namespace LHC_FASER
 
   flatFarMuonPlusAntimuon::~flatFarMuonPlusAntimuon()
   {
-
     // does nothing.
-
   }
 
 
@@ -291,9 +285,7 @@ namespace LHC_FASER
 
   sameChiralityFarMuon::~sameChiralityFarMuon()
   {
-
     // does nothing.
-
   }
 
 
@@ -460,9 +452,7 @@ namespace LHC_FASER
 
   oppositeChiralityFarMuon::~oppositeChiralityFarMuon()
   {
-
     // does nothing.
-
   }
 
 
@@ -1638,11 +1628,11 @@ namespace LHC_FASER
       // result up as obviously wrong.
       std::cout
       << std::endl
-      << "LHC-FASER::error! W_minus_plus_up_L_type_muon expected to be given"
-      << " a chargino as its 2nd particle, but did not receive a particle"
-      << " with code +-" << CppSLHA::PDG_code::chargino_one << " or +-"
-      << CppSLHA::PDG_code::chargino_two << ", rather, it received "
-      << secondParticle->get_name() << " (code: "
+      << "LHC-FASER::error! wMinusHandedMuon::wMinusHandedMuon expected to be"
+      << " given a chargino as its 2nd particle, but did not receive a"
+      << " particle with code +-" << CppSLHA::PDG_code::chargino_one
+      << " or +-" << CppSLHA::PDG_code::chargino_two
+      << ", rather, it received " << secondParticle->get_name() << " (code: "
       << secondParticle->get_PDG_code() << ")";
       std::cout << std::endl;
     }
