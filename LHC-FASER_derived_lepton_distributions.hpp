@@ -548,30 +548,30 @@ namespace LHC_FASER
    * unfortunately, the couplings are very model-specific, so this assumes just
    * the MSSM.
    */
-  class W_minus_handed_muon : public leptonEnergyDistribution
+  class wMinusHandedMuon : public leptonEnergyDistribution
   {
   public:
-    W_minus_handed_muon( readierForNewPoint* const readierPointer,
-                         CppSLHA::CppSLHA0 const* const spectrumData,
-              CppSLHA::particle_property_set const* const firstParticle,
-                         effectiveSquarkMassHolder* const effectiveSquarkMass,
+    wMinusHandedMuon( readierForNewPoint* const readierPointer,
+                      CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
+                      effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
-            CppSLHA::particle_property_set const* const fourthParticle,
-                         bool const given_jet_is_left_handed )
+                    CppSLHA::particle_property_set const* const fourthParticle,
+                      bool const jetIsLeftHanded )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
-    ~W_minus_handed_muon()
+    ~wMinusHandedMuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     double Elk;
     double Ehk;
-    bool const jet_is_left_handed;
-    bool energy_limited_cosines;
+    bool const jetIsLeftHanded;
+    bool cosinesLimitedByEnergy;
 
-    int which_chargino;
-    int which_neutralino;
+    int whichChargino;
+    int whichNeutralino;
     CppSLHA::SLHA_BLOCK const* NMIX;
     CppSLHA::SLHA_BLOCK const* UMIX;
     CppSLHA::SLHA_BLOCK const* VMIX;
@@ -652,8 +652,22 @@ namespace LHC_FASER
     double lnEmax;
     // ln( maximumEnergy ).
 
-    double current_term_coefficient;
-    // this is for holding the coefficientValue being calculated.
+    // these are for holding the coefficients being calculated:
+    double currentMinToLkInvCoefficient;
+    double currentMinToLkConstCoefficient;
+    double currentMinToLkLogCoefficient;
+    double currentMinToLkLinCoefficient;
+    double currentMinToLkLinLogCoefficient;
+    double currentMinToLkSqCoefficient;
+    double currentLkToHkConstCoefficient;
+    double currentLkToHkLinCoefficient;
+    double currentLkToHkSqCoefficient;
+    double currentHkToMaxInvCoefficient;
+    double currentHkToMaxConstCoefficient;
+    double currentHkToMaxLogCoefficient;
+    double currentHkToMaxLinCoefficient;
+    double currentHkToMaxLinLogCoefficient;
+    double currentHkToMaxSqCoefficient;
 
     segmentTermSet minToLkSegment;
     // the terms between minimumEnergy & Elk.

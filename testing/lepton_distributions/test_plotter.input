@@ -1,61 +1,61 @@
 set term postscript enhanced color solid
-set output "Zn4L_ll.eps"
+set output "Wx1L_ll.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4L_ll.dat' index 0 notitle with lines ls 1
-set output "Zn4L_tLm.eps"
+plot 'Wx1L_ll.dat' index 0 notitle with lines ls 1
+set output "Wx1L_tLm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4L_tLm.dat' index 0 notitle with lines ls 1
-set output "Zn4L_tRm.eps"
+plot 'Wx1L_tLm.dat' index 0 notitle with lines ls 1
+set output "Wx1L_tRm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4L_tRm.dat' index 0 notitle with lines ls 1
-set output "Zn4L_tLp.eps"
+plot 'Wx1L_tRm.dat' index 0 notitle with lines ls 1
+set output "Wx1L_tLp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4L_tLp.dat' index 0 notitle with lines ls 1
-set output "Zn4L_tRp.eps"
+plot 'Wx1L_tLp.dat' index 0 notitle with lines ls 1
+set output "Wx1L_tRp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4L_tRp.dat' index 0 notitle with lines ls 1
-set output "Zn4R_ll.eps"
+plot 'Wx1L_tRp.dat' index 0 notitle with lines ls 1
+set output "Wx1R_ll.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4R_ll.dat' index 0 notitle with lines ls 1
-set output "Zn4R_tLm.eps"
+plot 'Wx1R_ll.dat' index 0 notitle with lines ls 1
+set output "Wx1R_tLm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4R_tLm.dat' index 0 notitle with lines ls 1
-set output "Zn4R_tRm.eps"
+plot 'Wx1R_tLm.dat' index 0 notitle with lines ls 1
+set output "Wx1R_tRm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4R_tRm.dat' index 0 notitle with lines ls 1
-set output "Zn4R_tLp.eps"
+plot 'Wx1R_tRm.dat' index 0 notitle with lines ls 1
+set output "Wx1R_tLp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4R_tLp.dat' index 0 notitle with lines ls 1
-set output "Zn4R_tRp.eps"
+plot 'Wx1R_tLp.dat' index 0 notitle with lines ls 1
+set output "Wx1R_tRp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4R_tRp.dat' index 0 notitle with lines ls 1
-set output "Zn4summed_ll.eps"
+plot 'Wx1R_tRp.dat' index 0 notitle with lines ls 1
+set output "Wx2L_ll.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4summed_ll.dat' index 0 notitle with lines ls 1
-set output "Zn4summed_tLm.eps"
+plot 'Wx2L_ll.dat' index 0 notitle with lines ls 1
+set output "Wx2L_tLm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4summed_tLm.dat' index 0 notitle with lines ls 1
-set output "Zn4summed_tRm.eps"
+plot 'Wx2L_tLm.dat' index 0 notitle with lines ls 1
+set output "Wx2L_tRm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4summed_tRm.dat' index 0 notitle with lines ls 1
-set output "Zn4summed_tLp.eps"
+plot 'Wx2L_tRm.dat' index 0 notitle with lines ls 1
+set output "Wx2L_tLp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4summed_tLp.dat' index 0 notitle with lines ls 1
-set output "Zn4summed_tRp.eps"
+plot 'Wx2L_tLp.dat' index 0 notitle with lines ls 1
+set output "Wx2L_tRp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'Zn4summed_tRp.dat' index 0 notitle with lines ls 1
-set output "sdscW_ll.eps"
+plot 'Wx2L_tRp.dat' index 0 notitle with lines ls 1
+set output "Wx2R_ll.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'sdscW_ll.dat' index 0 notitle with lines ls 1
-set output "sdscW_tLm.eps"
+plot 'Wx2R_ll.dat' index 0 notitle with lines ls 1
+set output "Wx2R_tLm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'sdscW_tLm.dat' index 0 notitle with lines ls 1
-set output "sdscW_tRm.eps"
+plot 'Wx2R_tLm.dat' index 0 notitle with lines ls 1
+set output "Wx2R_tRm.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'sdscW_tRm.dat' index 0 notitle with lines ls 1
-set output "sdscW_tLp.eps"
+plot 'Wx2R_tRm.dat' index 0 notitle with lines ls 1
+set output "Wx2R_tLp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'sdscW_tLp.dat' index 0 notitle with lines ls 1
-set output "sdscW_tRp.eps"
+plot 'Wx2R_tLp.dat' index 0 notitle with lines ls 1
+set output "Wx2R_tRp.eps"
 set style line 1 lt rgb "red" lw 3
-plot 'sdscW_tRp.dat' index 0 notitle with lines ls 1
+plot 'Wx2R_tRp.dat' index 0 notitle with lines ls 1

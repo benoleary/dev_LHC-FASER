@@ -280,7 +280,7 @@ namespace LHC_FASER
     double highNeutralinoMassRatio;
     std::vector< std::vector< std::vector< std::vector< double >* >* >* >
     values;
-    int acceptanceColumns;
+    unsigned int acceptanceColumns;
 
     double
     vectorElementAt( double const squarkMass,

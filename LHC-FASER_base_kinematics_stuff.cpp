@@ -547,14 +547,14 @@ namespace LHC_FASER
     {
       double
       xSteps( ( ( squarkMass - lowestSquarkMass ) / scoloredMassStepSize ) );
-      int lowerLeftX ( (int)xSteps );
+      unsigned int lowerLeftX( (unsigned int)xSteps );
 
       if( values.size() > ( lowerLeftX + 1 ) )
         // if the x co-ordinate is less than its maximal grid value...
       {
         double ySteps( ( ( gluinoMass - lowestGluinoMass )
                          / scoloredMassStepSize ) );
-        int lowerLeftY( (int)ySteps );
+        unsigned int lowerLeftY( (unsigned int)ySteps );
         if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
         {
@@ -574,8 +574,7 @@ namespace LHC_FASER
                                                        )->at( neutralinoElement
                                                   )->at( acceptanceElement ) );
         }
-        else if( ( values.at( lowerLeftX )->size()
-                   == ( lowerLeftY + 1 ) )
+        else if( ( values.at( lowerLeftX )->size() == ( lowerLeftY + 1 ) )
                  &&
                  ( (double)lowerLeftY == ySteps ) )
           // otherwise, if it's on the maximal y edge...
@@ -609,7 +608,7 @@ namespace LHC_FASER
 
         double ySteps( ( ( gluinoMass - lowestGluinoMass )
                          / scoloredMassStepSize ) );
-        int lowerLeftY( (int)ySteps );
+        unsigned int lowerLeftY( (unsigned int)ySteps );
 
         if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
@@ -706,7 +705,9 @@ namespace LHC_FASER
     << " ) called.";
     std::cout << std::endl;**/
 
-    if( ( acceptanceElement < acceptanceColumns )
+    if( ( 0 < acceptanceElement )
+        &&
+        ( (unsigned int)acceptanceElement < acceptanceColumns )
         &&
         ( 0.0 < scoloredMassStepSize )
         &&
@@ -1147,7 +1148,9 @@ namespace LHC_FASER
     << " ) called.";
     std::cout << std::endl;**/
 
-    if( ( acceptanceElement < acceptanceColumns )
+    if( ( 0 < acceptanceElement )
+        &&
+        ( (unsigned int)acceptanceElement < acceptanceColumns )
         &&
         ( 0.0 < scoloredMassStepSize )
         &&
@@ -1159,9 +1162,7 @@ namespace LHC_FASER
       double lighterScolored( squarkMass );
       if( gluinoMass < squarkMass )
       {
-
         lighterScolored = gluinoMass;
-
       }
       double neutralinoRatio = ( degenerateNeutralinoMass / lighterScolored );
 
@@ -1181,7 +1182,6 @@ namespace LHC_FASER
 
       if( 1.0 > neutralinoRatio )
       {
-
         /* now we work out which elements of the values vector of vectors
          * of vectors to use.
          * N.B.! this bit is HIGHLY format-dependent, since the values are

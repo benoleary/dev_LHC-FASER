@@ -587,7 +587,7 @@ namespace LHC_FASER
      * the charge-conjugate process.
      */
     leftHandedJetRightHandedAntimuonDistribution
-    = new W_minus_handed_muon( shortcut->getReadier(),
+    = new wMinusHandedMuon( shortcut->getReadier(),
                                shortcut->getCppSlha(),
                                coloredDecayer,
                                effectiveSquarkMass,
@@ -596,7 +596,7 @@ namespace LHC_FASER
                                shortcut->getNeutralinoOne(),
                                false /* see above */ );
     rightHandedJetRightHandedAntimuonDistribution
-    = new W_minus_handed_muon( shortcut->getReadier(),
+    = new wMinusHandedMuon( shortcut->getReadier(),
                                shortcut->getCppSlha(),
                                coloredDecayer,
                                effectiveSquarkMass,

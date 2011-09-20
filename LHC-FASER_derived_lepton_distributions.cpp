@@ -1572,70 +1572,68 @@ namespace LHC_FASER
 
 
 
-  W_minus_handed_muon::W_minus_handed_muon(
-                                    readierForNewPoint* const readierPointer,
-                                 CppSLHA::CppSLHA0 const* const spectrumData,
-              CppSLHA::particle_property_set const* const firstParticle,
+  wMinusHandedMuon::wMinusHandedMuon( readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
-             CppSLHA::particle_property_set const* const secondParticle,
-              CppSLHA::particle_property_set const* const thirdParticle,
-          CppSLHA::particle_property_set const* const fourthParticle,
-                                        bool const given_jet_is_left_handed ) :
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                    CppSLHA::particle_property_set const* const fourthParticle,
+                                       bool const jetIsLeftHanded ) :
     leptonEnergyDistribution( readierPointer,
-                                spectrumData,
-                                firstParticle,
-                                effectiveSquarkMass,
-                                secondParticle,
-                                thirdParticle,
-                                fourthParticle ),
-    jet_is_left_handed( given_jet_is_left_handed ),
+                              spectrumData,
+                              firstParticle,
+                              effectiveSquarkMass,
+                              secondParticle,
+                              thirdParticle,
+                              fourthParticle ),
+    jetIsLeftHanded( jetIsLeftHanded ),
     minToLkInv( minToLkSegment.addTerm( -1,
-                                          0 ) ),
-    minToLkConst( minToLkSegment.addTerm( 0,
-                                            0 ) ),
-    minToLkLog( minToLkSegment.addTerm( 0,
-                                          1 ) ),
-    minToLkLin( minToLkSegment.addTerm( 1,
-                                          0 ) ),
-    minToLkLinlog( minToLkSegment.addTerm( 1,
-                                             1 ) ),
-    minToLkSq( minToLkSegment.addTerm( 2,
-                                         0 ) ),
-    lkToHkConst( lkToHkSegment.addTerm( 0,
-                                          0 ) ),
-    lkToHkLin( lkToHkSegment.addTerm( 1,
                                         0 ) ),
-    lkToHkSq( lkToHkSegment.addTerm( 2,
+    minToLkConst( minToLkSegment.addTerm( 0,
+                                          0 ) ),
+    minToLkLog( minToLkSegment.addTerm( 0,
+                                        1 ) ),
+    minToLkLin( minToLkSegment.addTerm( 1,
+                                        0 ) ),
+    minToLkLinlog( minToLkSegment.addTerm( 1,
+                                           1 ) ),
+    minToLkSq( minToLkSegment.addTerm( 2,
                                        0 ) ),
+    lkToHkConst( lkToHkSegment.addTerm( 0,
+                                        0 ) ),
+    lkToHkLin( lkToHkSegment.addTerm( 1,
+                                      0 ) ),
+    lkToHkSq( lkToHkSegment.addTerm( 2,
+                                     0 ) ),
     hkToMaxInv( hkToMaxSegment.addTerm( -1,
-                                          0 ) ),
+                                        0 ) ),
     hkToMaxConst( hkToMaxSegment.addTerm( 0,
-                                            0 ) ),
-    hkToMaxLog( hkToMaxSegment.addTerm( 0,
-                                          1 ) ),
-    hkToMaxLin( hkToMaxSegment.addTerm( 1,
                                           0 ) ),
+    hkToMaxLog( hkToMaxSegment.addTerm( 0,
+                                        1 ) ),
+    hkToMaxLin( hkToMaxSegment.addTerm( 1,
+                                        0 ) ),
     hkToMaxLinlog( hkToMaxSegment.addTerm( 1,
-                                             1 ) ),
+                                           1 ) ),
     hkToMaxSq( hkToMaxSegment.addTerm( 2,
-                                         0 ) )
+                                       0 ) )
   {
     NMIX = spectrum->inspect_BLOCK( "NMIX" );
     UMIX = spectrum->inspect_BLOCK( "UMIX" );
     VMIX = spectrum->inspect_BLOCK( "VMIX" );
-    if( CppSLHA::PDG_code::chargino_one
-        == secondParticle->get_PDG_code() )
+    if( CppSLHA::PDG_code::chargino_one == secondParticle->get_PDG_code() )
     {
-      which_chargino = 1;
+      whichChargino = 1;
     }
     else if( CppSLHA::PDG_code::chargino_two
-        == secondParticle->get_PDG_code() )
+             == secondParticle->get_PDG_code() )
     {
-      which_chargino = 2;
+      whichChargino = 2;
     }
     else
     {
-      which_chargino = -1;
+      whichChargino = -1;
       // this will cause UMIX or VMIX to return NaN, which should show the
       // result up as obviously wrong.
       std::cout
@@ -1648,29 +1646,28 @@ namespace LHC_FASER
       << secondParticle->get_PDG_code() << ")";
       std::cout << std::endl;
     }
-    if( CppSLHA::PDG_code::neutralino_one
-        == fourthParticle->get_PDG_code() )
+    if( CppSLHA::PDG_code::neutralino_one == fourthParticle->get_PDG_code() )
     {
-      which_neutralino = 1;
+      whichNeutralino = 1;
     }
     else if( CppSLHA::PDG_code::neutralino_two
-        == fourthParticle->get_PDG_code() )
+             == fourthParticle->get_PDG_code() )
     {
-      which_neutralino = 2;
+      whichNeutralino = 2;
     }
     else if( CppSLHA::PDG_code::neutralino_three
-        == fourthParticle->get_PDG_code() )
+             == fourthParticle->get_PDG_code() )
     {
-      which_neutralino = 3;
+      whichNeutralino = 3;
     }
     else if( CppSLHA::PDG_code::neutralino_four
-        == fourthParticle->get_PDG_code() )
+             == fourthParticle->get_PDG_code() )
     {
-      which_neutralino = 4;
+      whichNeutralino = 4;
     }
     else
     {
-      which_neutralino = -1;
+      whichNeutralino = -1;
       // this will cause NMIX to return NaN, which should show the result up
       // as obviously wrong.
       std::cout
@@ -1690,84 +1687,74 @@ namespace LHC_FASER
     segments.push_back( &hkToMaxSegment );
   }
 
-  W_minus_handed_muon::~W_minus_handed_muon()
+  wMinusHandedMuon::~wMinusHandedMuon()
   {
-
     // does nothing.
-
   }
 
 
   void
-  W_minus_handed_muon::calculateCoefficients()
+  wMinusHandedMuon::calculateCoefficients()
   {
     /* it doesn't matter if the neutralino mass is negative, since only the
      * absolute square appears, & the couplings are only affected by it as an
      * overall phase.  I (BOL) assume no CP violation, so the neutralino mixing
      * matrices are strictly real.
      */
-    Vv = ( NMIX->get_entry( which_neutralino,
-                            2 ) * ( UMIX->get_entry( which_chargino,
+    Vv = ( NMIX->get_entry( whichNeutralino,
+                            2 ) * ( UMIX->get_entry( whichChargino,
                                                      1 )
-                                    + VMIX->get_entry( which_chargino,
+                                    + VMIX->get_entry( whichChargino,
                                                        1 ) )
-           + M_SQRT1_2 * ( NMIX->get_entry( which_neutralino,
+           + M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
                                             3 )
-                           * UMIX->get_entry( which_chargino,
+                           * UMIX->get_entry( whichChargino,
                                               2 )
-                           - NMIX->get_entry( which_neutralino,
+                           - NMIX->get_entry( whichNeutralino,
                                               4 )
-                             * VMIX->get_entry( which_chargino,
+                             * VMIX->get_entry( whichChargino,
                                                 2 ) ) );
-    Aa = ( NMIX->get_entry( which_neutralino,
-                            2 ) * ( VMIX->get_entry( which_chargino,
+    Aa = ( NMIX->get_entry( whichNeutralino,
+                            2 ) * ( VMIX->get_entry( whichChargino,
                                                      1 )
-                                    - UMIX->get_entry( which_chargino,
+                                    - UMIX->get_entry( whichChargino,
                                                        1 ) )
-           - M_SQRT1_2 * ( NMIX->get_entry( which_neutralino,
+           - M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
                                             3 )
-                           * UMIX->get_entry( which_chargino,
+                           * UMIX->get_entry( whichChargino,
                                               2 )
-                           + NMIX->get_entry( which_neutralino,
+                           + NMIX->get_entry( whichNeutralino,
                                               4 )
-                             * VMIX->get_entry( which_chargino,
+                             * VMIX->get_entry( whichChargino,
                                                 2 ) ) );
-
     if( 0.0 > fourthParticle->get_mass() )
       // if the relative phases end up such that the product of couplings is
       // purely imaginary...
-      {
-
-        // we swap the coupings (borrowing current_term_coefficient for a
-        // moment):
-        current_term_coefficient = Vv;
-        Vv = Aa;
-        Aa = current_term_coefficient;
-
-      }
-
+    {
+      // we swap the couplings (borrowing currentLkToHkLinCoefficient for a
+      // moment):
+      currentLkToHkLinCoefficient = Vv;
+      Vv = Aa;
+      Aa = currentLkToHkLinCoefficient;
+    }
     Vvsq = ( Vv * Vv );
     Aasq = ( Aa * Aa );
     VvSqMinusAaSq = ( Vvsq - Aasq );
 
-    if( jet_is_left_handed )
-      {
-
-        MinusTwiceVvJjAa = ( -2.0 * Vv * Aa );
-        JjVvPlusJjAaAllSq = ( Vvsq - MinusTwiceVvJjAa + Aasq );
-        JjVvSqMinusAaSq = VvSqMinusAaSq;
-        JjVvSqPlusAaSq = ( Vvsq + Aasq );
-
-      }
+    if( jetIsLeftHanded )
+    {
+      MinusTwiceVvJjAa = ( -2.0 * Vv * Aa );
+      JjVvPlusJjAaAllSq = ( Vvsq - MinusTwiceVvJjAa + Aasq );
+      JjVvSqMinusAaSq = VvSqMinusAaSq;
+      JjVvSqPlusAaSq = ( Vvsq + Aasq );
+    }
     else
-      {
-
-        MinusTwiceVvJjAa = ( 2.0 * Vv * Aa );
-        JjVvPlusJjAaAllSq = ( MinusTwiceVvJjAa - Vvsq - Aasq );
-        JjVvSqMinusAaSq = -VvSqMinusAaSq;
-        JjVvSqPlusAaSq = ( -Vvsq - Aasq );
-
-      }
+    {
+      MinusTwiceVvJjAa = ( 2.0 * Vv * Aa );
+      JjVvPlusJjAaAllSq = ( MinusTwiceVvJjAa - Vvsq - Aasq );
+      JjVvSqMinusAaSq = -VvSqMinusAaSq;
+      JjVvSqPlusAaSq = ( -Vvsq - Aasq );
+    }
     VvPlusJjAaAllSq = ( Vvsq - MinusTwiceVvJjAa + Aasq );
 
     mQ = firstMass;
@@ -1784,29 +1771,23 @@ namespace LHC_FASER
     Elk = ( ElMin * ( mQ / mC ) );
     Ehk = ( mVsq / ( 4.0 * Elk ) );
     maximumEnergy = ( mVsq / ( 4.0 * minimumEnergy ) );
-
     if( Ehk > Elk )
       /* if we're in the regime where the kinematics mean that there is no
        * range of energies which can be reached for all squark-rest-frame polar
        * muon momentum angles...
        */
-      {
-
-        // we swap the energies (borrowing current_term_coefficient for a
-        // moment) & note that we had to swap them:
-        current_term_coefficient = Elk;
-        Elk = Ehk;
-        Ehk = current_term_coefficient;
-        energy_limited_cosines = true;
-
-      }
+    {
+      // we swap the energies (borrowing currentLkToHkLinCoefficient for a
+      // moment) & note that we had to swap them:
+      currentLkToHkLinCoefficient = Elk;
+      Elk = Ehk;
+      Ehk = currentLkToHkLinCoefficient;
+      cosinesLimitedByEnergy = true;
+    }
     else
-      {
-
-        energy_limited_cosines = false;
-
-      }
-
+    {
+      cosinesLimitedByEnergy = false;
+    }
     mQCsqDiff = ( mQsq - mCsq );
     mQCsqDiffsq = ( mQCsqDiff * mQCsqDiff );
     mQCsqSum = ( mQsq + mCsq );
@@ -1818,28 +1799,167 @@ namespace LHC_FASER
     mVqu = ( mVsq * mVsq );
     lnVsqOverFourElMinsq = log( ( mVsq / ( 4.0 * ElMinsq ) ) );
     EightmCXElMinmQsq = ( 8.0 * mC * fourthMass * ElMin * mQsq );
-
     lnEmin = log( minimumEnergy );
     lnElk = log( Elk );
     lnEhk = log( Ehk );
     lnEmax = log( maximumEnergy );
 
+    minToLkSegment.setSegmentRange( minimumEnergy,
+                                    Elk );
+    lkToHkSegment.setSegmentRange( Elk,
+                                    Ehk );
+    hkToMaxSegment.setSegmentRange( Ehk,
+                                    maximumEnergy );
 
+    /* symmetric in lepton-antilepton =>
+     *     ( Vv + jL * Aa )^2 * VvPlusJjAaAllSqSymDistribution
+     *     - 2 * Jj * Vv * Aa * TwiceVvAaSymDistribution
+     *     + ( Vv^( 2 ) - Aa^( 2 ) ) * VvSqMinusAaSqSymDistribution
+     * antisymmetric in lepton-antilepton =>
+     *     ( Vv + jL * Aa )^2 * VvPlusJjAaAllSqAntiDistribution
+     *     + ( Vv^( 2 ) + Aa^( 2 ) ) * VvSqPlusAaSqAntiDistribution
+     *     + ( Vv^( 2 ) - Aa^( 2 ) ) * VvSqMinusAaSqAntiDistribution
+     * summing over handedness =>
+     * symmetric
+     * lepton same handedness as jet =>
+     * symmetric + antisymmetric
+     * lepton opposite handedness to jet =>
+     * symmetric - antisymmetric
+     */
+
+
+    /* ends up in the order:
+     * low (MINtoLK),
+     * over (LKtoHK, true == cosinesLimitedByEnergy),
+     * under (LKtoHK, false == cosinesLimitedByEnergy),
+     * high (HKtoMAX)
+     */
+
+
+    // VvPlusJjAaAllSqSymDistribution:
+
+    // MIN to LK:
+    currentMinToLkConstCoefficient
+    = ( ElMin * mQsq * mQCsqDiff
+        * ( EightmCEVElMin * ( lnElMin - lnmQC ) * mVsq
+            - 4.0 * ElMin * mC * ( EightmCEVElMin - 4.0 * ElMinsq * mC ) ) );
+    // right!
+    currentMinToLkLogCoefficient
+    = ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
+    // right!
+    currentMinToLkLinCoefficient
+    = ( 4.0 * EightmCEVElMin * ElMin * mQcu * mQCsqDiff );
+    // right!
+    currentMinToLkSqCoefficient
+    = ( -16.0 * ElMinsq * mQsq * mQsq * mQCsqDiff );
+    // right!
+
+    // LK to HK:
+    if( cosinesLimitedByEnergy )
+    {
+      currentLkToHkConstCoefficient
+      = ( mQsq * mQCsqDiff
+          * ( EightmCEVElMin
+              * ( mC * ( mVsq - 4.0 * ElMinsq )
+                  - ElMin * lnVsqOverFourElMinsq * mVsq )
+              + mCsq * ( 16.0 * ElMinsq * ElMinsq - mVsq * mVsq ) ) );
+      // dunno...
+      currentLkToHkLinCoefficient = 0.0;
+      // dunno...
+      currentLkToHkSqCoefficient = 0.0;
+      // dunno...
+    }
+    else
+    {
+      currentLkToHkConstCoefficient
+      = ( -2.0 * EightmCEVElMin * ElMin * lnmQC * mQsq * mQCsqDiff * mVsq );
+      // right!
+      currentLkToHkLinCoefficient
+      = ( 4.0 * EightmCEVElMin * ElMin * mQ * mQCsqDiff * mQCsqDiff );
+      // right!
+      currentLkToHkSqCoefficient
+      = ( -16.0 * ElMinsq * mQCsqDiff * mQCsqDiff * mQCsqSum );
+      // right!
+    }
+
+    // HK to MAX:
+    currentHkToMaxConstCoefficient
+    = ( mQsq * mQCsqDiff * mVsq
+        * ( EightmCEVElMin
+            * ( mC - ElMin * ( lnmQC + lnVsqOverFourElMinsq + lnElMin ) )
+            - mCsq * mVsq ) );
+    // right!
+    currentHkToMaxLogCoefficient
+    = ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
+    // right!
+    currentHkToMaxLinCoefficient
+    = ( -4.0 * EightmCEVElMin * ElMin * mCsq * mQ * mQCsqDiff );
+    // right!
+    currentHkToMaxSqCoefficient = ( 16.0 * ElMinsq * mCsq * mCsq * mQCsqDiff );
+    // right!
+
+    minToLkInv->setCoefficient( 0.0 );
+    minToLkConst->setCoefficient( VvPlusJjAaAllSq
+                                  * currentMinToLkConstCoefficient );
+    minToLkLog->setCoefficient( VvPlusJjAaAllSq
+                                * currentMinToLkLogCoefficient );
+    minToLkLin->setCoefficient( VvPlusJjAaAllSq
+                                * currentMinToLkLinCoefficient );
+    minToLkLinlog->setCoefficient( 0.0 );
+    minToLkSq->setCoefficient( VvPlusJjAaAllSq
+                               * currentMinToLkSqCoefficient );
+
+    lkToHkConst->setCoefficient( VvPlusJjAaAllSq
+                                 * currentLkToHkConstCoefficient );
+    lkToHkLin->setCoefficient( VvPlusJjAaAllSq
+                               * currentLkToHkLinCoefficient );
+    lkToHkSq->setCoefficient( VvPlusJjAaAllSq
+                              * currentLkToHkSqCoefficient );
+
+    hkToMaxInv->setCoefficient( 0.0 );
+    hkToMaxConst->setCoefficient( VvPlusJjAaAllSq
+                                  * currentHkToMaxConstCoefficient );
+    hkToMaxLog->setCoefficient( VvPlusJjAaAllSq
+                                * currentHkToMaxLogCoefficient );
+    hkToMaxLin->setCoefficient( VvPlusJjAaAllSq
+                                * currentHkToMaxLinCoefficient );
+    hkToMaxLinlog->setCoefficient( 0.0 );
+    hkToMaxSq->setCoefficient( VvPlusJjAaAllSq
+                               * currentHkToMaxSqCoefficient );
+
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "VvPlusJjAaAllSqSymDistribution:"
+    << std::endl << "MINtoLK: "
+    << std::endl << minToLkInv->getCoefficient() << "/E"
+    << std::endl << minToLkConst->getCoefficient()
+    << std::endl << minToLkLog->getCoefficient() << "L"
+    << std::endl << minToLkLin->getCoefficient() << "E"
+    << std::endl << minToLkLinlog->getCoefficient() << "EL"
+    << std::endl << minToLkSq->getCoefficient() << "E^2"
+    << std::endl << "LKtoHK: "
+    << std::endl << lkToHkConst->getCoefficient()
+    << std::endl << lkToHkLin->getCoefficient() << "E"
+    << std::endl << lkToHkSq->getCoefficient() << "E^2"
+    << std::endl << "HKtoMAX: "
+    << std::endl << hkToMaxInv->getCoefficient() << "/E"
+    << std::endl << hkToMaxConst->getCoefficient()
+    << std::endl << hkToMaxLog->getCoefficient() << "L"
+    << std::endl << hkToMaxLin->getCoefficient() << "E"
+    << std::endl << hkToMaxLinlog->getCoefficient() << "EL"
+    << std::endl << hkToMaxSq->getCoefficient() << "E^2";
+    std::cout << std::endl;**/
 
 
 
     // TwiceVvAaSymDistribution:
-    current_term_coefficient
-    = ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
-    minToLkInv->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "TwiceVvAaSymDistribution:"
-    << std::endl << "MINtoLK: "
-    << std::endl << current_term_coefficient << "/E";
 
-    current_term_coefficient
+    // MIN to LK:
+    currentMinToLkInvCoefficient
+    = ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
+    // dunno...
+    currentMinToLkConstCoefficient
     = ( ElMin * mQsq
         * ( 2.0 * EightmCEVElMin
                 * ( mVsq * ( mQsq * ( lnElMin - lnmQC ) - mCsq )
@@ -1850,48 +1970,30 @@ namespace LHC_FASER
                       + mVsq * ( mQCsqSum * ( lnElMin - lnmQC )
                                  - 2.0 * mCsq ) )
                   + mQCsqSum * mVsq * mVsq ) ) );
-    minToLkConst->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient;
-
-    current_term_coefficient
+    // dunno...
+    currentMinToLkLogCoefficient
     = ( -2.0 * ElMin * mQsq * ( EightmCEVElMin * mQsq + 4.0 * mCsq * mQCsqSum )
         * mVsq );
-    minToLkLog->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "L";
-
-    current_term_coefficient
+    // dunno...
+    currentMinToLkLinCoefficient
     = ( 2.0 * mQcu
         * ( 4.0 * EightmCEVElMin * ElMin
             * ( ( lnElMin - lnmQC ) * mCsq + mQsq )
             + EightmCEVElMin * mC * mVsq
             - 2.0 * mCsq * ( 4.0 * ElMin * mC * ( 4.0 * ElMinsq - mVsq )
                              + mVsq * mVsq) ) );
-    minToLkLin->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "E";
-
-    current_term_coefficient
+    // dunno...
+    currentMinToLkLinLogCoefficient
     = ( -8.0 * EightmCEVElMin * ElMin * mCsq * mQcu );
-    minToLkLinlog->setCoefficient( 0.0 );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "EL";
-
-    current_term_coefficient
+    // dunno...
+    currentMinToLkSqCoefficient
     = ( -32.0 * ElMinsq * mQsq * mQsq * ( mQCsqDiff - mCsq ) );
-    minToLkSq->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "E^2";
+    // dunno...
 
-    if( energy_limited_cosines )
+    // LK to HK:
+    if( cosinesLimitedByEnergy )
     {
-      current_term_coefficient
+      currentLkToHkConstCoefficient
       = ( 2.0 * mQsq
           * ( EightmCEVElMin * mQsq
               * ( mC * ( mVsq - 4.0 * ElMinsq )
@@ -1902,12 +2004,8 @@ namespace LHC_FASER
                              + lnVsqOverFourElMinsq * mC )
                        - ( mC * mQsq
                            - 2.0 * ElMin * mQCsqSum ) * mVsq * mVsq ) ) );
-      lkToHkConst->setCoefficient( current_term_coefficient );
-      // debugging:
-      /**/std::cout
-      << std::endl << "LKtoHK: "
-      << std::endl << current_term_coefficient;
-      current_term_coefficient
+      // dunno...
+      currentLkToHkLinCoefficient
       = ( 2.0 * mC * mQcu
           * ( EightmCEVElMin
               * ( mVsq
@@ -1916,54 +2014,33 @@ namespace LHC_FASER
                              * ( 2.0 * ElMinsq * ( ElMin - 2.0 * mC )
                                  + mC * mVsq )
                              - mVsq * mVsq ) ) );
-      lkToHkLin->setCoefficient( current_term_coefficient );
-      // debugging:
-      /**/std::cout
-      << std::endl << current_term_coefficient << "E";
-      current_term_coefficient = 0.0;
-      lkToHkSq->setCoefficient( 0.0 );
-      // debugging:
-      /**/std::cout
-      << std::endl << current_term_coefficient << "E^2";
+      // dunno...
+      currentLkToHkSqCoefficient = 0.0;
+      // dunno...
     }
     else
     {
-      current_term_coefficient
+      currentLkToHkConstCoefficient
       = ( 2.0 * ElMin * mQsq * mVsq
           * ( mQCsqDiff
               * ( EightmCEVElMin + 8.0 * ElMin * mCsq )
               - 8.0 * lnmQC * ( 4.0 * mQCsqSum * mCsq * ElMin
                                 + mQsq * EightmCEVElMin ) ) );
-      lkToHkConst->setCoefficient( current_term_coefficient );
-      // debugging:
-      /**/std::cout
-      << std::endl << "LKtoHK: "
-      << std::endl << current_term_coefficient;
-
-      current_term_coefficient
+      // dunno...
+      currentLkToHkLinCoefficient
       = ( 8.0 * EightmCEVElMin * ElMin * mQcu
           * ( mQCsqDiff - 2.0 * lnmQC * mCsq ) );
-      lkToHkLin->setCoefficient( current_term_coefficient );
-      // debugging:
-      /**/std::cout
-      << std::endl << current_term_coefficient << "E";
-
-      current_term_coefficient
+      // dunno...
+      currentLkToHkSqCoefficient
       = ( -32.0 * ElMinsq * mQsq * mQCsqDiff * mQCsqDiff );
-      lkToHkSq->setCoefficient( current_term_coefficient );
-      // debugging:
-      /**/std::cout
-      << std::endl << current_term_coefficient << "E^2";
+      // dunno...
     }
 
-    current_term_coefficient = ( 4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
-    hkToMaxInv->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << "HKtoMAX: "
-    << std::endl << current_term_coefficient << "/E";
-
-    current_term_coefficient
+    // HK to MAX:
+    currentHkToMaxInvCoefficient
+    = ( 4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
+    // dunno...
+    currentHkToMaxConstCoefficient
     = ( 2.0 * mQsq * mVsq
         * ( EightmCEVElMin * ElMin * mQsq
             * ( 1.0 - lnmQC - lnVsqOverFourElMinsq - lnElMin )
@@ -1972,763 +2049,573 @@ namespace LHC_FASER
                   - 2.0 * mQsq )
             - 8.0 * ElMin * ElMinsq * mC * mQCsqSum
             + mC * mQsq * ( EightmCEVElMin - mC * mVsq ) ) );
-    hkToMaxConst->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient;
-
-    current_term_coefficient
+    // dunno...
+    currentHkToMaxLogCoefficient
     = ( 2.0 * ElMin * mQsq * mVsq
         * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) );
-    hkToMaxLog->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "L";
-
-    current_term_coefficient
+    // dunno...
+    currentHkToMaxLinCoefficient
     = ( 8.0  * ElMin * mC * mQcu
         * ( 2.0 * mC * ( 4.0 * ElMinsq * ( ElMin - mC ) + mC * mVsq )
             - EightmCEVElMin
             * ( ElMin + ( 1.0 + lnmQC + lnVsqOverFourElMinsq ) * mC ) ) );
-    hkToMaxLin->setCoefficient( current_term_coefficient );
+    // dunno...
+    currentHkToMaxLinLogCoefficient
+    = ( 8.0 * EightmCEVElMin * ElMin * mCsq * mQcu );
+    // dunno...
+    currentHkToMaxSqCoefficient = ( -32.0 * ElMinsq * mCsq * mCsq * mQsq );
+    // dunno...
+
+    minToLkInv->addToCoefficient( MinusTwiceVvJjAa
+                                  * currentMinToLkInvCoefficient );
+    minToLkConst->addToCoefficient( MinusTwiceVvJjAa
+                                    * currentMinToLkConstCoefficient );
+    minToLkLog->addToCoefficient( MinusTwiceVvJjAa
+                                  * currentMinToLkLogCoefficient );
+    minToLkLin->addToCoefficient( MinusTwiceVvJjAa
+                                  * currentMinToLkLinCoefficient );
+    minToLkLinlog->addToCoefficient( MinusTwiceVvJjAa
+                                     * currentMinToLkLinLogCoefficient );
+    minToLkSq->addToCoefficient( MinusTwiceVvJjAa
+                                 * currentMinToLkSqCoefficient );
+
+    lkToHkConst->addToCoefficient( MinusTwiceVvJjAa
+                                   * currentLkToHkConstCoefficient );
+    lkToHkLin->addToCoefficient( MinusTwiceVvJjAa
+                                 * currentLkToHkLinCoefficient );
+    lkToHkSq->addToCoefficient( MinusTwiceVvJjAa
+                                * currentLkToHkSqCoefficient );
+
+    hkToMaxInv->addToCoefficient( MinusTwiceVvJjAa
+                                  * currentHkToMaxInvCoefficient );
+    hkToMaxConst->addToCoefficient( MinusTwiceVvJjAa
+                                    * currentHkToMaxConstCoefficient );
+    hkToMaxLog->addToCoefficient( MinusTwiceVvJjAa
+                                  * currentHkToMaxLogCoefficient );
+    hkToMaxLin->addToCoefficient( MinusTwiceVvJjAa
+                                  * currentHkToMaxLinCoefficient );
+    hkToMaxLinlog->addToCoefficient( MinusTwiceVvJjAa
+                                     * currentHkToMaxLinLogCoefficient );
+    hkToMaxSq->addToCoefficient( MinusTwiceVvJjAa
+                                 * currentHkToMaxSqCoefficient );
+
     // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "E";
-
-    current_term_coefficient = ( 8.0 * EightmCEVElMin * ElMin * mCsq * mQcu );
-    hkToMaxLinlog->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "EL";
-
-    current_term_coefficient = ( -32.0 * ElMinsq * mCsq * mCsq * mQsq );
-    hkToMaxSq->setCoefficient( current_term_coefficient );
-    // debugging:
-    /**/std::cout
-    << std::endl << current_term_coefficient << "E^2";
-    std::cout << std::endl;/**/
-
-
-
-
-
-
-
-
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "TwiceVvAaSymDistribution:"
+    << std::endl << "MINtoLK: "
+    << std::endl << currentMinToLkInvCoefficient << "/E"
+    << std::endl << currentMinToLkConstCoefficient
+    << std::endl << currentMinToLkLogCoefficient << "L"
+    << std::endl << currentMinToLkLinCoefficient << "E"
+    << std::endl << currentMinToLkLinLogCoefficient << "EL"
+    << std::endl << currentMinToLkSqCoefficient << "E^2"
+    << std::endl << "LKtoHK: "
+    << std::endl << currentLkToHkConstCoefficient
+    << std::endl << currentLkToHkLinCoefficient << "E"
+    << std::endl << currentLkToHkSqCoefficient << "E^2"
+    << std::endl << "HKtoMAX: "
+    << std::endl << currentHkToMaxInvCoefficient << "/E"
+    << std::endl << currentHkToMaxConstCoefficient
+    << std::endl << currentHkToMaxLogCoefficient << "L"
+    << std::endl << currentHkToMaxLinCoefficient << "E"
+    << std::endl << currentHkToMaxLinLogCoefficient << "EL"
+    << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
 
 
-
-
-
-
-
-
-
-
-
-
+    // VvSqMinusAaSqSymDistribution:
 
     // MIN to LK:
-    minToLkSegment.setSegmentRange( minimumEnergy,
-                                       Elk );
-
-    // inv:
-
-    // VvPlusJjAaAllSq
-    // 0.0
-
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    = ( MinusTwiceVvJjAa * ( -4.0 * ElMinsq * mCsq * mQcu * mVqu ) );
-
-    // VvSqMinusAaSq
-    // 0.0
-
-    // JjVvPlusJjAaAllSq
-    // 0.0
-
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( 4.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-
-    // JjVvSqMinusAaSq
-    // 0.0
-
-    minToLkInv->setCoefficient( current_term_coefficient );
-
-
-    // const:
-
-    // VvPlusJjAaAllSq
-    current_term_coefficient
-    = ( VvPlusJjAaAllSq
-        * ( ElMin * mQsq * mQCsqDiff
-            * ( EightmCEVElMin * ( lnElMin - lnmQC ) * mVsq
-                - 4.0 * ElMin * mC
-                  * ( EightmCEVElMin - 4.0 * ElMinsq * mC ) ) ) );
-
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    += ( MinusTwiceVvJjAa
-         * ( ElMin * mQsq
-             * ( 2.0 * ( lnElMin - lnmQC ) * mVsq
-                 * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum )
-                 - 2.0 * EightmCEVElMin
-                   * ( 4.0 * ElMin * mC * mQsq - mCsq * mVsq )
-                 + 16.0 * ElMin * mCsq
-                   * ( 2.0 * ElMinsq * mQsq - mCsq * mVsq )
-                 + 4.0 * mC * mQCsqSum * mVqu ) ) );
-
-    // VvSqMinusAaSq
-    current_term_coefficient
-    += ( VvPlusJjAaAllSq
-         * ( EightmCXElMinmQsq * ElMin * ( lnmQC - lnElMin )
-             * mQCsqDiff * mVsq ) );
-
-    // JjVvPlusJjAaAllSq
-    current_term_coefficient
-    += ( JjVvPlusJjAaAllSq
-         * ( ( ElMin * mQsq * mQCsqDiff * mVsq
-             * ( EightmCEVElMin * ( lnElMin - lnmQC )
-                 - 16.0 * ElMinsq * mC ) ) ) );
-
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( ElMin * mQsq * mVsq
-             * ( 32.0 * ElMinsq * mC * mQsq
-                 + ( EightmCEVElMin * mQsq
-                     + 4.0 * ElMin * mCsq * mQCsqSum )
-                   * 2.0 * ( lnmQC - lnElMin )
-                 + 2.0 * mCsq * ( EightmCEVElMin + 4.0 * ElMin * mCsq )
-                 - 4.0 * mC * mQCsqSum * mVsq ) ) );
-
-    // JjVvSqMinusAaSq
-    current_term_coefficient
-    += ( JjVvSqMinusAaSq
-         * ( EightmCXElMinmQsq * ElMin * mVsq
-             * ( 2.0 * mCsq + ( lnmQC - lnElMin ) * mQCsqSum ) ) );
-
-    minToLkConst->setCoefficient( current_term_coefficient );
-
-
-    // log:
-
-    // VvPlusJjAaAllSq
-    current_term_coefficient
-    = ( VvPlusJjAaAllSq
-        * ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq ) );
-
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    += ( MinusTwiceVvJjAa
-         * ( -2.0 * ElMin * mQsq * mVsq
-             * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) ) );
-
-    // VvSqMinusAaSq
-    current_term_coefficient
-    += ( VvSqMinusAaSq
-         * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq ) );
-
-    // JjVvPlusJjAaAllSq
-    current_term_coefficient
-    += ( JjVvPlusJjAaAllSq
-         * ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq ) );
-
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( 2.0 * ElMin * mQsq * mVsq
-             * ( EightmCEVElMin * mQsq
-                 + 4.0 * ElMin * mCsq * mQCsqSum ) ) );
-
-    // JjVvSqMinusAaSq
-    current_term_coefficient
-    += ( JjVvSqMinusAaSq
-         * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
-
-    minToLkLog->setCoefficient( current_term_coefficient );
-
-
-    // lin:
-
-    // VvPlusJjAaAllSq
-    current_term_coefficient
-    = ( VvPlusJjAaAllSq
-        * ( 4.0 * EightmCEVElMin * ElMin * mQcu * mQCsqDiff ) );
-
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    += ( MinusTwiceVvJjAa
-         * ( 2.0 * mQcu
-             * ( EightmCEVElMin
-                 * ( 4.0 * ElMin * ( ( lnElMin - lnmQC ) * mCsq + mQsq )
-                     + mC * mVsq )
-                 - 2.0 * mCsq
-                   * ( 4.0 * ElMin * mC * ( 4.0 * ElMinsq - mVsq )
-                       + mVqu ) ) ) );
-
-    // VvSqMinusAaSq
-    // 0.0
-
-    // JjVvPlusJjAaAllSq
-    current_term_coefficient
-    += ( JjVvPlusJjAaAllSq
-         * ( 16.0 * ElMinsq * mQcu * mQCsqDiff * mVsq ) );
-
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( 2.0 * mQcu * mVsq
-             * ( 2.0 * mCsq * mVsq
-                 - EightmCEVElMin * mC
-                 - 8.0 * ElMin * ( mCsq * mC
-                                   + 2.0 * ElMin * ( ( lnElMin - lnmQC ) * mCsq
-                                                     + mQsq ) ) ) ) );
-
-    // JjVvSqMinusAaSq
-    current_term_coefficient
-    += ( JjVvSqMinusAaSq
-         * ( -2.0 * EightmCXElMinmQsq * mC * mQ * mVsq ) );
-
-    minToLkLin->setCoefficient( current_term_coefficient );
-
-
-    // linlog:
-
-    // VvPlusJjAaAllSq
-    // 0.0
-
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    = ( MinusTwiceVvJjAa
-        * ( -8.0 * EightmCEVElMin * ElMin * mCsq * mQcu ) );
-
-    // VvSqMinusAaSq
-    // 0.0
-
-    // JjVvPlusJjAaAllSq
-    // 0.0
-
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( 32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-
-    // JjVvSqMinusAaSq
-    // 0.0
-
-    minToLkLinlog->setCoefficient( current_term_coefficient );
-
-
-    // sq:
-
-    // VvPlusJjAaAllSq
-    current_term_coefficient
-    = ( VvPlusJjAaAllSq
-        * ( -16.0 * ElMinsq * mQsq * mQsq * mQCsqDiff ) );
-
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    += ( MinusTwiceVvJjAa
-         * ( 32.0 * ElMinsq * mQsq * mQsq * ( 2.0 * mCsq - mQsq ) ) );
-
-    // VvSqMinusAaSq
-    // 0.0
-
-    // JjVvPlusJjAaAllSq
-    // 0.0
-
-    // JjVvSqPlusAaSq
-    // 0.0
-
-    // JjVvSqMinusAaSq
-    // 0.0
-
-    minToLkSq->setCoefficient( current_term_coefficient );
-
+    // debugging:
+    //currentMinToLkInvCoefficient = 0.0;
+    // right!
+    currentMinToLkConstCoefficient
+    = ( EightmCXElMinmQsq * ElMin * ( lnmQC - lnElMin ) * mQCsqDiff * mVsq );
+    // right!
+    currentMinToLkLogCoefficient
+    = ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq );
+    // right!
+    // debugging:
+    //currentMinToLkLinCoefficient = 0.0;
+    // right!
+    // debugging:
+    //currentMinToLkLinLogCoefficient = 0.0;
+    // right!
+    // debugging:
+    //currentMinToLkSqCoefficient = 0.0;
+    // right!
 
     // LK to HK:
-    lkToHkSegment.setSegmentRange( Elk,
-                                      Ehk );
 
-    if( energy_limited_cosines )
-      // if the cosine limits are limited by kinematics...
-      {
-
-        // const:
-
-        // VvPlusJjAaAllSq
-        current_term_coefficient
-        = ( VvPlusJjAaAllSq
-            * ( mQsq * mQCsqDiff
-                * ( EightmCEVElMin * mVsq
-                    * ( ElMin * ( lnElMin - lnVsqOverFourElMinsq ) + mC )
-                    - 4.0 * EightmCEVElMin * ElMinsq * mC
-                    + mCsq * ( 16.0 * ElMinsq * ElMinsq - mVqu ) ) ) );
-
-        // MinusTwiceVvJjAa
-        current_term_coefficient
-        += ( MinusTwiceVvJjAa
-             * ( 2.0 * mQsq
-                 * ( ( lnElMin - lnVsqOverFourElMinsq ) * mVsq * ElMin
-                     * ( EightmCEVElMin * mQsq
-                         + 4.0 * ElMin * mCsq * mQCsqSum )
-                     + EightmCEVElMin * mQsq * mC
-                       * ( mVsq - 4.0 * ElMinsq )
-                     + 8.0 * ElMinsq * ElMin * mC
-                       * ( 2.0 * ElMin * mC * mQsq - mQCsqSum * mVsq )
-                     + ( 2.0 * ElMin * mQCsqSum - mC * mQsq ) * mVqu ) ) );
-
-        // VvSqMinusAaSq
-        current_term_coefficient
-        += ( VvSqMinusAaSq
-             * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
-                 * ( lnVsqOverFourElMinsq - lnElMin ) ) );
-
-        // JjVvPlusJjAaAllSq
-        current_term_coefficient
-        += ( JjVvPlusJjAaAllSq
-             * ( ElMin * mQsq * mQCsqDiff * mVsq
-                 * ( EightmCEVElMin * ( lnElMin - lnVsqOverFourElMinsq )
-                     + 4.0 * mC * ( mVsq - 4.0 * ElMinsq ) ) ) );
-
-        // JjVvSqPlusAaSq
-        current_term_coefficient
-        += ( JjVvSqPlusAaSq
-             * ( 2.0 * ElMin * mQsq * mVsq
-                 * ( EightmCEVElMin * mQsq
-                     * ( lnVsqOverFourElMinsq - lnElMin )
-                     + 8.0 * ElMinsq * mC * ( mCsq + 3.0 * mQsq )
-                     + 4.0 * ElMin * mCsq * mQCsqSum
-                       * ( lnVsqOverFourElMinsq - lnElMin )
-                     - 2.0 * mC * ( mCsq + 3.0 * mQsq ) * mVsq ) ) );
-
-        // JjVvSqMinusAaSq
-        current_term_coefficient
-        += ( JjVvSqMinusAaSq
-             * ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq
-                 * ( lnVsqOverFourElMinsq - lnElMin ) ) );
-
-        lkToHkConst->setCoefficient( current_term_coefficient );
-
-
-        // lin:
-
-        // VvPlusJjAaAllSq
-        // 0.0
-
-        // MinusTwiceVvJjAa
-        current_term_coefficient
-        = ( MinusTwiceVvJjAa
-            * ( 2.0 * mC * mQcu
-                * ( EightmCEVElMin
-                    * ( mVsq
-                        - 4.0 * ElMin
-                          * ( ElMin
-                              + ( lnVsqOverFourElMinsq - lnElMin ) * mC ) )
-                    - 2.0 * mC
-                      * ( 8.0 * ElMin * ( 2.0 * ElMinsq * ( 2.0 * mC - ElMin )
-                                          - mC * mVsq )
-                          + mVqu ) ) ) );
-
-        // VvSqMinusAaSq
-        // 0.0
-
-        // JjVvPlusJjAaAllSq
-        // 0.0
-
-        // JjVvSqPlusAaSq
-        current_term_coefficient
-        += ( JjVvSqPlusAaSq
-             * ( 2.0 * mC * mQcu
-                 * ( 4.0 * ElMinsq
-                     * ( EightmCEVElMin
-                         + 8.0 * ElMin * mC * ( mC - ElMin ) )
-                     - mVsq * ( EightmCEVElMin
-                                + 8.0 * ElMin * mC
-                                  * ( 2.0 * ElMin
-                                      * ( lnElMin - lnVsqOverFourElMinsq )
-                                      + mC ) )
-                   - 2.0 * mC * mVqu ) ) );
-
-        // JjVvSqMinusAaSq
-        current_term_coefficient
-        += ( JjVvSqMinusAaSq
-             * ( 2.0 * EightmCXElMinmQsq * mC * mQ
-                 * (4.0 * ElMinsq - mVsq ) ) );
-
-        lkToHkLin->setCoefficient( current_term_coefficient );
-
-
-        // sq:
-
-        // VvPlusJjAaAllSq
-        // 0.0
-
-        // MinusTwiceVvJjAa
-        // 0.0
-
-        // VvSqMinusAaSq
-        // 0.0
-
-        // JjVvPlusJjAaAllSq
-        // 0.0
-
-        // JjVvSqPlusAaSq
-        // 0.0
-
-        // JjVvSqMinusAaSq
-        // 0.0
-
-        lkToHkSq->setCoefficient( 0.0 );
-
-      }
+    if( cosinesLimitedByEnergy )
+    {
+      currentLkToHkConstCoefficient = ( EightmCXElMinmQsq * ElMin * mQCsqDiff
+                                        * mVsq * lnVsqOverFourElMinsq );
+      // dunno...
+    }
     else
-      // otherwise, if the cosine limits are not limited by kinematics...
-      {
-
-        // const:
-
-        // VvPlusJjAaAllSq
-        current_term_coefficient
-        = ( VvPlusJjAaAllSq
-            * ( -2.0 * EightmCEVElMin * ElMin * lnmQC * mQsq * mQCsqDiff
-                * mVsq ) );
-
-        // MinusTwiceVvJjAa
-        current_term_coefficient
-        += ( MinusTwiceVvJjAa
-             * ( 2.0 * ElMin * mQsq * mVsq
-                 * ( mQCsqDiff * ( EightmCEVElMin + 8.0 * mCsq * ElMin )
-                     - 2.0 * lnmQC * ( EightmCEVElMin * mQsq
-                                       + 4.0 * ElMin * mCsq * mQCsqSum ) ) ) );
-
-        // VvSqMinusAaSq
-        current_term_coefficient
-        += ( VvSqMinusAaSq
-             * ( 2.0 * EightmCXElMinmQsq * ElMin * lnmQC * mQCsqDiff
-                 * mVsq ) );
-
-        // JjVvPlusJjAaAllSq
-        current_term_coefficient
-        += ( JjVvPlusJjAaAllSq
-             * ( -2.0 * EightmCEVElMin * ElMin * lnmQC * mQsq * mQCsqDiff
-                 * mVsq ) );
-
-        // JjVvSqPlusAaSq
-        current_term_coefficient
-        += ( JjVvSqPlusAaSq
-             * ( 2.0 * ElMin * mQsq * mVsq
-                 * ( 2.0 * lnmQC * ( EightmCEVElMin * mQsq
-                                     + 4.0 * ElMin * mCsq * mQCsqSum )
-                     - mQCsqDiff
-                       * ( EightmCEVElMin + 8.0 * ElMin * mCsq ) ) ) );
-
-        // JjVvSqMinusAaSq
-        current_term_coefficient
-        += ( JjVvSqMinusAaSq
-             * ( 2.0 * EightmCXElMinmQsq * ElMin * mVsq
-                 * ( lnmQC * mQCsqSum - mQCsqDiff ) ) );
-
-        lkToHkConst->setCoefficient( current_term_coefficient );
-
-
-        // lin:
-
-        // VvPlusJjAaAllSq
-        current_term_coefficient
-        = ( VvPlusJjAaAllSq
-            * ( 4.0 * EightmCEVElMin * ElMin * mQ * mQCsqDiffsq ) );
-
-        // MinusTwiceVvJjAa
-        current_term_coefficient
-        += ( MinusTwiceVvJjAa
-             * ( 8.0 * EightmCEVElMin * ElMin * mQcu
-                 * ( mQCsqDiff - 2.0 * mCsq * lnmQC ) ) );
-
-        // VvSqMinusAaSq
-        // 0.0
-
-        // JjVvPlusJjAaAllSq
-        current_term_coefficient
-        += ( JjVvPlusJjAaAllSq
-             * ( 16.0 * ElMinsq * mQ * mQCsqDiffsq * mVsq ) );
-
-        // JjVvSqPlusAaSq
-        current_term_coefficient
-        += ( JjVvSqPlusAaSq
-             * ( 32.0 * ElMinsq * mQcu * mVsq
-                 * ( 2.0 * mCsq * lnmQC - mQCsqDiff ) ) );
-
-        // JjVvSqMinusAaSq
-        // 0.0
-
-        lkToHkLin->setCoefficient( current_term_coefficient );
-
-
-        // sq:
-
-        // VvPlusJjAaAllSq
-        current_term_coefficient
-        = ( VvPlusJjAaAllSq
-            * ( -16.0 * ElMinsq * mQCsqDiffsq * mQCsqSum ) );
-
-        // MinusTwiceVvJjAa
-        current_term_coefficient
-        += ( MinusTwiceVvJjAa
-             * ( -32.0 * ElMinsq * mQsq * mQCsqDiffsq ) );
-
-        // VvSqMinusAaSq
-        // 0.0
-
-        // JjVvPlusJjAaAllSq
-        // 0.0
-
-        // JjVvSqPlusAaSq
-        // 0.0
-
-        // JjVvSqMinusAaSq
-        // 0.0
-
-        lkToHkSq->setCoefficient( current_term_coefficient );
-
-      }
-
+    {
+      currentLkToHkConstCoefficient
+      = ( 2.0 * EightmCXElMinmQsq * ElMin * lnmQC * mQCsqDiff * mVsq );
+      // right!
+    }
+    // debugging:
+    //currentLkToHkLinCoefficient = 0.0;
+    // right!
+    // debugging:
+    //currentLkToHkSqCoefficient = 0.0;
+    // right!
 
     // HK to MAX:
-    hkToMaxSegment.setSegmentRange( Ehk,
-                                       maximumEnergy );
+    // debugging:
+    //currentHkToMaxInvCoefficient = 0.0;
+    // right!
+    currentHkToMaxConstCoefficient
+    = ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
+        * ( lnmQC + lnVsqOverFourElMinsq + lnElMin ) );
+    // right!
+    currentHkToMaxLogCoefficient = -currentMinToLkLogCoefficient;
+    // right!
+    // debugging:
+    //currentHkToMaxLinCoefficient = 0.0;
+    // right!
+    // debugging:
+    //currentHkToMaxLinLogCoefficient = 0.0;
+    // right!
+    // debugging:
+    //currentHkToMaxSqCoefficient = 0.0;
+    // right!
 
-    // inv:
+    minToLkConst->addToCoefficient( VvSqMinusAaSq
+                                    * currentMinToLkConstCoefficient );
+    minToLkLog->addToCoefficient( VvSqMinusAaSq
+                                  * currentMinToLkLogCoefficient );
 
-    // VvPlusJjAaAllSq
-    // 0.0
+    lkToHkConst->addToCoefficient( VvSqMinusAaSq
+                                   * currentLkToHkConstCoefficient );
 
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    = ( MinusTwiceVvJjAa
-        * ( 4.0 * ElMinsq * mCsq * mQcu * mVqu ) );
+    hkToMaxConst->addToCoefficient( VvSqMinusAaSq
+                                    * currentHkToMaxConstCoefficient );
+    hkToMaxLog->addToCoefficient( VvSqMinusAaSq
+                                  * currentHkToMaxLogCoefficient );
 
-    // VvSqMinusAaSq
-    // 0.0
-
-    // JjVvPlusJjAaAllSq
-    // 0.0
-
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( -4.0 * ElMinsq * mCsq * mQcu * mVqu ));
-
-    // JjVvSqMinusAaSq
-    // 0.0
-
-    hkToMaxInv->setCoefficient( current_term_coefficient );
-
-
-    // const:
-
-    // VvPlusJjAaAllSq
-    current_term_coefficient
-    = ( VvPlusJjAaAllSq
-        * ( mQsq * mQCsqDiff * mVsq
-            * ( EightmCEVElMin
-                * ( mC - ElMin * ( lnmQC + lnVsqOverFourElMinsq ) )
-                - mCsq * mVsq ) ) ) ;
-
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    += ( MinusTwiceVvJjAa
-         * ( 2.0 * mQsq * mVsq
-             * ( EightmCEVElMin * mQsq * ( ElMin + mC )
-                 - ( lnmQC + lnVsqOverFourElMinsq )
-                   * ( mQsq * EightmCEVElMin * ElMin
-                       + 4.0 * ElMinsq * mCsq * mQCsqSum )
-                 + 8.0 * ElMinsq * mC
-                   * ( mC * mQsq - ElMin * mQCsqSum )
-                 - mCsq * mQsq * mVsq ) ) );
-
-    // VvSqMinusAaSq
-    current_term_coefficient
-    += ( VvSqMinusAaSq
-         * ( EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq
-             * ( lnmQC + lnVsqOverFourElMinsq ) ) );
-
-    // JjVvPlusJjAaAllSq
-    current_term_coefficient
-    += ( JjVvPlusJjAaAllSq
-         * ( ElMin * mQsq * mQCsqDiff * mVsq
-             * ( 4.0 * mC * mVsq
-                 - EightmCEVElMin * ( lnmQC + lnVsqOverFourElMinsq ) ) ) );
-
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( 2.0 * ElMin * mQsq * mVsq
-             * ( ( lnmQC + lnVsqOverFourElMinsq )
-                 * ( 4.0 * ElMin * mCsq * mQCsqSum + mQsq * EightmCEVElMin )
-                 + 8.0 * ElMin * mC * ( ElMin * mQCsqSum - mC * mQsq )
-                 - EightmCEVElMin * mQsq
-                 - 4.0 * mQsq * mC * mVsq ) ) );
-
-    // JjVvSqMinusAaSq
-    current_term_coefficient
-    += ( JjVvSqMinusAaSq
-         * ( EightmCXElMinmQsq * ElMin * mVsq
-             * ( ( lnmQC + lnVsqOverFourElMinsq ) * mQCsqSum
-                 - 2.0 * mQsq ) ) );
-
-    hkToMaxConst->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "VvSqMinusAaSqSymDistribution:"
+    << std::endl << "MINtoLK: "
+    << std::endl << currentMinToLkInvCoefficient << "/E"
+    << std::endl << currentMinToLkConstCoefficient
+    << std::endl << currentMinToLkLogCoefficient << "L"
+    << std::endl << currentMinToLkLinCoefficient << "E"
+    << std::endl << currentMinToLkLinLogCoefficient << "EL"
+    << std::endl << currentMinToLkSqCoefficient << "E^2"
+    << std::endl << "LKtoHK: "
+    << std::endl << currentLkToHkConstCoefficient
+    << std::endl << currentLkToHkLinCoefficient << "E"
+    << std::endl << currentLkToHkSqCoefficient << "E^2"
+    << std::endl << "HKtoMAX: "
+    << std::endl << currentHkToMaxInvCoefficient << "/E"
+    << std::endl << currentHkToMaxConstCoefficient
+    << std::endl << currentHkToMaxLogCoefficient << "L"
+    << std::endl << currentHkToMaxLinCoefficient << "E"
+    << std::endl << currentHkToMaxLinLogCoefficient << "EL"
+    << std::endl << currentHkToMaxSqCoefficient << "E^2";**/
 
 
-    // log:
+    // VvPlusJjAaAllSqAntiDistribution:
 
-    // VvPlusJjAaAllSq
-    current_term_coefficient
-    = ( VvPlusJjAaAllSq
-        * ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq ) );
+    // MIN to LK:
+    // debugging:
+    //currentMinToLkInvCoefficient = 0.0;
+    // right!
+    currentMinToLkConstCoefficient
+    =  ( ElMin * ( EightmCEVElMin * ( lnElMin - lnmQC )
+                   - 16.0 * ElMinsq * mC ) * mQsq * mQCsqDiff * mVsq );
+    // right!
+    currentMinToLkLogCoefficient
+    = ( -EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
+    // right!
+    currentMinToLkLinCoefficient
+    = ( 16.0 * ElMinsq * mQcu * mQCsqDiff * mVsq );
+    // right!
+    // debugging:
+    //currentMinToLkLinLogCoefficient = 0.0;
+    // right!
+    // debugging:
+    //currentMinToLkSqCoefficient = 0.0;
+    // right!
 
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    += ( MinusTwiceVvJjAa
-         * ( 2.0 * ElMin * mQsq * mVsq
-             * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) ) );
+    // LK to HK:
+    if( cosinesLimitedByEnergy )
+    {
+      currentLkToHkConstCoefficient
+      = ( ElMin * mQsq * mQCsqDiff * mVsq
+          * ( 4.0 * mC * ( mVsq - 4.0 * ElMinsq )
+          - EightmCEVElMin * lnVsqOverFourElMinsq ) );
+      // dunno...
+      currentLkToHkLinCoefficient = 0.0;
+      // dunno...
+    }
+    else
+    {
+      currentLkToHkConstCoefficient
+      = ( -2.0 * EightmCEVElMin * ElMin * lnmQC * mQsq * mQCsqDiff * mVsq );
+      // right!
+      currentLkToHkLinCoefficient
+      = ( 16.0 * ElMinsq * mQ * mQCsqDiff * mQCsqDiff * mVsq );
+      // right!
+    }
+    // debugging:
+    //currentLkToHkSqCoefficient = 0.0;
 
-    // VvSqMinusAaSq
-    current_term_coefficient
-    += ( VvSqMinusAaSq
-         * ( -EightmCXElMinmQsq * ElMin * mQCsqDiff * mVsq ) );
+    // HK to MAX:
+    //currentHkToMaxInvCoefficient = 0.0;
+    // right!
+    currentHkToMaxConstCoefficient
+    = ( ElMin * mQsq * mQCsqDiff * mVsq
+        * ( 4.0 * mC * mVsq - EightmCEVElMin
+                              * ( lnmQC + lnVsqOverFourElMinsq + lnElMin ) ) );
+    // right!
+    currentHkToMaxLogCoefficient
+    = ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq );
+    // right!
+    currentHkToMaxLinCoefficient
+    = ( -16.0 * ElMinsq * mCsq * mQ * mQCsqDiff * mVsq );
+    // right!
+    // debugging:
+    //currentHkToMaxLinLogCoefficient = 0.0;
+    // right!
+    // debugging:
+    //currentHkToMaxSqCoefficient = 0.0;
+    // right!
 
-    // JjVvPlusJjAaAllSq
-    current_term_coefficient
-    += ( JjVvPlusJjAaAllSq
-         * ( EightmCEVElMin * ElMin * mQsq * mQCsqDiff * mVsq ) );
+    minToLkConst->addToCoefficient( JjVvPlusJjAaAllSq
+                                    * currentMinToLkConstCoefficient );
+    minToLkLog->addToCoefficient( JjVvPlusJjAaAllSq
+                                  * currentMinToLkLogCoefficient );
+    minToLkLin->addToCoefficient( VvPlusJjAaAllSq
+                                  * currentMinToLkLinCoefficient );
 
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( -2.0 * ElMin * mQsq * mVsq
-             * ( EightmCEVElMin * mQsq
-                 + 4.0 * ElMin * mCsq * mQCsqSum ) ) );
+    lkToHkConst->addToCoefficient( JjVvPlusJjAaAllSq
+                                   * currentLkToHkConstCoefficient );
+    lkToHkLin->addToCoefficient( JjVvPlusJjAaAllSq
+                                 * currentLkToHkLinCoefficient );
 
-    // JjVvSqMinusAaSq
-    current_term_coefficient
-    += ( JjVvSqMinusAaSq
-         * ( -EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq ) );
+    hkToMaxConst->addToCoefficient( JjVvPlusJjAaAllSq
+                                    * currentHkToMaxConstCoefficient );
+    hkToMaxLog->addToCoefficient( JjVvPlusJjAaAllSq
+                                  * currentHkToMaxLogCoefficient );
+    hkToMaxLin->addToCoefficient( JjVvPlusJjAaAllSq
+                                  * currentHkToMaxLinCoefficient );
 
-    hkToMaxLog->setCoefficient( current_term_coefficient );
-
-
-    // lin:
-
-    // VvPlusJjAaAllSq
-    current_term_coefficient
-    = ( VvPlusJjAaAllSq
-        * ( -4.0 * EightmCEVElMin * ElMin * mCsq * mQ * mQCsqDiff ) );
-
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    += ( MinusTwiceVvJjAa
-         * ( 8.0 * ElMin * mC * mQcu
-             * ( 2.0 * mC * ( 4.0 * ElMinsq * ( ElMin - mC ) + mC * mVsq )
-                 - EightmCEVElMin
-                   * ( ElMin
-                       + ( 1.0 + lnmQC + lnVsqOverFourElMinsq ) * mC ) ) ) );
-
-    // VvSqMinusAaSq
-    // 0.0
-
-    // JjVvPlusJjAaAllSq
-    current_term_coefficient
-    += ( JjVvPlusJjAaAllSq
-         * ( -16.0 * ElMinsq * mCsq * mQ * mQCsqDiff * mVsq ) );
-
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( 8.0 * ElMinsq * mC * mQcu
-             * ( EightmCEVElMin + 8.0 * ElMin * mC * ( mC - ElMin )
-                 + 4.0 * mC * mVsq
-                   * ( 1.0 + lnmQC + lnVsqOverFourElMinsq ) ) ) );
-
-    // JjVvSqMinusAaSq
-    current_term_coefficient
-    += ( JjVvSqMinusAaSq
-         * ( 8.0 * EightmCXElMinmQsq * ElMinsq * mC * mQ ) );
-
-    hkToMaxLin->setCoefficient( current_term_coefficient );
-
-
-    // linlog:
-
-    // VvPlusJjAaAllSq
-    // 0.0
-
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    = ( MinusTwiceVvJjAa
-        * ( 8.0 * EightmCEVElMin * ElMin * mCsq * mQcu ) );
-
-    // VvSqMinusAaSq
-    // 0.0
-
-    // JjVvPlusJjAaAllSq
-    // 0.0
-
-    // JjVvSqPlusAaSq
-    current_term_coefficient
-    += ( JjVvSqPlusAaSq
-         * ( -32.0 * ElMinsq * mCsq * mQcu * mVsq ) );
-
-    // JjVvSqMinusAaSq
-    // 0.0
-
-    hkToMaxLinlog->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "VvPlusJjAaAllSqAntiDistribution:"
+    << std::endl << "MINtoLK: "
+    << std::endl << currentMinToLkInvCoefficient << "/E"
+    << std::endl << currentMinToLkConstCoefficient
+    << std::endl << currentMinToLkLogCoefficient << "L"
+    << std::endl << currentMinToLkLinCoefficient << "E"
+    << std::endl << currentMinToLkLinLogCoefficient << "EL"
+    << std::endl << currentMinToLkSqCoefficient << "E^2"
+    << std::endl << "LKtoHK: "
+    << std::endl << currentLkToHkConstCoefficient
+    << std::endl << currentLkToHkLinCoefficient << "E"
+    << std::endl << currentLkToHkSqCoefficient << "E^2"
+    << std::endl << "HKtoMAX: "
+    << std::endl << currentHkToMaxInvCoefficient << "/E"
+    << std::endl << currentHkToMaxConstCoefficient
+    << std::endl << currentHkToMaxLogCoefficient << "L"
+    << std::endl << currentHkToMaxLinCoefficient << "E"
+    << std::endl << currentHkToMaxLinLogCoefficient << "EL"
+    << std::endl << currentHkToMaxSqCoefficient << "E^2";**/
 
 
-    // sq:
+    // VvSqPlusAaSqAntiDistribution:
 
-    // VvPlusJjAaAllSq
-    current_term_coefficient
-    = ( VvPlusJjAaAllSq
-        * ( 16.0 * ElMinsq * mCsq * mCsq * mQCsqDiff ) );
+    // MIN to LK:
+    currentMinToLkInvCoefficient
+    = ( 4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
+    // right!
+    currentMinToLkConstCoefficient
+    = ( ElMin * mQsq * mVsq
+        * ( 32.0 * ElMinsq * mC * mQsq
+            + 2.0 * EightmCEVElMin * ( mCsq + ( lnmQC - lnElMin ) * mQsq )
+            + 8.0 * ElMin * mCsq
+                  * ( 2.0 * mCsq + ( lnmQC - lnElMin ) * mQCsqSum )
+            - 4.0 * mC * mQCsqSum * mVsq ) );
+    // right!
+    currentMinToLkLogCoefficient
+    = ( 2.0 * ElMin * mQsq * mVsq
+            * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) );
+    // right!
+    currentMinToLkLinCoefficient
+    = ( 2.0 * mQcu * mVsq
+        * ( 2.0 * mCsq * mVsq
+            - EightmCEVElMin * mC
+            - 8.0 * ElMin
+              * ( mC * mCsq + 2.0 * ElMin
+                              * ( ( lnElMin - lnmQC ) * mCsq + mQsq ) ) ) );
+    // right!
+    currentMinToLkLinLogCoefficient = ( 32.0 * ElMinsq * mCsq * mQcu * mVsq );
+    // right!
+    // debugging:
+    //currentMinToLkSqCoefficient = 0.0;
+    // right!
 
-    // MinusTwiceVvJjAa
-    current_term_coefficient
-    += ( MinusTwiceVvJjAa
-         * ( -32.0 * ElMinsq * mCsq * mCsq * mQsq ) );
+    // LK to HK:
+    if( cosinesLimitedByEnergy )
+    {
+      currentLkToHkConstCoefficient
+      = ( 2.0 * ElMin * mQsq * mVsq
+          * ( lnVsqOverFourElMinsq
+              * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum )
+              + 2.0 * mC * ( mCsq + 3.0 * mQsq )
+                * ( 4.0 * ElMinsq - mVsq ) ) );
+      // dunno...
+      currentLkToHkLinCoefficient
+      = ( 2.0 * mC * mQcu
+          * ( 4.0 * ElMinsq
+              * ( EightmCEVElMin
+                  + 8.0 * ElMin * mC * ( mC - ElMin ) )
+              - mVsq * ( EightmCEVElMin
+                         + 8.0 * ElMin * mC
+                           * ( mC - 2.0 * ElMin * lnVsqOverFourElMinsq ) )
+              + 2.0 * mC * mVsq * mVsq ) );
+      // dunno...
+    }
+    else
+    {
+      currentLkToHkConstCoefficient
+      = ( 2.0 * ElMin * mQsq * mVsq
+          * ( 2.0 * mQsq * lnmQC
+              * ( EightmCEVElMin + 4.0 * ElMin * mCsq )
+              - mQCsqDiff * ( 8.0 * ElMin * mCsq + EightmCEVElMin )
+              + 8.0 * ElMin * mCsq * mCsq * lnmQC ) );
+      // right!
+      currentLkToHkLinCoefficient = ( 32.0 * ElMinsq * mQcu * mVsq
+                                      * ( 2.0 * mCsq * lnmQC - mQCsqDiff ) );
+      // right!
+    }
+    // debugging:
+    //currentLkToHkSqCoefficient = 0.0;
+    // right!
 
-    // VvSqMinusAaSq
-    // 0.0
+    // HK to MAX:
+    currentHkToMaxInvCoefficient = -currentMinToLkInvCoefficient;
+    // depends...
+    currentHkToMaxConstCoefficient
+    = ( 2.0 * ElMin * mQsq * mVsq
+        * ( 4.0 * ElMin * mCsq
+            * ( ( lnmQC + lnVsqOverFourElMinsq + lnElMin ) * mQCsqSum
+                  - 2.0 * mQsq )
+            + 8.0 * ElMinsq * mC * mQCsqSum
+            + mQsq * ( EightmCEVElMin
+                       * ( lnmQC + lnVsqOverFourElMinsq + lnElMin - 1.0 )
+                       - 4.0 * mC * mVsq ) ) );
+    // right!
+    currentHkToMaxLogCoefficient
+    = ( -2.0 * ElMin * mQsq * mVsq
+        * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) );
+    // right!
+    currentHkToMaxLinCoefficient
+    = ( 8.0 * ElMinsq * mC * mQcu
+        * ( EightmCEVElMin + 8.0 * ElMin * mC * ( mC - ElMin )
+            + 4.0 * mC * mVsq
+              * ( 1.0 + lnmQC + lnVsqOverFourElMinsq + lnElMin ) ) );
+    // right!
+    currentHkToMaxLinLogCoefficient = -currentMinToLkLinLogCoefficient;
+    // right!
+    // debugging:
+    //currentHkToMaxSqCoefficient = 0.0;
+    // right!
 
-    // JjVvPlusJjAaAllSq
-    // 0.0
+    minToLkInv->addToCoefficient( JjVvSqPlusAaSq
+                                  * currentMinToLkInvCoefficient );
+    minToLkConst->addToCoefficient( JjVvSqPlusAaSq
+                                    * currentMinToLkConstCoefficient );
+    minToLkLog->addToCoefficient( JjVvSqPlusAaSq
+                                  * currentMinToLkLogCoefficient );
+    minToLkLin->addToCoefficient( JjVvSqPlusAaSq
+                                  * currentMinToLkLinCoefficient );
+    minToLkLinlog->addToCoefficient( JjVvSqPlusAaSq
+                                     * currentMinToLkLinLogCoefficient );
 
-    // JjVvSqPlusAaSq
-    // 0.0
+    lkToHkConst->addToCoefficient( JjVvSqPlusAaSq
+                                   * currentLkToHkConstCoefficient );
+    lkToHkLin->addToCoefficient( JjVvSqPlusAaSq
+                                 * currentLkToHkLinCoefficient );
 
-    // JjVvSqMinusAaSq
-    // 0.0
+    hkToMaxInv->addToCoefficient( JjVvSqPlusAaSq
+                                  * currentHkToMaxInvCoefficient );
+    hkToMaxConst->addToCoefficient( JjVvSqPlusAaSq
+                                    * currentHkToMaxConstCoefficient );
+    hkToMaxLog->addToCoefficient( JjVvSqPlusAaSq
+                                  * currentHkToMaxLogCoefficient );
+    hkToMaxLin->addToCoefficient( JjVvSqPlusAaSq
+                                  * currentHkToMaxLinCoefficient );
+    hkToMaxLinlog->addToCoefficient( JjVvSqPlusAaSq
+                                     * currentHkToMaxLinLogCoefficient );
 
-    hkToMaxSq->setCoefficient( current_term_coefficient );
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "VvSqPlusAaSqAntiDistribution:"
+    << std::endl << "MINtoLK: "
+    << std::endl << currentMinToLkInvCoefficient << "/E"
+    << std::endl << currentMinToLkConstCoefficient
+    << std::endl << currentMinToLkLogCoefficient << "L"
+    << std::endl << currentMinToLkLinCoefficient << "E"
+    << std::endl << currentMinToLkLinLogCoefficient << "EL"
+    << std::endl << currentMinToLkSqCoefficient << "E^2"
+    << std::endl << "LKtoHK: "
+    << std::endl << currentLkToHkConstCoefficient
+    << std::endl << currentLkToHkLinCoefficient << "E"
+    << std::endl << currentLkToHkSqCoefficient << "E^2"
+    << std::endl << "HKtoMAX: "
+    << std::endl << currentHkToMaxInvCoefficient << "/E"
+    << std::endl << currentHkToMaxConstCoefficient
+    << std::endl << currentHkToMaxLogCoefficient << "L"
+    << std::endl << currentHkToMaxLinCoefficient << "E"
+    << std::endl << currentHkToMaxLinLogCoefficient << "EL"
+    << std::endl << currentHkToMaxSqCoefficient << "E^2";**/
+
+
+    // VvSqMinusAaSqAntiDistribution
+
+    // MIN to LK:
+    // debugging:
+    //currentMinToLkInvCoefficient = 0.0;
+    // right!
+    currentMinToLkConstCoefficient
+    = ( EightmCXElMinmQsq * ElMin * mVsq
+        * ( ( 1.0 - lnElMin + lnmQC ) * mQCsqSum - mQCsqDiff ) );
+    // right!
+    currentMinToLkLogCoefficient
+    = ( EightmCXElMinmQsq * ElMin * mQCsqSum * mVsq );
+    // right!
+    currentMinToLkLinCoefficient
+    = ( -2.0 * EightmCXElMinmQsq * mC * mQ * mVsq );
+    // right!
+    // debugging:
+    //currentMinToLkLinLogCoefficient = 0.0;
+    // right!
+    // debugging:
+    //currentMinToLkSqCoefficient = 0.0;
+    // right!
+
+    // LK to HK:
+    if( cosinesLimitedByEnergy )
+    {
+      currentLkToHkConstCoefficient = ( EightmCXElMinmQsq * ElMin * mQCsqSum
+                                        * mVsq * lnVsqOverFourElMinsq );
+      // dunno...
+      currentLkToHkLinCoefficient
+      = ( 2.0 * EightmCXElMinmQsq * mC * mQ * ( 4.0 * ElMinsq - mVsq ) );
+      // dunno...
+    }
+    else
+    {
+      currentLkToHkConstCoefficient = ( 2.0 * EightmCXElMinmQsq * ElMin * mVsq
+                                        * ( lnmQC * mQCsqSum - mQCsqDiff ) );
+      // right!
+      currentLkToHkLinCoefficient = 0.0;
+      // right!
+    }
+    // debugging:
+    //currentLkToHkSqCoefficient = 0.0;
+    // right!
+
+    // HK to MAX:
+    // debugging:
+    //currentHkToMaxInvCoefficient = 0.0;
+    // right!
+    currentHkToMaxConstCoefficient
+    = ( EightmCXElMinmQsq * ElMin * mVsq
+        * ( ( lnVsqOverFourElMinsq + lnElMin + lnmQC - 1.0 ) * mQCsqSum
+            - mQCsqDiff ) );
+    // right!
+    currentHkToMaxLogCoefficient = -currentMinToLkLogCoefficient;
+    // right!
+    currentHkToMaxLinCoefficient
+    = ( 8.0 * EightmCXElMinmQsq * mC * mQ * ElMinsq );
+    // right!
+    // debugging:
+    //currentHkToMaxLinLogCoefficient = 0.0;
+    // right!
+    // debugging:
+    //currentHkToMaxSqCoefficient = 0.0;
+    // right!
+
+    minToLkConst->addToCoefficient( JjVvSqMinusAaSq
+                                    * currentMinToLkConstCoefficient );
+    minToLkLog->addToCoefficient( JjVvSqMinusAaSq
+                                  * currentMinToLkLogCoefficient );
+    minToLkLin->addToCoefficient( JjVvSqMinusAaSq
+                                  * currentMinToLkLinCoefficient );
+
+    lkToHkConst->addToCoefficient( JjVvSqMinusAaSq
+                                   * currentLkToHkConstCoefficient );
+    lkToHkLin->addToCoefficient( JjVvSqMinusAaSq
+                                 * currentLkToHkLinCoefficient );
+
+    hkToMaxConst->addToCoefficient( JjVvSqMinusAaSq
+                                    * currentHkToMaxConstCoefficient );
+    hkToMaxLog->addToCoefficient( JjVvSqMinusAaSq
+                                  * currentHkToMaxLogCoefficient );
+    hkToMaxLin->addToCoefficient( JjVvSqMinusAaSq
+                                  * currentHkToMaxLinCoefficient );
+
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "VvSqMinusAaSqAntiDistribution:"
+    << std::endl << "MINtoLK: "
+    << std::endl << currentMinToLkInvCoefficient << "/E"
+    << std::endl << currentMinToLkConstCoefficient
+    << std::endl << currentMinToLkLogCoefficient << "L"
+    << std::endl << currentMinToLkLinCoefficient << "E"
+    << std::endl << currentMinToLkLinLogCoefficient << "EL"
+    << std::endl << currentMinToLkSqCoefficient << "E^2"
+    << std::endl << "LKtoHK: "
+    << std::endl << currentLkToHkConstCoefficient
+    << std::endl << currentLkToHkLinCoefficient << "E"
+    << std::endl << currentLkToHkSqCoefficient << "E^2"
+    << std::endl << "HKtoMAX: "
+    << std::endl << currentHkToMaxInvCoefficient << "/E"
+    << std::endl << currentHkToMaxConstCoefficient
+    << std::endl << currentHkToMaxLogCoefficient << "L"
+    << std::endl << currentHkToMaxLinCoefficient << "E"
+    << std::endl << currentHkToMaxLinLogCoefficient << "EL"
+    << std::endl << currentHkToMaxSqCoefficient << "E^2";**/
 
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: lepton_distribution_same_chirality_far_muon:";
-    std::cout << std::endl << "normalization = " << normalization;
-    std::cout << std::endl << "minimum_energy = " << minimum_energy;
-    std::cout << std::endl << "Elk = " << Elk;
-    std::cout << std::endl << "Ehk = " << Ehk;
-    std::cout << std::endl << "maximum_energy = " << maximum_energy;
-    std::cout << std::endl << "minToLkLin = " << minToLkLin;
-    std::cout << std::endl << "minToLkLog = " << minToLkLog;
-    std::cout << std::endl << "minToLkConst = " << minToLkConst;
-    std::cout << std::endl << "minToLkInv = " << minToLkInv;
-    std::cout << std::endl << "lkToHkConst = " << lkToHkConst;
-    std::cout << std::endl << "lkToHkInv = " << lkToHkInv;
+    << "debugging: wMinusHandedMuon::calculateCoefficients() produced "
+    << std::endl << "firstMass = " << firstMass
+    << std::endl << "secondMass = " << secondMass
+    << std::endl << "cosinesLimitedByEnergy = " << cosinesLimitedByEnergy
+    << std::endl << "(true = " << true << ")"
+    << std::endl << "minimumEnergy = " << minimumEnergy
+    << std::endl << "maximumEnergy = " << maximumEnergy
+    << std::endl << "minToLkInv = " << minToLkInv->getCoefficient()
+    << std::endl << "minToLkConst = " << minToLkConst->getCoefficient()
+    << std::endl << "minToLkLog = " << minToLkLog->getCoefficient()
+    << std::endl << "minToLkLin = " << minToLkLin->getCoefficient()
+    << std::endl << "minToLkLinlog = " << minToLkLinlog->getCoefficient()
+    << std::endl << "minToLkSq = " << minToLkSq->getCoefficient()
+    << std::endl << "lkToHkConst = " << lkToHkConst->getCoefficient()
+    << std::endl << "lkToHkLin = " << lkToHkLin->getCoefficient()
+    << std::endl << "lkToHkSq = " << lkToHkSq->getCoefficient()
+    << std::endl << "hkToMaxInv = " << hkToMaxInv->getCoefficient()
+    << std::endl << "hkToMaxConst = " << hkToMaxConst->getCoefficient()
+    << std::endl << "hkToMaxLog = " << hkToMaxLog->getCoefficient()
+    << std::endl << "hkToMaxLin = " << hkToMaxLin->getCoefficient()
+    << std::endl << "hkToMaxLinlog = " << hkToMaxLinlog->getCoefficient()
+    << std::endl << "hkToMaxSq = " << hkToMaxSq->getCoefficient();
     std::cout << std::endl;**/
   }
 

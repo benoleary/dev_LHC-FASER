@@ -454,7 +454,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "sdscW" );
   currentDistribution
-  */= new LHC_FASER::W_minus_handed_muon( &testReadier,
+  */= new LHC_FASER::wMinusHandedMuon( &testReadier,
                                         &slhaData,
                                         sdownLPointer,
                                         &sdownLMass,
@@ -465,7 +465,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "Wx1L" );
   currentDistribution
-  = new LHC_FASER::W_minus_handed_muon( &testReadier,
+  = new LHC_FASER::wMinusHandedMuon( &testReadier,
                                         &slhaData,
                                         sdownLPointer,
                                         &sdownLMass,
@@ -476,7 +476,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "Wx1R" );
   currentDistribution
-  = new LHC_FASER::W_minus_handed_muon( &testReadier,
+  = new LHC_FASER::wMinusHandedMuon( &testReadier,
                                         &slhaData,
                                         sdownLPointer,
                                         &sdownLMass,
@@ -487,7 +487,7 @@ int main( int argumentCount,
   distributions.addDistributions( currentDistribution,
                                    "Wx2L" );
   currentDistribution
-  = new LHC_FASER::W_minus_handed_muon( &testReadier,
+  = new LHC_FASER::wMinusHandedMuon( &testReadier,
                                         &slhaData,
                                         sdownLPointer,
                                         &sdownLMass,
