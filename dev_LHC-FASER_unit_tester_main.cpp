@@ -466,35 +466,35 @@ int main( int argumentCount,
                                    "Wx1L" );
   currentDistribution
   = new LHC_FASER::wMinusHandedMuon( &testReadier,
-                                     &slhaData,
-                                     sdownLPointer,
-                                     &sdownLMass,
-                                     charginoOnePointer,
-                                     wPointer,
-                                     neutralinoOnePointer,
-                                     false );
+                                        &slhaData,
+                                        sdownLPointer,
+                                        &sdownLMass,
+                                        charginoOnePointer,
+                                        wPointer,
+                                        neutralinoOnePointer,
+                                        true );
   distributions.addDistributions( currentDistribution,
                                    "Wx1R" );
   currentDistribution
   = new LHC_FASER::wMinusHandedMuon( &testReadier,
-                                     &slhaData,
-                                     sdownLPointer,
-                                     &sdownLMass,
-                                     charginoTwoPointer,
-                                     wPointer,
-                                     neutralinoOnePointer,
-                                     true );
+                                        &slhaData,
+                                        sdownLPointer,
+                                        &sdownLMass,
+                                        charginoTwoPointer,
+                                        wPointer,
+                                        neutralinoOnePointer,
+                                        true );
   distributions.addDistributions( currentDistribution,
                                    "Wx2L" );
   currentDistribution
   = new LHC_FASER::wMinusHandedMuon( &testReadier,
-                                     &slhaData,
-                                     sdownLPointer,
-                                     &sdownLMass,
-                                     charginoTwoPointer,
-                                     wPointer,
-                                     neutralinoOnePointer,
-                                     false );
+                                        &slhaData,
+                                        sdownLPointer,
+                                        &sdownLMass,
+                                        charginoTwoPointer,
+                                        wPointer,
+                                        neutralinoOnePointer,
+                                        true );
   distributions.addDistributions( currentDistribution,
                                    "Wx2R" );
   /*currentDistribution

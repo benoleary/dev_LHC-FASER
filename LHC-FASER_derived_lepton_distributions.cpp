@@ -1747,12 +1747,6 @@ namespace LHC_FASER
       JjVvPlusJjAaAllSq = ( Vvsq - MinusTwiceVvJjAa + Aasq );
       JjVvSqMinusAaSq = VvSqMinusAaSq;
       JjVvSqPlusAaSq = ( Vvsq + Aasq );
-      // debugging:
-      /**/std::cout << std::endl << "debugging:"
-      << std::endl
-      << "jetIsLeftHanded == true";
-      std::cout << std::endl;/**/
-
     }
     else
     {
@@ -1760,30 +1754,8 @@ namespace LHC_FASER
       JjVvPlusJjAaAllSq = ( MinusTwiceVvJjAa - Vvsq - Aasq );
       JjVvSqMinusAaSq = -VvSqMinusAaSq;
       JjVvSqPlusAaSq = ( -Vvsq - Aasq );
-      // debugging:
-      /**/std::cout << std::endl << "debugging:"
-      << std::endl
-      << "jetIsLeftHanded != true";
-      std::cout << std::endl;/**/
     }
     VvPlusJjAaAllSq = ( Vvsq - MinusTwiceVvJjAa + Aasq );
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "VvPlusJjAaAllSq = " << VvPlusJjAaAllSq
-    << std::endl
-    << "MinusTwiceVvJjAa = " << MinusTwiceVvJjAa
-    << std::endl
-    << "VvSqMinusAaSq = " << VvSqMinusAaSq
-    << std::endl
-    << "JjVvPlusJjAaAllSq = " << JjVvPlusJjAaAllSq
-    << std::endl
-    << "JjVvSqPlusAaSq = " << JjVvSqPlusAaSq
-    << std::endl
-    << "JjVvSqMinusAaSq = " << JjVvSqMinusAaSq;
-    std::cout << std::endl;/**/
-
 
     mQ = firstMass;
     mQsq = ( mQ * mQ );
@@ -1799,7 +1771,7 @@ namespace LHC_FASER
     Elk = ( ElMin * ( mQ / mC ) );
     Ehk = ( mVsq / ( 4.0 * Elk ) );
     maximumEnergy = ( mVsq / ( 4.0 * minimumEnergy ) );
-    if( Ehk < Elk )
+    if( Ehk > Elk )
       /* if we're in the regime where the kinematics mean that there is no
        * range of energies which can be reached for all squark-rest-frame polar
        * muon momentum angles...
@@ -1811,23 +1783,10 @@ namespace LHC_FASER
       Elk = Ehk;
       Ehk = currentLkToHkLinCoefficient;
       cosinesLimitedByEnergy = true;
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "cosinesLimitedByEnergy = true";
-      std::cout << std::endl;**/
     }
     else
     {
       cosinesLimitedByEnergy = false;
-      // for comparison with the Mathematica notebook: underlap is Ehk > Elk
-      // => if( cosinesLimitedByEnergy ){ [use overlap] }
-
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "cosinesLimitedByEnergy = false";
-      std::cout << std::endl;**/
     }
     mQCsqDiff = ( mQsq - mCsq );
     mQCsqDiffsq = ( mQCsqDiff * mQCsqDiff );
@@ -1940,10 +1899,10 @@ namespace LHC_FASER
     // right!
 
     // debugging:
-    /**std::cout << std::endl << "debugging:"
+    /**/std::cout << std::endl << "debugging:"
     << std::endl
     << "VvPlusJjAaAllSq = " << VvPlusJjAaAllSq;
-    std::cout << std::endl;**/
+    std::cout << std::endl;/**/
 
     minToLkInv->setCoefficient( 0.0 );
     minToLkConst->setCoefficient( VvPlusJjAaAllSq
@@ -1980,22 +1939,22 @@ namespace LHC_FASER
     << "VvPlusJjAaAllSqSymDistribution:"
     << std::endl << "MINtoLK: "
     << std::endl << minToLkInv->getCoefficient() << "/E"
-    << std::endl << currentMinToLkConstCoefficient
-    << std::endl << currentMinToLkLogCoefficient << "L"
-    << std::endl << currentMinToLkLinCoefficient << "E"
+    << std::endl << minToLkConst->getCoefficient()
+    << std::endl << minToLkLog->getCoefficient() << "L"
+    << std::endl << minToLkLin->getCoefficient() << "E"
     << std::endl << minToLkLinlog->getCoefficient() << "EL"
-    << std::endl << currentMinToLkSqCoefficient << "E^2"
+    << std::endl << minToLkSq->getCoefficient() << "E^2"
     << std::endl << "LKtoHK: "
-    << std::endl << currentLkToHkConstCoefficient
-    << std::endl << currentLkToHkLinCoefficient << "E"
-    << std::endl << currentLkToHkSqCoefficient << "E^2"
+    << std::endl << lkToHkConst->getCoefficient()
+    << std::endl << lkToHkLin->getCoefficient() << "E"
+    << std::endl << lkToHkSq->getCoefficient() << "E^2"
     << std::endl << "HKtoMAX: "
     << std::endl << hkToMaxInv->getCoefficient() << "/E"
-    << std::endl << currentHkToMaxConstCoefficient
-    << std::endl << currentHkToMaxLogCoefficient << "L"
-    << std::endl << currentHkToMaxLinCoefficient << "E"
+    << std::endl << hkToMaxConst->getCoefficient()
+    << std::endl << hkToMaxLog->getCoefficient() << "L"
+    << std::endl << hkToMaxLin->getCoefficient() << "E"
     << std::endl << hkToMaxLinlog->getCoefficient() << "EL"
-    << std::endl << currentHkToMaxSqCoefficient << "E^2";
+    << std::endl << hkToMaxSq->getCoefficient() << "E^2";
     std::cout << std::endl;**/
 
 
@@ -2114,7 +2073,7 @@ namespace LHC_FASER
     // right!
 
     //debugging:
-    //MinusTwiceVvJjAa = 0.0;
+    MinusTwiceVvJjAa = 0.0;
     minToLkInv->addToCoefficient( MinusTwiceVvJjAa
                                   * currentMinToLkInvCoefficient );
     minToLkConst->addToCoefficient( MinusTwiceVvJjAa
@@ -2149,7 +2108,7 @@ namespace LHC_FASER
                                  * currentHkToMaxSqCoefficient );
 
     // debugging:
-    /**std::cout << std::endl << "debugging:"
+    /**/std::cout << std::endl << "debugging:"
     << std::endl
     << "TwiceVvAaSymDistribution:"
     << std::endl << "MINtoLK: "
@@ -2169,7 +2128,7 @@ namespace LHC_FASER
     << std::endl << currentHkToMaxLogCoefficient << "L"
     << std::endl << currentHkToMaxLinCoefficient << "E"
     << std::endl << currentHkToMaxLinLogCoefficient << "EL"
-    << std::endl << currentHkToMaxSqCoefficient << "E^2";**/
+    << std::endl << currentHkToMaxSqCoefficient << "E^2";/**/
 
 
     // VvSqMinusAaSqSymDistribution:
@@ -2235,7 +2194,7 @@ namespace LHC_FASER
     // right!
 
     //debugging:
-    //VvSqMinusAaSq = 0.0;
+    VvSqMinusAaSq = 0.0;
     minToLkConst->addToCoefficient( VvSqMinusAaSq
                                     * currentMinToLkConstCoefficient );
     minToLkLog->addToCoefficient( VvSqMinusAaSq
@@ -2341,7 +2300,7 @@ namespace LHC_FASER
     // right!
 
     //debugging:
-    //JjVvPlusJjAaAllSq = 0.0;
+    JjVvPlusJjAaAllSq = 0.0;
     minToLkConst->addToCoefficient( JjVvPlusJjAaAllSq
                                     * currentMinToLkConstCoefficient );
     minToLkLog->addToCoefficient( JjVvPlusJjAaAllSq
@@ -2485,7 +2444,7 @@ namespace LHC_FASER
     // right!
 
     //debugging:
-    //JjVvSqPlusAaSq = 0.0;
+    JjVvSqPlusAaSq = 0.0;
     minToLkInv->addToCoefficient( JjVvSqPlusAaSq
                                   * currentMinToLkInvCoefficient );
     minToLkConst->addToCoefficient( JjVvSqPlusAaSq
@@ -2604,7 +2563,7 @@ namespace LHC_FASER
     // right!
 
     //debugging:
-    //JjVvSqMinusAaSq = 0.0;
+    JjVvSqMinusAaSq = 0.0;
     minToLkConst->addToCoefficient( JjVvSqMinusAaSq
                                     * currentMinToLkConstCoefficient );
     minToLkLog->addToCoefficient( JjVvSqMinusAaSq
