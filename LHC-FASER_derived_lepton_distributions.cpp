@@ -1898,6 +1898,12 @@ namespace LHC_FASER
     currentHkToMaxSqCoefficient = ( 16.0 * ElMinsq * mCsq * mCsq * mQCsqDiff );
     // right!
 
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "VvPlusJjAaAllSq = " << VvPlusJjAaAllSq;
+    std::cout << std::endl;/**/
+
     minToLkInv->setCoefficient( 0.0 );
     minToLkConst->setCoefficient( VvPlusJjAaAllSq
                                   * currentMinToLkConstCoefficient );
@@ -1958,7 +1964,7 @@ namespace LHC_FASER
     // MIN to LK:
     currentMinToLkInvCoefficient
     = ( -4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
-    // dunno...
+    // right!
     currentMinToLkConstCoefficient
     = ( ElMin * mQsq
         * ( 2.0 * EightmCEVElMin
@@ -1970,11 +1976,11 @@ namespace LHC_FASER
                       + mVsq * ( mQCsqSum * ( lnElMin - lnmQC )
                                  - 2.0 * mCsq ) )
                   + mQCsqSum * mVsq * mVsq ) ) );
-    // dunno...
+    // right!
     currentMinToLkLogCoefficient
-    = ( -2.0 * ElMin * mQsq * ( EightmCEVElMin * mQsq + 4.0 * mCsq * mQCsqSum )
-        * mVsq );
-    // dunno...
+    = ( -2.0 * ElMin * mQsq * mVsq
+        * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) );
+    // right!
     currentMinToLkLinCoefficient
     = ( 2.0 * mQcu
         * ( 4.0 * EightmCEVElMin * ElMin
@@ -1982,13 +1988,13 @@ namespace LHC_FASER
             + EightmCEVElMin * mC * mVsq
             - 2.0 * mCsq * ( 4.0 * ElMin * mC * ( 4.0 * ElMinsq - mVsq )
                              + mVsq * mVsq) ) );
-    // dunno...
+    // right!
     currentMinToLkLinLogCoefficient
     = ( -8.0 * EightmCEVElMin * ElMin * mCsq * mQcu );
-    // dunno...
+    // right!
     currentMinToLkSqCoefficient
     = ( -32.0 * ElMinsq * mQsq * mQsq * ( mQCsqDiff - mCsq ) );
-    // dunno...
+    // right!
 
     // LK to HK:
     if( cosinesLimitedByEnergy )
@@ -2000,10 +2006,9 @@ namespace LHC_FASER
                   - ElMin * mVsq * lnVsqOverFourElMinsq )
               + mC * ( 16.0 * ElMinsq * ElMinsq * mC * mQsq
                        - 4.0 * ElMinsq * mQCsqSum * mVsq
-                         * ( 2.0 * ElMin
-                             + lnVsqOverFourElMinsq * mC )
-                       - ( mC * mQsq
-                           - 2.0 * ElMin * mQCsqSum ) * mVsq * mVsq ) ) );
+                         * ( 2.0 * ElMin + lnVsqOverFourElMinsq * mC )
+                       + ( 2.0 * ElMin * mQCsqSum
+                           - mC * mQsq ) * mVsq * mVsq ) ) );
       // dunno...
       currentLkToHkLinCoefficient
       = ( 2.0 * mC * mQcu
@@ -2024,22 +2029,22 @@ namespace LHC_FASER
       = ( 2.0 * ElMin * mQsq * mVsq
           * ( mQCsqDiff
               * ( EightmCEVElMin + 8.0 * ElMin * mCsq )
-              - 8.0 * lnmQC * ( 4.0 * mQCsqSum * mCsq * ElMin
+              - 2.0 * lnmQC * ( 4.0 * mQCsqSum * mCsq * ElMin
                                 + mQsq * EightmCEVElMin ) ) );
-      // dunno...
+      // right!
       currentLkToHkLinCoefficient
       = ( 8.0 * EightmCEVElMin * ElMin * mQcu
           * ( mQCsqDiff - 2.0 * lnmQC * mCsq ) );
-      // dunno...
+      // right!
       currentLkToHkSqCoefficient
       = ( -32.0 * ElMinsq * mQsq * mQCsqDiff * mQCsqDiff );
-      // dunno...
+      // right!
     }
 
     // HK to MAX:
     currentHkToMaxInvCoefficient
     = ( 4.0 * ElMinsq * mCsq * mQcu * mVsq * mVsq );
-    // dunno...
+    // right!
     currentHkToMaxConstCoefficient
     = ( 2.0 * mQsq * mVsq
         * ( EightmCEVElMin * ElMin * mQsq
@@ -2049,23 +2054,26 @@ namespace LHC_FASER
                   - 2.0 * mQsq )
             - 8.0 * ElMin * ElMinsq * mC * mQCsqSum
             + mC * mQsq * ( EightmCEVElMin - mC * mVsq ) ) );
-    // dunno...
+    // right!
     currentHkToMaxLogCoefficient
     = ( 2.0 * ElMin * mQsq * mVsq
         * ( EightmCEVElMin * mQsq + 4.0 * ElMin * mCsq * mQCsqSum ) );
-    // dunno...
+    // right!
     currentHkToMaxLinCoefficient
     = ( 8.0  * ElMin * mC * mQcu
         * ( 2.0 * mC * ( 4.0 * ElMinsq * ( ElMin - mC ) + mC * mVsq )
             - EightmCEVElMin
-            * ( ElMin + ( 1.0 + lnmQC + lnVsqOverFourElMinsq ) * mC ) ) );
-    // dunno...
+            * ( ElMin
+                + ( 1.0 + lnmQC + lnElMin + lnVsqOverFourElMinsq ) * mC ) ) );
+    // right!
     currentHkToMaxLinLogCoefficient
     = ( 8.0 * EightmCEVElMin * ElMin * mCsq * mQcu );
-    // dunno...
+    // right!
     currentHkToMaxSqCoefficient = ( -32.0 * ElMinsq * mCsq * mCsq * mQsq );
-    // dunno...
+    // right!
 
+    //debugging:
+    MinusTwiceVvJjAa = 0.0;
     minToLkInv->addToCoefficient( MinusTwiceVvJjAa
                                   * currentMinToLkInvCoefficient );
     minToLkConst->addToCoefficient( MinusTwiceVvJjAa
@@ -2146,7 +2154,6 @@ namespace LHC_FASER
     // right!
 
     // LK to HK:
-
     if( cosinesLimitedByEnergy )
     {
       currentLkToHkConstCoefficient = ( EightmCXElMinmQsq * ElMin * mQCsqDiff
@@ -2186,6 +2193,8 @@ namespace LHC_FASER
     //currentHkToMaxSqCoefficient = 0.0;
     // right!
 
+    //debugging:
+    VvSqMinusAaSq = 0.0;
     minToLkConst->addToCoefficient( VvSqMinusAaSq
                                     * currentMinToLkConstCoefficient );
     minToLkLog->addToCoefficient( VvSqMinusAaSq
@@ -2290,11 +2299,13 @@ namespace LHC_FASER
     //currentHkToMaxSqCoefficient = 0.0;
     // right!
 
+    //debugging:
+    JjVvPlusJjAaAllSq = 0.0;
     minToLkConst->addToCoefficient( JjVvPlusJjAaAllSq
                                     * currentMinToLkConstCoefficient );
     minToLkLog->addToCoefficient( JjVvPlusJjAaAllSq
                                   * currentMinToLkLogCoefficient );
-    minToLkLin->addToCoefficient( VvPlusJjAaAllSq
+    minToLkLin->addToCoefficient( JjVvPlusJjAaAllSq
                                   * currentMinToLkLinCoefficient );
 
     lkToHkConst->addToCoefficient( JjVvPlusJjAaAllSq
@@ -2432,6 +2443,8 @@ namespace LHC_FASER
     //currentHkToMaxSqCoefficient = 0.0;
     // right!
 
+    //debugging:
+    JjVvSqPlusAaSq = 0.0;
     minToLkInv->addToCoefficient( JjVvSqPlusAaSq
                                   * currentMinToLkInvCoefficient );
     minToLkConst->addToCoefficient( JjVvSqPlusAaSq
@@ -2549,6 +2562,8 @@ namespace LHC_FASER
     //currentHkToMaxSqCoefficient = 0.0;
     // right!
 
+    //debugging:
+    JjVvSqMinusAaSq = 0.0;
     minToLkConst->addToCoefficient( JjVvSqMinusAaSq
                                     * currentMinToLkConstCoefficient );
     minToLkLog->addToCoefficient( JjVvSqMinusAaSq
