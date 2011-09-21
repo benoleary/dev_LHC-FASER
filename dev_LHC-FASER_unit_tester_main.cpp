@@ -473,7 +473,7 @@ int main( int argumentCount,
                                      charginoOnePointer,
                                      wPointer,
                                      neutralinoOnePointer,
-                                     true );
+                                     false );
   distributions.addDistributions( currentDistribution,
                                   "Wx1R" );
   currentDistribution
@@ -495,7 +495,7 @@ int main( int argumentCount,
                                      charginoTwoPointer,
                                      wPointer,
                                      neutralinoOnePointer,
-                                     true );
+                                     false );
   distributions.addDistributions( currentDistribution,
                                   "Wx2R" );
   currentDistribution

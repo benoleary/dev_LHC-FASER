@@ -1705,11 +1705,11 @@ namespace LHC_FASER
                              * VMIX->get_entry( whichChargino,
                                                 2 ) ) );
     Aa = ( NMIX->get_entry( whichNeutralino,
-                            2 ) * ( VMIX->get_entry( whichChargino,
+                            2 ) * ( UMIX->get_entry( whichChargino,
                                                      1 )
-                                    - UMIX->get_entry( whichChargino,
+                                    - VMIX->get_entry( whichChargino,
                                                        1 ) )
-           - M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
+           + M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
                                             3 )
                            * UMIX->get_entry( whichChargino,
                                               2 )
@@ -1717,6 +1717,11 @@ namespace LHC_FASER
                                               4 )
                              * VMIX->get_entry( whichChargino,
                                                 2 ) ) );
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "Vv = " << Vv << ", Aa = " << Aa;
+    std::cout << std::endl;**/
     if( 0.0 > fourthParticle->get_mass() )
       // if the relative phases end up such that the product of couplings is
       // purely imaginary...
