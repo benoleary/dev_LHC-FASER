@@ -390,39 +390,30 @@ namespace LHC_FASER
       /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
-  /* specific lepton or antilepton versions of the Z-channel distribution could
-   * be done, but at the moment there is no need for them.
+  /* this derived class to act as a base class for both Z & W^- boson-based
+   * distributions. it is mainly so that I can modify the common elements (if
+   * they ever need to be fixed again) without duplication.
    */
-  /* this derived class sets up the energy distribution for a light lepton
-   * which is from the decay of an on-shell Z boson from the cascade decay of a
-   * squark to a jet of either chirality plus a light lepton-antilepton pair
-   * plus a lightest neutralino, keeping chirality effects.
-   */
-  class zHandedMuon : public leptonEnergyDistribution
+  class weakVectorBosonHandedMuon : public leptonEnergyDistribution
   {
   public:
-    zHandedMuon( readierForNewPoint* const readierPointer,
-                 CppSLHA::CppSLHA0 const* const spectrumData,
-                 CppSLHA::particle_property_set const* const firstParticle,
-                 effectiveSquarkMassHolder* const effectiveSquarkMass,
-                 CppSLHA::particle_property_set const* const secondParticle,
-                 CppSLHA::particle_property_set const* const thirdParticle,
-                 CppSLHA::particle_property_set const* const fourthParticle,
-                 bool const negativeMuonIsSameHandednessAsJet,
-                 bool const shouldSumOverHandedness )
+    weakVectorBosonHandedMuon( readierForNewPoint* const readierPointer,
+                               CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
+                          effectiveSquarkMassHolder* const effectiveSquarkMass,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                     CppSLHA::particle_property_set const* const thirdParticle,
+                    CppSLHA::particle_property_set const* const fourthParticle,
+                               bool const negativeMuonIsSameHandednessAsJet )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
-    ~zHandedMuon()
+    ~weakVectorBosonHandedMuon()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     bool const negativeMuonIsSameHandednessAsJet;
-    bool const shouldNotSumOverHandedness;
     double Elk;
     double Ehk;
-    double sameHandednessFactor;
-    double axialCouplingFactor;
-    bool couplesAsVectorNotAxial;
     bool cosinesLimitedByEnergy;
 
     /* these are for ease of calculating the coefficients (referring to the
@@ -431,49 +422,82 @@ namespace LHC_FASER
      * makes more sense to know that the notation came from a calculation with
      * a chargino decaying to a W boson...):
      */
+    double gammaCQ;
+    // the gamma boost factor from going from the decaying electroweakino rest
+    // frame to the squark rest frame.
+    double gammaCQSq;
+    // gammaCQ^2.
+    double gammaCQCu;
+    // gammaCQ^3.
+    double gammaCQQu;
+    // gammaCQ^4.
+    double betaCQ;
+    // the beta boost factor from going from the decaying electroweakino rest
+    // frame to the squark rest frame.
+    double betaCQSq;
+    // betaCQ^2.
+    double oneMinusBetaCQ;
+    // ( 1 - betaCQ ).
+    double oneMinusBetaCQSq;
+    // oneMinusBetaCQ^2.
+    double oneMinusBetaCQCu;
+    // oneMinusBetaCQ^3.
+    double oneMinusBetaCQQu;
+    // oneMinusBetaCQ^4.
+    double onePlusBetaCQ;
+    double lnOnePlusBetaCQOverOneMinusBetaCQ;
+    // ln( ( 1 + betaCQ ) / ( 1 - betaCQ ) ).
     double ElMin;
-    // the minimum muon energy in the neutralino_2 rest frame.
+    // the minimum muon energy in the decaying electroweakino rest frame.
     double lnElMin;
     // ln( ElMin ).
-    double ElMinsq;
+    double ElMinSq;
     // ElMin^2.
+    double ElMinCu;
+    // ElMin^3.
+    double ElMinQu;
+    // ElMin^4.
     double mQ;
     // the mass of the squark.
-    double mQsq;
+    //double mQSq;
     // mQ^2.
-    double mQcu;
+    //double mQCu;
     // mQ^3.
     double mC;
     // the mass of the neutralino_2.
-    double mCsq;
+    double mCSq;
     // mC^2.
-    double mQCsqSum;
+    double mCCu;
+    // mC^3.
+    //double mQCsqSum;
     // mQ^2 + mC^2.
-    double mQCsqDiff;
+    //double mQCsqDiff;
     // mQ^2 - mC^2.
-    double lnmQC;
+    //double lnmQC;
     // ln( ( mQ / mC ) ).
-    double mCmX;
+    double mCX;
     // mC * the mass of the neutralino_1.
-    double mXsq;
+    double mXSq;
     // mX^2.
-    double mVsq;
-    // the square of the mass of the Z boson.
-    double EV;
+    double mVBSq;
+    // the square of the mass of the weak vector boson.
+    double mVBQu;
+    // mVBSq^2.
+    double EVB;
     // the energy of the Z boson in the rest frame of neutralino_2.
-    double EightmCEVElMin;
+    //double EightmCEVElMin;
     // 8 * mC * EV * ElMin.
-    double lnVsqOverFourElMinsq;
-    // ln( ( mVsq / ( 4 * ElMin^2 ) ).
-    double EightmCXElMinmQsq;
+    double lnmVBSqOverFourElMinSq;
+    // ln( ( mVBSq / ( 4 * ElMin^2 ) ).
+    //double EightmCXElMinmQsq;
     // 8 * mC * mX * ElMin * mQ^2.
-    double lnEmin;
+    //double lnEmin;
     // ln( minimumEnergy ).
-    double lnElk;
+    //double lnElk;
     // ln( Elk ).
-    double lnEhk;
+    //double lnEhk;
     // ln( Ehk ).
-    double lnEmax;
+    //double lnEmax;
     // ln( maximumEnergy ).
 
     // these are for holding the coefficients being calculated:
@@ -537,7 +561,76 @@ namespace LHC_FASER
     // the term quadratic in inputEnergy in the above segment.
 
     void
+    calculateEnergiesAndFactors()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    calculateVvPlusJjAaAllSqSymCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    calculateTwiceVvAaSymCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    calculateVvSqMinusAaSqSymCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    calculateVvPlusJjAaAllSqAntiCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    calculateVvSqPlusAaSqAntiCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    calculateVvSqMinusAaSqAntiCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    setCurrentCoefficientsAsTotals()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    addCurrentCoefficientsToTotals()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+  };
+
+
+  /* specific lepton or antilepton versions of the Z-channel distribution could
+   * be done, but at the moment there is no need for them.
+   */
+  /* this derived class sets up the energy distribution for a light lepton
+   * which is from the decay of an on-shell Z boson from the cascade decay of a
+   * squark to a jet of either chirality plus a light lepton-antilepton pair
+   * plus a lightest neutralino, keeping chirality effects.
+   */
+  class zHandedMuon : public weakVectorBosonHandedMuon
+  {
+  public:
+    zHandedMuon( readierForNewPoint* const readierPointer,
+                 CppSLHA::CppSLHA0 const* const spectrumData,
+                 CppSLHA::particle_property_set const* const firstParticle,
+                 effectiveSquarkMassHolder* const effectiveSquarkMass,
+                 CppSLHA::particle_property_set const* const secondParticle,
+                 CppSLHA::particle_property_set const* const thirdParticle,
+                 CppSLHA::particle_property_set const* const fourthParticle,
+                 bool const negativeMuonIsSameHandednessAsJet,
+                 bool const shouldSumOverHandedness )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~zHandedMuon()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    bool const shouldNotSumOverHandedness;
+    double sameHandednessFactor;
+    double axialCouplingFactor;
+    bool couplesAsAxialNotVector;
+
+    void
+    flipSignsOfCurrentCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    void
     calculateCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    void
+    oldCalculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
@@ -548,7 +641,7 @@ namespace LHC_FASER
    * unfortunately, the couplings are very model-specific, so this assumes just
    * the MSSM.
    */
-  class wMinusHandedMuon : public leptonEnergyDistribution
+  class wMinusHandedMuon : public weakVectorBosonHandedMuon
   {
   public:
     wMinusHandedMuon( readierForNewPoint* const readierPointer,
@@ -565,11 +658,6 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    double Elk;
-    double Ehk;
-    bool const jetIsLeftHanded;
-    bool cosinesLimitedByEnergy;
-
     int whichChargino;
     int whichNeutralino;
     CppSLHA::SLHA_BLOCK const* NMIX;
@@ -603,118 +691,17 @@ namespace LHC_FASER
     // Jj * ( Vv^2 - Aa^2 ).
     double JjVvSqPlusAaSq;
     // Jj * ( Vv^2 + Aa^2 ).
-    double ElMin;
-    // the minimum muon energy in the chargino rest frame.
-    double lnElMin;
-    // ln( ElMin ).
-    double ElMinsq;
-    // ElMin^2.
-    double mQ;
-    // the mass of the squark.
-    double mQsq;
-    // mQ^2.
-    double mQcu;
-    // mQ^3.
-    double mC;
-    // the mass of the chargino.
-    double mCsq;
-    // mC^2.
-    double mQCsqSum;
-    // mQ^2 + mC^2.
-    double mQCsqDiff;
-    // mQ^2 - mC^2.
-    double mQCsqDiffsq;
-    // mQCsqDiff^2.
-    double lnmQC;
-    // ln( ( mQ / mC ) ).
-    double mCmX;
-    // mC * the mass of the neutralino.
-    double mXsq;
-    // mX^2.
-    double mVsq;
-    // the square of the mass of the W boson.
-    double mVqu;
-    // mVsq^2.
-    double EV;
-    // the energy of the W boson in the rest frame of the chargino.
-    double EightmCEVElMin;
-    // 8 * mC * EV * ElMin.
-    double lnVsqOverFourElMinsq;
-    // ln( ( mVsq / ( 4 * ElMin^2 ) ).
-    double EightmCXElMinmQsq;
-    // 8 * mC * mX * ElMin * mQ^2.
-    double lnEmin;
-    // ln( minimumEnergy ).
-    double lnElk;
-    // ln( Elk ).
-    double lnEhk;
-    // ln( Ehk ).
-    double lnEmax;
-    // ln( maximumEnergy ).
 
-    // these are for holding the coefficients being calculated:
-    double currentMinToLkInvCoefficient;
-    double currentMinToLkConstCoefficient;
-    double currentMinToLkLogCoefficient;
-    double currentMinToLkLinCoefficient;
-    double currentMinToLkLinLogCoefficient;
-    double currentMinToLkSqCoefficient;
-    double currentLkToHkConstCoefficient;
-    double currentLkToHkLinCoefficient;
-    double currentLkToHkSqCoefficient;
-    double currentHkToMaxInvCoefficient;
-    double currentHkToMaxConstCoefficient;
-    double currentHkToMaxLogCoefficient;
-    double currentHkToMaxLinCoefficient;
-    double currentHkToMaxLinLogCoefficient;
-    double currentHkToMaxSqCoefficient;
-
-    segmentTermSet minToLkSegment;
-    // the terms between minimumEnergy & Elk.
-    leptonDistributionExpansionTerm* const minToLkInv;
-    // the term linear in the inverse power of inputEnergy in the above
-    // segment.
-    leptonDistributionExpansionTerm* const minToLkConst;
-    // the term constant with respect to inputEnergy in the above segment.
-    leptonDistributionExpansionTerm* const minToLkLog;
-    // the term linear in the logarithm of inputEnergy in the above segment.
-    leptonDistributionExpansionTerm* const minToLkLin;
-    // the term linear in inputEnergy in the above segment.
-    leptonDistributionExpansionTerm* const minToLkLinlog;
-    // the term linear in inputEnergy & in the logarithm of inputEnergy in
-    // the above segment.
-    leptonDistributionExpansionTerm* const minToLkSq;
-    // the term quadratic in inputEnergy in the above segment.
-
-    segmentTermSet lkToHkSegment;
-    // the terms between Elk & Ehk.
-    leptonDistributionExpansionTerm* const lkToHkConst;
-    // the term constant with respect to inputEnergy in the above segment.
-    leptonDistributionExpansionTerm* const lkToHkLin;
-    // the term linear in inputEnergy in the above
-    // segment.
-    leptonDistributionExpansionTerm* const lkToHkSq;
-    // the term quadratic in inputEnergy in the above segment.
-
-    segmentTermSet hkToMaxSegment;
-    // the terms between Ehk & maximumEnergy.
-    leptonDistributionExpansionTerm* const hkToMaxInv;
-    // the term linear in the inverse power of inputEnergy in the above
-    // segment.
-    leptonDistributionExpansionTerm* const hkToMaxConst;
-    // the term constant with respect to inputEnergy in the above segment.
-    leptonDistributionExpansionTerm* const hkToMaxLog;
-    // the term linear in the logarithm of inputEnergy in the above segment.
-    leptonDistributionExpansionTerm* const hkToMaxLin;
-    // the term linear in inputEnergy in the above segment.
-    leptonDistributionExpansionTerm* const hkToMaxLinlog;
-    // the term linear in inputEnergy & in the logarithm of inputEnergy in
-    // the above segment.
-    leptonDistributionExpansionTerm* const hkToMaxSq;
-    // the term quadratic in inputEnergy in the above segment.
+    void
+    scaleCurrentCoefficients( double const scalingFactor )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     void
     calculateCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    void
+    oldCalculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
@@ -1055,6 +1042,96 @@ namespace LHC_FASER
     minToMaxSq->setCoefficient( -1.0 );
     //normalization
     //= ( ( energyDifference * energyDifference * energyDifference ) / 6.0 );
+  }
+
+
+
+  inline void
+  weakVectorBosonHandedMuon::setCurrentCoefficientsAsTotals()
+  {
+    minToLkInv->setCoefficient( currentMinToLkInvCoefficient );
+    minToLkConst->setCoefficient( currentMinToLkConstCoefficient );
+    minToLkLog->setCoefficient( currentMinToLkLogCoefficient );
+    minToLkLin->setCoefficient( currentMinToLkLinCoefficient );
+    minToLkLinlog->setCoefficient( currentMinToLkLinLogCoefficient );
+    minToLkSq->setCoefficient( currentMinToLkSqCoefficient );
+
+    lkToHkConst->setCoefficient( currentLkToHkConstCoefficient );
+    lkToHkLin->setCoefficient( currentLkToHkLinCoefficient );
+    lkToHkSq->setCoefficient( currentLkToHkSqCoefficient );
+
+    hkToMaxInv->setCoefficient( currentHkToMaxInvCoefficient );
+    hkToMaxConst->setCoefficient( currentHkToMaxConstCoefficient );
+    hkToMaxLog->setCoefficient( currentHkToMaxLogCoefficient );
+    hkToMaxLin->setCoefficient( currentHkToMaxLinCoefficient );
+    hkToMaxLinlog->setCoefficient( currentHkToMaxLinLogCoefficient );
+    hkToMaxSq->setCoefficient( currentHkToMaxSqCoefficient );
+  }
+
+  inline void
+  weakVectorBosonHandedMuon::addCurrentCoefficientsToTotals()
+  {
+    minToLkInv->addToCoefficient( currentMinToLkInvCoefficient );
+    minToLkConst->addToCoefficient( currentMinToLkConstCoefficient );
+    minToLkLog->addToCoefficient( currentMinToLkLogCoefficient );
+    minToLkLin->addToCoefficient( currentMinToLkLinCoefficient );
+    minToLkLinlog->addToCoefficient( currentMinToLkLinLogCoefficient );
+    minToLkSq->addToCoefficient( currentMinToLkSqCoefficient );
+
+    lkToHkConst->addToCoefficient( currentLkToHkConstCoefficient );
+    lkToHkLin->addToCoefficient( currentLkToHkLinCoefficient );
+    lkToHkSq->addToCoefficient( currentLkToHkSqCoefficient );
+
+    hkToMaxInv->addToCoefficient( currentHkToMaxInvCoefficient );
+    hkToMaxConst->addToCoefficient( currentHkToMaxConstCoefficient );
+    hkToMaxLog->addToCoefficient( currentHkToMaxLogCoefficient );
+    hkToMaxLin->addToCoefficient( currentHkToMaxLinCoefficient );
+    hkToMaxLinlog->addToCoefficient( currentHkToMaxLinLogCoefficient );
+    hkToMaxSq->addToCoefficient( currentHkToMaxSqCoefficient );
+  }
+
+
+
+  inline void
+  zHandedMuon::flipSignsOfCurrentCoefficients()
+  {
+    currentMinToLkInvCoefficient = -currentMinToLkInvCoefficient;
+    currentMinToLkConstCoefficient = -currentMinToLkConstCoefficient;
+    currentMinToLkLogCoefficient = -currentMinToLkLogCoefficient;
+    currentMinToLkLinCoefficient = -currentMinToLkLinCoefficient;
+    currentMinToLkLinLogCoefficient = -currentMinToLkLinLogCoefficient;
+    currentMinToLkSqCoefficient = -currentMinToLkSqCoefficient;
+    currentLkToHkConstCoefficient = -currentLkToHkConstCoefficient;
+    currentLkToHkLinCoefficient = -currentLkToHkLinCoefficient;
+    currentLkToHkSqCoefficient = -currentLkToHkSqCoefficient;
+    currentHkToMaxInvCoefficient = -currentHkToMaxInvCoefficient;
+    currentHkToMaxConstCoefficient = -currentHkToMaxConstCoefficient;
+    currentHkToMaxLogCoefficient = -currentHkToMaxLogCoefficient;
+    currentHkToMaxLinCoefficient = -currentHkToMaxLinCoefficient;
+    currentHkToMaxLinLogCoefficient = -currentHkToMaxLinLogCoefficient;
+    currentHkToMaxSqCoefficient = -currentHkToMaxSqCoefficient;
+  }
+
+
+
+  inline void
+  wMinusHandedMuon::scaleCurrentCoefficients( double const scalingFactor )
+  {
+    currentMinToLkInvCoefficient *= scalingFactor;
+    currentMinToLkConstCoefficient *= scalingFactor;
+    currentMinToLkLogCoefficient *= scalingFactor;
+    currentMinToLkLinCoefficient *= scalingFactor;
+    currentMinToLkLinLogCoefficient *= scalingFactor;
+    currentMinToLkSqCoefficient *= scalingFactor;
+    currentLkToHkConstCoefficient *= scalingFactor;
+    currentLkToHkLinCoefficient *= scalingFactor;
+    currentLkToHkSqCoefficient *= scalingFactor;
+    currentHkToMaxInvCoefficient *= scalingFactor;
+    currentHkToMaxConstCoefficient *= scalingFactor;
+    currentHkToMaxLogCoefficient *= scalingFactor;
+    currentHkToMaxLinCoefficient *= scalingFactor;
+    currentHkToMaxLinLogCoefficient *= scalingFactor;
+    currentHkToMaxSqCoefficient *= scalingFactor;
   }
 
 }  // end of LHC_FASER namespace.
