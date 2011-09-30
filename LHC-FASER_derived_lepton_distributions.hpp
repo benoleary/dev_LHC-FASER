@@ -628,10 +628,6 @@ namespace LHC_FASER
     void
     calculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    void
-    oldCalculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
 
@@ -698,10 +694,6 @@ namespace LHC_FASER
 
     void
     calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    void
-    oldCalculateCoefficients()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 

@@ -258,7 +258,7 @@ namespace LHC_FASER
   // calling resetMeOnNextUpdate() & sets all the bools to true.
   {
     for( std::list< bool* >::iterator
-         boolIterator = observerBoolsForReadying.begin();
+         boolIterator( observerBoolsForReadying.begin() );
          observerBoolsForReadying.end() != boolIterator;
          ++boolIterator )
       // go through the list of observed bools...
@@ -285,7 +285,11 @@ namespace LHC_FASER
   getsReadiedForNewPoint::finishPreparingForThisPoint()
   {
     needsToPrepare = false;
-    readier->resetMeOnNextUpdate( &needsToPrepare );
+    if( readierStillExists )
+      // if the readier still exists...
+    {
+      readier->resetMeOnNextUpdate( &needsToPrepare );
+    }
   }
 
 

@@ -17,18 +17,10 @@
  * the current ordering for testing is:
  *
  * (0: CppSLHA - done.)
- * 1: lepton distributions - sorta redone, but for just a subset of cases
- *                           (framework works though, being the point!).
- *                         - @Carsten: please check that the new W & Z
- *                           distributions work.
- * 2: getsReadiedForNewPoint + readierForNewPoint - not yet redone, but
- *                                                    should not be a problem,
- *                                                    since I don't *think*
- *                                                    that I changed anything
- *                                                    here since 0.1 (which
- *                                                    works)...
+ * 1: lepton distributions - redone!
+ * 2: getsReadiedForNewPoint + readierForNewPoint - redone!
  * 3: crossSectionTable - again, not yet redone, but I don't recall changing
- *                          anything here since the working 0.1 version.
+ *                        anything here since the working 0.1 version.
  * 4: kinematics_table - not yet redone, & it'll be quite different in 0.2,
  *                       unfortunately.
  * 5: lepton acceptance for given cascade - not yet redone
@@ -131,7 +123,7 @@ public:
   }
 
   std::vector< std::string* > const*
-  getNamesVector()
+  get_namesVector()
   const
   {
     return &namesVector;
@@ -151,7 +143,7 @@ protected:
 class squarkMassReturner : public LHC_FASER::effectiveSquarkMassHolder
 {
 public:
-  squarkMassReturner( CppSLHA::particle_property_set const* const squark ) :
+  squarkMassReturner( LHC_FASER::particlePointer const squark ) :
     squark( squark )
   {
     // just an initialization list.
@@ -169,7 +161,7 @@ public:
   }
 
 protected:
-  CppSLHA::particle_property_set const* const squark;
+  LHC_FASER::particlePointer const squark;
 };
 
 
@@ -207,68 +199,60 @@ int main( int argumentCount,
 
 
   /* testing the lepton energy distributions in the squark rest frame:
-   * (slight changes of input) *//**/
+   * (slight changes of input) *//**
 
   distributionSet distributions( &testReadier );
 
   CppSLHA::EW_scale_spectrum* const
   spectrum( slhaData.get_particle_spectrum() );
-  CppSLHA::particle_property_set const* const
-  sdownLPointer
-  = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::sdown_L );
+  LHC_FASER::particlePointer const
+  sdownLPointer( spectrum->inspect_particle_property_set(
+                                                CppSLHA::PDG_code::sdown_L ) );
   squarkMassReturner sdownLMass( sdownLPointer );
   CppSLHA::particle_property_set* const
-  scharmLPointer
-  = spectrum->get_particle_property_set( CppSLHA::PDG_code::scharm_L );
-  CppSLHA::particle_property_set const* const
-  neutralinoFourPointer
-  = spectrum->inspect_particle_property_set(
-                                          CppSLHA::PDG_code::neutralino_four );
+  scharmLPointer(
+          spectrum->get_particle_property_set( CppSLHA::PDG_code::scharm_L ) );
+  LHC_FASER::particlePointer const
+  neutralinoFourPointer( spectrum->inspect_particle_property_set(
+                                        CppSLHA::PDG_code::neutralino_four ) );
   CppSLHA::particle_property_set* const
-  neutralinoThreePointer
-  = spectrum->get_particle_property_set( CppSLHA::PDG_code::neutralino_three );
-  CppSLHA::particle_property_set const* const
-  neutralinoTwoPointer
-  = spectrum->inspect_particle_property_set(
-                                           CppSLHA::PDG_code::neutralino_two );
-  CppSLHA::particle_property_set const* const
-  charginoTwoPointer
-  = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::chargino_two );
-  CppSLHA::particle_property_set const* const
-  charginoOnePointer
-  = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::chargino_one );
-  CppSLHA::particle_property_set const* const
-  smuonLPointer
-  = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::smuon_L );
-  CppSLHA::particle_property_set const* const
-  smuonRPointer
-  = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::smuon_R );
-  CppSLHA::particle_property_set const* const
-  muonSneutrinoLPointer
-  = spectrum->inspect_particle_property_set(
-                                         CppSLHA::PDG_code::muon_sneutrino_L );
-  CppSLHA::particle_property_set const* const
-  muonSneutrinoRPointer
-  = spectrum->inspect_particle_property_set(
-                                         CppSLHA::PDG_code::muon_sneutrino_R );
-  CppSLHA::particle_property_set const* const
-  lightNeutralEwsbScalarPointer
-  = spectrum->inspect_particle_property_set(
-                                CppSLHA::PDG_code::light_neutral_EWSB_scalar );
+  neutralinoThreePointer( spectrum->get_particle_property_set(
+                                       CppSLHA::PDG_code::neutralino_three ) );
+  LHC_FASER::particlePointer const
+  neutralinoTwoPointer( spectrum->inspect_particle_property_set(
+                                         CppSLHA::PDG_code::neutralino_two ) );
+  LHC_FASER::particlePointer const
+  charginoTwoPointer( spectrum->inspect_particle_property_set(
+                                           CppSLHA::PDG_code::chargino_two ) );
+  LHC_FASER::particlePointer const
+  charginoOnePointer( spectrum->inspect_particle_property_set(
+                                           CppSLHA::PDG_code::chargino_one ) );
+  LHC_FASER::particlePointer const
+  smuonLPointer( spectrum->inspect_particle_property_set(
+                                                CppSLHA::PDG_code::smuon_L ) );
+  LHC_FASER::particlePointer const
+  smuonRPointer( spectrum->inspect_particle_property_set(
+                                                CppSLHA::PDG_code::smuon_R ) );
+  LHC_FASER::particlePointer const
+  muonSneutrinoLPointer( spectrum->inspect_particle_property_set(
+                                       CppSLHA::PDG_code::muon_sneutrino_L ) );
+  LHC_FASER::particlePointer const
+  muonSneutrinoRPointer( spectrum->inspect_particle_property_set(
+                                       CppSLHA::PDG_code::muon_sneutrino_R ) );
+  LHC_FASER::particlePointer const
+  lightNeutralEwsbScalarPointer( spectrum->inspect_particle_property_set(
+                              CppSLHA::PDG_code::light_neutral_EWSB_scalar ) );
   CppSLHA::particle_property_set* const
-  chargedEwsbScalarPointer
-  = spectrum->get_particle_property_set(
-                                      CppSLHA::PDG_code::charged_EWSB_scalar );
-  CppSLHA::particle_property_set const* const
-  zPointer
-  = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::Z );
-  CppSLHA::particle_property_set const* const
-  wPointer
-  = spectrum->inspect_particle_property_set( CppSLHA::PDG_code::W_plus );
-  CppSLHA::particle_property_set const* const
-  neutralinoOnePointer
-  = spectrum->inspect_particle_property_set(
-                                           CppSLHA::PDG_code::neutralino_one );
+  chargedEwsbScalarPointer( spectrum->get_particle_property_set(
+                                    CppSLHA::PDG_code::charged_EWSB_scalar ) );
+  LHC_FASER::particlePointer const
+  zPointer( spectrum->inspect_particle_property_set( CppSLHA::PDG_code::Z ) );
+  LHC_FASER::particlePointer const
+  wPointer( spectrum->inspect_particle_property_set(
+                                                 CppSLHA::PDG_code::W_plus ) );
+  LHC_FASER::particlePointer const
+  neutralinoOnePointer( spectrum->inspect_particle_property_set(
+                                         CppSLHA::PDG_code::neutralino_one ) );
 
   // here we set n3 to have enough mass to decay to a h/Z + n1:
   neutralinoThreePointer->set_mass( ( 20.0
@@ -286,240 +270,218 @@ int main( int argumentCount,
                             - 20.0 );
 
   LHC_FASER::leptonEnergyDistribution*
-  currentDistribution
-  = new LHC_FASER::flatNearMuonPlusAntimuon( &testReadier,
-                                             &slhaData,
-                                             sdownLPointer,
-                                             &sdownLMass,
-                                             neutralinoTwoPointer,
-                                             smuonRPointer );
+  currentDistribution( new LHC_FASER::flatNearMuonPlusAntimuon( &testReadier,
+                                                                &slhaData,
+                                                                sdownLPointer,
+                                                                &sdownLMass,
+                                                          neutralinoTwoPointer,
+                                                             smuonRPointer ) );
   distributions.addDistributions( currentDistribution,
                                   "flat_near" );
-  currentDistribution
-  = new LHC_FASER::sameChiralityNearMuon( &testReadier,
-                                          &slhaData,
-                                          sdownLPointer,
-                                          &sdownLMass,
-                                          neutralinoTwoPointer,
-                                          smuonRPointer );
+  currentDistribution = new LHC_FASER::sameChiralityNearMuon( &testReadier,
+                                                              &slhaData,
+                                                              sdownLPointer,
+                                                              &sdownLMass,
+                                                          neutralinoTwoPointer,
+                                                              smuonRPointer );
   distributions.addDistributions( currentDistribution,
                                   "same_near" );
-  currentDistribution
-  = new LHC_FASER::oppositeChiralityNearMuon( &testReadier,
-                                              &slhaData,
-                                              sdownLPointer,
-                                              &sdownLMass,
-                                              neutralinoTwoPointer,
-                                              smuonRPointer );
+  currentDistribution = new LHC_FASER::oppositeChiralityNearMuon( &testReadier,
+                                                                  &slhaData,
+                                                                 sdownLPointer,
+                                                                  &sdownLMass,
+                                                          neutralinoTwoPointer,
+                                                               smuonRPointer );
   distributions.addDistributions( currentDistribution,
                                   "opp_near" );
-  currentDistribution
-  = new LHC_FASER::flatFarMuonPlusAntimuon( &testReadier,
-                                            &slhaData,
-                                            sdownLPointer,
-                                            &sdownLMass,
-                                            neutralinoTwoPointer,
-                                            smuonRPointer,
-                                            neutralinoOnePointer );
+  currentDistribution = new LHC_FASER::flatFarMuonPlusAntimuon( &testReadier,
+                                                                &slhaData,
+                                                                sdownLPointer,
+                                                                &sdownLMass,
+                                                          neutralinoTwoPointer,
+                                                                smuonRPointer,
+                                                        neutralinoOnePointer );
   distributions.addDistributions( currentDistribution,
                                   "flat_far" );
-  currentDistribution
-  = new LHC_FASER::sameChiralityFarMuon( &testReadier,
-                                         &slhaData,
-                                         sdownLPointer,
-                                         &sdownLMass,
-                                         neutralinoTwoPointer,
-                                         smuonRPointer,
-                                         neutralinoOnePointer );
+  currentDistribution = new LHC_FASER::sameChiralityFarMuon( &testReadier,
+                                                             &slhaData,
+                                                             sdownLPointer,
+                                                             &sdownLMass,
+                                                          neutralinoTwoPointer,
+                                                             smuonRPointer,
+                                                        neutralinoOnePointer );
   distributions.addDistributions( currentDistribution,
                                   "same_far" );
-  currentDistribution
-  = new LHC_FASER::oppositeChiralityFarMuon( &testReadier,
-                                             &slhaData,
-                                             sdownLPointer,
-                                             &sdownLMass,
-                                             neutralinoTwoPointer,
-                                             smuonRPointer,
-                                                neutralinoOnePointer );
+  currentDistribution = new LHC_FASER::oppositeChiralityFarMuon( &testReadier,
+                                                                 &slhaData,
+                                                                 sdownLPointer,
+                                                                 &sdownLMass,
+                                                          neutralinoTwoPointer,
+                                                                 smuonRPointer,
+                                                        neutralinoOnePointer );
   distributions.addDistributions( currentDistribution,
                                   "opp_far" );
-  currentDistribution
-  = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
-                                          &slhaData,
-                                          sdownLPointer,
-                                          &sdownLMass,
-                                          neutralinoFourPointer,
-                                          lightNeutralEwsbScalarPointer,
-                                          neutralinoOnePointer );
+  currentDistribution = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
+                                                              &slhaData,
+                                                              sdownLPointer,
+                                                              &sdownLMass,
+                                                         neutralinoFourPointer,
+                                                 lightNeutralEwsbScalarPointer,
+                                                        neutralinoOnePointer );
   distributions.addDistributions( currentDistribution,
                                   "hn4" );
-  currentDistribution
-  = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
-                                          &slhaData,
-                                          sdownLPointer,
-                                          &sdownLMass,
-                                          neutralinoThreePointer,
-                                          lightNeutralEwsbScalarPointer,
-                                          neutralinoOnePointer );
+  currentDistribution = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
+                                                              &slhaData,
+                                                              sdownLPointer,
+                                                              &sdownLMass,
+                                                        neutralinoThreePointer,
+                                                 lightNeutralEwsbScalarPointer,
+                                                        neutralinoOnePointer );
   distributions.addDistributions( currentDistribution,
                                   "hn3" );
-  currentDistribution
-  = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
-                                          &slhaData,
-                                          sdownLPointer,
-                                          &sdownLMass,
-                                          charginoTwoPointer,
-                                          chargedEwsbScalarPointer,
-                                          neutralinoOnePointer );
+  currentDistribution = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
+                                                              &slhaData,
+                                                              sdownLPointer,
+                                                              &sdownLMass,
+                                                            charginoTwoPointer,
+                                                      chargedEwsbScalarPointer,
+                                                        neutralinoOnePointer );
   distributions.addDistributions( currentDistribution,
                                   "H+" );
-  currentDistribution
-  = new LHC_FASER::zHandedMuon( &testReadier,
-                                &slhaData,
-                                sdownLPointer,
-                                &sdownLMass,
-                                neutralinoThreePointer,
-                                zPointer,
-                                neutralinoOnePointer,
-                                true,
-                                false );
+  currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
+                                                    &slhaData,
+                                                    sdownLPointer,
+                                                    &sdownLMass,
+                                                    neutralinoThreePointer,
+                                                    zPointer,
+                                                    neutralinoOnePointer,
+                                                    true,
+                                                    false );
   distributions.addDistributions( currentDistribution,
                                   "Zn3L" );
-  currentDistribution
-  = new LHC_FASER::zHandedMuon( &testReadier,
-                                &slhaData,
-                                sdownLPointer,
-                                &sdownLMass,
-                                neutralinoThreePointer,
-                                zPointer,
-                                neutralinoOnePointer,
-                                false,
-                                false );
+  currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
+                                                    &slhaData,
+                                                    sdownLPointer,
+                                                    &sdownLMass,
+                                                    neutralinoThreePointer,
+                                                    zPointer,
+                                                    neutralinoOnePointer,
+                                                    false,
+                                                    false );
   distributions.addDistributions( currentDistribution,
                                   "Zn3R" );
-  currentDistribution
-  = new LHC_FASER::zHandedMuon( &testReadier,
-                                &slhaData,
-                                sdownLPointer,
-                                &sdownLMass,
-                                neutralinoThreePointer,
-                                zPointer,
-                                neutralinoOnePointer,
-                                false,
-                                true );
+  currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
+                                                    &slhaData,
+                                                    sdownLPointer,
+                                                    &sdownLMass,
+                                                    neutralinoThreePointer,
+                                                    zPointer,
+                                                    neutralinoOnePointer,
+                                                    false,
+                                                    true );
   distributions.addDistributions( currentDistribution,
                                   "Zn3summed" );
-  currentDistribution
-  = new LHC_FASER::zHandedMuon( &testReadier,
-                                &slhaData,
-                                sdownLPointer,
-                                &sdownLMass,
-                                neutralinoFourPointer,
-                                zPointer,
-                                neutralinoOnePointer,
-                                true,
-                                false );
+  currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
+                                                    &slhaData,
+                                                    sdownLPointer,
+                                                    &sdownLMass,
+                                                    neutralinoFourPointer,
+                                                    zPointer,
+                                                    neutralinoOnePointer,
+                                                    true,
+                                                    false );
   distributions.addDistributions( currentDistribution,
                                   "Zn4L" );
-  currentDistribution
-  = new LHC_FASER::zHandedMuon( &testReadier,
-                                &slhaData,
-                                sdownLPointer,
-                                &sdownLMass,
-                                neutralinoFourPointer,
-                                zPointer,
-                                neutralinoOnePointer,
-                                false,
-                                false );
+  currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
+                                                    &slhaData,
+                                                    sdownLPointer,
+                                                    &sdownLMass,
+                                                    neutralinoFourPointer,
+                                                    zPointer,
+                                                    neutralinoOnePointer,
+                                                    false,
+                                                    false );
   distributions.addDistributions( currentDistribution,
                                   "Zn4R" );
-  currentDistribution
-  = new LHC_FASER::zHandedMuon( &testReadier,
-                                &slhaData,
-                                sdownLPointer,
-                                &sdownLMass,
-                                neutralinoFourPointer,
-                                zPointer,
-                                neutralinoOnePointer,
-                                false,
-                                true );
+  currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
+                                                    &slhaData,
+                                                    sdownLPointer,
+                                                    &sdownLMass,
+                                                    neutralinoFourPointer,
+                                                    zPointer,
+                                                    neutralinoOnePointer,
+                                                    false,
+                                                    true );
   distributions.addDistributions( currentDistribution,
                                   "Zn4summed" );
-  currentDistribution
-  = new LHC_FASER::vectorFromSquarkToMuon( &testReadier,
-                                           &slhaData,
-                                           sdownLPointer,
-                                           &sdownLMass,
-                                           scharmLPointer,
-                                           wPointer );
+  currentDistribution = new LHC_FASER::vectorFromSquarkToMuon( &testReadier,
+                                                               &slhaData,
+                                                               sdownLPointer,
+                                                               &sdownLMass,
+                                                               scharmLPointer,
+                                                               wPointer );
   distributions.addDistributions( currentDistribution,
                                   "sdscW" );
-  currentDistribution
-  = new LHC_FASER::wMinusHandedMuon( &testReadier,
-                                     &slhaData,
-                                     sdownLPointer,
-                                     &sdownLMass,
-                                     charginoOnePointer,
-                                     wPointer,
-                                     neutralinoOnePointer,
-                                     true );
+  currentDistribution = new LHC_FASER::wMinusHandedMuon( &testReadier,
+                                                         &slhaData,
+                                                         sdownLPointer,
+                                                         &sdownLMass,
+                                                         charginoOnePointer,
+                                                         wPointer,
+                                                         neutralinoOnePointer,
+                                                         true );
   distributions.addDistributions( currentDistribution,
                                   "Wx1L" );
-  currentDistribution
-  = new LHC_FASER::wMinusHandedMuon( &testReadier,
-                                     &slhaData,
-                                     sdownLPointer,
-                                     &sdownLMass,
-                                     charginoOnePointer,
-                                     wPointer,
-                                     neutralinoOnePointer,
-                                     false );
+  currentDistribution = new LHC_FASER::wMinusHandedMuon( &testReadier,
+                                                         &slhaData,
+                                                         sdownLPointer,
+                                                         &sdownLMass,
+                                                         charginoOnePointer,
+                                                         wPointer,
+                                                         neutralinoOnePointer,
+                                                         false );
   distributions.addDistributions( currentDistribution,
                                   "Wx1R" );
-  currentDistribution
-  = new LHC_FASER::wMinusHandedMuon( &testReadier,
-                                     &slhaData,
-                                     sdownLPointer,
-                                     &sdownLMass,
-                                     charginoTwoPointer,
-                                     wPointer,
-                                     neutralinoOnePointer,
-                                     true );
+  currentDistribution = new LHC_FASER::wMinusHandedMuon( &testReadier,
+                                                         &slhaData,
+                                                         sdownLPointer,
+                                                         &sdownLMass,
+                                                         charginoTwoPointer,
+                                                         wPointer,
+                                                         neutralinoOnePointer,
+                                                         true );
   distributions.addDistributions( currentDistribution,
                                   "Wx2L" );
-  currentDistribution
-  = new LHC_FASER::wMinusHandedMuon( &testReadier,
-                                     &slhaData,
-                                     sdownLPointer,
-                                     &sdownLMass,
-                                     charginoTwoPointer,
-                                     wPointer,
-                                     neutralinoOnePointer,
-                                     false );
+  currentDistribution = new LHC_FASER::wMinusHandedMuon( &testReadier,
+                                                         &slhaData,
+                                                         sdownLPointer,
+                                                         &sdownLMass,
+                                                         charginoTwoPointer,
+                                                         wPointer,
+                                                         neutralinoOnePointer,
+                                                         false );
   distributions.addDistributions( currentDistribution,
                                   "Wx2R" );
-  currentDistribution
-  = new LHC_FASER::neutralinoThreeBodyDecay( &testReadier,
-                                             &slhaData,
-                                             sdownLPointer,
-                                             &sdownLMass,
-                                             neutralinoTwoPointer,
-                                             neutralinoOnePointer,
-                                             smuonLPointer,
-                                             smuonRPointer );
+  currentDistribution = new LHC_FASER::neutralinoThreeBodyDecay( &testReadier,
+                                                                 &slhaData,
+                                                                 sdownLPointer,
+                                                                 &sdownLMass,
+                                                          neutralinoTwoPointer,
+                                                          neutralinoOnePointer,
+                                                                 smuonLPointer,
+                                                               smuonRPointer );
   distributions.addDistributions( currentDistribution,
                                   "nn3b" );
-  currentDistribution
-  = new LHC_FASER::charginoThreeBodyDecay( &testReadier,
-                                           &slhaData,
-                                           sdownLPointer,
-                                           &sdownLMass,
-                                           charginoOnePointer,
-                                           neutralinoOnePointer,
-                                           smuonLPointer,
-                                           smuonRPointer,
-                                           muonSneutrinoLPointer,
-                                           muonSneutrinoRPointer );
+  currentDistribution = new LHC_FASER::charginoThreeBodyDecay( &testReadier,
+                                                               &slhaData,
+                                                               sdownLPointer,
+                                                               &sdownLMass,
+                                                            charginoOnePointer,
+                                                          neutralinoOnePointer,
+                                                               smuonLPointer,
+                                                               smuonRPointer,
+                                                         muonSneutrinoLPointer,
+                                                       muonSneutrinoRPointer );
   distributions.addDistributions( currentDistribution,
                                   "xx3b" );
 
@@ -540,7 +502,7 @@ int main( int argumentCount,
       std::ofstream* gnuplotDataFile( new std::ofstream() );
       gnuplotDataFileName.assign( "./lepton_distributions/" );
       gnuplotDataFileName.append(
-                         *(distributions.getNamesVector()->at( graphCount )) );
+                         *(distributions.get_namesVector()->at( graphCount )) );
       gnuplotDataFileName.append( ".dat" );
       gnuplotDataFile->open( gnuplotDataFileName.c_str() );
       int const numberOfBins( 100 );
@@ -553,16 +515,16 @@ int main( int argumentCount,
       {
         *gnuplotCommandFile
         << "set output \""
-        << *(distributions.getNamesVector()->at( graphCount ))
+        << *(distributions.get_namesVector()->at( graphCount ))
         << ".eps\"" << std::endl
         << "set style line 1 lt rgb \"red\" lw 3" << std::endl
         << "plot '"
-        << *(distributions.getNamesVector()->at( graphCount ))
+        << *(distributions.get_namesVector()->at( graphCount ))
         << ".dat' index 0 notitle with lines ls 1" << std::endl;
 
         std::cout
         << std::endl
-        << *(distributions.getNamesVector()->at( graphCount ))
+        << *(distributions.get_namesVector()->at( graphCount ))
         << ": "
         << distributions.getDistributionsVector()->at( graphCount
                                                           )->getMinimumEnergy()
@@ -612,7 +574,7 @@ int main( int argumentCount,
   }
   // clean up:
   delete gnuplotCommandFile;
-  /**/
+  **/
 
 
   /* testing the means of checking if something has already been prepared for a
@@ -620,867 +582,688 @@ int main( int argumentCount,
 
   std::cout
   << std::endl
-  << "is verbose? " << test_input_handler.isVerbose()
+  << "is verbose? " << testInputHandler.isVerbose()
   << std::endl
   << "set to be not verbose.";
-  test_input_handler.setVerbosity( false );
+  testInputHandler.setVerbosity( false );
   std::cout
   << std::endl
-  << "is verbose? " << test_input_handler.isVerbose()
+  << "is verbose? " << testInputHandler.isVerbose()
   << std::endl
   << "set to be verbose.";
-  test_input_handler.setVerbosity( true );
+  testInputHandler.setVerbosity( true );
   std::cout
   << std::endl
-  << "is verbose? " << test_input_handler.isVerbose()
+  << "is verbose? " << testInputHandler.isVerbose()
   << std::endl
-  << "using NLO? " << test_input_handler.usingNlo()
+  << "using NLO? " << testInputHandler.usingNlo()
   << std::endl
   << "set to not use NLO.";
-  test_input_handler.setUsingNloFlag( false );
+  testInputHandler.setUsingNloFlag( false );
   std::cout
   << std::endl
-  << "using NLO? " << test_input_handler.usingNlo()
+  << "using NLO? " << testInputHandler.usingNlo()
   << std::endl
   << "set to use NLO.";
-  test_input_handler.setUsingNloFlag( true );
+  testInputHandler.setUsingNloFlag( true );
   std::cout
   << std::endl
-  << "using NLO? " << test_input_handler.usingNlo()
+  << "using NLO? " << testInputHandler.usingNlo()
   << std::endl
   << std::endl
   << "pathToGrids = "
-  << *(test_input_handler.getPathToGrids())
+  << *(testInputHandler.getPathToGrids())
   << std::endl
   << "pathToCrossSectionGrids = "
-  << *(test_input_handler.getPathToCrossSectionGrids())
+  << *(testInputHandler.getPathToCrossSectionGrids())
   << std::endl
   << "(inspect: pathToCrossSectionGrids = "
-  << *(test_input_handler.inspectPathToCrossSectionGrids()) << ")"
+  << *(testInputHandler.inspectPathToCrossSectionGrids()) << ")"
   << std::endl
   << "pathToKinematicsGrids = "
-  << *(test_input_handler.getPathToKinematicsGrids())
+  << *(testInputHandler.getPathToKinematicsGrids())
   << std::endl
   << "(inspect: pathToKinematicsGrids = "
-  << *(test_input_handler.inspectPathToKinematicsGrids()) << ")"
+  << *(testInputHandler.inspectPathToKinematicsGrids()) << ")"
+  << std::endl
+  << std::endl
+  << "g_EM = "
+  << testInputHandler.getElectromagneticFineStructureConstant()
   << std::endl
   << std::endl
   << "SPS1a MASS:"
-  << test_input_handler.getCppSlha()->get_MASS_as_string()
+  << testInputHandler.getCppSlha()->get_MASS_as_string()
   << std::endl
   << std::endl
-  << *(test_input_handler.getSpectrum()->get_PDG_coded_name(
+  << *(testInputHandler.getSpectrum()->get_PDG_coded_name(
                                                         CppSLHA::PDG_code::Z ))
   << " "
-  << test_input_handler.getSpectrum()->get_PDG_coded_mass(
-                                                         CppSLHA::PDG_code::Z )
+  << testInputHandler.getSpectrum()->get_PDG_coded_mass( CppSLHA::PDG_code::Z )
   << " GeV"
   << std::endl
-  << *(test_input_handler.getWPlus()->getName()) << " "
-  << test_input_handler.getWPlus()->get_mass() << " GeV"
+  << *(testInputHandler.getWPlus()->get_name()) << " "
+  << testInputHandler.getWPlus()->get_mass() << " GeV"
   << std::endl
-  << *(test_input_handler.getTop()->getName()) << " "
-  << test_input_handler.getTop()->get_mass() << " GeV"
+  << *(testInputHandler.getTop()->get_name()) << " "
+  << testInputHandler.getTop()->get_mass() << " GeV"
   << std::endl
-  << *(test_input_handler.getGluino()->getName()) << " "
-  << test_input_handler.getGluino()->get_mass() << " GeV"
+  << *(testInputHandler.getGluino()->get_name()) << " "
+  << testInputHandler.getGluino()->get_mass() << " GeV"
   << std::endl
-  << "average_squarks4_mass = "
-  << test_input_handler.getAverageSquarks4Mass()
+  << "averageSquarks4Mass = "
+  << testInputHandler.getAverageSquarks4Mass()
   << std::endl
   << "scoloreds: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getColoredSparticles()->begin();
-       test_input_handler.getColoredSparticles()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getColoredSparticles()->begin() );
+       testInputHandler.getColoredSparticles()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "charginos: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getCharginos()->begin();
-       test_input_handler.getCharginos()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getCharginos()->begin() );
+       testInputHandler.getCharginos()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "neutralinos: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getNeutralinos()->begin();
-       test_input_handler.getNeutralinos()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getNeutralinos()->begin() );
+       testInputHandler.getNeutralinos()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "unstable neutralinos: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getUnstableNeutralinos()->begin();
-       test_input_handler.getUnstableNeutralinos()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getUnstableNeutralinos()->begin() );
+       testInputHandler.getUnstableNeutralinos()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "electroweakinos: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getElectroweakinos()->begin();
-       test_input_handler.getElectroweakinos()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getElectroweakinos()->begin() );
+       testInputHandler.getElectroweakinos()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "unstable electroweakinos: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator
-       = test_input_handler.getUnstableElectroweakinos()->begin();
-       test_input_handler.getUnstableElectroweakinos()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getUnstableElectroweakinos()->begin() );
+       testInputHandler.getUnstableElectroweakinos()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "charged sleptons: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getChargedSleptons()->begin();
-       test_input_handler.getChargedSleptons()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getChargedSleptons()->begin() );
+       testInputHandler.getChargedSleptons()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "sneutrinos: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getSneutrinos()->begin();
-       test_input_handler.getSneutrinos()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getSneutrinos()->begin() );
+       testInputHandler.getSneutrinos()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "sdowns: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getSdownTypes()->begin();
-       test_input_handler.getSdownTypes()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getSdownTypes()->begin() );
+       testInputHandler.getSdownTypes()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "sups: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getSupTypes()->begin();
-       test_input_handler.getSupTypes()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getSupTypes()->begin() );
+       testInputHandler.getSupTypes()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "jets: " << std::endl;
   for( std::list< int >::const_iterator
-       set_iterator = test_input_handler.getJets()->begin();
-       test_input_handler.getJets()->end() != set_iterator;
-       ++set_iterator )
+       setIterator( testInputHandler.getJets()->begin() );
+       testInputHandler.getJets()->end() != setIterator;
+       ++setIterator )
     {
       std::cout
-      << *(test_input_handler.getSpectrum()->get_PDG_coded_name(
-                                                             (*set_iterator) ))
+      << *(testInputHandler.getSpectrum()->get_PDG_coded_name(
+                                                              (*setIterator) ))
       << std::endl;
     }
   std::cout
   << std::endl
   << "jets4: " << std::endl;
   for( std::list< int >::const_iterator
-       set_iterator = test_input_handler.getJets4()->begin();
-       test_input_handler.getJets4()->end() != set_iterator;
-       ++set_iterator )
+       setIterator( testInputHandler.getJets4()->begin() );
+       testInputHandler.getJets4()->end() != setIterator;
+       ++setIterator )
     {
       std::cout
-      << *(test_input_handler.getSpectrum()->get_PDG_coded_name(
-                                                             (*set_iterator) ))
+      << *(testInputHandler.getSpectrum()->get_PDG_coded_name(
+                                                              (*setIterator) ))
       << std::endl;
     }
   std::cout
   << std::endl
   << "jets5: " << std::endl;
   for( std::list< int >::const_iterator
-       set_iterator = test_input_handler.getJets5()->begin();
-       test_input_handler.getJets5()->end() != set_iterator;
-       ++set_iterator )
+       setIterator( testInputHandler.getJets5()->begin() );
+       testInputHandler.getJets5()->end() != setIterator;
+       ++setIterator )
     {
       std::cout
-      << *(test_input_handler.getSpectrum()->get_PDG_coded_name(
-                                                             (*set_iterator) ))
+      << *(testInputHandler.getSpectrum()->get_PDG_coded_name(
+                                                              (*setIterator) ))
       << std::endl;
     }
   std::cout
   << std::endl
   << "not in jets4: " << std::endl;
   for( std::list< int >::const_iterator
-       set_iterator = test_input_handler.getNotInJets4()->begin();
-       test_input_handler.getNotInJets4()->end() != set_iterator;
-       ++set_iterator )
+       setIterator( testInputHandler.getNotInJets4()->begin() );
+       testInputHandler.getNotInJets4()->end() != setIterator;
+       ++setIterator )
     {
       std::cout
-      << *(test_input_handler.getSpectrum()->get_PDG_coded_name(
-                                                             (*set_iterator) ))
+      << *(testInputHandler.getSpectrum()->get_PDG_coded_name(
+                                                              (*setIterator) ))
       << std::endl;
     }
   std::cout
   << std::endl
   << "not in jets5: " << std::endl;
   for( std::list< int >::const_iterator
-       set_iterator = test_input_handler.getNotInJets5()->begin();
-       test_input_handler.getNotInJets5()->end() != set_iterator;
-       ++set_iterator )
+       setIterator( testInputHandler.getNotInJets5()->begin() );
+       testInputHandler.getNotInJets5()->end() != setIterator;
+       ++setIterator )
     {
       std::cout
-      << *(test_input_handler.getSpectrum()->get_PDG_coded_name(
-                                                             (*set_iterator) ))
+      << *(testInputHandler.getSpectrum()->get_PDG_coded_name(
+                                                              (*setIterator) ))
       << std::endl;
     }
   std::cout
   << std::endl
   << "squarks: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getSquarks()->begin();
-       test_input_handler.getSquarks()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getSquarks()->begin() );
+       testInputHandler.getSquarks()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "squarks4: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getSquarks4()->begin();
-       test_input_handler.getSquarks4()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getSquarks4()->begin() );
+       testInputHandler.getSquarks4()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "squarks5: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getSquarks5()->begin();
-       test_input_handler.getSquarks5()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getSquarks5()->begin() );
+       testInputHandler.getSquarks5()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
   std::cout
   << std::endl
   << "sbottom_1 is in squarks? "
-  << test_input_handler.isIn(
-                          test_input_handler.getSbottomOne()->get_PDG_code(),
-                               test_input_handler.getSquarks() )
+  << testInputHandler.isIn( testInputHandler.getSbottomOne()->get_PDG_code(),
+                            testInputHandler.getSquarks() )
   << std::endl
   << "sbottom_1 is in squarks4? "
-  << test_input_handler.isIn(
-                          test_input_handler.getSbottomOne()->get_PDG_code(),
-                               test_input_handler.getSquarks4() )
-  << std::endl
-  << std::endl
-  << "colored cascade set: ";
-  LHC_FASER::colored_cascade_set*
-  gluino_cascade
-  = test_input_handler.get_colored_cascade_set(
-                                             test_input_handler.getGluino() );
-  LHC_FASER::colored_cascade_set*
-  sbottom_cascade
-  = test_input_handler.get_colored_cascade_set(
-                                        test_input_handler.getSbottomOne() );
-  LHC_FASER::colored_cascade_set*
-  gluino_cascade2
-  = test_input_handler.get_colored_cascade_set(
-                                             test_input_handler.getGluino() );
-  std::cout
-  << *(gluino_cascade->getDecayer()->getName())
-  << ":" << std::endl
-  << "pointer = " << gluino_cascade << ", pointer2 = " << gluino_cascade2
+  << testInputHandler.isIn( testInputHandler.getSbottomOne()->get_PDG_code(),
+                            testInputHandler.getSquarks4() )
   << std::endl;
-  for( std::vector< LHC_FASER::colored_cascade* >::const_iterator
-       set_iterator = gluino_cascade->get_colored_cascades()->begin();
-       gluino_cascade->get_colored_cascades()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout
-      << *((*set_iterator)->getDecayer()->getName())
-      << " -> " << *((*set_iterator)->getProduct()->getName())
-      << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->getName())
-      << " ( " << (*set_iterator)->get_EWino_position() << " )";
-      if( (*set_iterator)->is_sx() )
-        {
-          std::cout<< " => sx" << std::endl;
-        }
-      if( (*set_iterator)->is_gx() )
-        {
-          std::cout<< " => gx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgx() )
-        {
-          std::cout<< " => sgx" << std::endl;
-        }
-      if( (*set_iterator)->is_gsx() )
-        {
-          std::cout<< " => gsx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgsx() )
-        {
-          std::cout<< " => sgsx" << std::endl;
-        }
-    }
-  std::cout
-  << *(sbottom_cascade->getDecayer()->getName())
-  << ":" << std::endl
-  << "pointer = " << sbottom_cascade
-  << std::endl;
-  for( std::vector< LHC_FASER::colored_cascade* >::const_iterator
-       set_iterator = sbottom_cascade->get_colored_cascades()->begin();
-       sbottom_cascade->get_colored_cascades()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout
-      << *((*set_iterator)->getDecayer()->getName())
-      << " -> " << *((*set_iterator)->getProduct()->getName())
-      << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->getName())
-      << " ( " << (*set_iterator)->get_EWino_position() << " )";
-      if( (*set_iterator)->is_sx() )
-        {
-          std::cout<< " => sx" << std::endl;
-        }
-      if( (*set_iterator)->is_gx() )
-        {
-          std::cout<< " => gx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgx() )
-        {
-          std::cout<< " => sgx" << std::endl;
-        }
-      if( (*set_iterator)->is_gsx() )
-        {
-          std::cout<< " => gsx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgsx() )
-        {
-          std::cout<< " => sgsx" << std::endl;
-        }
-    }
   std::cout
   << std::endl
   << std::endl
   << "sparticle production combinations: " << std::endl;
   for( std::vector< LHC_FASER::signedParticleShortcutPair* >::const_iterator
-       set_iterator
-       = test_input_handler.getScoloredProductionCombinations()->begin();
-       test_input_handler.getScoloredProductionCombinations()->end()
-       > set_iterator;
-       ++set_iterator )
+       setIterator( testInputHandler.getScoloredProductionCombinations(
+                                                                  )->begin() );
+       testInputHandler.getScoloredProductionCombinations()->end()
+       > setIterator;
+       ++setIterator )
     {
-      if( (*set_iterator)->is_first_particle() )
+      if( (*setIterator)->firstIsNotAntiparticle() )
         {
-          std::cout << *((*set_iterator)->getFirstParticle()->getName());
+          std::cout << *((*setIterator)->getFirstParticle()->get_name());
         }
       else
         {
-          std::cout << *((*set_iterator)->getFirstParticle()->get_antiname());
+          std::cout << *((*setIterator)->getFirstParticle()->get_antiname());
         }
       std::cout << " + ";
-      if( (*set_iterator)->is_second_particle() )
+      if( (*setIterator)->secondIsNotAntiparticle() )
         {
-          std::cout << *((*set_iterator)->getSecondParticle()->getName());
+          std::cout << *((*setIterator)->getSecondParticle()->get_name());
         }
       else
         {
           std::cout
-          << *((*set_iterator)->getSecondParticle()->get_antiname());
+          << *((*setIterator)->getSecondParticle()->get_antiname());
         }
       std::cout << std::endl;
     }
-  std::vector< CppSLHA::particle_property_set const* > sdown_LR;
-  sdown_LR.push_back( test_input_handler.getSdownL() );
-  sdown_LR.push_back( test_input_handler.getSdownR() );
-  std::vector< CppSLHA::particle_property_set const* > sup_LR;
-  sup_LR.push_back( test_input_handler.getSupL() );
-  sup_LR.push_back( test_input_handler.getSupR() );
-  LHC_FASER::directDecayChecker*
-  gluino_to_sdown_LR
-  = test_input_handler.getDirectDecayChecker(
-                                               test_input_handler.getGluino(),
-                                                 &sdown_LR );
-  LHC_FASER::directDecayChecker*
-  gluino_to_sup_LR
-  = test_input_handler.getDirectDecayChecker(
-                                               test_input_handler.getGluino(),
-                                                 &sup_LR );
-  LHC_FASER::directDecayChecker*
-  gluino_to_sdown_LR2
-  = test_input_handler.getDirectDecayChecker(
-                                               test_input_handler.getGluino(),
-                                                 &sdown_LR );
+
+  LHC_FASER::effectiveSquarkMassHolder*
+  sdownLEffectiveMass( testInputHandler.getOnShellEffectiveSquarkMass(
+                                              testInputHandler.getSdownL() ) );
+  LHC_FASER::effectiveSquarkMassHolder*
+  sbottomOneEffectiveMass( testInputHandler.getOnShellEffectiveSquarkMass(
+                                          testInputHandler.getSbottomOne() ) );
+  LHC_FASER::effectiveSquarkMassHolder*
+  sdownLEffectiveMass2( testInputHandler.getOnShellEffectiveSquarkMass(
+                                              testInputHandler.getSdownL() ) );
   std::cout
   << std::endl
-  << "directDecayChecker: gluino -> sdown_L, sdown_R"
-  << std::endl << "pointer = "
-  << gluino_to_sdown_LR
-  << std::endl << *(gluino_to_sdown_LR->getDecayer()->getName())
-  << " -> ";
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = gluino_to_sdown_LR->getProducts()->begin();
-       gluino_to_sdown_LR->getProducts()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout << *((*set_iterator)->getName()) << " ";
-    }
+  << "sdown_L effective mass holder = "
+  << sdownLEffectiveMass
+  << ", mass = " << sdownLEffectiveMass->getEffectiveSquarkMass()
+  << std::endl
+  << "2nd sdown_L effective mass holder = "
+  << sdownLEffectiveMass2
+  << std::endl
+  << "sbottom_1 effective mass holder = "
+  << sbottomOneEffectiveMass
+  << ", mass = " << sbottomOneEffectiveMass->getEffectiveSquarkMass()
+  << std::endl;
+
+
   std::cout
   << std::endl
-  << "has direct decay? " << gluino_to_sdown_LR->hasDirectDecay();
-  std::cout
+  << "sdown_L to neutralino_1 fermion handedness = "
+  << testInputHandler.quarkOrLeptonLeftHandedness( CppSLHA::PDG_code::sdown_L,
+                                            CppSLHA::PDG_code::neutralino_one )
   << std::endl
-  << "2nd gluino -> sdown_L, sdown_R"
-  << std::endl << "pointer = "
-  << gluino_to_sdown_LR2
-  << std::endl << *(gluino_to_sdown_LR2->getDecayer()->getName())
-  << " -> ";
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = gluino_to_sdown_LR2->getProducts()->begin();
-       gluino_to_sdown_LR2->getProducts()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout << *((*set_iterator)->getName()) << " ";
-    }
-  std::cout
+  << "sdown_R to neutralino_1 fermion handedness = "
+  << testInputHandler.quarkOrLeptonLeftHandedness( CppSLHA::PDG_code::sdown_R,
+                                            CppSLHA::PDG_code::neutralino_one )
   << std::endl
-  << "has direct decay? " << gluino_to_sdown_LR2->hasDirectDecay();
-  std::cout
+  << "sbottom_1 to neutralino_1 fermion handedness = "
+  << testInputHandler.quarkOrLeptonLeftHandedness(
+                                                CppSLHA::PDG_code::sbottom_one,
+                                            CppSLHA::PDG_code::neutralino_one )
   << std::endl
-  << "directDecayChecker: gluino -> sup_L, sup_R"
-  << std::endl << "pointer = "
-  << gluino_to_sup_LR
-  << std::endl << *(gluino_to_sup_LR->getDecayer()->getName())
-  << " -> ";
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = gluino_to_sup_LR->getProducts()->begin();
-       gluino_to_sup_LR->getProducts()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout << *((*set_iterator)->getName()) << " ";
-    }
-  std::cout
-  << std::endl
-  << "has direct decay? " << gluino_to_sup_LR->hasDirectDecay();
+  << "sbottom_2 to neutralino_1 fermion handedness = "
+  << testInputHandler.quarkOrLeptonLeftHandedness(
+                                                CppSLHA::PDG_code::sbottom_two,
+                                            CppSLHA::PDG_code::neutralino_one )
+  << std::endl;
+
 
   LHC_FASER::exclusiveBrCalculator*
-  gluino_to_sdown_L_BR
-  = test_input_handler.getExclusiveBrCalculator(
-                                               test_input_handler.getGluino(),
-                                              test_input_handler.getSdownL(),
-                                                    true,
-                                       test_input_handler.getNotInJets5() );
+  gluinoToSdownLBr( testInputHandler.getExclusiveBrCalculator(
+                                                  testInputHandler.getGluino(),
+                                                  testInputHandler.getSdownL(),
+                                                               true,
+                                          testInputHandler.getNotInJets5() ) );
   LHC_FASER::exclusiveBrCalculator*
-  gluino_to_sdown_R_BR
-  = test_input_handler.getExclusiveBrCalculator(
-                                               test_input_handler.getGluino(),
-                                              test_input_handler.getSdownR(),
-                                                    true,
-                                       test_input_handler.getNotInJets5() );
+  gluinoToSdownRBr( testInputHandler.getExclusiveBrCalculator(
+                                                  testInputHandler.getGluino(),
+                                                  testInputHandler.getSdownR(),
+                                                               true,
+                                          testInputHandler.getNotInJets5() ) );
   LHC_FASER::exclusiveBrCalculator*
-  gluino_to_sdown_L_BR2
-  = test_input_handler.getExclusiveBrCalculator(
-                                               test_input_handler.getGluino(),
-                                              test_input_handler.getSdownL(),
-                                                    true,
-                                       test_input_handler.getNotInJets5() );
-
+  sdownLToGluinoBr( testInputHandler.getExclusiveBrCalculator(
+                                                  testInputHandler.getSdownL(),
+                                                  testInputHandler.getGluino(),
+                                                               true,
+                                          testInputHandler.getNotInJets5() ) );
+  LHC_FASER::exclusiveBrCalculator*
+  sdownRToGluinoBr( testInputHandler.getExclusiveBrCalculator(
+                                                  testInputHandler.getSdownR(),
+                                                  testInputHandler.getGluino(),
+                                                               true,
+                                          testInputHandler.getNotInJets5() ) );
+  LHC_FASER::exclusiveBrCalculator*
+  gluinoToSdownLBr2( testInputHandler.getExclusiveBrCalculator(
+                                                  testInputHandler.getGluino(),
+                                                  testInputHandler.getSdownL(),
+                                                                true,
+                                          testInputHandler.getNotInJets5() ) );
   std::cout
   << std::endl
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
-  << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->getDecayer()->getName())
-  << " -> " << *(gluino_to_sdown_L_BR->getProduct()->getName())
-  << " has BR " << gluino_to_sdown_L_BR->getBr()
+  << gluinoToSdownLBr
+  << std::endl << *(gluinoToSdownLBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownLBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownLBr->getBr()
   << std::endl
   << "2nd gluino -> sdown_L"
   << std::endl << "pointer = "
-  << gluino_to_sdown_L_BR2
-  << std::endl << *(gluino_to_sdown_L_BR2->getDecayer()->getName())
-  << " -> " << *(gluino_to_sdown_L_BR2->getProduct()->getName())
-  << " has BR " << gluino_to_sdown_L_BR2->getBr()
+  << gluinoToSdownLBr2
+  << std::endl << *(gluinoToSdownLBr2->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownLBr2->getProduct()->get_name())
+  << " has BR " << gluinoToSdownLBr2->getBr()
+  << std::endl
+  << "exclusive BR checker: sdown_L -> gluino"
+  << std::endl << "pointer = "
+  << sdownLToGluinoBr
+  << std::endl << *(sdownLToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownLToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownLToGluinoBr->getBr()
   << std::endl
   << "gluino -> sdown_R"
   << std::endl << "pointer = "
-  << gluino_to_sdown_R_BR
-  << std::endl << *(gluino_to_sdown_R_BR->getDecayer()->getName())
-  << " -> " << *(gluino_to_sdown_R_BR->getProduct()->getName())
-  << " has BR " << gluino_to_sdown_R_BR->getBr()
+  << gluinoToSdownRBr
+  << std::endl << *(gluinoToSdownRBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownRBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownRBr->getBr()
+  << std::endl
+  << "exclusive BR checker: sdown_R -> gluino"
+  << std::endl << "pointer = "
+  << sdownLToGluinoBr
+  << std::endl << *(sdownRToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownRToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownRToGluinoBr->getBr()
   << std::endl
   << std::endl;
 
 
-  SLHA_data.read_file( "SPS2_spectrum.out" );
-  test_readier.readyObserversForNewPoint();
+  slhaData.read_file( "SPS2_spectrum.out" );
+  testReadier.readyObserversForNewPoint();
   std::cout
   << std::endl
   << "SPS2 MASS:"
-  << test_input_handler.getCppSlha()->get_MASS_as_string()
+  << testInputHandler.getCppSlha()->get_MASS_as_string()
   << std::endl
   << std::endl
-  << *(test_input_handler.getGluino()->getName()) << " "
-  << test_input_handler.getGluino()->get_mass() << " GeV"
+  << *(testInputHandler.getGluino()->get_name()) << " "
+  << testInputHandler.getGluino()->get_mass() << " GeV"
   << std::endl
   << std::endl
   << "charged sleptons: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getChargedSleptons()->begin();
-       test_input_handler.getChargedSleptons()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getChargedSleptons()->begin() );
+       testInputHandler.getChargedSleptons()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
-  std::cout
-  << *(gluino_cascade->getDecayer()->getName())
-  << ":" << std::endl
-  << "pointer = " << gluino_cascade << ", pointer2 = " << gluino_cascade2
-  << std::endl;
-  for( std::vector< LHC_FASER::colored_cascade* >::const_iterator
-       set_iterator = gluino_cascade->get_colored_cascades()->begin();
-       gluino_cascade->get_colored_cascades()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout
-      << *((*set_iterator)->getDecayer()->getName())
-      << " -> " << *((*set_iterator)->getProduct()->getName())
-      << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->getName())
-      << " ( " << (*set_iterator)->get_EWino_position() << " )";
-      if( (*set_iterator)->is_sx() )
-        {
-          std::cout<< " => sx" << std::endl;
-        }
-      if( (*set_iterator)->is_gx() )
-        {
-          std::cout<< " => gx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgx() )
-        {
-          std::cout<< " => sgx" << std::endl;
-        }
-      if( (*set_iterator)->is_gsx() )
-        {
-          std::cout<< " => gsx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgsx() )
-        {
-          std::cout<< " => sgsx" << std::endl;
-        }
-    }
-  std::cout
-  << *(sbottom_cascade->getDecayer()->getName())
-  << ":" << std::endl
-  << "pointer = " << sbottom_cascade
-  << std::endl;
-  for( std::vector< LHC_FASER::colored_cascade* >::const_iterator
-       set_iterator = sbottom_cascade->get_colored_cascades()->begin();
-       sbottom_cascade->get_colored_cascades()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout
-      << *((*set_iterator)->getDecayer()->getName())
-      << " -> " << *((*set_iterator)->getProduct()->getName())
-      << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->getName())
-      << " ( " << (*set_iterator)->get_EWino_position() << " )";
-      if( (*set_iterator)->is_sx() )
-        {
-          std::cout<< " => sx" << std::endl;
-        }
-      if( (*set_iterator)->is_gx() )
-        {
-          std::cout<< " => gx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgx() )
-        {
-          std::cout<< " => sgx" << std::endl;
-        }
-      if( (*set_iterator)->is_gsx() )
-        {
-          std::cout<< " => gsx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgsx() )
-        {
-          std::cout<< " => sgsx" << std::endl;
-        }
-    }
-  std::cout
-  << std::endl
-  << "directDecayChecker: gluino -> sdown_L, sdown_R"
-  << std::endl << "pointer = "
-  << gluino_to_sdown_LR
-  << std::endl << *(gluino_to_sdown_LR->getDecayer()->getName())
-  << " -> ";
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = gluino_to_sdown_LR->getProducts()->begin();
-       gluino_to_sdown_LR->getProducts()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout << *((*set_iterator)->getName()) << " ";
-    }
-  std::cout
-  << std::endl
-  << "has direct decay? " << gluino_to_sdown_LR->hasDirectDecay();
   std::cout
   << std::endl
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
-  << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->getDecayer()->getName())
-  << " -> " << *(gluino_to_sdown_L_BR->getProduct()->getName())
-  << " has BR " << gluino_to_sdown_L_BR->getBr()
+  << gluinoToSdownLBr
+  << std::endl << *(gluinoToSdownLBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownLBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownLBr->getBr()
+  << std::endl
+  << "2nd gluino -> sdown_L"
+  << std::endl << "pointer = "
+  << gluinoToSdownLBr2
+  << std::endl << *(gluinoToSdownLBr2->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownLBr2->getProduct()->get_name())
+  << " has BR " << gluinoToSdownLBr2->getBr()
+  << std::endl
+  << "exclusive BR checker: sdown_L -> gluino"
+  << std::endl << "pointer = "
+  << sdownLToGluinoBr
+  << std::endl << *(sdownLToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownLToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownLToGluinoBr->getBr()
+  << std::endl
+  << "gluino -> sdown_R"
+  << std::endl << "pointer = "
+  << gluinoToSdownRBr
+  << std::endl << *(gluinoToSdownRBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownRBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownRBr->getBr()
+  << std::endl
+  << "exclusive BR checker: sdown_R -> gluino"
+  << std::endl << "pointer = "
+  << sdownLToGluinoBr
+  << std::endl << *(sdownRToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownRToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownRToGluinoBr->getBr()
+  << std::endl
   << std::endl;
 
 
-  SLHA_data.read_file( "SPS1a_spectrum.out" );
-  test_readier.readyObserversForNewPoint();
+  slhaData.read_file( "SPS1a_spectrum.out" );
+  testReadier.readyObserversForNewPoint();
   std::cout
   << std::endl
   << "SPS1a MASS:"
-  << test_input_handler.getCppSlha()->get_MASS_as_string()
+  << testInputHandler.getCppSlha()->get_MASS_as_string()
   << std::endl
   << std::endl
-  << *(test_input_handler.getGluino()->getName()) << " "
-  << test_input_handler.getGluino()->get_mass() << " GeV"
+  << *(testInputHandler.getGluino()->get_name()) << " "
+  << testInputHandler.getGluino()->get_mass() << " GeV"
   << std::endl
   << std::endl
   << "charged sleptons: " << std::endl;
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = test_input_handler.getChargedSleptons()->begin();
-       test_input_handler.getChargedSleptons()->end() > set_iterator;
-       ++set_iterator )
+  for( std::vector< LHC_FASER::particlePointer >::const_iterator
+       setIterator( testInputHandler.getChargedSleptons()->begin() );
+       testInputHandler.getChargedSleptons()->end() > setIterator;
+       ++setIterator )
     {
-      std::cout << *((*set_iterator)->getName()) << std::endl;
+      std::cout << *((*setIterator)->get_name()) << std::endl;
     }
-  std::cout
-  << *(gluino_cascade->getDecayer()->getName())
-  << ":" << std::endl
-  << "pointer = " << gluino_cascade << ", pointer2 = " << gluino_cascade2
-  << std::endl;
-  for( std::vector< LHC_FASER::colored_cascade* >::const_iterator
-       set_iterator = gluino_cascade->get_colored_cascades()->begin();
-       gluino_cascade->get_colored_cascades()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout
-      << *((*set_iterator)->getDecayer()->getName())
-      << " -> " << *((*set_iterator)->getProduct()->getName())
-      << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->getName())
-      << " ( " << (*set_iterator)->get_EWino_position() << " )";
-      if( (*set_iterator)->is_sx() )
-        {
-          std::cout<< " => sx" << std::endl;
-        }
-      if( (*set_iterator)->is_gx() )
-        {
-          std::cout<< " => gx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgx() )
-        {
-          std::cout<< " => sgx" << std::endl;
-        }
-      if( (*set_iterator)->is_gsx() )
-        {
-          std::cout<< " => gsx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgsx() )
-        {
-          std::cout<< " => sgsx" << std::endl;
-        }
-    }
-  std::cout
-  << *(sbottom_cascade->getDecayer()->getName())
-  << ":" << std::endl
-  << "pointer = " << sbottom_cascade
-  << std::endl;
-  for( std::vector< LHC_FASER::colored_cascade* >::const_iterator
-       set_iterator = sbottom_cascade->get_colored_cascades()->begin();
-       sbottom_cascade->get_colored_cascades()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout
-      << *((*set_iterator)->getDecayer()->getName())
-      << " -> " << *((*set_iterator)->getProduct()->getName())
-      << " ( " << (*set_iterator)->get_product_position() << " ) -> "
-      << *((*set_iterator)->get_EWino()->getName())
-      << " ( " << (*set_iterator)->get_EWino_position() << " )";
-      if( (*set_iterator)->is_sx() )
-        {
-          std::cout<< " => sx" << std::endl;
-        }
-      if( (*set_iterator)->is_gx() )
-        {
-          std::cout<< " => gx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgx() )
-        {
-          std::cout<< " => sgx" << std::endl;
-        }
-      if( (*set_iterator)->is_gsx() )
-        {
-          std::cout<< " => gsx" << std::endl;
-        }
-      if( (*set_iterator)->is_sgsx() )
-        {
-          std::cout<< " => sgsx" << std::endl;
-        }
-    }
-  std::cout
-  << std::endl
-  << "directDecayChecker: gluino -> sdown_L, sdown_R"
-  << std::endl << "pointer = "
-  << gluino_to_sdown_LR
-  << std::endl << *(gluino_to_sdown_LR->getDecayer()->getName())
-  << " -> ";
-  for( std::vector< CppSLHA::particle_property_set const* >::const_iterator
-       set_iterator = gluino_to_sdown_LR->getProducts()->begin();
-       gluino_to_sdown_LR->getProducts()->end() > set_iterator;
-       ++set_iterator )
-    {
-      std::cout << *((*set_iterator)->getName()) << " ";
-    }
-  std::cout
-  << std::endl
-  << "has direct decay? " << gluino_to_sdown_LR->hasDirectDecay();
   std::cout
   << std::endl
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
-  << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->getDecayer()->getName())
-  << " -> " << *(gluino_to_sdown_L_BR->getProduct()->getName())
-  << " has BR " << gluino_to_sdown_L_BR->getBr()
+  << gluinoToSdownLBr
+  << std::endl << *(gluinoToSdownLBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownLBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownLBr->getBr()
+  << std::endl
+  << "2nd gluino -> sdown_L"
+  << std::endl << "pointer = "
+  << gluinoToSdownLBr2
+  << std::endl << *(gluinoToSdownLBr2->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownLBr2->getProduct()->get_name())
+  << " has BR " << gluinoToSdownLBr2->getBr()
+  << std::endl
+  << "exclusive BR checker: sdown_L -> gluino"
+  << std::endl << "pointer = "
+  << sdownLToGluinoBr
+  << std::endl << *(sdownLToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownLToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownLToGluinoBr->getBr()
+  << std::endl
+  << "gluino -> sdown_R"
+  << std::endl << "pointer = "
+  << gluinoToSdownRBr
+  << std::endl << *(gluinoToSdownRBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownRBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownRBr->getBr()
+  << std::endl
+  << "exclusive BR checker: sdown_R -> gluino"
+  << std::endl << "pointer = "
+  << sdownLToGluinoBr
+  << std::endl << *(sdownRToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownRToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownRToGluinoBr->getBr()
+  << std::endl
   << std::endl;
 
-  SLHA_data.read_file( "SPS2_spectrum.out" );
-  test_readier.readyObserversForNewPoint();
+  slhaData.read_file( "SPS2_spectrum.out" );
+  testReadier.readyObserversForNewPoint();
   std::cout
   << std::endl
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
-  << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->getDecayer()->getName())
-  << " -> " << *(gluino_to_sdown_L_BR->getProduct()->getName())
-  << " has BR " << gluino_to_sdown_L_BR->getBr()
+  << gluinoToSdownLBr
+  << std::endl << *(gluinoToSdownLBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownLBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownLBr->getBr()
+  << std::endl
+  << "exclusive BR checker: sdown_L -> gluino"
+  << std::endl << "pointer = "
+  << sdownLToGluinoBr
+  << std::endl << *(sdownLToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownLToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownLToGluinoBr->getBr()
+  << std::endl
+  << "gluino -> sdown_R"
+  << std::endl << "pointer = "
+  << gluinoToSdownRBr
+  << std::endl << *(gluinoToSdownRBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownRBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownRBr->getBr()
+  << std::endl
+  << "exclusive BR checker: sdown_R -> gluino"
+  << std::endl << "pointer = "
+  << sdownLToGluinoBr
+  << std::endl << *(sdownRToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownRToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownRToGluinoBr->getBr()
+  << std::endl
   << std::endl;
+  slhaData.read_file( "SPS1a_spectrum.out" );
+  testReadier.readyObserversForNewPoint();
   std::cout
   << std::endl
   << "exclusive BR checker: gluino -> sdown_L"
   << std::endl << "pointer = "
-  << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->getDecayer()->getName())
-  << " -> " << *(gluino_to_sdown_L_BR->getProduct()->getName())
-  << " has BR " << gluino_to_sdown_L_BR->getBr()
-  << std::endl;
-  SLHA_data.read_file( "SPS1a_spectrum.out" );
-  test_readier.readyObserversForNewPoint();
-  std::cout
+  << gluinoToSdownLBr
+  << std::endl << *(gluinoToSdownLBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownLBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownLBr->getBr()
   << std::endl
-  << "exclusive BR checker: gluino -> sdown_L"
+  << "exclusive BR checker: sdown_L -> gluino"
   << std::endl << "pointer = "
-  << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->getDecayer()->getName())
-  << " -> " << *(gluino_to_sdown_L_BR->getProduct()->getName())
-  << " has BR " << gluino_to_sdown_L_BR->getBr()
-  << std::endl;
-  std::cout
+  << sdownLToGluinoBr
+  << std::endl << *(sdownLToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownLToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownLToGluinoBr->getBr()
   << std::endl
-  << "exclusive BR checker: gluino -> sdown_L"
+  << "gluino -> sdown_R"
   << std::endl << "pointer = "
-  << gluino_to_sdown_L_BR
-  << std::endl << *(gluino_to_sdown_L_BR->getDecayer()->getName())
-  << " -> " << *(gluino_to_sdown_L_BR->getProduct()->getName())
-  << " has BR " << gluino_to_sdown_L_BR->getBr()
+  << gluinoToSdownRBr
+  << std::endl << *(gluinoToSdownRBr->getDecayer()->get_name())
+  << " -> " << *(gluinoToSdownRBr->getProduct()->get_name())
+  << " has BR " << gluinoToSdownRBr->getBr()
+  << std::endl
+  << "exclusive BR checker: sdown_R -> gluino"
+  << std::endl << "pointer = "
+  << sdownLToGluinoBr
+  << std::endl << *(sdownRToGluinoBr->getDecayer()->get_name())
+  << " -> " << *(sdownRToGluinoBr->getProduct()->get_name())
+  << " has BR " << sdownRToGluinoBr->getBr()
   << std::endl
   << std::endl
+  << "gluino pointer = " << testInputHandler.getGluino()
   << std::endl
-  << "gluino_to_sdown_LR = " << gluino_to_sdown_LR
+  << "sdown_L pointer = " << testInputHandler.getSdownL()
   << std::endl
-  << "gluino pointer = " << test_input_handler.getGluino()
-  << std::endl
-  << "sdown_L pointer = " << test_input_handler.getSdownL()
-  << std::endl
-  << "sdown_R pointer = " << test_input_handler.getSdownR()
+  << "sdown_R pointer = " << testInputHandler.getSdownR()
   << std::endl;
 
   LHC_FASER::readierForNewPoint*
-  test_readier2 = new LHC_FASER::readierForNewPoint();
+  testReadier2( new LHC_FASER::readierForNewPoint() );
   LHC_FASER::exclusiveBrCalculator*
-  sdown_L_chargino_one_minus
-  = new LHC_FASER::exclusiveBrCalculator( test_input_handler.getSdownL(),
-                                         test_input_handler.getCharginoOne(),
-                                            false,
-                                         test_input_handler.getNotInJets4(),
-                                            test_readier2 );
+  sdownLCharginoOneMinus( new LHC_FASER::exclusiveBrCalculator(
+                                                  testInputHandler.getSdownL(),
+                                             testInputHandler.getCharginoOne(),
+                                                                false,
+                                              testInputHandler.getNotInJets4(),
+                                                              testReadier2 ) );
   LHC_FASER::exclusiveBrCalculator*
-  sdown_L_chargino_one_plus
-  = new LHC_FASER::exclusiveBrCalculator( test_input_handler.getSdownL(),
-                                         test_input_handler.getCharginoOne(),
-                                            true,
-                                         test_input_handler.getNotInJets4(),
-                                            test_readier2 );
+  sdownLCharginoOneMinus2( new LHC_FASER::exclusiveBrCalculator(
+                                                  testInputHandler.getSdownL(),
+                                             testInputHandler.getCharginoOne(),
+                                                                false,
+                                              testInputHandler.getNotInJets4(),
+                                                              testReadier2 ) );
+  LHC_FASER::exclusiveBrCalculator*
+  sdownLCharginoOnePlus( new LHC_FASER::exclusiveBrCalculator(
+                                                  testInputHandler.getSdownL(),
+                                             testInputHandler.getCharginoOne(),
+                                                               true,
+                                              testInputHandler.getNotInJets4(),
+                                                              testReadier2 ) );
   std::cout
-  << std::endl << "sdown_L_chargino_one_minus BR = "
-  << sdown_L_chargino_one_minus->getBr()
-  << std::endl << "sdown_L_chargino_one_plus BR = "
-  << sdown_L_chargino_one_plus->getBr();
-  test_readier2->readyObserversForNewPoint();
-  delete sdown_L_chargino_one_plus;
+  << std::endl << "sdownLCharginoOneMinus = "
+  << sdownLCharginoOneMinus << ", BR = "
+  << sdownLCharginoOneMinus->getBr()
+  << std::endl << "sdownLCharginoOneMinus2 = "
+  << sdownLCharginoOneMinus2 << ", BR = "
+  << sdownLCharginoOneMinus2->getBr()
+  << std::endl << "sdownLCharginoOnePlus BR = "
+  << sdownLCharginoOnePlus->getBr();
+  testReadier2->readyObserversForNewPoint();
+  delete sdownLCharginoOnePlus;
   std::cout
-  << std::endl << "sdown_L_chargino_one_minus BR = "
-  << sdown_L_chargino_one_minus->getBr();
-  test_readier2->readyObserversForNewPoint();
-  delete test_readier2;
+  << std::endl << "sdownLCharginoOneMinus BR = "
+  << sdownLCharginoOneMinus->getBr();
+  testReadier2->readyObserversForNewPoint();
+  delete testReadier2;
+  delete sdownLCharginoOneMinus2;
   std::cout
-  << std::endl << "sdown_L_chargino_one_minus BR = "
-  << sdown_L_chargino_one_minus->getBr();
-  delete sdown_L_chargino_one_minus;
+  << std::endl << "sdownLCharginoOneMinus BR = "
+  << sdownLCharginoOneMinus->getBr();
+  std::cout
+  << std::endl;
+  delete sdownLCharginoOneMinus;
   **/
 
 
-  /* testing the cross-section grid stuff: (should work, may need slight changes of input)*//**
+  /* testing the cross-section grid stuff:
+   * (should work, may need slight changes of input)*//**
 
   std::cout
   << std::endl
   << "pathToGrids = "
-  << *(test_input_handler.getPathToGrids())
+  << *(testInputHandler.getPathToGrids())
   << std::endl;
 
   std::string
-  path_to_test_grid( *(test_input_handler.getPathToCrossSectionGrids()) );
+  path_to_test_grid( *(testInputHandler.getPathToCrossSectionGrids()) );
   path_to_test_grid.append( "/7TeV/gluino+gluino_LO.dat" );
   LHC_FASER::squareGrid test_grid( &path_to_test_grid,
                                     &bluh,
                                     NULL );
   LHC_FASER::crossSectionTable gg_table( &test_grid,
-           test_input_handler.getScoloredProductionCombinations()->at( 0 ),
+           testInputHandler.getScoloredProductionCombinations()->at( 0 ),
                                            1.0,
-                                           &test_input_handler );
+                                           &testInputHandler );
   std::cout
   << std::endl << "x: " << test_grid.getLowestX() << " - "
   << test_grid.getHighestX();
@@ -1556,7 +1339,7 @@ int main( int argumentCount,
   << gg_table.getValue();
 
   path_to_test_grid.assign(
-                     *(test_input_handler.getPathToCrossSectionGrids()) );
+                     *(testInputHandler.getPathToCrossSectionGrids()) );
   path_to_test_grid.append( "/7TeV/gluino+gluino_K.dat" );
   LHC_FASER::squareGrid test_K( &path_to_test_grid,
                                  &bluh,
@@ -1569,7 +1352,7 @@ int main( int argumentCount,
 
 
   LHC_FASER::crossSectionHandler cross_section_handler_tester(
-                                                         &test_input_handler );
+                                                         &testInputHandler );
   LHC_FASER::crossSectionTableSet*
   test_cross_section_set = cross_section_handler_tester.getTableSet( 7 );
   std::cout
@@ -1579,11 +1362,11 @@ int main( int argumentCount,
   LHC_FASER::crossSectionTable*
   sd_go_sigma
   = test_cross_section_set->getTable(
-         test_input_handler.getScoloredProductionCombinations()->at( 1 ) );
+         testInputHandler.getScoloredProductionCombinations()->at( 1 ) );
   LHC_FASER::crossSectionTable*
   su_go_sigma
   = test_cross_section_set->getTable(
-        test_input_handler.getScoloredProductionCombinations()->at( 10 ) );
+        testInputHandler.getScoloredProductionCombinations()->at( 10 ) );
   LHC_FASER::crossSectionTableSet*
   test_cross_section_set2 = cross_section_handler_tester.getTableSet( 7 );
   std::cout
@@ -1591,29 +1374,29 @@ int main( int argumentCount,
   LHC_FASER::crossSectionTable*
   sd_go_sigma2
   = test_cross_section_set2->getTable(
-         test_input_handler.getScoloredProductionCombinations()->at( 1 ) );
+         testInputHandler.getScoloredProductionCombinations()->at( 1 ) );
   std::cout
   << std::endl << "no extra squareGrid loading?";
 
   path_to_test_grid.assign(
-                     *(test_input_handler.getPathToCrossSectionGrids()) );
+                     *(testInputHandler.getPathToCrossSectionGrids()) );
   path_to_test_grid.append( "/7TeV/sdown_L+gluino_LO.dat" );
   LHC_FASER::squareGrid test_sd_go_LO( &path_to_test_grid,
                                         &bluh,
                                         NULL );
   path_to_test_grid.assign(
-                     *(test_input_handler.getPathToCrossSectionGrids()) );
+                     *(testInputHandler.getPathToCrossSectionGrids()) );
   path_to_test_grid.append( "/7TeV/sdown_L+gluino_K.dat" );
   LHC_FASER::squareGrid test_sd_go_K( &path_to_test_grid,
                                        &bluh,
                                        NULL );
   double
   sd_mass
-  = test_input_handler.getScoloredProductionCombinations()->at( 1
+  = testInputHandler.getScoloredProductionCombinations()->at( 1
                                    )->getFirstParticle()->get_absolute_mass();
   double
   go_mass
-  = test_input_handler.getScoloredProductionCombinations()->at( 1
+  = testInputHandler.getScoloredProductionCombinations()->at( 1
                                   )->getSecondParticle()->get_absolute_mass();
   std::cout << std::endl;
   std::cout
@@ -1644,7 +1427,7 @@ int main( int argumentCount,
   /* testing the kinematics grid stuff: (ahhhh, tssss, might still work involes a lot of old classes that are not yet deleted)*//**
 
   std::string
-  acceptance_grid_path( *(test_input_handler.getPathToKinematicsGrids()) );
+  acceptance_grid_path( *(testInputHandler.getPathToKinematicsGrids()) );
   std::cout
   << std::endl << "path to kinematics grids = " << acceptance_grid_path;
   std::cout << std::endl;
@@ -1698,7 +1481,7 @@ int main( int argumentCount,
                                      false );
   std::cout << std::endl;
   acceptance_grid_path.assign(
-                        *(test_input_handler.getPathToKinematicsGrids()) );
+                        *(testInputHandler.getPathToKinematicsGrids()) );
   std::cout
   << std::endl << "path to kinematics grids = " << acceptance_grid_path;
   std::cout << std::endl;
@@ -1755,15 +1538,15 @@ int main( int argumentCount,
 
   LHC_FASER::colored_cascade_set*
   gluino_cascade3
-  = test_input_handler.get_colored_cascade_set(
-                                             test_input_handler.getGluino() );
+  = testInputHandler.get_colored_cascade_set(
+                                             testInputHandler.getGluino() );
   LHC_FASER::colored_cascade_set*
   sdown_L_cascade
-  = test_input_handler.get_colored_cascade_set(
-                                            test_input_handler.getSdownL() );
+  = testInputHandler.get_colored_cascade_set(
+                                            testInputHandler.getSdownL() );
   int const sdL_go = 1;
   acceptance_grid_path.assign(
-                        *(test_input_handler.getPathToKinematicsGrids()) );
+                        *(testInputHandler.getPathToKinematicsGrids()) );
   acceptance_grid_path.append( "/7TeV/jets/Atlas4jMET" );
   std::cout
   << std::endl << "path to jets kinematics grids = " << acceptance_grid_path;
@@ -1771,51 +1554,51 @@ int main( int argumentCount,
   LHC_FASER::jet_acceptance_table test_jet_kinematics_table(
                                                          &acceptance_grid_path,
                                                              &bluh,
-                                                         &test_input_handler );
+                                                         &testInputHandler );
   std::cout
-  << std::endl << "test_jet_kinematics_table.getName() = "
-  << *(test_jet_kinematics_table.getName())
+  << std::endl << "test_jet_kinematics_table.get_name() = "
+  << *(test_jet_kinematics_table.get_name())
   << std::endl << "test_jet_kinematics_table.get_acceptance( 4,"
   << std::endl
   << "[ ";
-  if( test_input_handler.getScoloredProductionCombinations()->at( sdL_go
+  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
                                                        )->is_first_particle() )
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations(
-                             )->at( sdL_go )->getFirstParticle()->getName());
+      << *(testInputHandler.getScoloredProductionCombinations(
+                             )->at( sdL_go )->getFirstParticle()->get_name());
     }
   else
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
                                 sdL_go )->getFirstParticle()->get_antiname());
     }
   std::cout << " + ";
-  if( test_input_handler.getScoloredProductionCombinations()->at( sdL_go
+  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
                                                       )->is_second_particle() )
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
-                                   sdL_go )->getSecondParticle()->getName());
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
+                                   sdL_go )->getSecondParticle()->get_name());
     }
   else
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
                                sdL_go )->getSecondParticle()->get_antiname());
     }
   std::cout << " ]," << std::endl;
   std::cout
   << "[ "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->getDecayer()->getName())
+                                                  )->getDecayer()->get_name())
   << " -> " << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->getProduct()->getName())
+                                                  )->getProduct()->get_name())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->getName())
+                                                    )->get_EWino()->get_name())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_sx() )
@@ -1844,13 +1627,13 @@ int main( int argumentCount,
   std::cout
   << "[ "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getDecayer()->getName())
+                                                  )->getDecayer()->get_name())
   << " -> " << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getProduct()->getName())
+                                                  )->getProduct()->get_name())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->getName())
+                                                    )->get_EWino()->get_name())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sx() )
@@ -1877,13 +1660,13 @@ int main( int argumentCount,
   << " ] )->get_acceptance()"
   << std::endl << " = "
   << test_jet_kinematics_table.get_acceptance( 4,
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
           sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance();
   std::cout << std::endl;
 
   acceptance_grid_path.assign(
-                        *(test_input_handler.getPathToKinematicsGrids()) );
+                        *(testInputHandler.getPathToKinematicsGrids()) );
   acceptance_grid_path.append( "/7TeV/leptons" );
   std::cout
   << std::endl
@@ -1892,50 +1675,50 @@ int main( int argumentCount,
   LHC_FASER::lepton_acceptance_table test_lepton_kinematics_table(
                                                          &acceptance_grid_path,
                                                                    7,
-                                                         &test_input_handler );
+                                                         &testInputHandler );
   std::cout
   << std::endl << "test_lepton_kinematics_table.get_energy() = "
   << test_lepton_kinematics_table.get_energy()
   << std::endl << "test_lepton_kinematics_table.get_acceptance( "
   << "[ ";
-  if( test_input_handler.getScoloredProductionCombinations()->at( sdL_go
+  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
                                                        )->is_first_particle() )
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
-                                    sdL_go )->getFirstParticle()->getName());
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
+                                    sdL_go )->getFirstParticle()->get_name());
     }
   else
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
                                 sdL_go )->getFirstParticle()->get_antiname());
     }
   std::cout << " + ";
-  if( test_input_handler.getScoloredProductionCombinations()->at( sdL_go
+  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
                                                       )->is_second_particle() )
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
-                                   sdL_go )->getSecondParticle()->getName());
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
+                                   sdL_go )->getSecondParticle()->get_name());
     }
   else
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
                                sdL_go )->getSecondParticle()->get_antiname());
     }
   std::cout << " ]," << std::endl;
   std::cout
   << "[ "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->getDecayer()->getName())
+                                                  )->getDecayer()->get_name())
   << " -> " << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->getProduct()->getName())
+                                                  )->getProduct()->get_name())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->getName())
+                                                    )->get_EWino()->get_name())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_sx() )
@@ -1964,13 +1747,13 @@ int main( int argumentCount,
   std::cout
   << "[ "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getDecayer()->getName())
+                                                  )->getDecayer()->get_name())
   << " -> " << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getProduct()->getName())
+                                                  )->getProduct()->get_name())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->getName())
+                                                    )->get_EWino()->get_name())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sx() )
@@ -1997,7 +1780,7 @@ int main( int argumentCount,
   << " ] )->get_acceptance( 23.4, 20.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                         )->acceptance_at( 23.4,
@@ -2007,7 +1790,7 @@ int main( int argumentCount,
   << "...->get_acceptance( -1.0, 10.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                         )->acceptance_at( -1.0,
@@ -2017,7 +1800,7 @@ int main( int argumentCount,
   << "...->get_acceptance( 1.0, 10.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                         )->acceptance_at( 1.0,
@@ -2027,7 +1810,7 @@ int main( int argumentCount,
   << "...->get_acceptance( 10.0, 10.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                         )->acceptance_at( 10.0,
@@ -2037,7 +1820,7 @@ int main( int argumentCount,
   << "...->get_acceptance( 12.3, 10.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                         )->acceptance_at( 12.3,
@@ -2047,7 +1830,7 @@ int main( int argumentCount,
   << "...->get_acceptance( 20.0, 10.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                         )->acceptance_at( 20.0,
@@ -2057,7 +1840,7 @@ int main( int argumentCount,
   << "...->get_acceptance( 79.9, 10.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                         )->acceptance_at( 79.9,
@@ -2067,7 +1850,7 @@ int main( int argumentCount,
   << "...->get_acceptance( 80.0, 10.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                         )->acceptance_at( 80.0,
@@ -2077,7 +1860,7 @@ int main( int argumentCount,
   << "...->get_acceptance( 100.0, 10.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                        )->acceptance_at( 100.0,
@@ -2086,44 +1869,44 @@ int main( int argumentCount,
   std::cout
   << std::endl << "test_lepton_kinematics_table.get_acceptance( "
   << "[ ";
-  if( test_input_handler.getScoloredProductionCombinations()->at( sdL_go
+  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
                                                        )->is_first_particle() )
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
-                                    sdL_go )->getFirstParticle()->getName());
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
+                                    sdL_go )->getFirstParticle()->get_name());
     }
   else
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
                                 sdL_go )->getFirstParticle()->get_antiname());
     }
   std::cout << " + ";
-  if( test_input_handler.getScoloredProductionCombinations()->at( sdL_go
+  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
                                                       )->is_second_particle() )
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
-                                   sdL_go )->getSecondParticle()->getName());
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
+                                   sdL_go )->getSecondParticle()->get_name());
     }
   else
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
                                sdL_go )->getSecondParticle()->get_antiname());
     }
   std::cout << " ]," << std::endl;
   std::cout
   << "[ "
   << *(gluino_cascade3->get_colored_cascades()->back(
-                                                  )->getDecayer()->getName())
+                                                  )->getDecayer()->get_name())
   << " -> " << *(gluino_cascade3->get_colored_cascades()->back(
-                                                  )->getProduct()->getName())
+                                                  )->getProduct()->get_name())
   << " ( " << gluino_cascade3->get_colored_cascades()->back(
                                           )->get_product_position() << " ) -> "
   << *(gluino_cascade3->get_colored_cascades()->back(
-                                                    )->get_EWino()->getName())
+                                                    )->get_EWino()->get_name())
   << " ( " << gluino_cascade3->get_colored_cascades()->back(
                                                )->get_EWino_position() << " )";
   if( gluino_cascade3->get_colored_cascades()->back()->is_sx() )
@@ -2152,13 +1935,13 @@ int main( int argumentCount,
   std::cout
   << "[ "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getDecayer()->getName())
+                                                  )->getDecayer()->get_name())
   << " -> " << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getProduct()->getName())
+                                                  )->getProduct()->get_name())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->getName())
+                                                    )->get_EWino()->get_name())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sx() )
@@ -2185,7 +1968,7 @@ int main( int argumentCount,
   << " ] )->get_acceptance( 23.4, 20.0 )"
   << std::endl << " = "
   << test_lepton_kinematics_table.get_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                                gluino_cascade3->get_colored_cascades()->back(),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                         )->acceptance_at( 23.4,
@@ -2200,44 +1983,44 @@ int main( int argumentCount,
   << kinematics_table_tester.get_column()
   << std::endl << "kinematics_table_tester.get_jet_acceptance( "
   << "[ ";
-  if( test_input_handler.getScoloredProductionCombinations()->at( sdL_go
+  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
                                                        )->is_first_particle() )
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
-                                    sdL_go )->getFirstParticle()->getName());
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
+                                    sdL_go )->getFirstParticle()->get_name());
     }
   else
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
                                 sdL_go )->getFirstParticle()->get_antiname());
     }
   std::cout << " + ";
-  if( test_input_handler.getScoloredProductionCombinations()->at( sdL_go
+  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
                                                       )->is_second_particle() )
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
-                                   sdL_go )->getSecondParticle()->getName());
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
+                                   sdL_go )->getSecondParticle()->get_name());
     }
   else
     {
       std::cout
-      << *(test_input_handler.getScoloredProductionCombinations()->at(
+      << *(testInputHandler.getScoloredProductionCombinations()->at(
                                sdL_go )->getSecondParticle()->get_antiname());
     }
   std::cout << " ]," << std::endl;
   std::cout
   << "[ "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->getDecayer()->getName())
+                                                  )->getDecayer()->get_name())
   << " -> " << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->getProduct()->getName())
+                                                  )->getProduct()->get_name())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->getName())
+                                                    )->get_EWino()->get_name())
   << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_sx() )
@@ -2266,13 +2049,13 @@ int main( int argumentCount,
   std::cout
   << "[ "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getDecayer()->getName())
+                                                  )->getDecayer()->get_name())
   << " -> " << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getProduct()->getName())
+                                                  )->getProduct()->get_name())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                           )->get_product_position() << " ) -> "
   << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->getName())
+                                                    )->get_EWino()->get_name())
   << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
                                                )->get_EWino_position() << " )";
   if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sx() )
@@ -2299,7 +2082,7 @@ int main( int argumentCount,
   << " ] )->get_acceptance()"
   << std::endl << " = "
   << kinematics_table_tester.get_jet_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
           sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance();
   std::cout << std::endl;
@@ -2308,7 +2091,7 @@ int main( int argumentCount,
   << " 12.34, 8.0 )"
   << std::endl << " = "
   << kinematics_table_tester.get_lepton_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                        )->acceptance_at( 12.34,
@@ -2316,7 +2099,7 @@ int main( int argumentCount,
 
   std::string
   kinematics_at_energy_name(
-                        *(test_input_handler.getPathToKinematicsGrids()) );
+                        *(testInputHandler.getPathToKinematicsGrids()) );
   kinematics_at_energy_name.append( "/7TeV" );
   std::string jet_signal_name( "Atlas4jMET" );
   LHC_FASER::kinematics_table_set
@@ -2324,13 +2107,13 @@ int main( int argumentCount,
                                &kinematics_at_energy_name,
                                &jet_signal_name,
                                &test_lepton_kinematics_table,
-                               &test_input_handler );
+                               &testInputHandler );
   std::cout << std::endl;
   std::cout
   << "kinematics_table_set_tester.getTable( 4"
   << " )->get_jet_acceptance(...)->get_acceptance() = "
   << kinematics_table_set_tester.getTable( 4 )->get_jet_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
           sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance();
   std::cout << std::endl;
@@ -2338,7 +2121,7 @@ int main( int argumentCount,
   << "kinematics_table_set_tester.getTable( 4"
   << " )->get_lepton_acceptance(...)->get_acceptance( 12.34, 8.0 ) = "
   << kinematics_table_set_tester.getTable( 4 )->get_lepton_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                        )->acceptance_at( 12.34,
@@ -2346,7 +2129,7 @@ int main( int argumentCount,
   std::cout << std::endl;
 
   LHC_FASER::kinematics_handler kinematics_handler_tester(
-                                                         &test_input_handler );
+                                                         &testInputHandler );
   LHC_FASER::kinematics_table*
   kinematics_handler_table_one = kinematics_handler_tester.getTable( 7,
                                                               &jet_signal_name,
@@ -2366,13 +2149,13 @@ int main( int argumentCount,
   << std::endl
   << "->get_jet_acceptance(...)->get_acceptance() = "
   << kinematics_handler_table_one->get_jet_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
            sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance()
   << std::endl
   << "->get_lepton_acceptance(...)->get_acceptance( 12.34, 8.0 ) = "
   << kinematics_handler_table_one->get_lepton_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                        )->acceptance_at( 12.34,
@@ -2382,13 +2165,13 @@ int main( int argumentCount,
   << std::endl
   << "->get_jet_acceptance(...)->get_acceptance() = "
   << kinematics_handler_table_two->get_jet_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
            sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance()
   << std::endl
   << "->get_lepton_acceptance(...)->get_acceptance( 12.34, 8.0 ) = "
   << kinematics_handler_table_two->get_lepton_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                        )->acceptance_at( 12.34,
@@ -2398,13 +2181,13 @@ int main( int argumentCount,
   << std::endl
   << "->get_jet_acceptance(...)->get_acceptance() = "
   << kinematics_handler_table_three->get_jet_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
            sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance()
   << std::endl
   << "->get_lepton_acceptance(...)->get_acceptance( 12.34, 8.0 ) = "
   << kinematics_handler_table_three->get_lepton_acceptance(
-      test_input_handler.getScoloredProductionCombinations()->at( sdL_go ),
+      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
                               gluino_cascade3->get_colored_cascades()->at( 1 ),
             sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance(
                                                        )->acceptance_at( 12.34,
@@ -2415,18 +2198,18 @@ int main( int argumentCount,
 
   /* testing the cascade calculation stuff: (doesnt work, why? objects have been redone completly, open: base_electroweak_cascade_stuff look at electro weak cascade class. find analogous way to set it up (n2->smu->n1 should be possible). look also at derived_electroweak...)*//**
 
-  LHC_FASER::kinematics_handler test_kinematics( &test_input_handler );
+  LHC_FASER::kinematics_handler test_kinematics( &testInputHandler );
   std::string test_signal_name( "Atlas4jMET" );
   LHC_FASER::lepton_acceptance_value*
   test_lepton_acceptance_value
   = test_kinematics.getTable( 7,
                                &test_signal_name,
                                4 )->get_lepton_acceptance(
-           test_input_handler.getScoloredProductionCombinations()->at( 1 ),
-                               test_input_handler.get_colored_cascade_set(
-            test_input_handler.getGluino() )->get_colored_cascades()->at( 1 ),
-                               test_input_handler.get_colored_cascade_set(
-         test_input_handler.getSdownL() )->get_colored_cascades()->at( 1 ) );
+           testInputHandler.getScoloredProductionCombinations()->at( 1 ),
+                               testInputHandler.get_colored_cascade_set(
+            testInputHandler.getGluino() )->get_colored_cascades()->at( 1 ),
+                               testInputHandler.get_colored_cascade_set(
+         testInputHandler.getSdownL() )->get_colored_cascades()->at( 1 ) );
 
   LHC_FASER::cascade_acceptance_value two_jets_no_leptons( 0.0 );
   LHC_FASER::cascade_acceptance_value one_jet_one_muon( 0.0 );
@@ -2447,12 +2230,12 @@ int main( int argumentCount,
   smuon_channel = new LHC_FASER::charge_summed_neutralino_to_semu( 10.0,
                                                                    10.0,
                                                   test_lepton_acceptance_value,
-                                              test_input_handler.getSdownL(),
+                                              testInputHandler.getSdownL(),
                                                                    true,
-                                      test_input_handler.getNeutralinoFour(),
+                                      testInputHandler.getNeutralinoFour(),
                                                                    true,
-                                              test_input_handler.getSmuonR(),
-                                                           &test_input_handler,
+                                              testInputHandler.getSmuonR(),
+                                                           &testInputHandler,
                                    OSSF_minus_OSDF_leptons.get_value_pointer(),
                                          no_jets_two_muons.get_value_pointer(),
                                           no_jets_one_muon.get_value_pointer(),
@@ -2467,12 +2250,12 @@ int main( int argumentCount,
                                                                   10.0,
                                                                   40.0,
                                                   test_lepton_acceptance_value,
-                                              test_input_handler.getSdownL(),
+                                              testInputHandler.getSdownL(),
                                                                   true,
-                                      test_input_handler.getNeutralinoFour(),
+                                      testInputHandler.getNeutralinoFour(),
                                                                   true,
-                                             test_input_handler.getStauOne(),
-                                                           &test_input_handler,
+                                             testInputHandler.getStauOne(),
+                                                           &testInputHandler,
                                        two_jets_no_leptons.get_value_pointer(),
                                           one_jet_one_muon.get_value_pointer(),
                                       one_jet_one_electron.get_value_pointer(),
@@ -2499,12 +2282,12 @@ int main( int argumentCount,
                                                             10.0,
                                                             40.0,
                                                   test_lepton_acceptance_value,
-                                              test_input_handler.getSdownL(),
+                                              testInputHandler.getSdownL(),
                                                             true,
-                                      test_input_handler.getNeutralinoFour(),
+                                      testInputHandler.getNeutralinoFour(),
                                                             true,
-                                                    test_input_handler.getZ(),
-                                                           &test_input_handler,
+                                                    testInputHandler.getZ(),
+                                                           &testInputHandler,
                                        two_jets_no_leptons.get_value_pointer(),
                                           one_jet_one_muon.get_value_pointer(),
                                       one_jet_one_electron.get_value_pointer(),
@@ -2530,37 +2313,37 @@ int main( int argumentCount,
 
   double
   neutralino_four_to_smuon_R
-  = test_input_handler.getExclusiveBrCalculator(
-                                      test_input_handler.getNeutralinoFour(),
-                                              test_input_handler.getSmuonR(),
+  = testInputHandler.getExclusiveBrCalculator(
+                                      testInputHandler.getNeutralinoFour(),
+                                              testInputHandler.getSmuonR(),
                                               true,
-                               test_input_handler.getEmptyList() )->getBr();
+                               testInputHandler.getEmptyList() )->getBr();
   double
   smuon_R_to_neutralino_one
-  = test_input_handler.getExclusiveBrCalculator(
-                                              test_input_handler.getSmuonR(),
-                                       test_input_handler.getNeutralinoOne(),
+  = testInputHandler.getExclusiveBrCalculator(
+                                              testInputHandler.getSmuonR(),
+                                       testInputHandler.getNeutralinoOne(),
                                                     true,
-                               test_input_handler.getEmptyList() )->getBr();
+                               testInputHandler.getEmptyList() )->getBr();
   double
   neutralino_four_to_stau_one
-  = test_input_handler.getExclusiveBrCalculator(
-                                      test_input_handler.getNeutralinoFour(),
-                                             test_input_handler.getStauOne(),
+  = testInputHandler.getExclusiveBrCalculator(
+                                      testInputHandler.getNeutralinoFour(),
+                                             testInputHandler.getStauOne(),
                                                     true,
-                               test_input_handler.getEmptyList() )->getBr();
+                               testInputHandler.getEmptyList() )->getBr();
   double
   stau_one_to_neutralino_one
-  = test_input_handler.getExclusiveBrCalculator(
-                                             test_input_handler.getStauOne(),
-                                       test_input_handler.getNeutralinoOne(),
+  = testInputHandler.getExclusiveBrCalculator(
+                                             testInputHandler.getStauOne(),
+                                       testInputHandler.getNeutralinoOne(),
                                                     true,
-                               test_input_handler.getEmptyList() )->getBr();
+                               testInputHandler.getEmptyList() )->getBr();
   double
   neutralino_four_to_Z
-  = test_input_handler.getNeutralinoFour()->inspect_direct_decay_handler(
+  = testInputHandler.getNeutralinoFour()->inspect_direct_decay_handler(
                                         )->get_branching_ratio_for_exact_match(
-                                    test_input_handler.getZ()->get_PDG_code(),
+                                    testInputHandler.getZ()->get_PDG_code(),
                                            CppSLHA::PDG_code::neutralino_one );
   std::cout
   << std::endl
@@ -2759,12 +2542,12 @@ int main( int argumentCount,
   smuon_channel = new LHC_FASER::charge_summed_neutralino_to_semu( 10.0,
                                                                    10.0,
                                                   test_lepton_acceptance_value,
-                                              test_input_handler.getSdownL(),
+                                              testInputHandler.getSdownL(),
                                                                    true,
-                                      test_input_handler.getNeutralinoFour(),
+                                      testInputHandler.getNeutralinoFour(),
                                                                    true,
-                                              test_input_handler.getSmuonR(),
-                                                           &test_input_handler,
+                                              testInputHandler.getSmuonR(),
+                                                           &testInputHandler,
                                   OSSF_minus_OSDF_leptons2.get_value_pointer(),
                                         no_jets_two_muons2.get_value_pointer(),
                                          no_jets_one_muon2.get_value_pointer(),
@@ -2778,12 +2561,12 @@ int main( int argumentCount,
                                                                   10.0,
                                                                   40.0,
                                                   test_lepton_acceptance_value,
-                                              test_input_handler.getSdownL(),
+                                              testInputHandler.getSdownL(),
                                                                     true,
-                                      test_input_handler.getNeutralinoFour(),
+                                      testInputHandler.getNeutralinoFour(),
                                                                     true,
-                                             test_input_handler.getStauOne(),
-                                                           &test_input_handler,
+                                             testInputHandler.getStauOne(),
+                                                           &testInputHandler,
                                       two_jets_no_leptons2.get_value_pointer(),
                                          one_jet_one_muon2.get_value_pointer(),
                                      one_jet_one_electron2.get_value_pointer(),
@@ -2809,12 +2592,12 @@ int main( int argumentCount,
                                                             10.0,
                                                             40.0,
                                                   test_lepton_acceptance_value,
-                                              test_input_handler.getSdownL(),
+                                              testInputHandler.getSdownL(),
                                                             true,
-                                      test_input_handler.getNeutralinoFour(),
+                                      testInputHandler.getNeutralinoFour(),
                                                             true,
-                                                    test_input_handler.getZ(),
-                                                           &test_input_handler,
+                                                    testInputHandler.getZ(),
+                                                           &testInputHandler,
                                       two_jets_no_leptons2.get_value_pointer(),
                                          one_jet_one_muon2.get_value_pointer(),
                                      one_jet_one_electron2.get_value_pointer(),
@@ -2964,7 +2747,7 @@ int main( int argumentCount,
 
   LHC_FASER::cascade_handler*
   cascade_handler_tester
-   = new LHC_FASER::cascade_handler( &test_input_handler );
+   = new LHC_FASER::cascade_handler( &testInputHandler );
 
   LHC_FASER::charge_summed_cascade_calculator*
   charge_summed_test_10_10_40_a
@@ -2972,9 +2755,9 @@ int main( int argumentCount,
                                                           10.0,
                                                           40.0,
                                                   test_lepton_acceptance_value,
-                                              test_input_handler.getSdownL(),
+                                              testInputHandler.getSdownL(),
                                                           true,
-                                      test_input_handler.getNeutralinoFour(),
+                                      testInputHandler.getNeutralinoFour(),
                                                           true );
   LHC_FASER::charge_summed_cascade_calculator*
   charge_summed_test_20_10_40
@@ -2982,9 +2765,9 @@ int main( int argumentCount,
                                                           10.0,
                                                           40.0,
                                                   test_lepton_acceptance_value,
-                                              test_input_handler.getSdownL(),
+                                              testInputHandler.getSdownL(),
                                                           true,
-                                      test_input_handler.getNeutralinoFour(),
+                                      testInputHandler.getNeutralinoFour(),
                                                           true );
   LHC_FASER::charge_summed_cascade_calculator*
   charge_summed_test_10_10_40_b
@@ -2992,9 +2775,9 @@ int main( int argumentCount,
                                                           10.0,
                                                           40.0,
                                                   test_lepton_acceptance_value,
-                                              test_input_handler.getSdownL(),
+                                              testInputHandler.getSdownL(),
                                                           true,
-                                      test_input_handler.getNeutralinoFour(),
+                                      testInputHandler.getNeutralinoFour(),
                                                           true );
 
   std::cout
@@ -3075,8 +2858,8 @@ int main( int argumentCount,
 
   LHC_FASER::colored_cascade_set*
   gluino_BR_sum_tester
-  = test_input_handler.get_colored_cascade_set(
-                                             test_input_handler.getGluino() );
+  = testInputHandler.get_colored_cascade_set(
+                                             testInputHandler.getGluino() );
   double gluino_BR_sum = 0.0;
   LHC_FASER::exclusiveBrCalculator* BR_sum_helper;
   double BR_sum_helper_double;
@@ -3092,11 +2875,11 @@ int main( int argumentCount,
         {
 
           BR_sum_helper
-          = test_input_handler.getExclusiveBrCalculator(
-                                               test_input_handler.getGluino(),
+          = testInputHandler.getExclusiveBrCalculator(
+                                               testInputHandler.getGluino(),
                                                    (*BR_iterator)->get_EWino(),
                                                             true,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
 
           if( NULL != BR_sum_helper )
             {
@@ -3109,11 +2892,11 @@ int main( int argumentCount,
             {
 
               BR_sum_helper
-              = test_input_handler.getExclusiveBrCalculator(
-                                               test_input_handler.getGluino(),
+              = testInputHandler.getExclusiveBrCalculator(
+                                               testInputHandler.getGluino(),
                                                    (*BR_iterator)->get_EWino(),
                                                                 false,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
 
               if( NULL != BR_sum_helper )
                 {
@@ -3130,22 +2913,22 @@ int main( int argumentCount,
         {
 
           BR_sum_helper
-          = test_input_handler.getExclusiveBrCalculator(
-                                               test_input_handler.getGluino(),
+          = testInputHandler.getExclusiveBrCalculator(
+                                               testInputHandler.getGluino(),
                                                  (*BR_iterator)->getProduct(),
                                                             true,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
           if( NULL != BR_sum_helper )
             {
 
               BR_sum_helper_double = BR_sum_helper->getBr();
 
               BR_sum_helper
-              = test_input_handler.getExclusiveBrCalculator(
+              = testInputHandler.getExclusiveBrCalculator(
                                                  (*BR_iterator)->getProduct(),
                                                    (*BR_iterator)->get_EWino(),
                                                                 true,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
 
               if( NULL != BR_sum_helper )
                 {
@@ -3159,11 +2942,11 @@ int main( int argumentCount,
                 {
 
                   BR_sum_helper
-                  = test_input_handler.getExclusiveBrCalculator(
+                  = testInputHandler.getExclusiveBrCalculator(
                                                  (*BR_iterator)->getProduct(),
                                                    (*BR_iterator)->get_EWino(),
                                                                     false,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
 
                   if( NULL != BR_sum_helper )
                     {
@@ -3188,12 +2971,12 @@ int main( int argumentCount,
 
 
   LHC_FASER::crossSectionHandler test_cross_section_handler(
-                                                         &test_input_handler );
+                                                         &testInputHandler );
 
-  LHC_FASER::kinematics_handler test_kinematics_handler( &test_input_handler );
+  LHC_FASER::kinematics_handler test_kinematics_handler( &testInputHandler );
 
-  LHC_FASER::cascade_handler test_cascade_handler( &test_input_handler );
-  LHC_FASER::signalShortcuts test_signal_shortcuts( &test_input_handler,
+  LHC_FASER::cascade_handler test_cascade_handler( &testInputHandler );
+  LHC_FASER::signalShortcuts test_signal_shortcuts( &testInputHandler,
                                                    &test_cross_section_handler,
                                                      &test_kinematics_handler,
                                                      &test_cascade_handler );
@@ -3203,7 +2986,7 @@ int main( int argumentCount,
 
   std::cout
   << std::endl
-  << *(test_bad_signal.getName()) << " has signal value "
+  << *(test_bad_signal.get_name()) << " has signal value "
   << test_bad_signal.getValue();
   std::cout << std::endl;
 
@@ -3213,7 +2996,7 @@ int main( int argumentCount,
 
   std::cout
   << std::endl
-  << *(cross_section_breakdown_test.getName()) << " has signal value "
+  << *(cross_section_breakdown_test.get_name()) << " has signal value "
   << cross_section_breakdown_test.getValue();
   std::cout << std::endl;
 
@@ -3222,33 +3005,33 @@ int main( int argumentCount,
 
   std::cout
   << std::endl
-  << *(test_Atlas_signal.getName()) << " constructed without crashing.";
+  << *(test_Atlas_signal.get_name()) << " constructed without crashing.";
   std::cout
   << std::endl;
   std::cout
   << std::endl
-  << *(test_Atlas_signal.getName()) << " has signal value "
+  << *(test_Atlas_signal.get_name()) << " has signal value "
   << test_Atlas_signal.getValue();
   std::cout << std::endl;
 
-  SLHA_data.read_file( "SPS2_spectrum.out" );
+  slhaData.read_file( "SPS2_spectrum.out" );
   std::cout << std::endl;
   std::cout
   << std::endl << "without updating for new point, "
-  << *(cross_section_breakdown_test.getName()) << " has signal value "
+  << *(cross_section_breakdown_test.get_name()) << " has signal value "
   << cross_section_breakdown_test.getValue()
   << std::endl
-  << *(test_Atlas_signal.getName()) << " has signal value "
+  << *(test_Atlas_signal.get_name()) << " has signal value "
   << test_Atlas_signal.getValue();
   std::cout << std::endl;
 
-  test_readier.readyObserversForNewPoint();
+  testReadier.readyObserversForNewPoint();
   std::cout
   << std::endl << "after updating for new point, "
-  << *(cross_section_breakdown_test.getName()) << " has signal value "
+  << *(cross_section_breakdown_test.get_name()) << " has signal value "
   << cross_section_breakdown_test.getValue()
   << std::endl
-  << *(test_Atlas_signal.getName()) << " has signal value "
+  << *(test_Atlas_signal.get_name()) << " has signal value "
   << test_Atlas_signal.getValue();
   std::cout << std::endl;
 
@@ -3264,11 +3047,11 @@ int main( int argumentCount,
         {
 
           BR_sum_helper
-          = test_input_handler.getExclusiveBrCalculator(
-                                               test_input_handler.getGluino(),
+          = testInputHandler.getExclusiveBrCalculator(
+                                               testInputHandler.getGluino(),
                                                    (*BR_iterator)->get_EWino(),
                                                             true,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
 
           if( NULL != BR_sum_helper )
             {
@@ -3281,11 +3064,11 @@ int main( int argumentCount,
             {
 
               BR_sum_helper
-              = test_input_handler.getExclusiveBrCalculator(
-                                               test_input_handler.getGluino(),
+              = testInputHandler.getExclusiveBrCalculator(
+                                               testInputHandler.getGluino(),
                                                    (*BR_iterator)->get_EWino(),
                                                                 false,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
 
               if( NULL != BR_sum_helper )
                 {
@@ -3302,22 +3085,22 @@ int main( int argumentCount,
         {
 
           BR_sum_helper
-          = test_input_handler.getExclusiveBrCalculator(
-                                               test_input_handler.getGluino(),
+          = testInputHandler.getExclusiveBrCalculator(
+                                               testInputHandler.getGluino(),
                                                  (*BR_iterator)->getProduct(),
                                                             true,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
           if( NULL != BR_sum_helper )
             {
 
               BR_sum_helper_double = BR_sum_helper->getBr();
 
               BR_sum_helper
-              = test_input_handler.getExclusiveBrCalculator(
+              = testInputHandler.getExclusiveBrCalculator(
                                                  (*BR_iterator)->getProduct(),
                                                    (*BR_iterator)->get_EWino(),
                                                                 true,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
 
               if( NULL != BR_sum_helper )
                 {
@@ -3331,11 +3114,11 @@ int main( int argumentCount,
                 {
 
                   BR_sum_helper
-                  = test_input_handler.getExclusiveBrCalculator(
+                  = testInputHandler.getExclusiveBrCalculator(
                                                  (*BR_iterator)->getProduct(),
                                                    (*BR_iterator)->get_EWino(),
                                                                     false,
-                                         test_input_handler.getEmptyList() );
+                                         testInputHandler.getEmptyList() );
 
                   if( NULL != BR_sum_helper )
                     {
@@ -3376,15 +3159,15 @@ int main( int argumentCount,
       std::cout
       << std::endl << "count = " << reload_count;
 
-      SLHA_data.read_file( "SPS1a_spectrum.out" );
-      test_readier.readyObserversForNewPoint();
+      slhaData.read_file( "SPS1a_spectrum.out" );
+      testReadier.readyObserversForNewPoint();
       std::cout
       << std::endl << "SPS1a: "
-      << *(test_Atlas_signal.getName()) << " has signal value "
+      << *(test_Atlas_signal.get_name()) << " has signal value "
       << test_Atlas_signal.getValue();
       std::cout << std::endl;
 
-      SLHA_data.read_file( "SPS2_spectrum.out" );
+      slhaData.read_file( "SPS2_spectrum.out" );
       gettimeofday( &ending_time,
                     NULL );
       elapsed_time
@@ -3399,10 +3182,10 @@ int main( int argumentCount,
       gettimeofday( &starting_time,
                     NULL );
 
-      test_readier.readyObserversForNewPoint();
+      testReadier.readyObserversForNewPoint();
       std::cout
       << std::endl << "SPS2: "
-      << *(test_Atlas_signal.getName()) << " has signal value "
+      << *(test_Atlas_signal.get_name()) << " has signal value "
       << test_Atlas_signal.getValue();
       std::cout << std::endl;
 
@@ -3457,19 +3240,19 @@ int main( int argumentCount,
   std::cout << std::endl;
   std::cout
   << std::endl << "after updating for new point, "
-  << *(sigma_SPS1a->getName()) << " (sigma_SPS1a) has signal value "
+  << *(sigma_SPS1a->get_name()) << " (sigma_SPS1a) has signal value "
   << sigma_SPS1a->getValue();
   std::cout << std::endl;
   std::cout
-  << *(bad_SPS2->getName()) << " (bad_SPS2) has signal value "
+  << *(bad_SPS2->get_name()) << " (bad_SPS2) has signal value "
   << bad_SPS2->getValue();
   std::cout << std::endl;
   std::cout
-  << *(Atlas_SPS1a->getName()) << " (Atlas_SPS1a) has signal value "
+  << *(Atlas_SPS1a->get_name()) << " (Atlas_SPS1a) has signal value "
   << Atlas_SPS1a->getValue();
   std::cout << std::endl;
   std::cout
-  << *(Atlas_SPS2->getName()) << " (Atlas_SPS2) has signal value "
+  << *(Atlas_SPS2->get_name()) << " (Atlas_SPS2) has signal value "
   << Atlas_SPS2->getValue();
   std::cout << std::endl;
 
@@ -3611,7 +3394,7 @@ int main( int argumentCount,
                             NULL );
               std::cout
               << std::endl << "calculating the point's value for "
-              << *((*signal_iterator)->getName()) << ": ";
+              << *((*signal_iterator)->get_name()) << ": ";
               std::cout << (*signal_iterator)->getValue();
               gettimeofday( &end_time,
                             NULL );

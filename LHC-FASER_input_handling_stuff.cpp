@@ -639,7 +639,7 @@ namespace LHC_FASER
         double leftCoupling;
         double rightCoupling;
         double leftSquared;
-        int whichChargino = 1;
+        int whichChargino( 1 );
         if( CppSLHA::PDG_code::chargino_two == ewinoCode )
         {
           whichChargino = 2;
@@ -676,7 +676,7 @@ namespace LHC_FASER
           {
             leftCoupling
             = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
-                                                      1 ) );
+                                                                 1 ) );
             // actually the Feynman rule has an additional minus sign, but it
             // doesn't matter because this is getting squared.
             rightCoupling = ( ydPointer->get_entry( 1,
@@ -690,7 +690,7 @@ namespace LHC_FASER
           {
             leftCoupling
             = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
-                                                      1 ) );
+                                                                 1 ) );
             // actually, the Feynman rule has an additional minus sign, but it
             // doesn't matter because this is getting squared.
             rightCoupling = ( ydPointer->get_entry( 2,
@@ -750,7 +750,7 @@ namespace LHC_FASER
           {
             leftCoupling
             = ( getWeakGaugeCoupling() * umixPointer->get_entry( whichChargino,
-                                                      1 ) );
+                                                                 1 ) );
             // actually the Feynman rule has an additional minus sign, but it
             // doesn't matter because this is getting squared.
             rightCoupling = ( yuPointer->get_entry( 1,
@@ -764,7 +764,7 @@ namespace LHC_FASER
           {
             leftCoupling
             = ( getWeakGaugeCoupling() * umixPointer->get_entry( whichChargino,
-                                                      1 ) );
+                                                                 1 ) );
             // actually, the Feynman rule has an additional minus sign, but it
             // doesn't matter because this is getting squared.
             rightCoupling = ( yuPointer->get_entry( 2,
@@ -824,7 +824,7 @@ namespace LHC_FASER
           {
             leftCoupling
             = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
-                                                      1 ) );
+                                                                 1 ) );
             // actually the Feynman rule has an additional minus sign, but it
             // doesn't matter because this is getting squared.
             rightCoupling = ( yePointer->get_entry( 1,
@@ -838,7 +838,7 @@ namespace LHC_FASER
           {
             leftCoupling
             = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
-                                                      1 ) );
+                                                                 1 ) );
             // actually, the Feynman rule has an additional minus sign, but it
             // doesn't matter because this is getting squared.
             rightCoupling = ( yePointer->get_entry( 2,
@@ -852,7 +852,7 @@ namespace LHC_FASER
           {
             leftCoupling
             = ( getWeakGaugeCoupling() * vmixPointer->get_entry( whichChargino,
-                                                      1 ) );
+                                                                 1 ) );
             // actually, the Feynman rule has an additional minus sign, but it
             // doesn't matter because this is getting squared.
             rightCoupling = ( yePointer->get_entry( 3,
@@ -868,7 +868,7 @@ namespace LHC_FASER
             {
               std::cout
               << std::endl << "LHC-FASER::warning!"
-              << " input_handler::quark_or_lepton_left_handedness"
+              << " inputHandler::quarkOrLeptonLeftHandedness"
               << " didn't recognize the sfermion PDG code \""
               << sfermionCode << "\". returning "
               << CppSLHA::CppSLHA_global::really_wrong_value_string;
@@ -885,7 +885,7 @@ namespace LHC_FASER
     else
       // otherwise we assume that it's a neutralino...
     {
-      int whichNeutralino = 1;
+      int whichNeutralino( 1 );
       // we start by assuming that it's neutralino_1.
       if( CppSLHA::PDG_code::neutralino_two == ewinoCode )
       {
@@ -918,7 +918,7 @@ namespace LHC_FASER
         {
           std::cout
           << std::endl << "LHC-FASER::warning!"
-          << " input_handler::quark_or_lepton_left_handedness"
+          << " inputHandler::quarkOrLeptonLeftHandedness"
           << " couldn't find at least one of NMIX, YD, YU,"
           << " SBOTMIX, STOPMIX or STAUMIX. returning "
           << CppSLHA::CppSLHA_global::really_wrong_value_string;

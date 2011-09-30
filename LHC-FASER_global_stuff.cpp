@@ -134,7 +134,7 @@ namespace LHC_FASER
     // the readierForNewPoint has to let all its obsevers know that its
     // destructor is being called:
     for( std::list< bool* >::iterator
-         observerIterator = observerBoolsForReadierExistence.begin();
+         observerIterator( observerBoolsForReadierExistence.begin() );
          observerBoolsForReadierExistence.end() != observerIterator;
          ++observerIterator )
       // go through the list of observed bools...
@@ -154,9 +154,9 @@ namespace LHC_FASER
    * to stop asking to be reset.
    */
   {
-    bool notFoundRequested = true;
+    bool notFoundRequested( true );
     for( std::list< bool* >::iterator
-         boolIterator = observerBoolsForReadierExistence.begin();
+         boolIterator( observerBoolsForReadierExistence.begin() );
          ( ( observerBoolsForReadierExistence.end() != boolIterator )
            &&
            notFoundRequested );
@@ -175,7 +175,7 @@ namespace LHC_FASER
       }
     notFoundRequested = true;
     for( std::list< bool* >::iterator
-         boolIterator = observerBoolsForReadying.begin();
+         boolIterator( observerBoolsForReadying.begin() );
          ( ( observerBoolsForReadying.end() != boolIterator )
            &&
            notFoundRequested );
