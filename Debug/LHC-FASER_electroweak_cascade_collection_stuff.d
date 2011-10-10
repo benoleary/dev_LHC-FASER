@@ -8,7 +8,6 @@ LHC-FASER_electroweak_cascade_collection_stuff.d \
   ../LHC-FASER_base_kinematics_stuff.hpp \
   ../LHC-FASER_input_handling_stuff.hpp ../LHC-FASER_global_stuff.hpp \
   ../LHC-FASER_template_classes.hpp \
-  ../LHC-FASER_derived_lepton_distributions.hpp \
   ../LHC-FASER_base_lepton_distribution_stuff.hpp ../CppSLHA/CppSLHA.hpp \
   ../CppSLHA/CppSLHA_global_stuff.hpp \
   ../CppSLHA/CppSLHA_EW_scale_spectrum.hpp \
@@ -17,6 +16,7 @@ LHC-FASER_electroweak_cascade_collection_stuff.d \
   ../CppSLHA/CppSLHA_waiting_on_subprocess_executor.hpp \
   ../CppSLHA/CppSLHA_BLOCK.hpp ../CppSLHA/CppSLHA_file_reading_stuff.hpp \
   ../LHC-FASER_sparticle_decay_stuff.hpp \
+  ../LHC-FASER_derived_lepton_distributions.hpp \
   ../LHC-FASER_charged_electroweak_cascade_stuff.hpp
 
 ../LHC-FASER_electroweak_cascade_collection_stuff.hpp:
@@ -34,8 +34,6 @@ LHC-FASER_electroweak_cascade_collection_stuff.d \
 ../LHC-FASER_global_stuff.hpp:
 
 ../LHC-FASER_template_classes.hpp:
-
-../LHC-FASER_derived_lepton_distributions.hpp:
 
 ../LHC-FASER_base_lepton_distribution_stuff.hpp:
 
@@ -56,5 +54,7 @@ LHC-FASER_electroweak_cascade_collection_stuff.d \
 ../CppSLHA/CppSLHA_file_reading_stuff.hpp:
 
 ../LHC-FASER_sparticle_decay_stuff.hpp:
+
+../LHC-FASER_derived_lepton_distributions.hpp:
 
 ../LHC-FASER_charged_electroweak_cascade_stuff.hpp:

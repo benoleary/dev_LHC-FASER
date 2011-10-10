@@ -2,7 +2,6 @@ LHC-FASER_cross-section_stuff.d LHC-FASER_cross-section_stuff.o:  \
  ../LHC-FASER_cross-section_stuff.cpp \
   ../LHC-FASER_cross-section_stuff.hpp ../LHC-FASER_global_stuff.hpp \
   ../LHC-FASER_template_classes.hpp ../LHC-FASER_input_handling_stuff.hpp \
-  ../LHC-FASER_derived_lepton_distributions.hpp \
   ../LHC-FASER_base_lepton_distribution_stuff.hpp ../CppSLHA/CppSLHA.hpp \
   ../CppSLHA/CppSLHA_global_stuff.hpp \
   ../CppSLHA/CppSLHA_EW_scale_spectrum.hpp \
@@ -19,8 +18,6 @@ LHC-FASER_cross-section_stuff.d LHC-FASER_cross-section_stuff.o:  \
 ../LHC-FASER_template_classes.hpp:
 
 ../LHC-FASER_input_handling_stuff.hpp:
-
-../LHC-FASER_derived_lepton_distributions.hpp:
 
 ../LHC-FASER_base_lepton_distribution_stuff.hpp:
 

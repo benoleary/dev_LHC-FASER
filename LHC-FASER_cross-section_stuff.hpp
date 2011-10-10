@@ -72,7 +72,8 @@ namespace LHC_FASER
   public:
     squareGrid( std::string const* const gridFileLocation,
                 std::string const* const gridName,
-                squareGrid const* const scalingGrid )
+                squareGrid const* const scalingGrid,
+                inputHandler const* const shortcut );
     /* this constructor reads in a grid file, assumed to be in the format
      * x_coordinate y_coordinate value
      * in ascending order, y_coordinate varying first
@@ -87,50 +88,43 @@ namespace LHC_FASER
      * the its values scaled by an interpolated value from this other
      * squareGrid.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     squareGrid( std::string baseGridFileLocation,
                 std::string gridName,
-                std::string scalingGridFileLocation )
+                std::string scalingGridFileLocation,
+                inputHandler const* const shortcut );
     // this constructor uses the other constructor to make another squareGrid
     // with the scaling factors, which is then used to construct this instance.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~squareGrid()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~squareGrid();
 
     std::string const*
     getName()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     valueAt( double const xCoordinate,
              double const yCoordinate )
-    const
+    const;
     /* this finds the grid square which the given point is in, & then uses
      * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
      * value.
      * N.B.: cross-section grids use
      * xCoordinate == SQUARK mass, yCoordinate == GLUINO mass!
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getLowestX()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getHighestX()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getLowestY()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getHighestY()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
 
   protected:
     std::string gridName;
+    inputHandler const* const shortcut;
     double gridStepSize;
     double lowestXCoordinate;
     double highestXCoordinate;
@@ -140,9 +134,8 @@ namespace LHC_FASER
 
     void
     readIn( std::string const* const gridFileLocation,
-            squareGrid const* const scalingGrid )
+            squareGrid const* const scalingGrid );
     // this actually does most of the job of the constructors.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
 
@@ -274,45 +267,35 @@ namespace LHC_FASER
   squareGrid::getName()
   const
   {
-
     return &gridName;
-
   }
 
   inline double
   squareGrid::getLowestX()
   const
   {
-
     return lowestXCoordinate;
-
   }
 
   inline double
   squareGrid::getHighestX()
   const
   {
-
     return highestXCoordinate;
-
   }
 
   inline double
   squareGrid::getLowestY()
   const
   {
-
     return lowestYCoordinate;
-
   }
 
   inline double
   squareGrid::getHighestY()
   const
   {
-
     return highestYCoordinate;
-
   }
 
 
@@ -321,9 +304,7 @@ namespace LHC_FASER
   crossSectionTable::getPair()
   const
   {
-
     return scoloredPair;
-
   }
 
 
@@ -332,20 +313,16 @@ namespace LHC_FASER
   crossSectionTableSet::getBeamEnergy()
   const
   {
-
     return beamEnergy;
-
   }
 
 
 
   inline crossSectionTable*
   crossSectionHandler::getTable( int const beamEnergyInTev,
-                  signedParticleShortcutPair const* const requestedChannel )
+                     signedParticleShortcutPair const* const requestedChannel )
   {
-
     return getTableSet( beamEnergyInTev )->getTable( requestedChannel );
-
   }
 
 }  // end of LHC_FASER namespace.

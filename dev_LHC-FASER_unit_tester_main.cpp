@@ -19,8 +19,7 @@
  * (0: CppSLHA - done.)
  * 1: lepton distributions - redone!
  * 2: getsReadiedForNewPoint + readierForNewPoint - redone!
- * 3: crossSectionTable - again, not yet redone, but I don't recall changing
- *                        anything here since the working 0.1 version.
+ * 3: crossSectionTable - redone!
  * 4: kinematics_table - not yet redone, & it'll be quite different in 0.2,
  *                       unfortunately.
  * 5: lepton acceptance for given cascade - not yet redone
@@ -195,6 +194,7 @@ int main( int argumentCount,
                                             slhaData.get_particle_spectrum(),
                                             "./grids",
                                             &testReadier );
+  testInputHandler.setVerbosity( true );
   std::string bluh( "bluh" );
 
 
@@ -1255,176 +1255,183 @@ int main( int argumentCount,
   << std::endl;
 
   std::string
-  path_to_test_grid( *(testInputHandler.getPathToCrossSectionGrids()) );
-  path_to_test_grid.append( "/7TeV/gluino+gluino_LO.dat" );
-  LHC_FASER::squareGrid test_grid( &path_to_test_grid,
-                                    &bluh,
-                                    NULL );
-  LHC_FASER::crossSectionTable gg_table( &test_grid,
-           testInputHandler.getScoloredProductionCombinations()->at( 0 ),
-                                           1.0,
-                                           &testInputHandler );
+  pathToTestGrid( *(testInputHandler.getPathToCrossSectionGrids()) );
+  pathToTestGrid.append( "/7TeV/gluino+gluino_LO.dat" );
+  LHC_FASER::squareGrid testGrid( &pathToTestGrid,
+                                  &bluh,
+                                  NULL,
+                                  &testInputHandler );
+  LHC_FASER::crossSectionTable gluinoGluinoTable( &testGrid,
+                 testInputHandler.getScoloredProductionCombinations()->at( 0 ),
+                                                  1.0,
+                                                  &testInputHandler );
   std::cout
-  << std::endl << "x: " << test_grid.getLowestX() << " - "
-  << test_grid.getHighestX();
+  << std::endl << "x: " << testGrid.getLowestX() << " - "
+  << testGrid.getHighestX();
   std::cout
-  << std::endl << "y: " << test_grid.getLowestY() << " - "
-  << test_grid.getHighestY();
+  << std::endl << "y: " << testGrid.getLowestY() << " - "
+  << testGrid.getHighestY();
   std::cout
-  << std::endl << "value at { 200.0, 200.0 } = " << test_grid.valueAt( 200.0,
-                                                                       200.0 );
+  << std::endl << "value at ( 200.0, 200.0 ) = " << testGrid.valueAt( 200.0,
+                                                                      200.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 200.0, 205.0 } = " << test_grid.valueAt( 200.0,
-                                                                       205.0 );
+  << std::endl << "value at ( 200.0, 205.0 ) = " << testGrid.valueAt( 200.0,
+                                                                      205.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 205.0, 200.0 } = " << test_grid.valueAt( 205.0,
-                                                                       200.0 );
+  << std::endl << "value at ( 205.0, 200.0 ) = " << testGrid.valueAt( 205.0,
+                                                                      200.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 201.0, 201.0 } = " << test_grid.valueAt( 201.0,
-                                                                       201.0 );
+  << std::endl << "value at ( 201.0, 201.0 ) = " << testGrid.valueAt( 201.0,
+                                                                      201.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 210.0, 210.0 } = " << test_grid.valueAt( 210.0,
-                                                                       210.0 );
+  << std::endl << "value at ( 210.0, 210.0 ) = " << testGrid.valueAt( 210.0,
+                                                                      210.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 199.5, 201.0 } = " << test_grid.valueAt( 199.5,
-                                                                       201.0 );
+  << std::endl << "value at ( 199.5, 201.0 ) = " << testGrid.valueAt( 199.5,
+                                                                      201.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 199.5, 199.5 } = " << test_grid.valueAt( 199.5,
-                                                                       199.5 );
+  << std::endl << "value at ( 199.5, 199.5 ) = " << testGrid.valueAt( 199.5,
+                                                                      199.5 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 2000.0, 200.5 } = "
-  << test_grid.valueAt( 2000.0,
-                         200.5 );
+  << std::endl << "value at ( 2000.0, 200.5 ) = " << testGrid.valueAt( 2000.0,
+                                                                       200.5 );
   std::cout << std::endl;
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 2000.5, 200.5 } = "
-  << test_grid.valueAt( 2000.5,
-                         200.5 );
+  << std::endl << "value at ( 2000.5, 200.5 ) = " << testGrid.valueAt( 2000.5,
+                                                                       200.5 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 200.5, 2000.0 } = "
-  << test_grid.valueAt( 200.5,
-                         2000.0 );
+  << std::endl << "value at ( 2020.0, 200.5 ) = " << testGrid.valueAt( 2020.0,
+                                                                       200.5 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 200.5, 2000.5 } = "
-  << test_grid.valueAt( 200.5,
-                         2000.5 );
+  << std::endl << "value at ( 2222.2, 200.5 ) = " << testGrid.valueAt( 2222.2,
+                                                                       200.5 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 1999.5, 1999.5 } = "
-  << test_grid.valueAt( 1999.5,
-                         1999.5 );
+  << std::endl << "value at ( 200.5, 2000.0 ) = " << testGrid.valueAt( 200.5,
+                                                                      2000.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 2000.0, 2000.0 } = "
-  << test_grid.valueAt( 2000.0,
-                         2000.0 );
+  << std::endl << "value at ( 200.5, 2020.0 ) = " << testGrid.valueAt( 200.5,
+                                                                      2020.0 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "value at { 2000.5, 2000.5 } = "
-  << test_grid.valueAt( 2000.5,
-                         2000.5 );
+  << std::endl << "value at ( 200.5, 2222.2 ) = " << testGrid.valueAt( 200.5,
+                                                                      2222.2 );
   std::cout << std::endl;
   std::cout
-  << std::endl << "ggtable value = "
-  << gg_table.getValue();
+  << std::endl << "value at ( 1999.5, 1999.5 ) = " << testGrid.valueAt( 1999.5,
+                                                                      1999.5 );
+  std::cout << std::endl;
+  std::cout
+  << std::endl << "value at ( 2000.0, 2000.0 ) = " << testGrid.valueAt( 2000.0,
+                                                                      2000.0 );
+  std::cout << std::endl;
+  std::cout
+  << std::endl << "value at ( 2000.5, 2000.5 ) = " << testGrid.valueAt( 2000.5,
+                                                                      2000.5 );
+  std::cout << std::endl;
+  std::cout
+  << std::endl << "value at ( 2020.0, 2020.0 ) = " << testGrid.valueAt( 2020.0,
+                                                                      2020.0 );
+  std::cout << std::endl;
+  std::cout
+  << std::endl << "value at ( 2200.0, 2200.0 ) = " << testGrid.valueAt( 2200.0,
+                                                                      2200.0 );
+  std::cout << std::endl;
+  std::cout
+  << std::endl << "value at ( 2200.5, 2200.2 ) = " << testGrid.valueAt( 2200.5,
+                                                                      2200.2 );
+  std::cout << std::endl;
+  std::cout
+  << std::endl << "gluinoGluinoTable value = " << gluinoGluinoTable.getValue();
 
-  path_to_test_grid.assign(
-                     *(testInputHandler.getPathToCrossSectionGrids()) );
-  path_to_test_grid.append( "/7TeV/gluino+gluino_K.dat" );
-  LHC_FASER::squareGrid test_K( &path_to_test_grid,
-                                 &bluh,
-                                 NULL );
+  pathToTestGrid.assign( *(testInputHandler.getPathToCrossSectionGrids()) );
+  pathToTestGrid.append( "/7TeV/gluino+gluino_K.dat" );
+  LHC_FASER::squareGrid testKFactorGrid( &pathToTestGrid,
+                                         &bluh,
+                                         NULL,
+                                         &testInputHandler );
   std::cout
-  << std::endl << "K value at { 200.5, 200.5 } = "
-  << test_K.valueAt( 200.5,
-                      200.5 );
+  << std::endl << "K-factor value at ( 200.5, 200.5 ) = "
+  << testKFactorGrid.valueAt( 200.5,
+                              200.5 );
   std::cout << std::endl;
 
 
-  LHC_FASER::crossSectionHandler cross_section_handler_tester(
-                                                         &testInputHandler );
+  LHC_FASER::crossSectionHandler
+  crossSectionHandlerTester( &testInputHandler );
   LHC_FASER::crossSectionTableSet*
-  test_cross_section_set = cross_section_handler_tester.getTableSet( 7 );
+  testCrossSectionSet( crossSectionHandlerTester.getTableSet( 7 ) );
   std::cout
-  << std::endl << "test_cross_section_set = " << test_cross_section_set;
-  N.B.: for the next bit to work, crossSectionHandler::getTable() has to be
-  moved back to public.
+  << std::endl << "testCrossSectionSet = " << testCrossSectionSet;
+  //N.B.: for the next bit to work, crossSectionHandler::getTable() has to be
+  //moved back to public.
   LHC_FASER::crossSectionTable*
-  sd_go_sigma
-  = test_cross_section_set->getTable(
-         testInputHandler.getScoloredProductionCombinations()->at( 1 ) );
+  sdGoSigma( testCrossSectionSet->getTable(
+             testInputHandler.getScoloredProductionCombinations()->at( 1 ) ) );
   LHC_FASER::crossSectionTable*
-  su_go_sigma
-  = test_cross_section_set->getTable(
-        testInputHandler.getScoloredProductionCombinations()->at( 10 ) );
+  suGoSigma( testCrossSectionSet->getTable(
+            testInputHandler.getScoloredProductionCombinations()->at( 10 ) ) );
   LHC_FASER::crossSectionTableSet*
-  test_cross_section_set2 = cross_section_handler_tester.getTableSet( 7 );
+  testCrossSectionSet2( crossSectionHandlerTester.getTableSet( 7 ) );
   std::cout
-  << std::endl << "test_cross_section_set2 = " << test_cross_section_set2;
+  << std::endl << "testCrossSectionSet2 = " << testCrossSectionSet2;
   LHC_FASER::crossSectionTable*
-  sd_go_sigma2
-  = test_cross_section_set2->getTable(
-         testInputHandler.getScoloredProductionCombinations()->at( 1 ) );
+  sdGoSigma2( testCrossSectionSet2->getTable(
+             testInputHandler.getScoloredProductionCombinations()->at( 1 ) ) );
   std::cout
   << std::endl << "no extra squareGrid loading?";
 
-  path_to_test_grid.assign(
-                     *(testInputHandler.getPathToCrossSectionGrids()) );
-  path_to_test_grid.append( "/7TeV/sdown_L+gluino_LO.dat" );
-  LHC_FASER::squareGrid test_sd_go_LO( &path_to_test_grid,
-                                        &bluh,
-                                        NULL );
-  path_to_test_grid.assign(
-                     *(testInputHandler.getPathToCrossSectionGrids()) );
-  path_to_test_grid.append( "/7TeV/sdown_L+gluino_K.dat" );
-  LHC_FASER::squareGrid test_sd_go_K( &path_to_test_grid,
-                                       &bluh,
-                                       NULL );
-  double
-  sd_mass
-  = testInputHandler.getScoloredProductionCombinations()->at( 1
-                                   )->getFirstParticle()->get_absolute_mass();
-  double
-  go_mass
-  = testInputHandler.getScoloredProductionCombinations()->at( 1
-                                  )->getSecondParticle()->get_absolute_mass();
+  pathToTestGrid.assign( *(testInputHandler.getPathToCrossSectionGrids()) );
+  pathToTestGrid.append( "/7TeV/sdown_L+gluino_LO.dat" );
+  LHC_FASER::squareGrid testSdGoLo( &pathToTestGrid,
+                                    &bluh,
+                                    NULL,
+                                    &testInputHandler );
+  pathToTestGrid.assign( *(testInputHandler.getPathToCrossSectionGrids()) );
+  pathToTestGrid.append( "/7TeV/sdown_L+gluino_K.dat" );
+  LHC_FASER::squareGrid testSdGoK( &pathToTestGrid,
+                                   &bluh,
+                                   NULL,
+                                   &testInputHandler );
+  double sdMass( testInputHandler.getScoloredProductionCombinations()->at( 1
+                                  )->getFirstParticle()->get_absolute_mass() );
+  double goMass( testInputHandler.getScoloredProductionCombinations()->at( 1
+                                 )->getSecondParticle()->get_absolute_mass() );
   std::cout << std::endl;
   std::cout
-  << std::endl << "sd_mass = " << sd_mass
-  << std::endl << "go_mass = " << go_mass
-  << std::endl << "test_sd_go_LO value = " << test_sd_go_LO.valueAt( sd_mass,
-                                                                      go_mass )
-  << std::endl << "test_sd_go_K value = " << test_sd_go_K.valueAt( sd_mass,
-                                                                    go_mass )
+  << std::endl << "sd mass = " << sdMass
+  << std::endl << "go mass = " << goMass
+  << std::endl << "testSdGoLo value = " << testSdGoLo.valueAt( sdMass,
+                                                               goMass )
+  << std::endl << "testSdGoK value = " << testSdGoK.valueAt( sdMass,
+                                                             goMass )
   << std::endl << "hence NLO value should be "
-  << ( test_sd_go_LO.valueAt( sd_mass,
-                               go_mass )
-       * test_sd_go_K.valueAt( sd_mass,
-                                go_mass ) )
-  << std::endl << "sd_go_sigma = " << sd_go_sigma
-  << std::endl << "sd_go_sigma value = "
-  << sd_go_sigma->getValue()
-  << std::endl << "sd_go_sigma2 = " << sd_go_sigma2
-  << std::endl << "sd_go_sigma2 value = "
-  << sd_go_sigma->getValue()
-  << std::endl << "su_go_sigma = " << su_go_sigma
-  << std::endl << "su_go_sigma value = "
-  << su_go_sigma->getValue();
-
+  << ( testSdGoLo.valueAt( sdMass,
+                           goMass )
+       * testSdGoK.valueAt( sdMass,
+                            goMass ) )
+  << std::endl << "sdGoSigma = " << sdGoSigma
+  << std::endl << "sdGoSigma value = " << sdGoSigma->getValue()
+  << std::endl << "sdGoSigma2 = " << sdGoSigma2
+  << std::endl << "sdGoSigma2 value = " << sdGoSigma->getValue()
+  << std::endl << "suGoSigma = " << suGoSigma
+  << std::endl << "suGoSigma value = " << suGoSigma->getValue();
   **/
 
 
-  /* testing the kinematics grid stuff: (ahhhh, tssss, might still work involes a lot of old classes that are not yet deleted)*//**
+  /* testing the kinematics grid stuff:
+   * (needs work)*//**
 
   std::string
   acceptance_grid_path( *(testInputHandler.getPathToKinematicsGrids()) );
@@ -2196,7 +2203,8 @@ int main( int argumentCount,
   **/
 
 
-  /* testing the cascade calculation stuff: (doesnt work, why? objects have been redone completly, open: base_electroweak_cascade_stuff look at electro weak cascade class. find analogous way to set it up (n2->smu->n1 should be possible). look also at derived_electroweak...)*//**
+  /* testing the cascade calculation stuff:
+   * (needs work)*//**
 
   LHC_FASER::kinematics_handler test_kinematics( &testInputHandler );
   std::string test_signal_name( "Atlas4jMET" );
@@ -2854,7 +2862,8 @@ int main( int argumentCount,
 
 	
 
-  /* testing the signal stuff: shouldnt work, because cascade calculation doesnt work (this requires all objects to work, which is currently not the case)*//**
+  /* testing the signal stuff:
+   * (needs work)*//**
 
   LHC_FASER::colored_cascade_set*
   gluino_BR_sum_tester

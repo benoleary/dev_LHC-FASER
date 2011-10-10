@@ -57,7 +57,7 @@
 #define LHC_FASER_INPUT_HANDLING_STUFF_HPP_
 
 #include "LHC-FASER_global_stuff.hpp"
-#include "LHC-FASER_derived_lepton_distributions.hpp"
+#include "LHC-FASER_base_lepton_distribution_stuff.hpp"
 #include "LHC-FASER_sparticle_decay_stuff.hpp"
 
 namespace LHC_FASER
