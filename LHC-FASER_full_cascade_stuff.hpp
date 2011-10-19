@@ -1227,7 +1227,7 @@ namespace LHC_FASER
     subcascade = copySource;
     soughtDecayProductList.front()
     = copySource->initialScolored->get_PDG_code();
-    cascadeDefiner.clear();
+    cascadeDefiner.clearEntries();
     for( int cascadeFiller( 0 );
          copySource->cascadeDefiner.getSize() > cascadeFiller;
          ++cascadeFiller )
@@ -1258,7 +1258,7 @@ namespace LHC_FASER
     soughtDecayProductList.front() =
                          ewinoCascade->getElectroweakDecayer()->get_PDG_code();
     resetCachedBranchingRatio();
-    cascadeDefiner.clear();
+    cascadeDefiner.clearEntries();
     // reset cascadeDefiner.
     cascadeSegment = cascadeDefiner.addNewAtEnd();
     cascadeSegment->first = ewinoCascade->getElectroweakDecayer();
@@ -1352,7 +1352,7 @@ namespace LHC_FASER
     soughtDecayProductList.front() =
                          ewinoCascade->getElectroweakDecayer()->get_PDG_code();
     resetCachedBranchingRatio();
-    cascadeDefiner.clear();
+    cascadeDefiner.clearEntries();
     // reset cascadeDefiner.
     cascadeSegment = cascadeDefiner.addNewAtEnd();
     cascadeSegment->first = ewinoCascade->getElectroweakDecayer();

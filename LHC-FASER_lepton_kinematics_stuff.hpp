@@ -173,6 +173,7 @@ namespace LHC_FASER
     inputHandler const* const shortcut;
   };
 
+
   // this class is the class derived from leptonAcceptanceTable specifically
   // for squarks.
   class squarkBasedLeptonAcceptanceTable : public leptonAcceptanceTable
@@ -197,6 +198,7 @@ namespace LHC_FASER
   //protected:
     // nothing.
   };
+
 
   // this class is the class derived from leptonAcceptanceTable specifically
   // for the gluino.
@@ -442,7 +444,10 @@ namespace LHC_FASER
 
 
 
+
+
   // inline functions:
+
 
   inline bool
   singleLeptonCut::isSameAcceptanceCutSet(

@@ -297,8 +297,8 @@ namespace LHC_FASER
 
 
 
-
   // inline functions:
+
 
   inline void
   acceptanceCutSet::becomeCopyOf( acceptanceCutSet const* const copyPointer )
@@ -503,6 +503,7 @@ namespace LHC_FASER
     // this is format-dependent, & corresponds to 2 being the index for
     // light-light neutralinos in the grid.
   }
+
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_BASE_KINEMATICS_STUFF_HPP_ */

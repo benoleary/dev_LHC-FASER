@@ -2,7 +2,70 @@
  * LHC-FASER_template_classes.hpp
  *
  *  Created on: Jun 24, 2011
- *      Author: oleary
+ *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
+ *               Jonas Lindert (jonas.lindert@googlemail.com)
+ *               Carsten Robens (carsten.robens@gmx.de)
+ *      Copyright 2010 Ben O'Leary, Jonas Lindert, Carsten Robens
+ *
+ *      This file is part of LHC-FASER.
+ *
+ *      LHC-FASER is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      LHC-FASER is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with LHC-FASER.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *      The GNU General Public License should be in GNU_public_license.txt
+ *      the files of LHC-FASER are:
+ *      LHC-FASER.hpp
+ *      LHC-FASER.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
+ *      LHC-FASER_full_cascade_stuff.hpp
+ *      LHC-FASER_full_cascade_stuff.cpp
+ *      LHC-FASER_global_stuff.hpp
+ *      LHC-FASER_global_stuff.cpp
+ *      LHC-FASER_input_handling_stuff.hpp
+ *      LHC-FASER_input_handling_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_signal_calculator_stuff.hpp
+ *      LHC-FASER_signal_calculator_stuff.cpp
+ *      LHC-FASER_signal_data_collection_stuff.hpp
+ *      LHC-FASER_signal_data_collection_stuff.cpp
+ *      LHC-FASER_sparticle_decay_stuff.hpp
+ *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
+ *      and README.LHC-FASER.txt which describes the package.
+ *
+ *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
+ *      included with this package.
+ *
+ *      LHC-FASER also requires grids of lookup values. These should also be
+ *      found in a subdirectory included with this package.
  */
 
 #ifndef LHC_FASER_TEMPLATE_CLASSES_HPP_
@@ -20,6 +83,7 @@
 #include <list>
 #include <map>
 
+
 namespace LHC_FASER
 {
   /* this is a template class to hold a vector of pointers to objects. the main
@@ -34,9 +98,10 @@ namespace LHC_FASER
    * & then carry on as normal, except egMinimalAllocationVector will free up
    * the memory on its own, so you should *never* try to delete the pointer
    * yourself.
-   * when the collection needs to be reset, call clear(), but beware that the
-   * next pointers returned by addNewAtEnd() will point to old objects from
-   * before the calling of clear()! you need to reset the objects yourself.
+   * when the collection needs to be reset, call clearEntries(), but beware
+   * that the next pointers returned by addNewAtEnd() will point to old objects
+   * from before the calling of clearEntries()! you need to reset the objects
+   * yourself.
    * I had made a version with a stored function pointer to allow the objects
    * to be reset as they are passed out, but in the end I felt that it couldn't
    * be flexible enough to be really useful. the functionality has been moved
@@ -50,90 +115,64 @@ namespace LHC_FASER
   class minimalAllocationVector
   {
   public:
-    minimalAllocationVector()
-    /* code after the classes in this .hpp file. */;
-    ~minimalAllocationVector()
-    /* code after the classes in this .hpp file. */;
+    minimalAllocationVector();
+    ~minimalAllocationVector();
 
     storedClass*
-    getPointer( int const requestedElement )
+    getPointer( int const requestedElement );
     // if an element out of range is asked for, this returns NULL.
-    /* code after the classes in this .hpp file. */;
-
     storedClass const*
     inspectPointer( int const requestedElement )
-    const
+    const;
     // if an element out of range is asked for, this returns NULL.
-    /* code after the classes in this .hpp file. */;
-
     storedClass*
-    getFront()
+    getFront();
     // this returns the 1st element deemed current. if there is none, this
     // returns NULL.
-    /* code after the classes in this .hpp file. */;
-
     storedClass const*
     inspectFront()
-    const
+    const;
     // this returns the 1st element deemed current. if there is none, this
     // returns NULL.
-    /* code after the classes in this .hpp file. */;
-
     storedClass*
-    getBack()
+    getBack();
     // this returns the last element deemed current. if there is none, this
     // returns NULL.
-    /* code after the classes in this .hpp file. */;
-
     storedClass const*
     inspectBack()
-    const
+    const;
     // this returns the last element deemed current. if there is none, this
     // returns NULL.
-    /* code after the classes in this .hpp file. */;
-
     int
     getSize()
-    const
+    const;
     // this returns the number of elements which are deemed current.
-    /* code after the classes in this .hpp file. */;
-
     int
     getLastIndex()
-    const
+    const;
     // this returns the number for getPointer to access the last of elements
     // which are deemed current.
-    /* code after the classes in this .hpp file. */;
-
     std::vector< storedClass* >*
-    getVector()
+    getVector();
     // this returns a pointer to the std::vector holding pointers to the
     // storedClass instances which are deemed current.
-    /* code after the classes in this .hpp file. */;
-
     std::vector< storedClass* > const*
     inspectVector()
-    const
+    const;
     // this returns a pointer to the std::vector holding pointers to the
     // storedClass instances which are deemed current.
-    /* code after the classes in this .hpp file. */;
-
     void
-    clear()
+    clearEntries();
     // this notes that all current storedClass instances are now to be treated
     // as stored-but-not-current, & drops their pointers from currentPointers.
-    /* code after the classes in this .hpp file. */;
-
     storedClass*
-    addNewAtEnd()
+    addNewAtEnd();
     /* this, if necessary, pushes back a new storedClass instance into
      * allConstructedPointers, & pushes back a pointer into currentPointers, &
      * returns the pointer at the end of currentPointers.
      */
-    /* code after the classes in this .hpp file. */;
-
     storedClass*
-    addNewAtEnd( void (*makeAsDefaultConstructorWould)( storedClass* const ) )
+    addNewAtEnd( void (*makeAsDefaultConstructorWould)( storedClass* const ) );
     /* this pushes a pointer to a storedClass instance into currentPointers &
      * also returns that pointer. the returned pointer either was already in
      * allConstructedPointers, in which case it also gets reset in some way by
@@ -149,12 +188,11 @@ namespace LHC_FASER
      * properties to be as they would be when constructed by the default
      * constructor, but this is the use intended.)
      */
-    /* code after the classes in this .hpp file. */;
 
   protected:
     std::vector< storedClass* > allConstructedPointers;
     std::vector< storedClass* > currentPointers;
-    void (*resetter)( storedClass* const );
+    void (*resetFunction)( storedClass* const );
   };
 
 
@@ -177,7 +215,7 @@ namespace LHC_FASER
                                                        keyClass const* const ),
                                   void (*resetFunction)( storedClass* const,
                                                          keyClass* const,
-                                                      keyClass const* const ) )
+                                                     keyClass const* const ) );
     /* comparisonFunction should return true if the 2 arguments are "equal" in
      * whatever sense is required.
      * constructionFunction should assign a pointer to a newly-constructed
@@ -200,38 +238,26 @@ namespace LHC_FASER
      * to be as they would be if they had been constructed with
      * constructionFunction, with the same arguments.
      */
-    /* code after the classes in this .hpp file. */;
-
-    ~minimalAllocationKeyedVector()
-    /* code after the classes in this .hpp file. */;
-
+    ~minimalAllocationKeyedVector();
 
     void
     setComparison( bool (*comparisonFunction)( keyClass const* const,
-                                               keyClass const* const ) )
-    /* code after the classes in this .hpp file. */;
-
+                                               keyClass const* const ) );
     storedClass*
-    getPointer( keyClass const* const keyPointer )
+    getPointer( keyClass const* const keyPointer );
     /* this returns a pointer to the storedClass instance that matches
      * keyPointer, if there is a stored pointer to such an instance, or it
      * constructs a new storedClass instance with keyPointer & returns the
      * pointer to that.
      */
-    /* code after the classes in this .hpp file. */;
-
     std::vector< storedClass* >*
-    getVector()
+    getVector();
     // this returns a pointer to the std::vector holding pointers to the
     // storedClass instances which are deemed current.
-    /* code after the classes in this .hpp file. */;
-
     void
-    clear()
+    clearEntries();
     // this notes that all current storedClass instances are now to be treated
     // as stored-but-not-current, & drops their pointers from currentPointers.
-    /* code after the classes in this .hpp file. */;
-
 
   protected:
     std::vector< std::pair< storedClass*,
@@ -258,6 +284,7 @@ namespace LHC_FASER
 
   // inline functions:
 
+
   template< class storedClass >
   inline
   minimalAllocationVector< storedClass >::minimalAllocationVector()
@@ -275,7 +302,10 @@ namespace LHC_FASER
     {
       delete allConstructedPointers.at( deletionCounter );
     }
+    // I cannot use an iterator here because of template complications. also,
+    // I'm going from 0 upwards because of unsigned int complications.
   }
+
 
   template< class storedClass >
   inline storedClass*
@@ -397,7 +427,7 @@ namespace LHC_FASER
 
   template< class storedClass >
   inline void
-  minimalAllocationVector< storedClass >::clear()
+  minimalAllocationVector< storedClass >::clearEntries()
   // this notes that all current storedClass instances are now to be treated
   // as stored-but-not-current, & drops their pointers from currentPointers.
   {
@@ -513,13 +543,17 @@ namespace LHC_FASER
   minimalAllocationKeyedVector< storedClass,
                                 keyClass >::~minimalAllocationKeyedVector()
   {
-    for( unsigned int deletionCounter( 0 );
-         allConstructedPointers.size() > deletionCounter;
-         ++deletionCounter )
     {
-      delete allConstructedPointers.at( deletionCounter )->first;
-      delete allConstructedPointers.at( deletionCounter )->second;
-      delete allConstructedPointers.at( deletionCounter );
+      for( unsigned int deletionCounter( 0 );
+           allConstructedPointers.size() > deletionCounter;
+          ++deletionCounter )
+      {
+        delete allConstructedPointers.at( deletionCounter )->first;
+        delete allConstructedPointers.at( deletionCounter )->second;
+        delete allConstructedPointers.at( deletionCounter );
+      }
+      // I cannot use an iterator here because of template complications. also,
+      // I'm going from 0 upwards because of unsigned int complications.
     }
   }
 
@@ -535,16 +569,17 @@ namespace LHC_FASER
     this->comparisonFunction = comparisonFunction;
   }
 
-  // this returns a pointer to the storedClass instance that matches
-  // keyPointer, if there is a stored pointer to such an instance, or it
-  // constructs a new storedClass instance with keyPointer & returns the
-  // pointer to that.
   template< class storedClass,
             class keyClass >
   inline storedClass*
   minimalAllocationKeyedVector< storedClass,
                                 keyClass >::getPointer(
                                              keyClass const* const keyPointer )
+  /* this returns a pointer to the storedClass instance that matches
+   * keyPointer, if there is a stored pointer to such an instance, or it
+   * constructs a new storedClass instance with keyPointer & returns the
+   * pointer to that.
+   */
   {
     // set things up for the search:
     keyNotFound = true;
@@ -598,24 +633,24 @@ namespace LHC_FASER
     return returnPointer;
   }
 
-  // this returns a pointer to the std::vector holding pointers to the
-  // storedClass instances which are deemed current.
   template< class storedClass,
             class keyClass >
   inline std::vector< storedClass* >*
   minimalAllocationKeyedVector< storedClass,
                                 keyClass >::getVector()
+  // this returns a pointer to the std::vector holding pointers to the
+  // storedClass instances which are deemed current.
   {
     return &currentPointers;
   }
 
-  // this notes that all current storedClass instances are now to be treated
-  // as stored-but-not-current, & drops their pointers from currentPointers.
   template< class storedClass,
             class keyClass >
   inline void
   minimalAllocationKeyedVector< storedClass,
-                                keyClass >::clear()
+                                keyClass >::clearEntries()
+  // this notes that all current storedClass instances are now to be treated
+  // as stored-but-not-current, & drops their pointers from currentPointers.
   {
     //currentlyStoredNumber = 0;
     currentPointers.clear();

@@ -787,12 +787,12 @@ namespace LHC_FASER
   void
   squarkFullCascadeSet::buildLongerCascades()
   {
-    sjgxCascades.clear();
-    sjgjsxCascades.clear();
-    sjgvsxCascades.clear();
-    sjgjsvsxCascades.clear();
-    svgxCascades.clear();
-    svgjsxCascades.clear();
+    sjgxCascades.clearEntries();
+    sjgjsxCascades.clearEntries();
+    sjgvsxCascades.clearEntries();
+    sjgjsvsxCascades.clearEntries();
+    svgxCascades.clearEntries();
+    svgjsxCascades.clearEntries();
     if( initialScolored->get_absolute_mass() > shortcut->getGluinoMass() )
     {
       for( std::vector< gxFullCascade* >::const_iterator
@@ -893,9 +893,9 @@ namespace LHC_FASER
 
     // now we look for decays into lighter squarks (squarkCascadeSetList has
     // been ordered for this point already in fullCascadeSet::setUpCascades()):
-    svsxCascades.clear();
-    svsjgxCascades.clear();
-    svsjgjsxCascades.clear();
+    svsxCascades.clearEntries();
+    svsjgxCascades.clearEntries();
+    svsjgjsxCascades.clearEntries();
     for( std::list< fullCascadeSet* >::iterator
          cascadeIterator( squarkCascadeSetList->first->begin() );
          (*cascadeIterator)->getInitialScolored()->get_absolute_mass()
@@ -1016,9 +1016,9 @@ namespace LHC_FASER
   void
   gluinoFullCascadeSet::buildLongerCascades()
   {
-    gjsxCascades.clear();
-    gvsxCascades.clear();
-    gjsvsxCascades.clear();
+    gjsxCascades.clearEntries();
+    gvsxCascades.clearEntries();
+    gjsvsxCascades.clearEntries();
     // now we look for decays into squarks (squarkCascadeSetList has been
     // ordered for this point already in fullCascadeSet::setUpCascades()):
     for( std::list< fullCascadeSet* >::iterator

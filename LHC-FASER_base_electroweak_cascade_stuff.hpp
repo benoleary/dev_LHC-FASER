@@ -793,7 +793,7 @@ namespace LHC_FASER
     {
       if( needsToPrepareForThisPoint() )
       {
-        acceptances.clear();
+        acceptances.clearEntries();
       }
       currentAcceptance = acceptances.getPointer( cuts );
       if( currentAcceptance->notAlreadyCalculated() )

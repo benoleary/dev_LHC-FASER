@@ -279,9 +279,9 @@ namespace LHC_FASER
       // debugging:
       /**std::cout
       << std::endl
-      << "debugging: ( 0.0 <= current_acceptance ) is true:"
-      << " current_acceptance = " << current_acceptance
-      << " for bin energy " << ( 2.0 * ++bin_counter);
+      << "debugging: ( 0.0 <= currentAcceptance ) is true:"
+      << " currentAcceptance = " << currentAcceptance
+      << " for bin energy " << ( 2.0 * ( acceptanceCounter - 1 ) );
       std::cout << std::endl;**/
 
       ++acceptanceCounter;
@@ -296,7 +296,7 @@ namespace LHC_FASER
       // debugging:
       /**std::cout
       << std::endl
-      << "now current_acceptance = " << current_acceptance;
+      << "now currentAcceptance = " << currentAcceptance;
       std::cout << std::endl;**/
     }
   }

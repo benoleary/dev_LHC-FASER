@@ -176,7 +176,7 @@ namespace LHC_FASER
   {
     if( needsToPrepareForThisPoint() )
     {
-      acceptances.clear();
+      acceptances.clearEntries();
     }
     if( validSignal( numberOfAdditionalJets,
                      numberOfNegativeElectrons,

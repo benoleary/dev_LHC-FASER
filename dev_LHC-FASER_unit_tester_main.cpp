@@ -2,7 +2,70 @@
  * dev_LHC-FASER_unit_tester_main.cpp
  *
  *  Created on: 21 Jan 2011
- *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
+ *               Jonas Lindert (jonas.lindert@googlemail.com)
+ *               Carsten Robens (carsten.robens@gmx.de)
+ *      Copyright 2010 Ben O'Leary, Jonas Lindert, Carsten Robens
+ *
+ *      This file is part of LHC-FASER.
+ *
+ *      LHC-FASER is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      LHC-FASER is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with LHC-FASER.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *      The GNU General Public License should be in GNU_public_license.txt
+ *      the files of LHC-FASER are:
+ *      LHC-FASER.hpp
+ *      LHC-FASER.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
+ *      LHC-FASER_full_cascade_stuff.hpp
+ *      LHC-FASER_full_cascade_stuff.cpp
+ *      LHC-FASER_global_stuff.hpp
+ *      LHC-FASER_global_stuff.cpp
+ *      LHC-FASER_input_handling_stuff.hpp
+ *      LHC-FASER_input_handling_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_signal_calculator_stuff.hpp
+ *      LHC-FASER_signal_calculator_stuff.cpp
+ *      LHC-FASER_signal_data_collection_stuff.hpp
+ *      LHC-FASER_signal_data_collection_stuff.cpp
+ *      LHC-FASER_sparticle_decay_stuff.hpp
+ *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
+ *      and README.LHC-FASER.txt which describes the package.
+ *
+ *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
+ *      included with this package.
+ *
+ *      LHC-FASER also requires grids of lookup values. These should also be
+ *      found in a subdirectory included with this package.
  */
 
 /* this program is to test various bits of LHC-FASER in isolation (or as much
@@ -16,30 +79,72 @@
  *
  * the current ordering for testing is:
  *
- * (0: CppSLHA - done.)
- * 1: lepton distributions - redone!
- * 2: getsReadiedForNewPoint + readierForNewPoint - redone!
- * 3: crossSectionTable - redone!
- * 4: kinematics_table - not yet redone, & it'll be quite different in 0.2,
- *                       unfortunately.
- * 5: lepton acceptance for given cascade - not yet redone
- * 6: an entire signal - not yet redone
+ * done so far:
+ *      LHC-FASER_template_classes.hpp
+ *      LHC-FASER_global_stuff.hpp
+ *      LHC-FASER_global_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_sparticle_decay_stuff.hpp
+ *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_input_handling_stuff.hpp
+ *      LHC-FASER_input_handling_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
  *
- * after that, I think that we'll be ready to test the whole thing.
+ *
+ * still to test:
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
+ *      LHC-FASER_full_cascade_stuff.hpp
+ *      LHC-FASER_full_cascade_stuff.cpp
+ *      LHC-FASER_signal_data_collection_stuff.hpp
+ *      LHC-FASER_signal_data_collection_stuff.cpp
+ *      LHC-FASER_signal_calculator_stuff.hpp
+ *      LHC-FASER_signal_calculator_stuff.cpp
+ *      LHC-FASER.hpp
+ *      LHC-FASER.cpp
  */
 
 
 // includes:
 
-#include "CppSLHA/CppSLHA.hpp"
+#include <sys/time.h>
+//#include "CppSLHA/CppSLHA.hpp"
+//#include "LHC-FASER_template_classes.hpp"
+//#include "LHC-FASER_global_stuff.hpp"
+//#include "LHC-FASER_base_lepton_distribution_stuff.hpp"
 #include "LHC-FASER_derived_lepton_distributions.hpp"
-#include "LHC-FASER_input_handling_stuff.hpp"
+//#include "LHC-FASER_sparticle_decay_stuff.hpp"
+//#include "LHC-FASER_input_handling_stuff.hpp"
 #include "LHC-FASER_cross-section_stuff.hpp"
-//#include "LHC-FASER_derived_electroweak_cascade_stuff.hpp"
+#include "LHC-FASER_base_kinematics_stuff.hpp"
+#include "LHC-FASER_lepton_kinematics_stuff.hpp"
+
+// future includes:
+//#include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
+//#include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
+//#include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
+//#include "LHC-FASER_electroweak_cascade_collection_stuff.hpp"
+//#include "LHC-FASER_full_cascade_stuff.hpp"
+//#include "LHC-FASER_jet_kinematics_stuff.hpp"
 //#include "LHC-FASER_signal_data_collection_stuff.hpp"
 //#include "LHC-FASER_signal_calculator_stuff.hpp"
 //#include "LHC-FASER.hpp"
-#include <sys/time.h>
 
 
 // this holds the set of distributions & handles adding them.
@@ -199,7 +304,7 @@ int main( int argumentCount,
 
 
   /* testing the lepton energy distributions in the squark rest frame:
-   * (slight changes of input) *//**
+   * (works) *//**
 
   distributionSet distributions( &testReadier );
 
@@ -578,7 +683,7 @@ int main( int argumentCount,
 
 
   /* testing the means of checking if something has already been prepared for a
-   * new point: (should work)*//**
+   * new point: (works)*//**
 
   std::cout
   << std::endl
@@ -1246,7 +1351,7 @@ int main( int argumentCount,
 
 
   /* testing the cross-section grid stuff:
-   * (should work, may need slight changes of input)*//**
+   * (works)*//**
 
   std::cout
   << std::endl
@@ -1431,256 +1536,262 @@ int main( int argumentCount,
 
 
   /* testing the kinematics grid stuff:
-   * (needs work)*//**
+   * (needs work:
+   *   direct tests of the acceptanceGrids give either NaNs or wrong
+   *   (definitely too big for the point) values for valueAt(...).)*//**/
 
   std::string
-  acceptance_grid_path( *(testInputHandler.getPathToKinematicsGrids()) );
+  acceptanceGridPath( *(testInputHandler.getPathToKinematicsGrids()) );
   std::cout
-  << std::endl << "path to kinematics grids = " << acceptance_grid_path;
+  << std::endl << "path to kinematics grids = " << acceptanceGridPath;
   std::cout << std::endl;
-  acceptance_grid_path.append(
+  acceptanceGridPath.append(
                         "/7TeV/jets/Atlas4jMET/squark+gluino_acceptance.dat" );
-  LHC_FASER::acceptanceGrid*
-  jets_test_acceptance
-  = new LHC_FASER::acceptanceGrid( &acceptance_grid_path );
+  LHC_FASER::acceptanceGrid
+  jetsTestAcceptance( &acceptanceGridPath );
   std::cout
-  << std::endl << "jets_test_acceptance->valueAt( "
-  << jets_test_acceptance->getLowestSquarkMass() << ", "
-  << jets_test_acceptance->getLowestGluinoMass() << ", 0.0, 0.0, 0 ) = "
-  << jets_test_acceptance->valueAt(
-                                jets_test_acceptance->getLowestSquarkMass(),
-                                jets_test_acceptance->getLowestGluinoMass(),
-                                0.0,
-                                0.0,
-                                0,
-                                false )
+  << std::endl << "jetsTestAcceptance.valueAt( "
+  << jetsTestAcceptance.getLowestSquarkMass() << ", "
+  << jetsTestAcceptance.getLowestGluinoMass() << ", 0.0, 0.0, 0 ) = "
+  << jetsTestAcceptance.valueAt( jetsTestAcceptance.getLowestSquarkMass(),
+                                 jetsTestAcceptance.getLowestGluinoMass(),
+                                 0.0,
+                                 0.0,
+                                 0,
+                                 false )
   << std::endl
-  << "jets_test_acceptance->valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
-  << jets_test_acceptance->valueAt( 123.4,
+  << "jetsTestAcceptance.valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
+  << jetsTestAcceptance.valueAt( 123.4,
+                                 567.8,
+                                 12.3,
+                                 45.6,
+                                 4,
+                                 false )
+  << std::endl
+  << "jetsTestAcceptance.valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
+  << jetsTestAcceptance.valueAt( 234.5,
+                                 678.9,
+                                 12.3,
+                                 45.6,
+                                 4,
+                                 false )
+  << std::endl
+  << "jetsTestAcceptance.valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
+  << jetsTestAcceptance.valueAt( 876.5,
+                                 432.1,
+                                 1.0,
+                                 1.0,
+                                 4,
+                                 false )
+  << std::endl
+  << "jetsTestAcceptance.valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
+  << jetsTestAcceptance.valueAt( 501.0,
+                                 501.0,
+                                 0.0,
+                                 0.0,
+                                 4,
+                                 false );
+  std::cout << std::endl;
+  acceptanceGridPath.assign( *(testInputHandler.getPathToKinematicsGrids()) );
+  std::cout
+  << std::endl << "path to kinematics grids = " << acceptanceGridPath;
+  std::cout << std::endl;
+  acceptanceGridPath.append( "/7TeV/leptons/squark+gluino_acceptance.dat" );
+  LHC_FASER::acceptanceGrid*
+  leptonsTestAcceptance
+  = new LHC_FASER::acceptanceGrid( &acceptanceGridPath );
+  std::cout
+  << std::endl << "leptonsTestAcceptance->valueAt( "
+  << leptonsTestAcceptance->getLowestSquarkMass() << ", "
+  << leptonsTestAcceptance->getLowestGluinoMass() << ", 0.0, 0.0, 0 ) = "
+  << leptonsTestAcceptance->valueAt(
+                                  leptonsTestAcceptance->getLowestSquarkMass(),
+                                  leptonsTestAcceptance->getLowestGluinoMass(),
+                                     0.0,
+                                     0.0,
+                                     0,
+                                     true )
+  << std::endl
+  << "leptonsTestAcceptance->valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
+  << leptonsTestAcceptance->valueAt( 123.4,
                                      567.8,
                                      12.3,
                                      45.6,
                                      4,
                                      false )
   << std::endl
-  << "jets_test_acceptance->valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
-  << jets_test_acceptance->valueAt( 234.5,
+  << "leptonsTestAcceptance->valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
+  << leptonsTestAcceptance->valueAt( 234.5,
                                      678.9,
                                      12.3,
                                      45.6,
                                      4,
                                      false )
   << std::endl
-  << "jets_test_acceptance->valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
-  << jets_test_acceptance->valueAt( 876.5,
+  << "leptonsTestAcceptance->valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
+  << leptonsTestAcceptance->valueAt( 876.5,
                                      432.1,
                                      1.0,
                                      1.0,
                                      4,
                                      false )
   << std::endl
-  << "jets_test_acceptance->valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
-  << jets_test_acceptance->valueAt( 501.0,
+  << "leptonsTestAcceptance->valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
+  << leptonsTestAcceptance->valueAt( 501.0,
                                      501.0,
                                      0.0,
                                      0.0,
                                      4,
                                      false );
   std::cout << std::endl;
-  acceptance_grid_path.assign(
-                        *(testInputHandler.getPathToKinematicsGrids()) );
+  delete leptonsTestAcceptance;
+
+
+
+  /* testing the lepton kinematics grid stuff:
+   * (needs work:
+   *   the leptonAcceptanceGrids seem to give reasonable values, despite the
+   *   acceptanceGrids above not working.
+   *   leptonAcceptanceParameterSet::resetValues() seems to have
+   *   problems.)*//**/
+
+  acceptanceGridPath.assign( *(testInputHandler.getPathToKinematicsGrids()) );
   std::cout
-  << std::endl << "path to kinematics grids = " << acceptance_grid_path;
+  << std::endl << "path to kinematics grids = " << acceptanceGridPath;
   std::cout << std::endl;
-  acceptance_grid_path.append( "/7TeV/leptons/squark+gluino_acceptance.dat" );
-  LHC_FASER::acceptanceGrid*
-  leptons_test_acceptance
-  = new LHC_FASER::acceptanceGrid( &acceptance_grid_path );
+  acceptanceGridPath.append( "/7TeV/leptons" );
+  LHC_FASER::leptonAcceptanceGrid
+  testLeptonAcceptanceGrid( &acceptanceGridPath,
+                            &testInputHandler );
   std::cout
-  << std::endl << "leptons_test_acceptance->valueAt( "
-  << leptons_test_acceptance->getLowestSquarkMass() << ", "
-  << leptons_test_acceptance->getLowestGluinoMass() << ", 0.0, 0.0, 0 ) = "
-  << leptons_test_acceptance->valueAt(
-                             leptons_test_acceptance->getLowestSquarkMass(),
-                             leptons_test_acceptance->getLowestGluinoMass(),
-                                        0.0,
-                                        0.0,
-                                        0,
-                                        true )
   << std::endl
-  << "leptons_test_acceptance->valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
-  << leptons_test_acceptance->valueAt( 123.4,
-                                        567.8,
-                                        12.3,
-                                        45.6,
-                                        4,
-                                        false )
+  << "testLeptonAcceptanceGrid.getSquarkValue("
+  << " sdown_R, neutralino_2, 4 => 6 GeV ) = "
+  << testLeptonAcceptanceGrid.getSquarkValue( testInputHandler.getSdownR(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                              4 );
+  std::cout << std::endl;
+  std::cout
   << std::endl
-  << "leptons_test_acceptance->valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
-  << leptons_test_acceptance->valueAt( 234.5,
-                                        678.9,
-                                        12.3,
-                                        45.6,
-                                        4,
-                                        false )
-  << std::endl
-  << "leptons_test_acceptance->valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
-  << leptons_test_acceptance->valueAt( 876.5,
-                                        432.1,
-                                        1.0,
-                                        1.0,
-                                        4,
-                                        false )
-  << std::endl
-  << "leptons_test_acceptance->valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
-  << leptons_test_acceptance->valueAt( 501.0,
-                                        501.0,
-                                        0.0,
-                                        0.0,
-                                        4,
-                                        false );
+  << "testLeptonAcceptanceGrid.getGluinoValue("
+  << " neutralino_2, 4 => 6 GeV ) = "
+  << testLeptonAcceptanceGrid.getGluinoValue(
+                                           testInputHandler.getNeutralinoTwo(),
+                                              4,
+                                              false,
+                                              true );
   std::cout << std::endl;
 
-  delete leptons_test_acceptance;
-
-  LHC_FASER::colored_cascade_set*
-  gluino_cascade3
-  = testInputHandler.get_colored_cascade_set(
-                                             testInputHandler.getGluino() );
-  LHC_FASER::colored_cascade_set*
-  sdown_L_cascade
-  = testInputHandler.get_colored_cascade_set(
-                                            testInputHandler.getSdownL() );
-  int const sdL_go = 1;
-  acceptance_grid_path.assign(
-                        *(testInputHandler.getPathToKinematicsGrids()) );
-  acceptance_grid_path.append( "/7TeV/jets/Atlas4jMET" );
-  std::cout
-  << std::endl << "path to jets kinematics grids = " << acceptance_grid_path;
-  std::cout << std::endl;
-  LHC_FASER::jet_acceptance_table test_jet_kinematics_table(
-                                                         &acceptance_grid_path,
-                                                             &bluh,
-                                                         &testInputHandler );
-  std::cout
-  << std::endl << "test_jet_kinematics_table.get_name() = "
-  << *(test_jet_kinematics_table.get_name())
-  << std::endl << "test_jet_kinematics_table.get_acceptance( 4,"
-  << std::endl
-  << "[ ";
-  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
-                                                       )->is_first_particle() )
-    {
-      std::cout
-      << *(testInputHandler.getScoloredProductionCombinations(
-                             )->at( sdL_go )->getFirstParticle()->get_name());
-    }
-  else
-    {
-      std::cout
-      << *(testInputHandler.getScoloredProductionCombinations()->at(
-                                sdL_go )->getFirstParticle()->get_antiname());
-    }
-  std::cout << " + ";
-  if( testInputHandler.getScoloredProductionCombinations()->at( sdL_go
-                                                      )->is_second_particle() )
-    {
-      std::cout
-      << *(testInputHandler.getScoloredProductionCombinations()->at(
-                                   sdL_go )->getSecondParticle()->get_name());
-    }
-  else
-    {
-      std::cout
-      << *(testInputHandler.getScoloredProductionCombinations()->at(
-                               sdL_go )->getSecondParticle()->get_antiname());
-    }
-  std::cout << " ]," << std::endl;
-  std::cout
-  << "[ "
-  << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->getDecayer()->get_name())
-  << " -> " << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                  )->getProduct()->get_name())
-  << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
-                                          )->get_product_position() << " ) -> "
-  << *(gluino_cascade3->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->get_name())
-  << " ( " << gluino_cascade3->get_colored_cascades()->at( 1
-                                               )->get_EWino_position() << " )";
-  if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_sx() )
-    {
-      std::cout<< " => sx";
-    }
-  if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_gx() )
-    {
-      std::cout<< " => gx";
-    }
-  if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_sgx() )
-    {
-      std::cout<< " => sgx";
-    }
-  if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_gsx() )
-    {
-      std::cout<< " => gsx";
-    }
-  if( gluino_cascade3->get_colored_cascades()->at( 1 )->is_sgsx() )
-    {
-      std::cout<< " => sgsx";
-    }
-  std::cout
-  << " ],"
-  << std::endl;
-  std::cout
-  << "[ "
-  << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getDecayer()->get_name())
-  << " -> " << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                  )->getProduct()->get_name())
-  << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
-                                          )->get_product_position() << " ) -> "
-  << *(sdown_L_cascade->get_colored_cascades()->at( 1
-                                                    )->get_EWino()->get_name())
-  << " ( " << sdown_L_cascade->get_colored_cascades()->at( 1
-                                               )->get_EWino_position() << " )";
-  if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sx() )
-    {
-      std::cout<< " => sx";
-    }
-  if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_gx() )
-    {
-      std::cout<< " => gx";
-    }
-  if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sgx() )
-    {
-      std::cout<< " => sgx";
-    }
-  if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_gsx() )
-    {
-      std::cout<< " => gsx";
-    }
-  if( sdown_L_cascade->get_colored_cascades()->at( 1 )->is_sgsx() )
-    {
-      std::cout<< " => sgsx";
-    }
-  std::cout
-  << " ] )->get_acceptance()"
-  << std::endl << " = "
-  << test_jet_kinematics_table.get_acceptance( 4,
-      testInputHandler.getScoloredProductionCombinations()->at( sdL_go ),
-                              gluino_cascade3->get_colored_cascades()->at( 1 ),
-          sdown_L_cascade->get_colored_cascades()->at( 1 ) )->get_acceptance();
-  std::cout << std::endl;
-
-  acceptance_grid_path.assign(
-                        *(testInputHandler.getPathToKinematicsGrids()) );
-  acceptance_grid_path.append( "/7TeV/leptons" );
+  LHC_FASER::leptonAcceptanceTable*
+  testSquarkBasedLeptonAcceptanceTable
+  = new LHC_FASER::squarkBasedLeptonAcceptanceTable( &testLeptonAcceptanceGrid,
+                                                testInputHandler.getSdownR(),
+                                                     &testInputHandler );
   std::cout
   << std::endl
-  << "path to leptons kinematics grids = " << acceptance_grid_path;
+  << "testSquarkBasedLeptonAcceptanceTable ="
+  << " new squarkBasedLeptonAcceptanceTable seems to have worked.";
+  std::cout << std::endl;
+  LHC_FASER::leptonAcceptanceParameterSet
+  testLeptonAcceptanceParameterSet( &testInputHandler,
+                                    testSquarkBasedLeptonAcceptanceTable,
+                                    testInputHandler.getSdownR(),
+                                    testInputHandler.getNeutralinoTwo() );
+  std::cout
+  << std::endl
+  << "testLeptonAcceptanceParameterSet constructed without problems.";
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "testLeptonAcceptanceParameterSet.getEffectiveSquarkMass() = "
+  << testLeptonAcceptanceParameterSet.getEffectiveSquarkMass();
+  std::cout
+  << std::endl
+  << "wtf?";
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "testLeptonAcceptanceParameterSet.acceptanceAt( 6.4, 10.0 ) = "
+  << testLeptonAcceptanceParameterSet.acceptanceAt( 6.4,
+                                                    10.0 )
+  << std::endl
+  << "testLeptonAcceptanceParameterSet.acceptanceAt( 7.4, 12.3 ) = "
+  << testLeptonAcceptanceParameterSet.acceptanceAt( 7.4,
+                                                    12.3 );
+  std::cout << std::endl;
+  delete testSquarkBasedLeptonAcceptanceTable;
+
+  LHC_FASER::leptonAcceptanceHandler
+  testLeptonAcceptanceHandler( &testInputHandler,
+                               testInputHandler.getPathToKinematicsGrids() );
+  LHC_FASER::leptonAcceptanceParameterSet*
+  testLeptonAcceptanceParameterSetPointer(
+                testLeptonAcceptanceHandler.getLeptonAcceptanceParameterSet( 7,
+                                                 testInputHandler.getScharmR(),
+                                             testInputHandler.getCharginoOne(),
+                                                                           2.0,
+                                                                       9.0 ) );
+  std::cout
+  << std::endl
+  << "testLeptonAcceptanceParameterSetPointer->getEffectiveSquarkMass() = "
+  << testLeptonAcceptanceParameterSetPointer->getEffectiveSquarkMass();
+  std::cout
+  << std::endl
+  << "testLeptonAcceptanceParameterSetPointer->acceptanceAt( 6.4, 10.0 ) = "
+  << testLeptonAcceptanceParameterSetPointer->acceptanceAt( 6.4,
+                                                            10.0 )
+  << std::endl
+  << "testLeptonAcceptanceParameterSetPointer->acceptanceAt( 7.4, 12.3 ) = "
+  << testLeptonAcceptanceParameterSetPointer->acceptanceAt( 7.4,
+                                                            12.3 );
+  std::cout << std::endl;
+   /**/
+
+
+  /* testing the jet kinematics grid stuff:
+   * (needs work)*//**
+  acceptanceGridPath.assign( *(testInputHandler.getPathToKinematicsGrids()) );
+  acceptanceGridPath.append( "/7TeV/jets/Atlas4jMET" );
+  std::cout
+  << std::endl << "path to jets kinematics grids = " << acceptanceGridPath;
+  std::cout << std::endl;
+  LHC_FASER::jetAcceptanceTable testJetKinematicsTable( &acceptanceGridPath,
+                                                        &bluh,
+                                                        4,
+                                                        &testInputHandler );
+  for( std::vector< LHC_FASER::signedParticleShortcutPair* >::const_iterator
+       pairIterator(
+               testInputHandler.getScoloredProductionCombinations()->begin() );
+       testInputHandler.getScoloredProductionCombinations()->end()
+       > pairIterator;
+       ++pairIterator )
+  {
+    std::cout
+    << std::endl
+    << "testJetKinematicsTable.getAcceptance( [ "
+    << *((*pairIterator)->getFirstParticle()->get_name_or_antiname(
+                                   (*pairIterator)->firstIsNotAntiparticle() ))
+    << ", "
+    << *((*pairIterator)->getSecondParticle()->get_name_or_antiname(
+                                  (*pairIterator)->secondIsNotAntiparticle() ))
+    << " ], "
+    << std::endl
+    << " [ "
+    << ?? gotta think of something here. silly to look at all possibilities
+    << "] )->get_acceptance() = ";
+
+
+  }
+
+  acceptanceGridPath.assign(
+                        *(testInputHandler.getPathToKinematicsGrids()) );
+  acceptanceGridPath.append( "/7TeV/leptons" );
+  std::cout
+  << std::endl
+  << "path to leptons kinematics grids = " << acceptanceGridPath;
   std::cout << std::endl;
   LHC_FASER::lepton_acceptance_table test_lepton_kinematics_table(
-                                                         &acceptance_grid_path,
+                                                         &acceptanceGridPath,
                                                                    7,
                                                          &testInputHandler );
   std::cout
@@ -1982,7 +2093,7 @@ int main( int argumentCount,
                                                                         20.0 );
 
   LHC_FASER::kinematics_table
-  kinematics_table_tester( &test_jet_kinematics_table,
+  kinematics_table_tester( &testJetKinematicsTable,
                            4,
                            &test_lepton_kinematics_table );
   std::cout

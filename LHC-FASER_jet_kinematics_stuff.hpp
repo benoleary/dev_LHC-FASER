@@ -93,6 +93,7 @@ namespace LHC_FASER
     inputHandler const* const shortcut;
   };
 
+
   /* this is a derived class returning the average mass of the non-stop,
    * non-sbottom squarks, or the gluino mass + 1.0 if it would be less than the
    * gluino mass.
@@ -115,6 +116,7 @@ namespace LHC_FASER
     // nothing
   };
 
+
   // this is a derived class returning the mass of the 1st provided
   // squarks.
   class firstMassForGrid : public squarkMassForGridDecider
@@ -134,6 +136,7 @@ namespace LHC_FASER
   //protected:
     // nothing
   };
+
 
   // this is a derived class returning the mass of the 2nd provided
   // squarks.
@@ -155,6 +158,7 @@ namespace LHC_FASER
     // nothing
   };
 
+
   // this is a derived class returning the average mass of the provided
   // squarks.
   class averageSquarkMassForGrid : public squarkMassForGridDecider
@@ -174,6 +178,7 @@ namespace LHC_FASER
   //protected:
     // nothing
   };
+
 
   // this class holds an acceptanceGrid with a string identifying the type of
   // jet+MET signal which the acceptances are for.
