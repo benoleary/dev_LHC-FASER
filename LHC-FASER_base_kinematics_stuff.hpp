@@ -291,6 +291,25 @@ namespace LHC_FASER
     // this interpolates the values for the element of the vector for
     // neutralino masses requested on the squark & gluino masses.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    double
+    vectorElementForSquarkMass( unsigned int const squarkElement,
+                                double const squarkFraction,
+                                double const gluinoMass,
+                                unsigned int const neutralinoElement,
+                                unsigned int const acceptanceElement )
+    const;
+    // this continues the job of vectorElementAt assuming that the correct
+    // std::vectors for the squark mass has been found.
+    double
+    vectorElementForScoloredMasses( unsigned int const squarkElement,
+                                    double const squarkFraction,
+                                    unsigned int const gluinoElement,
+                                    double const gluinoFraction,
+                                    unsigned int const neutralinoElement,
+                                    unsigned int const acceptanceElement )
+    const;
+    // this continues the job of vectorElementForSquarkMass assuming that the
+    // correct std::vector for the gluino mass has been found.
   };
 
 

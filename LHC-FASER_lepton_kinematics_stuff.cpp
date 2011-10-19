@@ -106,8 +106,8 @@ namespace LHC_FASER
     << "leptonAcceptanceGrid::getSquarkValue(...) called.";
     std::cout << std::endl;**/
 
-    double appropriateGluinoMass = shortcut->getGluinoMass();
-    double appropriateSquarkMass = squark->get_absolute_mass();
+    double appropriateGluinoMass( shortcut->getGluinoMass() );
+    double appropriateSquarkMass( squark->get_absolute_mass() );
     if( appropriateSquarkMass > appropriateGluinoMass )
     {
       appropriateGluinoMass = ( appropriateSquarkMass + 1.0 );
@@ -214,27 +214,6 @@ namespace LHC_FASER
                                             inputHandler const* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                                                 particlePointer const scolored,
-                                                particlePointer const ewino ) :
-    getsReadiedForNewPoint( shortcut->getReadier() ),
-    effectiveSquarkMassHolder(),
-    shortcut( shortcut ),
-    acceptanceTable( acceptanceTable ),
-    scolored( scolored ),
-    ewino( ewino ),
-    binSize( defaultBinSize ),
-    transverseMomentumCut( defaultTransverseMomentumCut ),
-    effectiveSquarkMass( CppSLHA::CppSLHA_global::really_wrong_value ),
-    pseudorapidityAcceptance( CppSLHA::CppSLHA_global::really_wrong_value )
-  {
-    acceptanceBins.push_back( CppSLHA::CppSLHA_global::really_wrong_value );
-    // this is to ensure that there is at least 1 entry for the transverse
-    // momentum cut.
-  }
-
-  leptonAcceptanceParameterSet::leptonAcceptanceParameterSet(
-                                            inputHandler const* const shortcut,
-                                  leptonAcceptanceTable const* acceptanceTable,
-                                                particlePointer const scolored,
                                                    particlePointer const ewino,
                                                           double const binSize,
                                          double const transverseMomentumCut ) :
@@ -265,6 +244,12 @@ namespace LHC_FASER
   // this interpolates values from acceptanceTable to set up acceptanceBins
   // for the given colored sparticle.
   {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "leptonAcceptanceParameterSet::resetValues() called.";
+    std::cout << std::endl;**/
+
     acceptanceBins.clear();
     effectiveSquarkMass = acceptanceTable->getValue( ewino,
                                                      0 );

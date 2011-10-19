@@ -527,6 +527,8 @@ namespace LHC_FASER
     }
   }
 
+
+
   double
   acceptanceGrid::vectorElementAt( double const squarkMass,
                                    double const gluinoMass,
@@ -543,135 +545,170 @@ namespace LHC_FASER
         &&
         ( squarkMass >= lowestSquarkMass )
         &&
-        ( gluinoMass >= lowestGluinoMass ) )
+        ( gluinoMass >= lowestGluinoMass )
+        &&
+        ( 0 <= neutralinoElement )
+        &&
+        ( 0 <= acceptanceElement ) )
     {
       double
-      xSteps( ( ( squarkMass - lowestSquarkMass ) / scoloredMassStepSize ) );
-      unsigned int lowerLeftX( (unsigned int)xSteps );
-
-      if( values.size() > ( lowerLeftX + 1 ) )
+      squarkFraction( ( ( squarkMass - lowestSquarkMass )
+                        / scoloredMassStepSize ) );
+      unsigned int squarkElement( (unsigned int)squarkFraction );
+      if( values.size() > ( squarkElement + 1 ) )
         // if the x co-ordinate is less than its maximal grid value...
       {
-        double ySteps( ( ( gluinoMass - lowestGluinoMass )
-                         / scoloredMassStepSize ) );
-        unsigned int lowerLeftY( (unsigned int)ySteps );
-        if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
-          // if the y co-ordinate is less than its maximal grid value...
-        {
-          return lhcFaserGlobal::squareBilinearInterpolation(
-                                                       ( xSteps - lowerLeftX ),
-                                                       ( ySteps - lowerLeftY ),
-                                        values.at( lowerLeftX )->at( lowerLeftY
-                                                       )->at( neutralinoElement
-                                                    )->at( acceptanceElement ),
-                                values.at( ( lowerLeftX + 1 ) )->at( lowerLeftY
-                                                       )->at( neutralinoElement
-                                                    )->at( acceptanceElement ),
-                        values.at( ( lowerLeftX + 1 ) )->at( ( lowerLeftY + 1 )
-                                                       )->at( neutralinoElement
-                                                    )->at( acceptanceElement ),
-                                values.at( lowerLeftX )->at( ( lowerLeftY + 1 )
-                                                       )->at( neutralinoElement
-                                                  )->at( acceptanceElement ) );
-        }
-        else if( ( values.at( lowerLeftX )->size() == ( lowerLeftY + 1 ) )
-                 &&
-                 ( (double)lowerLeftY == ySteps ) )
-          // otherwise, if it's on the maximal y edge...
-        {
-          return lhcFaserGlobal::unitLinearInterpolation(
-                                                       ( xSteps - lowerLeftX ),
-                                        values.at( lowerLeftX )->at( lowerLeftY
-                                                       )->at( neutralinoElement
-                                                    )->at( acceptanceElement ),
-                                values.at( ( lowerLeftX + 1 ) )->at( lowerLeftY
-                                                       )->at( neutralinoElement
-                                                  )->at( acceptanceElement ) );
-        }
-        else
-          // otherwise, it's off the grid:
-        {
-          std::cout
-          << std::endl
-          << "LHC-FASER::warning! acceptance requested for a gluino mass"
-          << " ( " << squarkMass << " ) larger than allowed for ( "
-          << highestGluinoMass << " ) in the lookup table!";
-          std::cout << std::endl;
-          return CppSLHA::CppSLHA_global::really_wrong_value;
-        }
+        return vectorElementForSquarkMass( squarkElement,
+                                    ( squarkFraction - (double)squarkElement ),
+                                           gluinoMass,
+                                           (unsigned int)neutralinoElement,
+                                           (unsigned int)acceptanceElement );
       }
-      else if( ( values.size() == ( lowerLeftX + 1 ) )
+      else if( ( values.size() == ( squarkElement + 1 ) )
                &&
-               ( (double)lowerLeftX == xSteps ) )
-        // otherwise, if it's on the maximal x edge...
+               ( squarkFraction == (double)squarkElement ) )
+        // ...or if the x co-ordinate is equal to its maximal grid value...
       {
-
-        double ySteps( ( ( gluinoMass - lowestGluinoMass )
-                         / scoloredMassStepSize ) );
-        unsigned int lowerLeftY( (unsigned int)ySteps );
-
-        if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
-          // if the y co-ordinate is less than its maximal grid value...
-        {
-          return lhcFaserGlobal::unitLinearInterpolation(
-                                                       ( ySteps - lowerLeftY ),
-                                        values.at( lowerLeftX )->at( lowerLeftY
-                                                       )->at( neutralinoElement
-                                                    )->at( acceptanceElement ),
-                                values.at( lowerLeftX )->at( ( lowerLeftY + 1 )
-                                                       )->at( neutralinoElement
-                                                  )->at( acceptanceElement ) );
-        }
-        else if( ( values.at( lowerLeftX )->size()
-                   == ( lowerLeftY + 1 ) )
-                 &&
-                 ( (double)lowerLeftY == ySteps ) )
-          // otherwise, if it's on the maximal x & y corner...
-        {
-          return values.at( lowerLeftX )->at( lowerLeftY )->at(
-                                  neutralinoElement )->at( acceptanceElement );
-        }
-        else
-          // otherwise, it's off the grid:
-        {
-          std::cout
-          << std::endl
-          << "LHC-FASER::warning! acceptance requested for a gluino mass"
-          << " ( " << squarkMass << " ) larger than allowed for ( "
-          << highestGluinoMass << " ) in the lookup table!";
-          std::cout << std::endl;
-          return CppSLHA::CppSLHA_global::really_wrong_value;
-        }
+        return vectorElementForSquarkMass( ( squarkElement - 1 ),
+                                           1.0,
+                                           gluinoMass,
+                                           (unsigned int)neutralinoElement,
+                                           (unsigned int)acceptanceElement );
       }
       else
         // otherwise, it's off the grid:
       {
-        std::cout
+        /**std::cout
         << std::endl
-        << "LHC-FASER::warning! acceptance requested for a squark mass ( "
-        << squarkMass << " ) larger than allowed for ( "
+        << "LHC-FASER::warning! acceptance requested for a squark mass"
+        << " ( " << squarkMass << " ) larger than allowed for ( "
         << highestSquarkMass << " ) in the lookup table!";
-        std::cout << std::endl;
+        std::cout << std::endl;**/
         return CppSLHA::CppSLHA_global::really_wrong_value;
       }
     }
     else
-      // otherwise, it's off the grid (or the grid step size was not positive,
-      // which is still a problem...):
+      // otherwise, it's off the grid:
     {
-      std::cout
+      /**std::cout
       << std::endl
-      << "LHC-FASER::warning! acceptance requested for a point outside the"
-      << " lookup table!"
-      << std::endl << "squark mass:"
-      << "lower limit = " << lowestSquarkMass
-      << ", requested = " << squarkMass
-      << std::endl << "gluino mass:"
-      << "lower limit = " << lowestGluinoMass
-      << ", requested = " << gluinoMass
-      << " (or possibly the lookup table itself is invalid: its step size,"
-      << " which should be positive, is " << scoloredMassStepSize << ")";
-      std::cout << std::endl;
+      << "LHC-FASER::warning! acceptance requested for a squark or gluino mass"
+      << " (or both) lower than the minimum allowed in the lookup table"
+      << " (or scoloredMassStepSize is < 0.0, which means that the table is"
+      << " malformed, or neutralinoElement or acceptanceElement (or any"
+      << " combination))!";
+      std::cout << std::endl;**/
+      return CppSLHA::CppSLHA_global::really_wrong_value;
+    }
+  }
+
+  double
+  acceptanceGrid::vectorElementForSquarkMass( unsigned int const squarkElement,
+                                              double const squarkFraction,
+                                              double const gluinoMass,
+                                          unsigned int const neutralinoElement,
+                                         unsigned int const acceptanceElement )
+  const
+  // this continues the job of vectorElementAt assuming that the correct
+  // std::vector for the squark mass has been found.
+  {
+    double gluinoFraction( ( ( gluinoMass - lowestGluinoMass )
+                             / scoloredMassStepSize ) );
+    unsigned int gluinoElement( (unsigned int)gluinoFraction );
+    if( values.back()->size() > ( gluinoElement + 1 ) )
+      // if the y co-ordinate is less than its maximal grid value...
+    {
+      return vectorElementForScoloredMasses( squarkElement,
+                                             squarkFraction,
+                                             gluinoElement,
+                                    ( gluinoFraction - (double)gluinoElement ),
+                                             neutralinoElement,
+                                             acceptanceElement );
+    }
+    else if( ( values.size() == ( gluinoElement + 1 ) )
+             &&
+             ( gluinoFraction == (double)gluinoElement ) )
+      // ...or if the y co-ordinate is equal to its maximal grid value...
+    {
+      return vectorElementForScoloredMasses( squarkElement,
+                                             squarkFraction,
+                                             ( gluinoElement - 1 ),
+                                             1.0,
+                                             neutralinoElement,
+                                             acceptanceElement );
+    }
+    else
+      // otherwise, it's off the grid:
+    {
+      /**std::cout
+      << std::endl
+      << "LHC-FASER::warning! acceptance requested for a gluino mass"
+      << " ( " << gluinoMass << " ) larger than allowed for ( "
+      << highestGluinoMass << " ) in the lookup table!";
+      std::cout << std::endl;**/
+      return CppSLHA::CppSLHA_global::really_wrong_value;
+    }
+  }
+
+  double
+  acceptanceGrid::vectorElementForScoloredMasses(
+                                              unsigned int const squarkElement,
+                                                  double const squarkFraction,
+                                              unsigned int const gluinoElement,
+                                                  double const gluinoFraction,
+                                          unsigned int const neutralinoElement,
+                                         unsigned int const acceptanceElement )
+  const
+  // this continues the job of vectorElementAt assuming that the correct
+  // std::vector for the squark mass has been found.
+  {
+    if( values.at( squarkElement )->at( gluinoElement )->size()
+        > neutralinoElement )
+      // if the neutralino element is allowed...
+    {
+      if( values.at( squarkElement )->at( gluinoElement )->at(
+                                                    neutralinoElement )->size()
+          > acceptanceElement )
+        // if the acceptance element is allowed...
+      {
+        return lhcFaserGlobal::squareBilinearInterpolation( squarkFraction,
+                                                            gluinoFraction,
+                                                       values.at( squarkElement
+                                                           )->at( gluinoElement
+                                                       )->at( neutralinoElement
+                                                    )->at( acceptanceElement ),
+                                               values.at( ( squarkElement + 1 )
+                                                           )->at( gluinoElement
+                                                       )->at( neutralinoElement
+                                                    )->at( acceptanceElement ),
+                                               values.at( ( squarkElement + 1 )
+                                                   )->at( ( gluinoElement + 1 )
+                                                       )->at( neutralinoElement
+                                                    )->at( acceptanceElement ),
+                                                       values.at( squarkElement
+                                                   )->at( ( gluinoElement + 1 )
+                                                       )->at( neutralinoElement
+                                                  )->at( acceptanceElement ) );
+      }
+      else
+        // otherwise, it's off the grid:
+      {
+        /**std::cout
+        << std::endl
+        << "LHC-FASER::warning! acceptanceElement requested larger than"
+        << " allowed in the lookup table!";
+        std::cout << std::endl;**/
+        return CppSLHA::CppSLHA_global::really_wrong_value;
+      }
+    }
+    else
+      // otherwise, it's off the grid:
+    {
+      /**std::cout
+      << std::endl
+      << "LHC-FASER::warning! neutralinoElement requested larger than"
+      << " allowed in the lookup table!";
+      std::cout << std::endl;**/
       return CppSLHA::CppSLHA_global::really_wrong_value;
     }
   }
@@ -689,19 +726,20 @@ namespace LHC_FASER
    * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
    * value, assuming that the heavy neutralino edge goes to 0.0 as the
    * heavier neutralino mass approaches the lighter scolored mass unless
-   * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
+   * heavyNeutralinoEdgeIsLighterScoloredMass is true, in which case
    * it interpolates to the lighter scolored mass, or unless
-   * heavy_neutralino_area_is_constant is true, in which case it interpolates
+   * heavyNeutralinoAreaIsConstant is true, in which case it interpolates
    * to the same value as the grid points with the heaviest neutralino mass.
    */
   {
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: acceptanceGrid::valueAt( " << squark_mass
-    << ", " << gluino_mass << ", " << first_neutralino_mass << ", "
-    << second_neutralino_mass << ", " << acceptance_element << ", "
-    << heavy_neutralino_edge_is_lighter_scolored_mass
+    << "debugging: acceptanceGrid::valueAt( " << squarkMass
+    << ", " << gluinoMass << ", " << firstNeutralinoMass << ", "
+    << secondNeutralinoMass << ", " << acceptanceElement << ", "
+    << heavyNeutralinoEdgeIsLighterScoloredMass << ", "
+    << heavyNeutralinoAreaIsConstant
     << " ) called.";
     std::cout << std::endl;**/
 
@@ -730,7 +768,7 @@ namespace LHC_FASER
       }
       lighterNeutralino *= ( 1.0 / lighterScolored );
       heavierNeutralino *= ( 1.0 / lighterScolored );
-      // now lighter_neutralino & heavier_neutralino are mass ratios.
+      // now lighterNeutralino & heavierNeutralino are mass ratios.
 
       // debugging:
       /**std::cout
@@ -1127,9 +1165,9 @@ namespace LHC_FASER
    * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
    * value, assuming that the heavy neutralino edge goes to 0.0 as the
    * heavier neutralino mass approaches the lighter scolored mass unless
-   * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
+   * heavyNeutralinoEdgeIsLighterScoloredMass is true, in which case
    * it interpolates to the lighter scolored mass, or unless
-   * heavy_neutralino_area_is_constant is true, in which case it interpolates
+   * heavyNeutralinoAreaIsConstant is true, in which case it interpolates
    * to the same value as the grid points with the heaviest neutralino mass.
    * N.B.: this version is just to save a little calculation for the
    * lepton acceptance for a cascade because of the approximation that the
@@ -1141,10 +1179,11 @@ namespace LHC_FASER
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: acceptanceGrid::valueAt( " << squark_mass
-    << ", " << gluino_mass << ", " << degenerate_neutralino_mass << ", "
-    << acceptance_element << ", "
-    << heavy_neutralino_edge_is_lighter_scolored_mass
+    << "debugging: acceptanceGrid::valueAt( " << squarkMass
+    << ", " << gluinoMass << ", " << degenerateNeutralinoMass << ", "
+    << acceptanceElement << ", "
+    << heavyNeutralinoEdgeIsLighterScoloredMass << ", "
+    << heavyNeutralinoAreaIsConstant
     << " ) called.";
     std::cout << std::endl;**/
 
@@ -1168,17 +1207,17 @@ namespace LHC_FASER
 
       // debugging:
       /**std::cout
-        << std::endl
-        << "lighter_scolored = " << lighter_scolored
-        << std::endl
-        << "neutralino_ratio = " << neutralino_ratio
-        << std::endl
-        << "lowNeutralinoMassRatio = " << lowNeutralinoMassRatio
-        << std::endl
-        << "middleNeutralinoMassRatio = " << middleNeutralinoMassRatio
-        << std::endl
-        << "highNeutralinoMassRatio = " << highNeutralinoMassRatio;
-        std::cout << std::endl;**/
+      << std::endl
+      << "lighterScolored = " << lighterScolored
+      << std::endl
+      << "neutralinoRatio = " << neutralinoRatio
+      << std::endl
+      << "lowNeutralinoMassRatio = " << lowNeutralinoMassRatio
+      << std::endl
+      << "middleNeutralinoMassRatio = " << middleNeutralinoMassRatio
+      << std::endl
+      << "highNeutralinoMassRatio = " << highNeutralinoMassRatio;
+      std::cout << std::endl;**/
 
       if( 1.0 > neutralinoRatio )
       {

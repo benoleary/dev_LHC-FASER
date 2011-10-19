@@ -235,19 +235,18 @@ namespace LHC_FASER
   {
   public:
     static double const defaultBinSize;
+    // by default, the grids provide acceptances at 2 GeV spacings for the
+    // default cut on the lepton transverse momentum in the lab rest frame.
     static double const defaultTransverseMomentumCut;
+    // by default, the grids provide acceptances assuming a 10 GeV cut on the
+    // lepton transverse momentum in the lab rest frame.
 
     leptonAcceptanceParameterSet( inputHandler const* const shortcut,
                                   leptonAcceptanceTable const* acceptanceTable,
                                   particlePointer const scolored,
-                                  particlePointer const ewino )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    leptonAcceptanceParameterSet( inputHandler const* const shortcut,
-                                  leptonAcceptanceTable const* acceptanceTable,
-                                  particlePointer const scolored,
                                   particlePointer const ewino,
-                                  double const binSize,
-                                  double const transverseMomentumCut )
+                                  double const binSize = defaultBinSize,
+            double const transverseMomentumCut = defaultTransverseMomentumCut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~leptonAcceptanceParameterSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -278,11 +277,7 @@ namespace LHC_FASER
     particlePointer const scolored;
     particlePointer const ewino;
     double const binSize;
-    // by default, the grids provide acceptances at 2 GeV spacings for the
-    // default cut on the lepton transverse momentum in the lab rest frame.
     double const transverseMomentumCut;
-    // by default, the grids provide acceptances assuming a 10 GeV cut on the
-    // lepton transverse momentum in the lab rest frame.
     double effectiveSquarkMass;
     std::vector< double > acceptanceBins;
     double pseudorapidityAcceptance;
@@ -528,7 +523,7 @@ namespace LHC_FASER
   /* this checks to see if the acceptances need updating, then returns
    * calculateAcceptanceAt( givenEnergy,
    *                        givenCut ), which interpolates the values in
-   * acceptance_bins to the requested value, or returns
+   * acceptanceBins to the requested value, or returns
    * pseudorapidityAcceptance if it's lower, scaled to the given value for
    * the transverse momentum cut.
    */

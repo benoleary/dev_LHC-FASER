@@ -93,13 +93,11 @@
  *      LHC-FASER_input_handling_stuff.cpp
  *      LHC-FASER_cross-section_stuff.hpp
  *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
  *
  *
  * still to test:
- *      LHC-FASER_base_kinematics_stuff.hpp
- *      LHC-FASER_base_kinematics_stuff.cpp
- *      LHC-FASER_jet_kinematics_stuff.hpp
- *      LHC-FASER_jet_kinematics_stuff.cpp
  *      LHC-FASER_lepton_kinematics_stuff.hpp
  *      LHC-FASER_lepton_kinematics_stuff.cpp
  *      LHC-FASER_base_electroweak_cascade_stuff.hpp
@@ -112,6 +110,8 @@
  *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
@@ -132,7 +132,7 @@
 //#include "LHC-FASER_sparticle_decay_stuff.hpp"
 //#include "LHC-FASER_input_handling_stuff.hpp"
 #include "LHC-FASER_cross-section_stuff.hpp"
-#include "LHC-FASER_base_kinematics_stuff.hpp"
+//#include "LHC-FASER_base_kinematics_stuff.hpp"
 #include "LHC-FASER_lepton_kinematics_stuff.hpp"
 
 // future includes:
@@ -1536,19 +1536,17 @@ int main( int argumentCount,
 
 
   /* testing the kinematics grid stuff:
-   * (needs work:
-   *   direct tests of the acceptanceGrids give either NaNs or wrong
-   *   (definitely too big for the point) values for valueAt(...).)*//**/
+   * (works)*//**
 
   std::string
-  acceptanceGridPath( *(testInputHandler.getPathToKinematicsGrids()) );
+  acceptanceGridPathToFile( *(testInputHandler.getPathToKinematicsGrids()) );
   std::cout
-  << std::endl << "path to kinematics grids = " << acceptanceGridPath;
+  << std::endl << "path to kinematics grids = " << acceptanceGridPathToFile;
   std::cout << std::endl;
-  acceptanceGridPath.append(
+  acceptanceGridPathToFile.append(
                         "/7TeV/jets/Atlas4jMET/squark+gluino_acceptance.dat" );
   LHC_FASER::acceptanceGrid
-  jetsTestAcceptance( &acceptanceGridPath );
+  jetsTestAcceptance( &acceptanceGridPathToFile );
   std::cout
   << std::endl << "jetsTestAcceptance.valueAt( "
   << jetsTestAcceptance.getLowestSquarkMass() << ", "
@@ -1558,48 +1556,57 @@ int main( int argumentCount,
                                  0.0,
                                  0.0,
                                  0,
+                                 false,
                                  false )
-  << std::endl
+  << std::endl;
+  std::cout
   << "jetsTestAcceptance.valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
   << jetsTestAcceptance.valueAt( 123.4,
                                  567.8,
                                  12.3,
                                  45.6,
                                  4,
+                                 false,
                                  false )
-  << std::endl
+  << std::endl;
+  std::cout
   << "jetsTestAcceptance.valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
   << jetsTestAcceptance.valueAt( 234.5,
                                  678.9,
                                  12.3,
                                  45.6,
                                  4,
+                                 false,
                                  false )
-  << std::endl
+  << std::endl;
+  std::cout
   << "jetsTestAcceptance.valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
   << jetsTestAcceptance.valueAt( 876.5,
                                  432.1,
                                  1.0,
                                  1.0,
                                  4,
+                                 false,
                                  false )
-  << std::endl
+  << std::endl;
+  std::cout
   << "jetsTestAcceptance.valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
   << jetsTestAcceptance.valueAt( 501.0,
                                  501.0,
                                  0.0,
                                  0.0,
                                  4,
+                                 false,
                                  false );
   std::cout << std::endl;
-  acceptanceGridPath.assign( *(testInputHandler.getPathToKinematicsGrids()) );
+  acceptanceGridPathToFile.assign( *(testInputHandler.getPathToKinematicsGrids()) );
   std::cout
-  << std::endl << "path to kinematics grids = " << acceptanceGridPath;
+  << std::endl << "path to kinematics grids = " << acceptanceGridPathToFile;
   std::cout << std::endl;
-  acceptanceGridPath.append( "/7TeV/leptons/squark+gluino_acceptance.dat" );
+  acceptanceGridPathToFile.append( "/7TeV/leptons/squark+gluino_acceptance.dat" );
   LHC_FASER::acceptanceGrid*
   leptonsTestAcceptance
-  = new LHC_FASER::acceptanceGrid( &acceptanceGridPath );
+  = new LHC_FASER::acceptanceGrid( &acceptanceGridPathToFile );
   std::cout
   << std::endl << "leptonsTestAcceptance->valueAt( "
   << leptonsTestAcceptance->getLowestSquarkMass() << ", "
@@ -1610,7 +1617,8 @@ int main( int argumentCount,
                                      0.0,
                                      0.0,
                                      0,
-                                     true )
+                                     true,
+                                     false )
   << std::endl
   << "leptonsTestAcceptance->valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
   << leptonsTestAcceptance->valueAt( 123.4,
@@ -1618,6 +1626,7 @@ int main( int argumentCount,
                                      12.3,
                                      45.6,
                                      4,
+                                     false,
                                      false )
   << std::endl
   << "leptonsTestAcceptance->valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
@@ -1626,6 +1635,7 @@ int main( int argumentCount,
                                      12.3,
                                      45.6,
                                      4,
+                                     false,
                                      false )
   << std::endl
   << "leptonsTestAcceptance->valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
@@ -1634,6 +1644,7 @@ int main( int argumentCount,
                                      1.0,
                                      1.0,
                                      4,
+                                     false,
                                      false )
   << std::endl
   << "leptonsTestAcceptance->valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
@@ -1642,26 +1653,25 @@ int main( int argumentCount,
                                      0.0,
                                      0.0,
                                      4,
+                                     false,
                                      false );
   std::cout << std::endl;
   delete leptonsTestAcceptance;
-
+  **/
 
 
   /* testing the lepton kinematics grid stuff:
-   * (needs work:
-   *   the leptonAcceptanceGrids seem to give reasonable values, despite the
-   *   acceptanceGrids above not working.
-   *   leptonAcceptanceParameterSet::resetValues() seems to have
-   *   problems.)*//**/
+   * (works)*//**/
 
-  acceptanceGridPath.assign( *(testInputHandler.getPathToKinematicsGrids()) );
+  std::string
+  acceptanceGridPathToLeptons(
+                              *(testInputHandler.getPathToKinematicsGrids()) );
   std::cout
-  << std::endl << "path to kinematics grids = " << acceptanceGridPath;
+  << std::endl << "path to kinematics grids = " << acceptanceGridPathToLeptons;
   std::cout << std::endl;
-  acceptanceGridPath.append( "/7TeV/leptons" );
+  acceptanceGridPathToLeptons.append( "/7TeV/leptons" );
   LHC_FASER::leptonAcceptanceGrid
-  testLeptonAcceptanceGrid( &acceptanceGridPath,
+  testLeptonAcceptanceGrid( &acceptanceGridPathToLeptons,
                             &testInputHandler );
   std::cout
   << std::endl
@@ -1681,17 +1691,32 @@ int main( int argumentCount,
                                               false,
                                               true );
   std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "testLeptonAcceptanceGrid.getGluinoValue("
+  << " neutralino_2, 14 => 26 GeV ) = "
+  << testLeptonAcceptanceGrid.getGluinoValue(
+                                           testInputHandler.getNeutralinoTwo(),
+                                              14,
+                                              false,
+                                              true );
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "testLeptonAcceptanceGrid.getGluinoValue("
+  << " neutralino_2, 84 => 166 GeV ) = "
+  << testLeptonAcceptanceGrid.getGluinoValue(
+                                           testInputHandler.getNeutralinoTwo(),
+                                              84,
+                                              false,
+                                              true );
+  std::cout << std::endl;
 
   LHC_FASER::leptonAcceptanceTable*
   testSquarkBasedLeptonAcceptanceTable
   = new LHC_FASER::squarkBasedLeptonAcceptanceTable( &testLeptonAcceptanceGrid,
                                                 testInputHandler.getSdownR(),
                                                      &testInputHandler );
-  std::cout
-  << std::endl
-  << "testSquarkBasedLeptonAcceptanceTable ="
-  << " new squarkBasedLeptonAcceptanceTable seems to have worked.";
-  std::cout << std::endl;
   LHC_FASER::leptonAcceptanceParameterSet
   testLeptonAcceptanceParameterSet( &testInputHandler,
                                     testSquarkBasedLeptonAcceptanceTable,
@@ -1699,24 +1724,22 @@ int main( int argumentCount,
                                     testInputHandler.getNeutralinoTwo() );
   std::cout
   << std::endl
-  << "testLeptonAcceptanceParameterSet constructed without problems.";
-  std::cout << std::endl;
-  std::cout
-  << std::endl
   << "testLeptonAcceptanceParameterSet.getEffectiveSquarkMass() = "
   << testLeptonAcceptanceParameterSet.getEffectiveSquarkMass();
   std::cout
   << std::endl
-  << "wtf?";
-  std::cout << std::endl;
-  std::cout
-  << std::endl
   << "testLeptonAcceptanceParameterSet.acceptanceAt( 6.4, 10.0 ) = "
   << testLeptonAcceptanceParameterSet.acceptanceAt( 6.4,
-                                                    10.0 )
+                                                    10.0 );
+  std::cout
   << std::endl
   << "testLeptonAcceptanceParameterSet.acceptanceAt( 7.4, 12.3 ) = "
   << testLeptonAcceptanceParameterSet.acceptanceAt( 7.4,
+                                                    12.3 );
+  std::cout
+  << std::endl
+  << "testLeptonAcceptanceParameterSet.acceptanceAt( 1007.4, 12.3 ) = "
+  << testLeptonAcceptanceParameterSet.acceptanceAt( 1007.4,
                                                     12.3 );
   std::cout << std::endl;
   delete testSquarkBasedLeptonAcceptanceTable;
@@ -1731,6 +1754,11 @@ int main( int argumentCount,
                                              testInputHandler.getCharginoOne(),
                                                                            2.0,
                                                                        9.0 ) );
+  std::cout
+  << std::endl
+  << "testLeptonAcceptanceParameterSetPointer uses scharm_R rather than"
+  << " sdown_L, and importantly that the grid's lepton cut was 9.0 GeV rather"
+  << " than 10.0 GeV.";
   std::cout
   << std::endl
   << "testLeptonAcceptanceParameterSetPointer->getEffectiveSquarkMass() = "
