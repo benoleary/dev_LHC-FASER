@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 

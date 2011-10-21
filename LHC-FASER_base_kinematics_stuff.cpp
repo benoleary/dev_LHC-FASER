@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -63,7 +63,7 @@ namespace LHC_FASER
     secondaryLeptonCut( -1.0 ),
     jetCut( -1.0 ),
     excludedStandardModelProducts( NULL )
-  // this constructor sets the values to -1.0, which is the default "unset"
+  // this constructor sets the acceptanceValues to -1.0, which is the default "unset"
   // value.
   {
     // just an initialization list.
@@ -76,7 +76,7 @@ namespace LHC_FASER
     secondaryLeptonCut( copyPointer->secondaryLeptonCut ),
     jetCut( copyPointer->jetCut ),
     excludedStandardModelProducts( copyPointer->excludedStandardModelProducts )
-  // this constructor copies the values from a given acceptanceCutSet.
+  // this constructor copies the acceptanceValues from a given acceptanceCutSet.
   {
     // just an initialization list.
   }
@@ -88,17 +88,40 @@ namespace LHC_FASER
 
 
 
-  acceptanceGrid::acceptanceGrid( std::string const* const gridFileLocation )
-  {
-    // read in the grid:
+  /* these are for which elements of the acceptanceValues vector of vectors
+   * of vectors to use.
+   * N.B.! this bit is HIGHLY format-dependent, since the acceptanceValues are
+   * read in in the order:
+   * 1: light - heavy
+   * 2: light - medium
+   * 3: light - light
+   * 4: medium - heavy
+   * 5: medium - medium
+   * 6: heavy - heavy
+   * though these are stored in the vector as elements
+   * 0, 1, 2, 3, 4, & 5, which is why the comments below seem to not
+   * match the code.
+   */
+  int const acceptanceGrid::indexForLightLightNeutralinoPair( 2 );
+  int const acceptanceGrid::indexForLightMediumNeutralinoPair( 1 );
+  int const acceptanceGrid::indexForLightHeavyNeutralinoPair( 0 );
+  int const acceptanceGrid::indexForMediumMediumNeutralinoPair( 4 );
+  int const acceptanceGrid::indexForMediumHeavyNeutralinoPair( 3 );
+  int const acceptanceGrid::indexForHeavyHeavyNeutralinoPair( 5 );
 
+
+  acceptanceGrid::acceptanceGrid( std::string const* const gridFileLocation,
+                                  inputHandler const* const inputShortcut ) :
+      inputShortcut( inputShortcut )
+  {
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: acceptanceGrid::acceptanceGrid( " << *grid_file_location
+    << "debugging: acceptanceGrid::acceptanceGrid( " << *gridFileLocation
     << " ) called";
     std::cout << std::endl;**/
 
+    // read in the grid:
     if( NULL != gridFileLocation )
     {
       // open the file:
@@ -129,13 +152,13 @@ namespace LHC_FASER
       // we start out not knowing the step size for the grid (but we do
       // assume that it is a square grid).
       std::vector< double >* currentAcceptanceVector( NULL );
-      // this holds all the acceptance values for a grid point.
+      // this holds all the acceptance acceptanceValues for a grid point.
       std::vector< std::vector< double >* >* currentNeutralinoVector( NULL );
-      // this holds all the values for a set of points with the same
+      // this holds all the acceptanceValues for a set of points with the same
       // squark & gluino masses, but varying neutralino masses.
       std::vector< std::vector< std::vector< double >* >* >*
       currentGluinoVector( NULL );
-      // this holds all the values for a set of points with the same
+      // this holds all the acceptanceValues for a set of points with the same
       // squark masses, but varying gluino masses.
 
       while( inputFileReader.read_line( &inputLineAsString ) )
@@ -159,7 +182,7 @@ namespace LHC_FASER
         {
           neutralinoMasses.push_back( currentValue );
         }
-        currentAcceptanceVector = new std::vector< double >();
+        currentAcceptanceVector = new std::vector< double >;
         while( !(inputLineAsStream.eof()) )
         {
           inputLineAsStream >> currentValue;
@@ -167,24 +190,23 @@ namespace LHC_FASER
         }
         if( currentSquarkMass > lastSquarkMass )
           // if the squark mass has changed, we need a new vector for the
-          // values for varying gluino masses.
+          // acceptanceValues for varying gluino masses.
         {
           // 1st record the last set of points with the same squark mass:
           if( NULL != currentGluinoVector )
             // if we have a vector to add...
           {
             currentGluinoVector->push_back( currentNeutralinoVector );
-            values.push_back( currentGluinoVector );
+            acceptanceValues.push_back( currentGluinoVector );
 
             // debugging:
             /**std::cout
             << std::endl
             << "pushed back a neutralino vector of size "
-            << current_neutralino_vector->size()
+            << currentNeutralinoVector->size()
             << " and a gluino vector of size "
-            << current_gluino_vector->size();**/
+            << currentGluinoVector->size();**/
           }
-
           // prepare a new vector for the new squark mass:
           currentGluinoVector
           = new std::vector< std::vector< std::vector< double >* >* >;
@@ -193,7 +215,7 @@ namespace LHC_FASER
         }
         else if( currentGluinoMass > lastGluinoMass )
           /* if the gluino mass has changed (but the squark mass has not
-           * changed, we need a new vector for the values for varying
+           * changed, we need a new vector for the acceptanceValues for varying
            * neutralino masses.
            */
         {
@@ -202,15 +224,15 @@ namespace LHC_FASER
 
           // debugging:
           /**std::cout
-                << std::endl
-                << "pushed back a neutralino vector of size "
-                << current_neutralino_vector->size();**/
+          << std::endl
+          << "pushed back a neutralino vector of size "
+          << currentNeutralinoVector->size();**/
 
           // prepare a new vector for the new gluino mass:
           currentNeutralinoVector = new std::vector< std::vector< double >* >;
         }
 
-        if( !gridSizeStillUnknown
+        /*if( !gridSizeStillUnknown
             &&
             ( acceptanceColumns > currentAcceptanceVector->size() ) )
         {
@@ -222,7 +244,7 @@ namespace LHC_FASER
           << " \"ragged\"; hence *all* the lines for this grid will be"
           << " truncated to this smaller length.";
           std::cout << std::endl;
-        }
+        }*/
         currentNeutralinoVector->push_back( currentAcceptanceVector );
 
         if( gridSizeStillUnknown
@@ -237,9 +259,9 @@ namespace LHC_FASER
           // if we still need to work out the grid step size & we have read
           // in enough to do so...
         {
-          acceptanceColumns = currentAcceptanceVector->size();
+          //acceptanceColumns = currentAcceptanceVector->size();
           // first we take note of the 1st point, which should have the
-          // lowest co-ordinate values:
+          // lowest co-ordinate acceptanceValues:
           lowestSquarkMass = lastSquarkMass;
           lowestGluinoMass = lastGluinoMass;
           // then we work out the grid step size:
@@ -255,16 +277,16 @@ namespace LHC_FASER
           }
           // debugging:
           /**std::cout
-                << std::endl
-                << "scoloredMassStepSize = " << scoloredMassStepSize;**/
+          << std::endl
+          << "scoloredMassStepSize = " << scoloredMassStepSize;**/
 
           // now we need to work out the neutralino mass ratios to the
           // lighter colored sparticle:
-          double lowestNeutralinoMass = lowestSquarkMass;
-          double middleNeutralinoMass = lowestSquarkMass;
-          double highestNeutralinoMass = lowestSquarkMass;
+          double lowestNeutralinoMass( lowestSquarkMass );
+          double middleNeutralinoMass( lowestSquarkMass );
+          double highestNeutralinoMass( lowestSquarkMass );
           for( std::vector< double >::const_iterator
-               massIterator = neutralinoMasses.begin();
+               massIterator( neutralinoMasses.begin() );
                neutralinoMasses.end() > massIterator;
                ++massIterator )
           {
@@ -287,7 +309,7 @@ namespace LHC_FASER
             {
               highestNeutralinoMass = *massIterator;
             }
-            double lighterScoloredMass = lastSquarkMass;
+            double lighterScoloredMass( lastSquarkMass );
             if( lastGluinoMass < lastSquarkMass )
             {
               lighterScoloredMass = lastGluinoMass;
@@ -303,20 +325,20 @@ namespace LHC_FASER
         }
       }  // end of while loop going over the lines of the file.
       // we still have to add the last vectors:
-      acceptanceColumns = currentAcceptanceVector->size();
+      //acceptanceColumns = currentAcceptanceVector->size();
       currentGluinoVector->push_back( currentNeutralinoVector );
-      values.push_back( currentGluinoVector );
+      acceptanceValues.push_back( currentGluinoVector );
 
       // debugging:
       /**std::cout
-        << std::endl
-        << "pushed back last current_neutralino_vector of size "
-        << current_neutralino_vector->size()
-        << " & last current_gluino_vector of size "
-        << current_gluino_vector->size();
-        std::cout << std::endl;**/
+      << std::endl
+      << "pushed back last currentNeutralinoVector of size "
+      << currentNeutralinoVector->size()
+      << " & last currentGluinoVector of size "
+      << currentGluinoVector->size();
+      std::cout << std::endl;**/
 
-      // the last masses should be the maximal values:
+      // the last masses should be the maximal acceptanceValues:
       highestSquarkMass = currentSquarkMass;
       highestGluinoMass = currentGluinoMass;
     }
@@ -347,156 +369,114 @@ namespace LHC_FASER
     << ( lowNeutralinoMassRatio * lowestSquarkMass ) << ", "
     << ( highNeutralinoMassRatio * lowestSquarkMass ) << ", 0 ) is "
     << valueAt( lowestSquarkMass,
-                 lowestGluinoMass,
-                 ( lowNeutralinoMassRatio * lowestSquarkMass ),
-                 ( highNeutralinoMassRatio * lowestSquarkMass ),
-                 0 )
+                lowestGluinoMass,
+                ( lowNeutralinoMassRatio * lowestSquarkMass ),
+                ( highNeutralinoMassRatio * lowestSquarkMass ),
+                0 )
     << std::endl << "value at ( "
     << ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) << ", "
     << ( 0.5 * ( lowestGluinoMass + highestGluinoMass ) + 0.3 ) << ", "
     << ( ( lowNeutralinoMassRatio + 0.1 )
-     * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) )
+         * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) )
     << ", "
     << ( ( middleNeutralinoMassRatio + 0.1 )
-     * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) )
+         * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) )
     << ", 0 ) is "
     << valueAt( ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ),
-                 ( 0.5 * ( lowestGluinoMass + highestGluinoMass ) + 0.3 ),
-                 ( ( lowNeutralinoMassRatio + 0.1 )
-     * ( 0.5 * ( lowestSquarkMass + highestSquarkMass )
-                       + 0.2 ) ),
-                 ( ( middleNeutralinoMassRatio + 0.1 )
-     * ( 0.5 * ( lowestSquarkMass + highestSquarkMass )
-                       + 0.2 ) ),
-                 0 )
+                ( 0.5 * ( lowestGluinoMass + highestGluinoMass ) + 0.3 ),
+                ( ( lowNeutralinoMassRatio + 0.1 )
+                  * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) ),
+                ( ( middleNeutralinoMassRatio + 0.1 )
+                  * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) ),
+                0 )
     << std::endl << "printing out to test.dat";
     std::cout << std::endl;
-    std::ofstream test_output;
-    test_output.open( "test.dat" );
-    double output_squark_mass;
-    double output_gluino_mass;
-    double output_lighter_scolored_mass;
-    for( int squark_counter = 0;
-         values.size() > squark_counter;
-         ++squark_counter )
+    std::ofstream testOutput;
+    testOutput.open( "test.dat" );
+    double outputSquarkMass;
+    double outputGluinoMass;
+    double outputLighterScoloredMass;
+    for( int squarkCounter( 0 );
+         acceptanceValues.size() > squarkCounter;
+         ++squarkCounter )
+    {
+      outputSquarkMass
+      = ( lowestSquarkMass + ( scoloredMassStepSize * squarkCounter ) );
+      for( int gluinoCounter( 0 );
+           acceptanceValues.at( squarkCounter )->size() > gluinoCounter;
+           ++gluinoCounter )
       {
-
-        output_squark_mass
-        = ( lowestSquarkMass
-            + ( scoloredMassStepSize * squark_counter ) );
-
-        for( int gluino_counter = 0;
-            values.at( squark_counter )->size() > gluino_counter;
-            ++gluino_counter )
+        outputGluinoMass
+        = ( lowestGluinoMass + ( scoloredMassStepSize * gluinoCounter ) );
+        if( outputGluinoMass < outputSquarkMass )
+        {
+          outputLighterScoloredMass = outputGluinoMass;
+        }
+        else
+        {
+          outputLighterScoloredMass = outputSquarkMass;
+        }
+        for( int neutralinoCounter( 0 );
+             6 > neutralinoCounter;
+             ++neutralinoCounter )
+        {
+          testOutput
+          << " " << outputSquarkMass
+          << " " << outputGluinoMass;
+          if( 0 == neutralinoCounter )
           {
-
-            output_gluino_mass
-            = ( lowestGluinoMass
-                + ( scoloredMassStepSize * gluino_counter ) );
-
-            if( output_gluino_mass < output_squark_mass )
-              {
-
-                output_lighter_scolored_mass = output_gluino_mass;
-
-              }
-            else
-              {
-
-                output_lighter_scolored_mass = output_squark_mass;
-
-              }
-
-            for( int neutralino_counter = 0;
-                 6 > neutralino_counter;
-                 ++neutralino_counter )
-              {
-
-                test_output
-                << " " << output_squark_mass
-                << " " << output_gluino_mass;
-                if( 0 == neutralino_counter )
-                  {
-
-                    test_output
-                    << " " << ( lowNeutralinoMassRatio
-     * output_lighter_scolored_mass )
-                    << " " << ( highNeutralinoMassRatio
-     * output_lighter_scolored_mass );
-
-                  }
-                else if( 1 == neutralino_counter )
-                  {
-
-                    test_output
-                    << " " << ( lowNeutralinoMassRatio
-     * output_lighter_scolored_mass )
-                    << " " << ( middleNeutralinoMassRatio
-     * output_lighter_scolored_mass );
-
-                  }
-                else if( 2 == neutralino_counter )
-                  {
-
-                    test_output
-                    << " " << ( lowNeutralinoMassRatio
-     * output_lighter_scolored_mass )
-                    << " " << ( lowNeutralinoMassRatio
-     * output_lighter_scolored_mass );
-                  }
-                else if( 3 == neutralino_counter )
-                  {
-
-                    test_output
-                    << " " << ( middleNeutralinoMassRatio
-     * output_lighter_scolored_mass )
-                    << " " << ( highNeutralinoMassRatio
-     * output_lighter_scolored_mass );
-
-                  }
-                else if( 4 == neutralino_counter )
-                  {
-
-                    test_output
-                    << " " << ( middleNeutralinoMassRatio
-     * output_lighter_scolored_mass )
-                    << " " << ( middleNeutralinoMassRatio
-     * output_lighter_scolored_mass );
-
-                  }
-                else if( 5 == neutralino_counter )
-                  {
-
-                    test_output
-                    << " " << ( highNeutralinoMassRatio
-     * output_lighter_scolored_mass )
-                    << " " << ( highNeutralinoMassRatio
-     * output_lighter_scolored_mass );
-
-                  }
-
-                for( std::vector< double >::const_iterator
-                     acceptance_iterator
-                     = values.at( squark_counter )->at( gluino_counter
-                                        )->at( neutralino_counter )->begin();
-                    values.at( squark_counter )->at( gluino_counter
-                                             )->at( neutralino_counter )->end()
-                    > acceptance_iterator;
-                    ++acceptance_iterator )
-                  {
-
-                    test_output << " " << *acceptance_iterator;
-
-                  }
-
-                test_output << std::endl;
-
-              }
-
+            testOutput
+            << " " << ( lowNeutralinoMassRatio * outputLighterScoloredMass )
+            << " " << ( highNeutralinoMassRatio * outputLighterScoloredMass );
           }
-
+          else if( 1 == neutralinoCounter )
+          {
+            testOutput
+            << " " << ( lowNeutralinoMassRatio * outputLighterScoloredMass )
+            << " "
+            << ( middleNeutralinoMassRatio * outputLighterScoloredMass );
+          }
+          else if( 2 == neutralinoCounter )
+          {
+            testOutput
+            << " " << ( lowNeutralinoMassRatio * outputLighterScoloredMass )
+            << " " << ( lowNeutralinoMassRatio * outputLighterScoloredMass );
+          }
+          else if( 3 == neutralinoCounter )
+          {
+            testOutput
+            << " " << ( middleNeutralinoMassRatio * outputLighterScoloredMass )
+            << " " << ( highNeutralinoMassRatio * outputLighterScoloredMass );
+          }
+          else if( 4 == neutralinoCounter )
+          {
+            testOutput
+            << " " << ( middleNeutralinoMassRatio * outputLighterScoloredMass )
+            << " "
+            << ( middleNeutralinoMassRatio * outputLighterScoloredMass );
+          }
+          else if( 5 == neutralinoCounter )
+          {
+            testOutput
+            << " " << ( highNeutralinoMassRatio * outputLighterScoloredMass )
+            << " " << ( highNeutralinoMassRatio * outputLighterScoloredMass );
+          }
+          for( std::vector< double >::const_iterator
+               acceptanceIterator( acceptanceValues.at( squarkCounter )->at(
+                                                           gluinoCounter )->at(
+                                                neutralinoCounter )->begin() );
+               acceptanceValues.at( squarkCounter )->at(
+                                gluinoCounter )->at( neutralinoCounter )->end()
+               > acceptanceIterator;
+               ++acceptanceIterator )
+          {
+            testOutput << " " << *acceptanceIterator;
+          }
+          testOutput << std::endl;
+        }
       }
-    test_output.close();**/
+    }
+    testOutput.close();**/
   }
 
   acceptanceGrid::~acceptanceGrid()
@@ -505,8 +485,8 @@ namespace LHC_FASER
     // vectors:
     for( std::vector< std::vector< std::vector< std::vector< double
                                                            >* >* >* >::iterator
-         gluinoVectorIterator( values.begin() );
-         values.end() > gluinoVectorIterator;
+         gluinoVectorIterator( acceptanceValues.begin() );
+         acceptanceValues.end() > gluinoVectorIterator;
          ++gluinoVectorIterator )
     {
       for( std::vector< std::vector< std::vector< double >* >* >::iterator
@@ -528,813 +508,110 @@ namespace LHC_FASER
   }
 
 
-
-  double
-  acceptanceGrid::vectorElementAt( double const squarkMass,
-                                   double const gluinoMass,
-                                   int const neutralinoElement,
-                                   int const acceptanceElement )
-  const
-  /* this takes the values for the element of the acceptance vector in the
-   * specified element of the vector for neutralino masses requested for the
-   * nearest points based on squark & gluino masses & interpolates to the given
-   * masses.
+  bool
+  acceptanceGrid::pointIsOnGrid( double const squarkMass,
+                                 double const gluinoMass )
+  /* this looks to see if the squark & gluino masses are on the grid, & if
+   * so, sets lowerLeftVectorOfVectors, lowerRightVectorOfVectors,
+   * upperRightVectorOfVectors, upperLeftVectorOfVectors, squarkMassFraction,
+   * & gluinoMassFraction appropriately, returning true. otherwise, it
+   * returns false.
    */
   {
+    bool returnBool( false );
     if( ( 0.0 < scoloredMassStepSize )
         &&
         ( squarkMass >= lowestSquarkMass )
         &&
-        ( gluinoMass >= lowestGluinoMass )
-        &&
-        ( 0 <= neutralinoElement )
-        &&
-        ( 0 <= acceptanceElement ) )
+        ( gluinoMass >= lowestGluinoMass ) )
     {
-      double
-      squarkFraction( ( ( squarkMass - lowestSquarkMass )
-                        / scoloredMassStepSize ) );
+      squarkFraction
+      = ( ( squarkMass - lowestSquarkMass ) / scoloredMassStepSize );
       unsigned int squarkElement( (unsigned int)squarkFraction );
-      if( values.size() > ( squarkElement + 1 ) )
+      if( ( acceptanceValues.size() == ( squarkElement + 1 ) )
+          &&
+          ( 0.0 == squarkFraction ) )
+      {
+        --squarkElement;
+        squarkMassFraction = 1.0;
+      }
+      if( acceptanceValues.size() > ( squarkElement + 1 ) )
         // if the x co-ordinate is less than its maximal grid value...
       {
-        return vectorElementForSquarkMass( squarkElement,
-                                    ( squarkFraction - (double)squarkElement ),
-                                           gluinoMass,
-                                           (unsigned int)neutralinoElement,
-                                           (unsigned int)acceptanceElement );
-      }
-      else if( ( values.size() == ( squarkElement + 1 ) )
-               &&
-               ( squarkFraction == (double)squarkElement ) )
-        // ...or if the x co-ordinate is equal to its maximal grid value...
-      {
-        return vectorElementForSquarkMass( ( squarkElement - 1 ),
-                                           1.0,
-                                           gluinoMass,
-                                           (unsigned int)neutralinoElement,
-                                           (unsigned int)acceptanceElement );
+        gluinoFraction
+        = ( ( gluinoMass - lowestGluinoMass ) / scoloredMassStepSize );
+        unsigned int gluinoElement( (unsigned int)gluinoFraction );
+        if( ( acceptanceValues.at( squarkElement ) == ( gluinoElement + 1 ) )
+            &&
+            ( 0.0 == gluinoFraction ) )
+        {
+          --gluinoElement;
+          gluinoFraction = 1.0;
+        }
+        if( ( acceptanceValues.at( squarkElement )->size()
+              > ( gluinoElement + 1 ) )
+            &&
+            ( acceptanceValues.at( squarkElement + 1 )->size()
+              > ( gluinoElement + 1 ) ) )
+          // if the y co-ordinate is less than its maximal grid value (on both
+          // sides of the grid square)...
+        {
+          lowerLeftVectorOfVectors
+          = acceptanceValues.at( squarkElement )->at( gluinoElement );
+          lowerRightVectorOfVectors
+          = acceptanceValues.at( squarkElement + 1 )->at( gluinoElement );
+          upperRightVectorOfVectors
+          = acceptanceValues.at( squarkElement + 1 )->at( gluinoElement + 1 );
+          upperLeftVectorOfVectors
+          = acceptanceValues.at( squarkElement )->at( gluinoElement + 1 );
+          returnBool = true;
+        }
+        else
+          // otherwise, it's off the grid:
+        {
+          if( inputShortcut->isVerbose() )
+          {
+            std::cout
+            << std::endl
+            << "LHC-FASER::warning! acceptance requested for a gluino mass"
+            << " ( " << gluinoMass << " ) larger than allowed for ( "
+            << highestGluinoMass << " ) in the lookup table!";
+            std::cout << std::endl;
+          }
+        }
+
       }
       else
         // otherwise, it's off the grid:
       {
-        /**std::cout
+        if( inputShortcut->isVerbose() )
+        {
+          std::cout
+          << std::endl
+          << "LHC-FASER::warning! acceptance requested for a squark mass"
+          << " ( " << squarkMass << " ) larger than allowed for ( "
+          << highestSquarkMass << " ) in the lookup table!";
+          std::cout << std::endl;
+        }
+      }
+    }
+    else
+      // otherwise, it's off the grid:
+    {
+      if( inputShortcut->isVerbose() )
+      {
+        std::cout
         << std::endl
         << "LHC-FASER::warning! acceptance requested for a squark mass"
-        << " ( " << squarkMass << " ) larger than allowed for ( "
-        << highestSquarkMass << " ) in the lookup table!";
-        std::cout << std::endl;**/
-        return CppSLHA::CppSLHA_global::really_wrong_value;
+        << " ( " << squarkMass << " ) or gluino mass ( "
+        << gluinoMass << " ) smaller than allowed for ( "
+        << lowestSquarkMass << " or " << lowestGluinoMass << " respectively)"
+        << " in the lookup table (or the table is malformed with a negative"
+        << " grid size ( " << scoloredMassStepSize << " ))!";
+        std::cout << std::endl;
       }
     }
-    else
-      // otherwise, it's off the grid:
-    {
-      /**std::cout
-      << std::endl
-      << "LHC-FASER::warning! acceptance requested for a squark or gluino mass"
-      << " (or both) lower than the minimum allowed in the lookup table"
-      << " (or scoloredMassStepSize is < 0.0, which means that the table is"
-      << " malformed, or neutralinoElement or acceptanceElement (or any"
-      << " combination))!";
-      std::cout << std::endl;**/
-      return CppSLHA::CppSLHA_global::really_wrong_value;
-    }
-  }
-
-  double
-  acceptanceGrid::vectorElementForSquarkMass( unsigned int const squarkElement,
-                                              double const squarkFraction,
-                                              double const gluinoMass,
-                                          unsigned int const neutralinoElement,
-                                         unsigned int const acceptanceElement )
-  const
-  // this continues the job of vectorElementAt assuming that the correct
-  // std::vector for the squark mass has been found.
-  {
-    double gluinoFraction( ( ( gluinoMass - lowestGluinoMass )
-                             / scoloredMassStepSize ) );
-    unsigned int gluinoElement( (unsigned int)gluinoFraction );
-    if( values.back()->size() > ( gluinoElement + 1 ) )
-      // if the y co-ordinate is less than its maximal grid value...
-    {
-      return vectorElementForScoloredMasses( squarkElement,
-                                             squarkFraction,
-                                             gluinoElement,
-                                    ( gluinoFraction - (double)gluinoElement ),
-                                             neutralinoElement,
-                                             acceptanceElement );
-    }
-    else if( ( values.size() == ( gluinoElement + 1 ) )
-             &&
-             ( gluinoFraction == (double)gluinoElement ) )
-      // ...or if the y co-ordinate is equal to its maximal grid value...
-    {
-      return vectorElementForScoloredMasses( squarkElement,
-                                             squarkFraction,
-                                             ( gluinoElement - 1 ),
-                                             1.0,
-                                             neutralinoElement,
-                                             acceptanceElement );
-    }
-    else
-      // otherwise, it's off the grid:
-    {
-      /**std::cout
-      << std::endl
-      << "LHC-FASER::warning! acceptance requested for a gluino mass"
-      << " ( " << gluinoMass << " ) larger than allowed for ( "
-      << highestGluinoMass << " ) in the lookup table!";
-      std::cout << std::endl;**/
-      return CppSLHA::CppSLHA_global::really_wrong_value;
-    }
-  }
-
-  double
-  acceptanceGrid::vectorElementForScoloredMasses(
-                                              unsigned int const squarkElement,
-                                                  double const squarkFraction,
-                                              unsigned int const gluinoElement,
-                                                  double const gluinoFraction,
-                                          unsigned int const neutralinoElement,
-                                         unsigned int const acceptanceElement )
-  const
-  // this continues the job of vectorElementAt assuming that the correct
-  // std::vector for the squark mass has been found.
-  {
-    if( values.at( squarkElement )->at( gluinoElement )->size()
-        > neutralinoElement )
-      // if the neutralino element is allowed...
-    {
-      if( values.at( squarkElement )->at( gluinoElement )->at(
-                                                    neutralinoElement )->size()
-          > acceptanceElement )
-        // if the acceptance element is allowed...
-      {
-        return lhcFaserGlobal::squareBilinearInterpolation( squarkFraction,
-                                                            gluinoFraction,
-                                                       values.at( squarkElement
-                                                           )->at( gluinoElement
-                                                       )->at( neutralinoElement
-                                                    )->at( acceptanceElement ),
-                                               values.at( ( squarkElement + 1 )
-                                                           )->at( gluinoElement
-                                                       )->at( neutralinoElement
-                                                    )->at( acceptanceElement ),
-                                               values.at( ( squarkElement + 1 )
-                                                   )->at( ( gluinoElement + 1 )
-                                                       )->at( neutralinoElement
-                                                    )->at( acceptanceElement ),
-                                                       values.at( squarkElement
-                                                   )->at( ( gluinoElement + 1 )
-                                                       )->at( neutralinoElement
-                                                  )->at( acceptanceElement ) );
-      }
-      else
-        // otherwise, it's off the grid:
-      {
-        /**std::cout
-        << std::endl
-        << "LHC-FASER::warning! acceptanceElement requested larger than"
-        << " allowed in the lookup table!";
-        std::cout << std::endl;**/
-        return CppSLHA::CppSLHA_global::really_wrong_value;
-      }
-    }
-    else
-      // otherwise, it's off the grid:
-    {
-      /**std::cout
-      << std::endl
-      << "LHC-FASER::warning! neutralinoElement requested larger than"
-      << " allowed in the lookup table!";
-      std::cout << std::endl;**/
-      return CppSLHA::CppSLHA_global::really_wrong_value;
-    }
-  }
-
-  double
-  acceptanceGrid::valueAt( double const squarkMass,
-                           double const gluinoMass,
-                           double const firstNeutralinoMass,
-                           double const secondNeutralinoMass,
-                           int const acceptanceElement,
-                           bool const heavyNeutralinoEdgeIsLighterScoloredMass,
-                           bool const heavyNeutralinoAreaIsConstant )
-  const
-  /* this finds the grid square which the given point is in, & then uses
-   * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
-   * value, assuming that the heavy neutralino edge goes to 0.0 as the
-   * heavier neutralino mass approaches the lighter scolored mass unless
-   * heavyNeutralinoEdgeIsLighterScoloredMass is true, in which case
-   * it interpolates to the lighter scolored mass, or unless
-   * heavyNeutralinoAreaIsConstant is true, in which case it interpolates
-   * to the same value as the grid points with the heaviest neutralino mass.
-   */
-  {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: acceptanceGrid::valueAt( " << squarkMass
-    << ", " << gluinoMass << ", " << firstNeutralinoMass << ", "
-    << secondNeutralinoMass << ", " << acceptanceElement << ", "
-    << heavyNeutralinoEdgeIsLighterScoloredMass << ", "
-    << heavyNeutralinoAreaIsConstant
-    << " ) called.";
-    std::cout << std::endl;**/
-
-    if( ( 0 < acceptanceElement )
-        &&
-        ( (unsigned int)acceptanceElement < acceptanceColumns )
-        &&
-        ( 0.0 < scoloredMassStepSize )
-        &&
-        ( squarkMass >= lowestSquarkMass )
-        &&
-        ( gluinoMass >= lowestGluinoMass ) )
-    {
-      // 1st we find out which are the lighter sparticles:
-      double lighterScolored( squarkMass );
-      if( gluinoMass < squarkMass )
-      {
-        lighterScolored = gluinoMass;
-      }
-      double lighterNeutralino( firstNeutralinoMass );
-      double heavierNeutralino( secondNeutralinoMass );
-      if( secondNeutralinoMass < firstNeutralinoMass )
-      {
-        lighterNeutralino = secondNeutralinoMass;
-        heavierNeutralino = firstNeutralinoMass;
-      }
-      lighterNeutralino *= ( 1.0 / lighterScolored );
-      heavierNeutralino *= ( 1.0 / lighterScolored );
-      // now lighterNeutralino & heavierNeutralino are mass ratios.
-
-      // debugging:
-      /**std::cout
-        << std::endl
-        << "lighter_scolored = " << lighter_scolored
-        << std::endl
-        << "lighter_neutralino = " << lighter_neutralino
-        << std::endl
-        << "heavier_neutralino = " << heavier_neutralino
-        << std::endl
-        << "lowNeutralinoMassRatio = " << lowNeutralinoMassRatio
-        << std::endl
-        << "middleNeutralinoMassRatio = " << middleNeutralinoMassRatio
-        << std::endl
-        << "highNeutralinoMassRatio = " << highNeutralinoMassRatio;
-        std::cout << std::endl;**/
-
-      if( ( 1.0 > lighterNeutralino )
-          &&
-          ( 1.0 > heavierNeutralino ) )
-      {
-        /* now we work out which elements of the values vector of vectors
-         * of vectors to use.
-         * N.B.! this bit is HIGHLY format-dependent, since the values are
-         * read in in the order:
-         * 1: light - heavy
-         * 2: light - medium
-         * 3: light - light
-         * 4: medium - heavy
-         * 5: medium - medium
-         * 6: heavy - heavy
-         * though these are stored in the vector as elements
-         * 0, 1, 2, 3, 4, & 5, which is why the comments below seem to not
-         * match the code.
-         */
-        if( lowNeutralinoMassRatio > lighterNeutralino )
-        {
-          if( lowNeutralinoMassRatio > heavierNeutralino )
-          {
-            return vectorElementAt( squarkMass,
-                                    gluinoMass,
-                                    2,
-                                    acceptanceElement );
-            /*lower_left_point = 3;
-            lower_right_point = 3;
-            upper_right_point = 3;
-            upper_left_point = 3;*/
-          }
-          else if( middleNeutralinoMassRatio > heavierNeutralino )
-          {
-            return lhcFaserGlobal::unitLinearInterpolation(
-                               ( ( heavierNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    2,
-                                                           acceptanceElement ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    1,
-                                                         acceptanceElement ) );
-            /*lower_left_point = 3;
-            lower_right_point = 3;
-            upper_right_point = 2;
-            upper_left_point = 2;*/
-          }
-          else if( highNeutralinoMassRatio > heavierNeutralino )
-          {
-            return lhcFaserGlobal::unitLinearInterpolation(
-                            ( ( heavierNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    1,
-                                                           acceptanceElement ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    0,
-                                                         acceptanceElement ) );
-
-            /*lower_left_point = 2;
-            lower_right_point = 2;
-            upper_right_point = 1;
-            upper_left_point = 1;*/
-          }
-          else
-          {
-            if( heavyNeutralinoAreaIsConstant )
-            {
-              return vectorElementAt( squarkMass,
-                                      gluinoMass,
-                                      1,
-                                      acceptanceElement );
-            }
-            else
-            {
-              double heavyEdgeValue( 0.0 );
-              if( heavyNeutralinoEdgeIsLighterScoloredMass )
-              {
-                if( gluinoMass < squarkMass )
-                {
-                  heavyEdgeValue = gluinoMass;
-                }
-                else
-                {
-                  heavyEdgeValue = squarkMass;
-                }
-              }
-            return lhcFaserGlobal::unitLinearInterpolation(
-                              ( ( heavierNeutralino - highNeutralinoMassRatio )
-                                         / ( 1.0 - highNeutralinoMassRatio ) ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    1,
-                                                           acceptanceElement ),
-                                                              heavyEdgeValue );
-            }
-            /*lower_left_point = 1;
-            lower_right_point = 1;
-            upper_right_point = 0;
-            upper_left_point = 0;*/
-          }
-        }
-        else if( middleNeutralinoMassRatio > lighterNeutralino )
-        {
-          if( middleNeutralinoMassRatio > heavierNeutralino )
-          {
-            double lowerLeftValue( vectorElementAt( squarkMass,
-                                                    gluinoMass,
-                                                    2,
-                                                    acceptanceElement ) );
-            double upperRightValue( vectorElementAt( squarkMass,
-                                                     gluinoMass,
-                                                     4,
-                                                     acceptanceElement ) );
-            double upperLeftValue( vectorElementAt( squarkMass,
-                                                    gluinoMass,
-                                                    1,
-                                                    acceptanceElement ) );
-            double lowerRightValue( ( lowerLeftValue
-                                      + upperRightValue
-                                      - upperLeftValue ) );
-
-            return lhcFaserGlobal::squareBilinearInterpolation(
-                               ( ( lighterNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
-                        ( ( heavierNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
-                                                                lowerLeftValue,
-                                                               lowerRightValue,
-                                                               upperRightValue,
-                                                              upperLeftValue );
-            /*lower_left_point = 3;
-            lower_right_point = -2;
-            upper_right_point = 5;
-            upper_left_point = 2;*/
-          }
-          else if( highNeutralinoMassRatio > heavierNeutralino )
-          {
-            return lhcFaserGlobal::squareBilinearInterpolation(
-                               ( ( lighterNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
-                            ( ( heavierNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    1,
-                                                           acceptanceElement ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    4,
-                                                           acceptanceElement ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    3,
-                                                           acceptanceElement ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    0,
-                                                         acceptanceElement ) );
-            /*lower_left_point = 2;
-            lower_right_point = 5;
-            upper_right_point = 4;
-            upper_left_point = 1;*/
-          }
-          else
-          {
-            double heavyEdgeValue( 0.0 );
-            if( heavyNeutralinoEdgeIsLighterScoloredMass )
-            {
-              if( gluinoMass < squarkMass )
-              {
-                heavyEdgeValue = gluinoMass;
-              }
-              else
-              {
-                heavyEdgeValue = squarkMass;
-              }
-            }
-            else if( heavyNeutralinoAreaIsConstant )
-            {
-              heavyEdgeValue = vectorElementAt( squarkMass,
-                                                gluinoMass,
-                                                3,
-                                                acceptanceElement );
-            }
-            return lhcFaserGlobal::squareBilinearInterpolation(
-                               ( ( lighterNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
-                              ( ( heavierNeutralino - highNeutralinoMassRatio )
-                                / ( 1.0 - highNeutralinoMassRatio ) ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    0,
-                                                           acceptanceElement ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    3,
-                                                           acceptanceElement ),
-                                                                heavyEdgeValue,
-                                                              heavyEdgeValue );
-            /*lower_left_point = 1;
-            lower_right_point = 4;
-            upper_right_point = 0;
-            upper_left_point = 0;*/
-          }
-        }
-        else if( highNeutralinoMassRatio > lighterNeutralino )
-        {
-          if( highNeutralinoMassRatio > heavierNeutralino )
-          {
-            // debugging:
-            /**std::cout
-                    << std::endl
-                    << "so, highNeutralinoMassRatio > both > middle"
-                    << std::endl;
-                    std::cout << std::endl;**/
-
-            double lowerLeftValue( vectorElementAt( squarkMass,
-                                                    gluinoMass,
-                                                    4,
-                                                    acceptanceElement ) );
-
-            // debugging:
-            /**std::cout
-                    << std::endl
-                    << "lower_left_value = " << lower_left_value;
-                    std::cout << std::endl;**/
-
-            double upperRightValue( vectorElementAt( squarkMass,
-                                                     gluinoMass,
-                                                     5,
-                                                     acceptanceElement ) );
-
-            // debugging:
-            /**std::cout
-                    << std::endl
-                    << "upper_right_value = " << upper_right_value;
-                    std::cout << std::endl;**/
-
-            double upperLeftValue( vectorElementAt( squarkMass,
-                                                    gluinoMass,
-                                                    3,
-                                                    acceptanceElement ) );
-
-            // debugging:
-            /**std::cout
-                    << std::endl
-                    << "upper_left_value = " << upper_left_value;
-                    std::cout << std::endl;**/
-
-            double lowerRightValue( ( lowerLeftValue
-                                      + upperRightValue
-                                      - upperLeftValue ) );
-
-            // debugging:
-            /**std::cout
-                    << std::endl
-                    << "lower_right_value = " << lower_right_value;
-                    std::cout << std::endl;**/
-
-            return lhcFaserGlobal::squareBilinearInterpolation(
-                            ( ( lighterNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
-                            ( ( heavierNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
-                                                                lowerLeftValue,
-                                                               lowerRightValue,
-                                                               upperRightValue,
-                                                              upperLeftValue );
-            /*lower_left_point = 5;
-           lower_right_point = -4;
-           upper_right_point = 6;
-           upper_left_point = 4;*/
-          }
-          else
-          {
-            double heavyEdgeValue( 0.0 );
-            if( heavyNeutralinoEdgeIsLighterScoloredMass )
-            {
-              if( gluinoMass < squarkMass )
-              {
-                heavyEdgeValue = gluinoMass;
-              }
-              else
-              {
-                heavyEdgeValue = squarkMass;
-              }
-            }
-            else if( heavyNeutralinoAreaIsConstant )
-            {
-              heavyEdgeValue = vectorElementAt( squarkMass,
-                                                gluinoMass,
-                                                3,
-                                                acceptanceElement );
-            }
-            return lhcFaserGlobal::squareBilinearInterpolation(
-                            ( ( lighterNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
-                              ( ( heavierNeutralino - highNeutralinoMassRatio )
-                                / ( 1.0 - highNeutralinoMassRatio ) ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    3,
-                                                           acceptanceElement ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    5,
-                                                           acceptanceElement ),
-                                                                heavyEdgeValue,
-                                                              heavyEdgeValue );
-            /*lower_left_point = 4;
-            lower_right_point = 6;
-            upper_right_point = 0;
-            upper_left_point = 0;*/
-          }
-        }
-        else
-        {
-          double heavyEdgeValue( 0.0 );
-          if( heavyNeutralinoEdgeIsLighterScoloredMass )
-          {
-            if( gluinoMass < squarkMass )
-            {
-              heavyEdgeValue = gluinoMass;
-            }
-            else
-            {
-              heavyEdgeValue = squarkMass;
-            }
-          }
-          else if( heavyNeutralinoAreaIsConstant )
-          {
-            heavyEdgeValue = vectorElementAt( squarkMass,
-                                                gluinoMass,
-                                                5,
-                                                acceptanceElement );
-          }
-
-          return lhcFaserGlobal::unitLinearInterpolation(
-                              ( ( lighterNeutralino - highNeutralinoMassRatio )
-                                / ( 1.0 - highNeutralinoMassRatio ) ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    5,
-                                                           acceptanceElement ),
-                                                              heavyEdgeValue );
-          /*lower_left_point = 6;
-          lower_right_point = 6;
-          upper_right_point = 0;
-          upper_left_point = 0;*/
-        }  // at this point, the points have been assigned.
-      }
-      else
-      {
-        return CppSLHA::CppSLHA_global::really_wrong_value;
-      }
-    }
-    else
-    {
-      return CppSLHA::CppSLHA_global::really_wrong_value;
-    }
-  }
-
-  double
-  acceptanceGrid::valueAt( double const squarkMass,
-                           double const gluinoMass,
-                           double const degenerateNeutralinoMass,
-                           int const acceptanceElement,
-                           bool const heavyNeutralinoEdgeIsLighterScoloredMass,
-                           bool const heavyNeutralinoAreaIsConstant )
-  const
-  /* this finds the grid square which the given point is in, & then uses
-   * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
-   * value, assuming that the heavy neutralino edge goes to 0.0 as the
-   * heavier neutralino mass approaches the lighter scolored mass unless
-   * heavyNeutralinoEdgeIsLighterScoloredMass is true, in which case
-   * it interpolates to the lighter scolored mass, or unless
-   * heavyNeutralinoAreaIsConstant is true, in which case it interpolates
-   * to the same value as the grid points with the heaviest neutralino mass.
-   * N.B.: this version is just to save a little calculation for the
-   * lepton acceptance for a cascade because of the approximation that the
-   * kinematics for the lepton acceptance of 1 cascade is independent of that
-   * of the other cascade. the improvement is probably utterly negligible,
-   * but I want to write this function anyway...
-   */
-  {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: acceptanceGrid::valueAt( " << squarkMass
-    << ", " << gluinoMass << ", " << degenerateNeutralinoMass << ", "
-    << acceptanceElement << ", "
-    << heavyNeutralinoEdgeIsLighterScoloredMass << ", "
-    << heavyNeutralinoAreaIsConstant
-    << " ) called.";
-    std::cout << std::endl;**/
-
-    if( ( 0 < acceptanceElement )
-        &&
-        ( (unsigned int)acceptanceElement < acceptanceColumns )
-        &&
-        ( 0.0 < scoloredMassStepSize )
-        &&
-        ( squarkMass >= lowestSquarkMass )
-        &&
-        ( gluinoMass >= lowestGluinoMass ) )
-    {
-      // 1st we find out which are the lighter sparticles:
-      double lighterScolored( squarkMass );
-      if( gluinoMass < squarkMass )
-      {
-        lighterScolored = gluinoMass;
-      }
-      double neutralinoRatio = ( degenerateNeutralinoMass / lighterScolored );
-
-      // debugging:
-      /**std::cout
-      << std::endl
-      << "lighterScolored = " << lighterScolored
-      << std::endl
-      << "neutralinoRatio = " << neutralinoRatio
-      << std::endl
-      << "lowNeutralinoMassRatio = " << lowNeutralinoMassRatio
-      << std::endl
-      << "middleNeutralinoMassRatio = " << middleNeutralinoMassRatio
-      << std::endl
-      << "highNeutralinoMassRatio = " << highNeutralinoMassRatio;
-      std::cout << std::endl;**/
-
-      if( 1.0 > neutralinoRatio )
-      {
-        /* now we work out which elements of the values vector of vectors
-         * of vectors to use.
-         * N.B.! this bit is HIGHLY format-dependent, since the values are
-         * read in in the order:
-         * 1: light - heavy
-         * 2: light - medium
-         * 3: light - light
-         * 4: medium - heavy
-         * 5: medium - medium
-         * 6: heavy - heavy
-         * though these are stored in the vector as elements
-         * 0, 1, 2, 3, 4, & 5, which is why the comments below seem to not
-         * match the code.
-         */
-        if( lowNeutralinoMassRatio > neutralinoRatio )
-        {
-          return vectorElementAt( squarkMass,
-                                  gluinoMass,
-                                  2,
-                                  acceptanceElement );
-
-          /*lower_left_point = 3;
-          lower_right_point = 3;
-          upper_right_point = 3;
-          upper_left_point = 3;*/
-        }
-        else if( middleNeutralinoMassRatio > neutralinoRatio )
-        {
-          double lowerLeftValue( vectorElementAt( squarkMass,
-                                                  gluinoMass,
-                                                  2,
-                                                  acceptanceElement ) );
-          double upperRightValue( vectorElementAt( squarkMass,
-                                                   gluinoMass,
-                                                   4,
-                                                   acceptanceElement ) );
-          return lhcFaserGlobal::unitLinearInterpolation(
-                                 ( ( neutralinoRatio - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
-                                                              lowerLeftValue,
-                                                             upperRightValue );
-          /*lower_left_point = 3;
-          lower_right_point = -2;
-          upper_right_point = 5;
-          upper_left_point = 2;*/
-        }
-        else if( highNeutralinoMassRatio > neutralinoRatio )
-        {
-          double lowerLeftValue( vectorElementAt( squarkMass,
-                                                  gluinoMass,
-                                                  4,
-                                                  acceptanceElement ) );
-          double upperRightValue( vectorElementAt( squarkMass,
-                                                   gluinoMass,
-                                                   5,
-                                                   acceptanceElement ) );
-
-          return lhcFaserGlobal::unitLinearInterpolation(
-                              ( ( neutralinoRatio - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
-                                                              lowerLeftValue,
-                                                             upperRightValue );
-          /*lower_left_point = 5;
-          lower_right_point = -4;
-          upper_right_point = 6;
-          upper_left_point = 4;*/
-        }
-        else
-        {
-          if( heavyNeutralinoAreaIsConstant )
-          {
-            return vectorElementAt( squarkMass,
-                                    gluinoMass,
-                                    5,
-                                    acceptanceElement );
-          }
-          else
-          {
-            double heavyEdgeValue = 0.0;
-            if( heavyNeutralinoEdgeIsLighterScoloredMass )
-            {
-              if( gluinoMass < squarkMass )
-              {
-                heavyEdgeValue = gluinoMass;
-              }
-              else
-              {
-                heavyEdgeValue = squarkMass;
-              }
-            }
-            return lhcFaserGlobal::unitLinearInterpolation(
-                                ( ( neutralinoRatio - highNeutralinoMassRatio )
-                               / ( 1.0 - highNeutralinoMassRatio ) ),
-                                                   vectorElementAt( squarkMass,
-                                                                    gluinoMass,
-                                                                    5,
-                                                           acceptanceElement ),
-                                                              heavyEdgeValue );
-          }
-          /*lower_left_point = 6;
-          lower_right_point = 6;
-          upper_right_point = 0;
-          upper_left_point = 0;*/
-        }  // at this point, the points have been assigned.
-      }
-      else
-      {
-        return CppSLHA::CppSLHA_global::really_wrong_value;
-      }
-    }
-    else
-    {
-      return CppSLHA::CppSLHA_global::really_wrong_value;
-    }
+    return returnBool;
   }
 
 }  // end of LHC_FASER namespace.

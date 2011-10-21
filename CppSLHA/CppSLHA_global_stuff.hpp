@@ -107,7 +107,7 @@ namespace CppSLHA
     // or just a normally formatted int if given true.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-    // unrecorded values are returned as really_wrong_value, & I think that
+    // unrecorded acceptanceValues are returned as really_wrong_value, & I think that
     // NaN is the best value to return to show up errors:
     static double const really_wrong_value;
     static std::string const really_wrong_value_string;

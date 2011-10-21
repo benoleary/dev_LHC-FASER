@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -202,7 +202,7 @@ namespace LHC_FASER
     readierStillExists( true ),
     readier( readier )
   /* the constructor gives a pointer to a bool pair to given_readier which
-   * has values that given_readier changes. this object keeps a pointer to
+   * has acceptanceValues that given_readier changes. this object keeps a pointer to
    * given_readier so that it can de-register when its destructor is called.
    */
   {

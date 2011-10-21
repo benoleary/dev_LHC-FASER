@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -75,11 +75,11 @@ namespace LHC_FASER
 
     void
     reset( double const unsetValues )
-    // this sets all values to unsetValues & alreadyCalculatedFlag to false.
+    // this sets all acceptanceValues to unsetValues & alreadyCalculatedFlag to false.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     reset()
-    // this sets all values to CppSLHA::CppSLHA_global::really_wrong_value &
+    // this sets all acceptanceValues to CppSLHA::CppSLHA_global::really_wrong_value &
     // alreadyCalculatedFlag to false.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     bool
@@ -271,7 +271,7 @@ namespace LHC_FASER
 
 
   /* this is an abstract base class for objects that prepare lepton
-   * distributions & cache values for their distribution combined with given
+   * distributions & cache acceptanceValues for their distribution combined with given
    * acceptance cuts.
    *
    * it isn't actually intended as a kind of interface to allow multiple
@@ -308,7 +308,7 @@ namespace LHC_FASER
                    int const numberOfPositiveMuons )
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
-     * returns the set of values for acceptance * branching ratio FOR THE
+     * returns the set of acceptanceValues for acceptance * branching ratio FOR THE
      * CASCADE FROM electroweakDecayer ONWARDS (does NOT include the BR for
      * coloredDecayer to electroweakDecayer - this is dealt with by the
      * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
@@ -396,7 +396,7 @@ namespace LHC_FASER
     calculateAcceptance( acceptanceCutSet const* const cuts,
                          acceptanceValues* const currentAcceptance )
     = 0;
-    // this should set all the appropriate acceptance * branching ratio values
+    // this should set all the appropriate acceptance * branching ratio acceptanceValues
     // for the cascade.
 
     double
@@ -418,7 +418,7 @@ namespace LHC_FASER
 
   inline void
   acceptanceValues::reset( double const unsetValues )
-  // this sets all values to unsetValues & notAlreadyCalculatedFlag to true.
+  // this sets all acceptanceValues to unsetValues & notAlreadyCalculatedFlag to true.
   {
     notAlreadyCalculatedFlag = true;
     twoJets = unsetValues;
@@ -441,7 +441,7 @@ namespace LHC_FASER
 
   inline void
   acceptanceValues::reset()
-  // this sets all values to CppSLHA::CppSLHA_global::really_wrong_value &
+  // this sets all acceptanceValues to CppSLHA::CppSLHA_global::really_wrong_value &
   // alreadyCalculatedFlag to false.
   {
     reset( CppSLHA::CppSLHA_global::really_wrong_value );
@@ -780,7 +780,7 @@ namespace LHC_FASER
   electroweakCascade::getOssfMinusOsdf( acceptanceCutSet* const cuts )
   /* this does the common job of checking to see if the point has been
    * updated before calling the relevant protected virtual function, which
-   * returns the set of values for acceptance * branching ratio FOR THE
+   * returns the set of acceptanceValues for acceptance * branching ratio FOR THE
    * CASCADE FROM electroweakDecayer ONWARDS (does NOT include the BR for
    * coloredDecayer to electroweakDecayer - this is dealt with by the
    * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
@@ -820,7 +820,7 @@ namespace LHC_FASER
   {
     *cachedValuesAndFlag
     = new acceptanceValues( CppSLHA::CppSLHA_global::really_wrong_value );
-    // the new pair has the default "unset" values.
+    // the new pair has the default "unset" acceptanceValues.
     *cachedKey = new acceptanceCutSet( constructionKey );
   }
 
@@ -833,7 +833,7 @@ namespace LHC_FASER
   // for whether it has been calculated or not, & associates it with a key.
   {
     cachedValuesAndFlag->reset();
-    // the new pair has the default "unset" values.
+    // the new pair has the default "unset" acceptanceValues.
     cachedKey->becomeCopyOf( constructionKey );
   }
 

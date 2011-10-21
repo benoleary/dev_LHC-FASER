@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -300,7 +300,7 @@ namespace LHC_FASER
                                   std::string const* const jetCutName,
                                   int const acceptanceColumn )
     // this looks to see if there is an existing jetAcceptanceTable with the
-    // requested values, & if not, makes 1, & returns the pointer.
+    // requested acceptanceValues, & if not, makes 1, & returns the pointer.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
@@ -398,7 +398,7 @@ namespace LHC_FASER
                                            std::string const* const jetCutName,
                                                    int const acceptanceColumn )
   // this looks to see if there is an existing jetAcceptanceTable with the
-  // requested values, & if not, makes 1, & returns the pointer.
+  // requested acceptanceValues, & if not, makes 1, & returns the pointer.
   {
     return
     getJetAcceptanceTablesForOneBeamEnergy( beamEnergy )->getTable( jetCutName,

@@ -254,8 +254,8 @@ namespace CppSLHA
     static double const V_cs_squared_fraction;
 
     /* currently tau leptons are treated as stable in EW_scale_spectrum, but if
-     * they are to be implemented, these values should be used.
-     * all these values were taken from the PDG on 2009-11-10.
+     * they are to be implemented, these acceptanceValues should be used.
+     * all these acceptanceValues were taken from the PDG on 2009-11-10.
      */
     static double const tau_lepton_to_neutrinos_electron_BR;
     static double const tau_lepton_to_neutrinos_muon_BR;

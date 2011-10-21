@@ -53,7 +53,7 @@ namespace CppSLHA
    * regardless of whether they are within the #ifndef bit.
    */
 
-  // unrecorded values are returned as really_wrong_value, & I think that
+  // unrecorded acceptanceValues are returned as really_wrong_value, & I think that
   // NaN is the best value to return to show up errors:
   double const CppSLHA_global::really_wrong_value = NAN;
   std::string const

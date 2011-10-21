@@ -51,7 +51,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -1863,7 +1863,7 @@ namespace LHC_FASER
         {
           /* each term is checked to see if it's non-zero. "3.1" & "4.3"
            * were chosen since there should be no accidental
-           * cancellations with these values, since there are just
+           * cancellations with these acceptanceValues, since there are just
            * logarithms, powers of the end energies, & some rational
            * numbers, but none are multiples of 3.1 or 4.3 so there can
            * be no cancellation.

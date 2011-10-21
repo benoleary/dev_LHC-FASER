@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -80,7 +80,7 @@ namespace LHC_FASER
 
   /* this is an abstract base class to do the actual calculation of the value
    * of the event rate for a signal. the main differences in derived classes
-   * are what values they access from the handlers, how they put them
+   * are what acceptanceValues they access from the handlers, how they put them
    * together, & how they estimate the uncertainty factor.
    */
   class signalCalculator

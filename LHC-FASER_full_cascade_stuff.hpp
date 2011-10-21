@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -96,7 +96,7 @@ namespace LHC_FASER
    *
    * because fullCascadeSet stores its fullCascades in a
    * minimalAllocationVector, the constructor doesn't set any of the instance's
-   * pointers or values: this is left to setProperties. well, since the base
+   * pointers or acceptanceValues: this is left to setProperties. well, since the base
    * class is abstract, its constructor takes an argument which is unique to
    * each derived class, so it can be set safely since it should never to reset
    * to a different type. (typeOfColorfulCascade is used because I don't want
@@ -1086,7 +1086,7 @@ namespace LHC_FASER
     fullCascadeSetsForOneBeamEnergy*
     getFullCascadeSetsForOneBeamEnergy( int const beamEnergy )
     /* this looks to see if there is an existing
-     * fullCascadeSetsForOneBeamEnergy with the requested values, & if not,
+     * fullCascadeSetsForOneBeamEnergy with the requested acceptanceValues, & if not,
      * makes 1, & returns the pointer.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;

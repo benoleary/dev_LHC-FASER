@@ -771,7 +771,7 @@ namespace CppSLHA
 
   };  // end of SLHA_BLOCK class.
 
-  // this stores the values for a SLHA BLOCK that can be represented as
+  // this stores the acceptanceValues for a SLHA BLOCK that can be represented as
   // a single number.
   class zero_index_BLOCK : public SLHA_BLOCK
   {
@@ -839,7 +839,7 @@ namespace CppSLHA
 
   }; // end of zero_index_BLOCK class.
 
-  // this stores the values for a SLHA BLOCK that can be represented as
+  // this stores the acceptanceValues for a SLHA BLOCK that can be represented as
   // a 1-dimensional array.
   class one_index_BLOCK : public SLHA_BLOCK
   {
@@ -1118,7 +1118,7 @@ namespace CppSLHA
 
   }; // end of multiple_same_one_index_string_BLOCK class.
 
-  // this stores the values for a SLHA BLOCK that can be represented as
+  // this stores the acceptanceValues for a SLHA BLOCK that can be represented as
   // a 2-dimensional array.
   class two_index_BLOCK : public SLHA_BLOCK
   {
@@ -1193,7 +1193,7 @@ namespace CppSLHA
   }; // end of two_index_BLOCK class.
 
 
-  // this stores the values for a SLHA BLOCK that can be represented as a
+  // this stores the acceptanceValues for a SLHA BLOCK that can be represented as a
   // 3-dimensional array.
   class three_index_BLOCK : public SLHA_BLOCK
   {

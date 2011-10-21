@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -482,7 +482,7 @@ namespace LHC_FASER
   {
     electroweakCascadesForOneBeamEnergy* returnPointer( NULL );
     // we look to see if we already have a leptonAcceptancesForOneBeamEnergy
-    // for these values:
+    // for these acceptanceValues:
     for( std::vector< electroweakCascadesForOneBeamEnergy* >::iterator
          searchIterator( cascadeSetAtBeamEnergies.begin() );
          cascadeSetAtBeamEnergies.end() > searchIterator;

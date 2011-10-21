@@ -280,8 +280,8 @@ namespace CppSLHA
     = ( PDG_data::V_us_squared_fraction * PDG_data::W_plus_to_charmless_X_BR );
 
   /* currently tau leptons are treated as stable by the constructor, but if
-   * they are to be implemented, these values should be used.
-   * all these values were taken from the PDG on 2009-11-10.
+   * they are to be implemented, these acceptanceValues should be used.
+   * all these acceptanceValues were taken from the PDG on 2009-11-10.
    */
   double const PDG_data::tau_lepton_to_neutrinos_electron_BR = 0.1785;
   double const PDG_data::tau_lepton_to_neutrinos_muon_BR = 0.1736;

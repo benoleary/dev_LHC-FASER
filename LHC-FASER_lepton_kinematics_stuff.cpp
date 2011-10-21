@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -70,7 +70,7 @@ namespace LHC_FASER
 
 
 
-  leptonAcceptanceGrid::leptonAcceptanceGrid(
+  /*leptonAcceptanceGrid::leptonAcceptanceGrid(
                                      std::string const* const gridFileLocation,
                                          inputHandler const* const shortcut ) :
     shortcut( shortcut )
@@ -81,74 +81,307 @@ namespace LHC_FASER
     gridFileName.assign( *gridFileLocation );
     gridFileName.append( "/squark+antisquark_acceptance.dat" );
     squarkTable = new acceptanceGrid( &gridFileName );
+  }*/
+  leptonAcceptanceFromSquarkGrid::leptonAcceptanceFromSquarkGrid(
+                                     std::string const* const gridFileLocation,
+                                    inputHandler const* const inputShortcut ) :
+      acceptanceValues( gridFileLocation,
+                        inputShortcut )
+  {
+    // just an initialization list.
   }
 
-  leptonAcceptanceGrid::~leptonAcceptanceGrid()
+  leptonAcceptanceFromSquarkGrid::~leptonAcceptanceFromSquarkGrid()
   {
-    delete gluinoTable;
-    delete squarkTable;
+    // does nothing.
   }
 
 
-  double
-  leptonAcceptanceGrid::getSquarkValue( particlePointer const squark,
-                                        particlePointer const ewino,
-                                        int const requestedColumn )
-  const
-  /* this interpolates the requested column based on the squark, gluino, &
-   * electroweakino masses. it fudges some cases that were not properly done in
-   * the single-quark-flavor approximation.
-   */
+  void
+  leptonAcceptanceFromSquarkGrid::interpolateAcceptances(
+                                                       double const squarkMass,
+                                                          double gluinoMass,
+                                        double* const pseudorapidityAcceptance,
+                               std::vector< double >* const energyAcceptances )
+  // this interpolates the grid to obtain values for the acceptances based on
+  // the given masses.
   {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "leptonAcceptanceGrid::getSquarkValue(...) called.";
-    std::cout << std::endl;**/
-
-    double appropriateGluinoMass( shortcut->getGluinoMass() );
-    double appropriateSquarkMass( squark->get_absolute_mass() );
-    if( appropriateSquarkMass > appropriateGluinoMass )
+    if( gluinoMass < squarkMass)
     {
-      appropriateGluinoMass = ( appropriateSquarkMass + 1.0 );
+      gluinoMass = ( squarkMass + 1.0 );
     }
-    return squarkTable->neutralinoIndependentValueAt( appropriateSquarkMass,
-                                                      appropriateGluinoMass,
-                                                      requestedColumn );
-    // lepton acceptance parameters should be independent of the neutralino
-    // masses used.
+    energyAcceptances->clear();
+    if( pointIsOnGrid( squarkMass,
+                       gluinoMass ) )
+    {
+      if( ( indexForLightLightNeutralinoPair
+            < lowerLeftVectorOfVectors->size() )
+          &&
+          ( indexForLightLightNeutralinoPair
+            < lowerRightVectorOfVectors->size() )
+          &&
+          ( indexForLightLightNeutralinoPair
+            < upperRightVectorOfVectors->size() )
+          &&
+          ( upperLeftVectorOfVectors
+            < lowerRightVectorOfVectors->size() ) )
+      {
+        lowerLeftVector
+        = lowerLeftVectorOfVectors->at( indexForLightLightNeutralinoPair );
+        lowerRightVector
+        = lowerRightVectorOfVectors->at( indexForLightLightNeutralinoPair );
+        upperRightVector
+        = upperRightVectorOfVectors->at( indexForLightLightNeutralinoPair );
+        upperLeftVector
+        = upperLeftVectorOfVectors->at( indexForLightLightNeutralinoPair );
+        if( ( 3 < lowerLeftVector->size() )
+            &&
+            ( lowerLeftVector->size() == lowerRightVector->size() )
+            &&
+            ( lowerLeftVector->size() == upperRightVector->size() )
+            &&
+            ( lowerLeftVector->size() == upperLeftVector->size() ) )
+
+        *pseudorapidityAcceptance
+        = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
+                                                       gluinoMassFraction,
+                                                      lowerLeftVector->at( 1 ),
+                                                     lowerRightVector->at( 1 ),
+                                                     upperRightVector->at( 1 ),
+                                                    upperLeftVector->at( 1 ) );
+        for( unsigned int acceptanceCounter( 2 );
+             lowerLeftVector->size() > acceptanceCounter;
+             ++acceptanceCounter )
+        {
+          energyAcceptances->push_back(
+                                   lhcFaserGlobal::squareBilinearInterpolation(
+                                                            squarkMassFraction,
+                                                            gluinoMassFraction,
+                                      lowerLeftVector->at( acceptanceCounter ),
+                                     lowerRightVector->at( acceptanceCounter ),
+                                     upperRightVector->at( acceptanceCounter ),
+                                  upperLeftVector->at( acceptanceCounter ) ) );
+        }
+      }
+    }
+    if( energyAcceptances->empty() )
+      // if we didn't fill any entries in energyAcceptances, something was
+      // wrong with trying to find grid points for interpolation.
+    {
+      *pseudorapidityAcceptance = CppSLHA::CppSLHA_global::really_wrong_value;
+      energyAcceptances->push_back(
+                                 CppSLHA::CppSLHA_global::really_wrong_value );
+    }
   }
 
-  double
-  leptonAcceptanceGrid::getGluinoValue( particlePointer const ewino,
-                                        int const requestedColumn,
-                                      bool const lookingForEffectiveSquarkMass,
-                                  bool const lookingForLeptonAcceptanceNumber )
-  const
-  /* this interpolates the requested column based on the squark, gluino, &
-   * electroweakino masses. it fudges some cases that were not properly done in
-   * the single-quark-flavor approximation.
-   */
-  {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "leptonAcceptanceGrid::getGluinoValue(...) called.";
-    std::cout << std::endl;**/
 
-    double appropriateGluinoMass = shortcut->getGluinoMass();
-    double appropriateSquarkMass = shortcut->getAverageSquarks4Mass();
-    if( appropriateGluinoMass > appropriateSquarkMass )
+
+  leptonAcceptanceFromGluinoGrid::leptonAcceptanceFromGluinoGrid(
+                                     std::string const* const gridFileLocation,
+                                    inputHandler const* const inputShortcut ) :
+      acceptanceValues( gridFileLocation,
+                        inputShortcut )
+  {
+    // just an initialization list.
+  }
+
+  leptonAcceptanceFromGluinoGrid::~leptonAcceptanceFromGluinoGrid()
+  {
+    // does nothing.
+  }
+
+
+  void
+  leptonAcceptanceFromGluinoGrid::interpolateAcceptances( double squarkMass,
+                                                       double const gluinoMass,
+                                               double const electroweakinoMass,
+                                             double* const effectiveSquarkMass,
+                                        double* const pseudorapidityAcceptance,
+                               std::vector< double >* const energyAcceptances )
+  // this interpolates the grid to obtain values for the acceptances based on
+  // the given masses.
+  {
+    if( squarkMass < gluinoMass )
     {
-      appropriateSquarkMass = ( appropriateGluinoMass + 1.0 );
+      squarkMass = ( gluinoMass + 1.0 );
     }
-    return gluinoTable->valueAt( appropriateSquarkMass,
-                                 appropriateGluinoMass,
-                                 ewino->get_absolute_mass(),
-                                 ewino->get_absolute_mass(),
-                                 requestedColumn,
-                                 lookingForEffectiveSquarkMass,
-                                 lookingForLeptonAcceptanceNumber );
+    energyAcceptances->clear();
+    if( ( electroweakinoMass < gluinoMass )
+        &&
+        pointIsOnGrid( squarkMass,
+                       gluinoMass ) )
+    {
+      if( electroweakinoMass <= ( gluinoMass * lowNeutralinoMassRatio ) )
+      {
+        lowerElectroweakinoMassIndex = indexForLightLightNeutralinoPair;
+        shouldInterpolateOnElectroweakino = false;
+      }
+      else if( electroweakinoMass
+               <= ( gluinoMass * middleNeutralinoMassRatio ) )
+      {
+        lowerElectroweakinoMassIndex = indexForLightLightNeutralinoPair;
+        upperElectroweakinoMassIndex = indexForMediumMediumNeutralinoPair;
+        electroweakinoMassFraction
+        = ( ( ( electroweakinoMass / gluinoMass ) - lowNeutralinoMassRatio )
+            / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) );
+        shouldInterpolateOnElectroweakino = true;
+      }
+      else if( electroweakinoMass
+               <= ( gluinoMass * highNeutralinoMassRatio ) )
+      {
+        lowerElectroweakinoMassIndex = indexForMediumMediumNeutralinoPair;
+        upperElectroweakinoMassIndex = indexForHeavyHeavyNeutralinoPair;
+        electroweakinoMassFraction
+        = ( ( ( electroweakinoMass / gluinoMass ) - middleNeutralinoMassRatio )
+            / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) );
+        shouldInterpolateOnElectroweakino = true;
+      }
+      else
+      {
+        lowerElectroweakinoMassIndex = indexForHeavyHeavyNeutralinoPair;
+        shouldInterpolateOnElectroweakino = false;
+      }
+      int requiredSizeMinusOne( upperElectroweakinoMassIndex );
+      if( upperElectroweakinoMassIndex < lowerElectroweakinoMassIndex )
+      {
+        requiredSizeMinusOne = lowerElectroweakinoMassIndex;
+      }
+      if( ( requiredSizeMinusOne
+            < lowerLeftVectorOfVectors->size() )
+          &&
+          ( requiredSizeMinusOne
+            < lowerRightVectorOfVectors->size() )
+          &&
+          ( requiredSizeMinusOne
+            < upperRightVectorOfVectors->size() )
+          &&
+          ( requiredSizeMinusOne
+            < lowerRightVectorOfVectors->size() ) )
+      {
+        foreLowerLeftVector
+        = lowerLeftVectorOfVectors->at( lowerElectroweakinoMassIndex );
+        foreLowerRightVector
+        = lowerRightVectorOfVectors->at( lowerElectroweakinoMassIndex );
+        foreUpperRightVector
+        = upperRightVectorOfVectors->at( lowerElectroweakinoMassIndex );
+        foreUpperLeftVector
+        = upperLeftVectorOfVectors->at( lowerElectroweakinoMassIndex );
+        rearLowerLeftVector
+        = lowerLeftVectorOfVectors->at( upperElectroweakinoMassIndex );
+        rearLowerRightVector
+        = lowerRightVectorOfVectors->at( upperElectroweakinoMassIndex );
+        rearUpperRightVector
+        = upperRightVectorOfVectors->at( upperElectroweakinoMassIndex );
+        rearUpperLeftVector
+        = upperLeftVectorOfVectors->at( upperElectroweakinoMassIndex );
+        if( ( 2 < foreLowerLeftVector->size() )
+            &&
+            ( foreLowerLeftVector->size() == foreLowerRightVector->size() )
+            &&
+            ( foreLowerLeftVector->size() == foreUpperRightVector->size() )
+            &&
+            ( foreLowerLeftVector->size() == foreUpperLeftVector->size() )
+            &&
+            ( foreLowerLeftVector->size() == rearLowerLeftVector->size() )
+            &&
+            ( foreLowerLeftVector->size() == rearLowerRightVector->size() )
+            &&
+            ( foreLowerLeftVector->size() == rearUpperRightVector->size() )
+            &&
+            ( foreLowerLeftVector->size() == rearUpperLeftVector->size() ) )
+        {
+          *effectiveSquarkMass
+          = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
+                                                         gluinoMassFraction,
+                                                  foreLowerLeftVector->front(),
+                                                 foreLowerRightVector->front(),
+                                                 foreUpperRightVector->front(),
+                                                foreUpperLeftVector->front() );
+          *pseudorapidityAcceptance
+          = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
+                                                         gluinoMassFraction,
+                                                  foreLowerLeftVector->at( 1 ),
+                                                 foreLowerRightVector->at( 1 ),
+                                                 foreUpperRightVector->at( 1 ),
+                                                foreUpperLeftVector->at( 1 ) );
+          if( shouldInterpolateOnElectroweakino )
+          {
+            otherElectroweakinoValue
+            = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
+                                                           gluinoMassFraction,
+                                                  rearLowerLeftVector->front(),
+                                                 rearLowerRightVector->front(),
+                                                 rearUpperRightVector->front(),
+                                                rearUpperLeftVector->front() );
+            *effectiveSquarkMass = lhcFaserGlobal::unitLinearInterpolation(
+                                                    electroweakinoMassFraction,
+                                                          *effectiveSquarkMass,
+                                                    otherElectroweakinoValue );
+            otherElectroweakinoValue
+            = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
+                                                           gluinoMassFraction,
+                                                  rearLowerLeftVector->at( 1 ),
+                                                 rearLowerRightVector->at( 1 ),
+                                                 rearUpperRightVector->at( 1 ),
+                                                rearUpperLeftVector->at( 1 ) );
+            *pseudorapidityAcceptance
+            = lhcFaserGlobal::unitLinearInterpolation(
+                                                    electroweakinoMassFraction,
+                                                      lowerElectroweakinoValue,
+                                                    otherElectroweakinoValue );
+            for( unsigned int acceptanceCounter( 2 );
+                 lowerLeftVector->size() > acceptanceCounter;
+                 ++acceptanceCounter )
+            {
+              energyAcceptances->push_back(
+                                       lhcFaserGlobal::unitLinearInterpolation(
+                                                    electroweakinoMassFraction,
+                                   lhcFaserGlobal::squareBilinearInterpolation(
+                                                            squarkMassFraction,
+                                                            gluinoMassFraction,
+                                  foreLowerLeftVector->at( acceptanceCounter ),
+                                 foreLowerRightVector->at( acceptanceCounter ),
+                                 foreUpperRightVector->at( acceptanceCounter ),
+                                foreUpperLeftVector->at( acceptanceCounter ) ),
+                                   lhcFaserGlobal::squareBilinearInterpolation(
+                                                            squarkMassFraction,
+                                                            gluinoMassFraction,
+                                  rearLowerLeftVector->at( acceptanceCounter ),
+                                 rearLowerRightVector->at( acceptanceCounter ),
+                                 rearUpperRightVector->at( acceptanceCounter ),
+                            rearUpperLeftVector->at( acceptanceCounter ) ) ) );
+            }  // end of for loop filling energy acceptances.
+          }
+          else
+          {
+            for( unsigned int acceptanceCounter( 2 );
+                lowerLeftVector->size() > acceptanceCounter;
+                ++acceptanceCounter )
+            {
+              energyAcceptances->push_back(
+                                   lhcFaserGlobal::squareBilinearInterpolation(
+                                                            squarkMassFraction,
+                                                            gluinoMassFraction,
+                                  foreLowerLeftVector->at( acceptanceCounter ),
+                                 foreLowerRightVector->at( acceptanceCounter ),
+                                 foreUpperRightVector->at( acceptanceCounter ),
+                              foreUpperLeftVector->at( acceptanceCounter ) ) );
+            }  // end of for loop filling energy acceptances.
+          }  // end of whether we should interpolate on the electroweakino.
+        }  // end of if the acceptance vectors were the correct size.
+      }
+      // end of if vectors were large enough for the required electroweakino
+      // indices.
+    }  // end of if electroweakinoMass < gluinoMass && pointIsOnGrid(...).
+    if( energyAcceptances->empty() )
+      // if we didn't fill any entries in energyAcceptances, something was
+      // wrong with trying to find grid points for interpolation.
+    {
+      *effectiveSquarkMass = CppSLHA::CppSLHA_global::really_wrong_value;
+      *pseudorapidityAcceptance = CppSLHA::CppSLHA_global::really_wrong_value;
+      energyAcceptances->push_back(
+                                 CppSLHA::CppSLHA_global::really_wrong_value );
+    }
   }
 
 
@@ -241,7 +474,7 @@ namespace LHC_FASER
 
   void
   leptonAcceptanceParameterSet::resetValues()
-  // this interpolates values from acceptanceTable to set up acceptanceBins
+  // this interpolates acceptanceValues from acceptanceTable to set up acceptanceBins
   // for the given colored sparticle.
   {
     // debugging:
@@ -291,7 +524,7 @@ namespace LHC_FASER
                                                       double const givenEnergy,
                                                        double const givenCut )
   //const
-  /* this interpolates the values in acceptanceBins to the requested value,
+  /* this interpolates the acceptanceValues in acceptanceBins to the requested value,
    * or returns pseudorapidityAcceptance if it's lower, scaled to the given
    * value for the transverse momentum cut.
    */
@@ -564,13 +797,13 @@ namespace LHC_FASER
                                                           double const binSize,
                                            double const transverseMomentumCut )
   /* this looks to see if there is an existing
-   * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
+   * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, & if not,
    * makes 1, & returns the pointer.
    */
   {
     leptonAcceptancesForOneBeamEnergy* returnPointer( NULL );
     // we look to see if we already have a leptonAcceptancesForOneBeamEnergy
-    // for these values:
+    // for these acceptanceValues:
     for( std::vector< leptonAcceptancesForOneBeamEnergy* >::iterator
          searchIterator( acceptanceTables.begin() );
          acceptanceTables.end() > searchIterator;
@@ -586,7 +819,7 @@ namespace LHC_FASER
     }
     if( NULL == returnPointer )
       // if we do not already have a leptonAcceptancesForOneBeamEnergy for the
-      // requested values, we make a new instance:
+      // requested acceptanceValues, we make a new instance:
     {
       returnPointer = new leptonAcceptancesForOneBeamEnergy( shortcut,
                                                              beamEnergy,

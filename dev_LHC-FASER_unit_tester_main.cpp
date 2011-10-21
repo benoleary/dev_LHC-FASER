@@ -64,7 +64,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -134,9 +134,9 @@
 #include "LHC-FASER_cross-section_stuff.hpp"
 //#include "LHC-FASER_base_kinematics_stuff.hpp"
 #include "LHC-FASER_lepton_kinematics_stuff.hpp"
+#include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
 
 // future includes:
-//#include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
 //#include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
 //#include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
 //#include "LHC-FASER_electroweak_cascade_collection_stuff.hpp"
@@ -1535,7 +1535,7 @@ int main( int argumentCount,
   **/
 
 
-  /* testing the kinematics grid stuff:
+  /* testing the base kinematics grid stuff:
    * (works)*//**
 
   std::string
@@ -2554,7 +2554,7 @@ int main( int argumentCount,
   << "Z channel adder pointer = " << Z_channel
   << std::endl
   << std::endl
-  << "before asking for *any* values, "
+  << "before asking for *any* acceptanceValues, "
   << std::endl << "two_jets_no_leptons = "
   << *(two_jets_no_leptons.get_value_pointer())
   << std::endl << "one_jet_one_muon = "
@@ -2669,7 +2669,7 @@ int main( int argumentCount,
   delete Z_channel;
 
 
-  // now we call the values in a different order...
+  // now we call the acceptanceValues in a different order...
 
   LHC_FASER::cascade_acceptance_value two_jets_no_leptons2( 0.0 );
   LHC_FASER::cascade_acceptance_value one_jet_one_muon2( 0.0 );
@@ -2770,7 +2770,7 @@ int main( int argumentCount,
 
   std::cout
   << std::endl
-  << "now the values are called in the reverse order..."
+  << "now the acceptanceValues are called in the reverse order..."
   << std::endl
   << "smuon channel adder pointer = " << smuon_channel
   << std::endl
@@ -2779,7 +2779,7 @@ int main( int argumentCount,
   << "Z channel adder pointer = " << Z_channel
   << std::endl
   << std::endl
-  << "before asking for *any* values, "
+  << "before asking for *any* acceptanceValues, "
   << std::endl << "two_jets_no_leptons2 = "
   << *(two_jets_no_leptons2.get_value_pointer())
   << std::endl << "one_jet_one_muon2 = "

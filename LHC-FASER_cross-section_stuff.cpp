@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -74,7 +74,7 @@ namespace LHC_FASER
    * 210.0 210.0 432.1
    * ...).
    * if provided with a non-NULL pointer to another squareGrid, it stores
-   * the its values scaled by an interpolated value from this other
+   * the its acceptanceValues scaled by an interpolated value from this other
    * squareGrid.
    */
   {
@@ -167,10 +167,10 @@ namespace LHC_FASER
       // we start out not knowing the step size for the grid (but we do
       // assume that it is a square grid).
       std::vector< double >* currentVector( NULL );
-      // this holds all the values for a set of points with the same
+      // this holds all the acceptanceValues for a set of points with the same
       // x co-ordinate.
       unsigned int sizeOfLargestConstantXVector( 0 );
-      // this holds the size of the largest vector that gets added to values.
+      // this holds the size of the largest vector that gets added to acceptanceValues.
 
       while( inputFileReader.read_line( &inputLineAsString ) )
         // the evaluation of the conditional reads in the next line.
@@ -186,7 +186,7 @@ namespace LHC_FASER
                           >> currentValue;
         if( currentXCoordinate > lastXCoordinate )
           // if the x co-ordinate has changed, we need a new vector for the
-          // values for varying y co-ordinates.
+          // acceptanceValues for varying y co-ordinates.
         {
           // 1st record the last set of points with the same
           // x co-ordinate:
@@ -235,7 +235,7 @@ namespace LHC_FASER
           // in enough to do so...
         {
           // first we take note of the 1st point, which should have the
-          // lowest co-ordinate values:
+          // lowest co-ordinate acceptanceValues:
           lowestXCoordinate = lastXCoordinate;
           lowestYCoordinate = lastYCoordinate;
           // then we work out the grid step size:
@@ -256,7 +256,7 @@ namespace LHC_FASER
         }
       }  // end of while loop going over the lines of the file.
 
-      // we still have to add the last vector of values for the last x
+      // we still have to add the last vector of acceptanceValues for the last x
       // co-ordinate:
       values.push_back( currentVector );
       if( currentVector->size() > sizeOfLargestConstantXVector )
@@ -271,7 +271,7 @@ namespace LHC_FASER
         << current_vector->size();
         std::cout << std::endl;**/
 
-      // the last co-ordinates should be the maximal values:
+      // the last co-ordinates should be the maximal acceptanceValues:
       highestXCoordinate = currentXCoordinate;
       highestYCoordinate = currentYCoordinate;
 
@@ -334,7 +334,7 @@ namespace LHC_FASER
   /* this finds the grid square which the given point is in, & then uses
    * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
    * value. if the requested co-ordinates are outside the grid, or on the
-   * edges of the grid corresponding to the maximum x or y values,
+   * edges of the grid corresponding to the maximum x or y acceptanceValues,
    * CppSLHA::CppSLHA_global::really_wrong_value is returned.
    * N.B.: cross-section grids use
    * x_coordinate == SQUARK mass, y_coordinate == GLUINO mass!
@@ -349,9 +349,9 @@ namespace LHC_FASER
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "values.size() = " << values.size()
+      << "acceptanceValues.size() = " << acceptanceValues.size()
       << std::endl
-      << "values.back()->size() = " << values.back()->size();
+      << "acceptanceValues.back()->size() = " << acceptanceValues.back()->size();
       std::cout << std::endl;**/
 
       double xSteps( ( ( xCoordinate - lowestXCoordinate ) / gridStepSize ) );

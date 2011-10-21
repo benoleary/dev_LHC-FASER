@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -102,46 +102,71 @@ namespace LHC_FASER
   };
 
 
-  /* this class holds acceptanceGrid instances for looking up lepton
-   * acceptances & returns the interpolated values by looking up the masses of
-   * its sparticles. this class, as well as acceptanceGrid, has to be changed
-   * if the format of the acceptance grids changes.
+  /* this is a derived class to interpret an acceptanceGrid as acceptances for
+   * lepton distributions. this class, as well as acceptanceGrid, has to be
+   * changed if the format of the acceptance grids changes.
    */
-  class leptonAcceptanceGrid
+  class leptonAcceptanceFromSquarkGrid : public acceptanceGrid
   {
   public:
-    leptonAcceptanceGrid( std::string const* const gridFileLocation,
-                          inputHandler const* const shortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~leptonAcceptanceGrid()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    leptonAcceptanceFromSquarkGrid( std::string const* const gridFileLocation,
+                                    inputHandler const* const shortcut );
+    ~leptonAcceptanceFromSquarkGrid();
 
-    double
-    getSquarkValue( particlePointer const squark,
-                    particlePointer const ewino,
-                    int const requestedColumn )
-    const
-    /* this interpolates the requested column based on the squark, gluino, &
-     * electroweakino masses. it fudges some cases that were not properly done
-     * in the single-quark-flavor approximation.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    getGluinoValue( particlePointer const ewino,
-                    int const requestedColumn,
-                    bool const lookingForEffectiveSquarkMass,
-                    bool const lookingForLeptonAcceptanceNumber )
-    const
-    /* this interpolates the requested column based on the squark, gluino, &
-     * electroweakino masses. it fudges some cases that were not properly done
-     * in the single-quark-flavor approximation.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    interpolateAcceptances( double const squarkMass,
+                            double gluinoMass,
+                            double* const pseudorapidityAcceptance,
+                            std::vector< double >* const energyAcceptances );
+    // this interpolates the grid to obtain values for the acceptances based on
+    // the given masses.
 
   protected:
-    acceptanceGrid* gluinoTable;
-    acceptanceGrid* squarkTable;
-    inputHandler const* const shortcut;
+    std::vector< double >* lowerLeftVector;
+    std::vector< double >* lowerRightVector;
+    std::vector< double >* upperRightVector;
+    std::vector< double >* upperLeftVector;
+  };
+
+
+  /* this is a derived class to interpret an acceptanceGrid as acceptances for
+   * lepton distributions. this class, as well as acceptanceGrid, has to be
+   * changed if the format of the acceptance grids changes.
+   */
+  class leptonAcceptanceFromGluinoGrid : public acceptanceGrid
+  {
+  public:
+    leptonAcceptanceFromGluinoGrid( std::string const* const gridFileLocation,
+                                    inputHandler const* const shortcut );
+    ~leptonAcceptanceFromGluinoGrid();
+
+    void
+    interpolateAcceptances( double squarkMass,
+                            double const gluinoMass,
+                            double const electroweakinoMass,
+                            double* const effectiveSquarkMass,
+                            double* const pseudorapidityAcceptance,
+                            std::vector< double >* const energyAcceptances );
+    // this interpolates the grid to obtain values for the acceptances based on
+    // the given masses.
+
+  protected:
+    int lowerElectroweakinoMassIndex;
+    int upperElectroweakinoMassIndex;
+    double electroweakinoMassFraction;
+    bool shouldInterpolateOnElectroweakino;
+    double otherElectroweakinoValue;
+    std::vector< double >* foreLowerLeftVector;
+    std::vector< double >* foreLowerRightVector;
+    std::vector< double >* foreUpperRightVector;
+    std::vector< double >* foreUpperLeftVector;
+    std::vector< double >* rearLowerLeftVector;
+    std::vector< double >* rearLowerRightVector;
+    std::vector< double >* rearUpperRightVector;
+    std::vector< double >* rearUpperLeftVector;
+    // left-right is lighter-heavier squark mass,
+    // lower-upper is lighter-heavier gluino mass,
+    // fore-rear is lighter-heavier electroweakino mass.
   };
 
 
@@ -225,8 +250,8 @@ namespace LHC_FASER
   };
 
 
-  /* this stores the binned lepton transverse momentum acceptance values &
-   * returns interpolated values (given a transverse momentum cut to scale to).
+  /* this stores the binned lepton transverse momentum acceptance acceptanceValues &
+   * returns interpolated acceptanceValues (given a transverse momentum cut to scale to).
    * it also stores the effective squark mass & the pseudorapidity cut
    * acceptance.
    */
@@ -259,7 +284,7 @@ namespace LHC_FASER
                   double const givenCut )
     /* this checks to see if the acceptances need updating, then returns
      * calculateAcceptanceAt( givenEnergy,
-     *                        givenCut ), which interpolates the values in
+     *                        givenCut ), which interpolates the acceptanceValues in
      * acceptanceBins to the requested value, or returns
      * pseudorapidityAcceptance if it's lower, scaled to the given value for
      * the transverse momentum cut.
@@ -291,7 +316,7 @@ namespace LHC_FASER
 
     void
     resetValues()
-    // this interpolates values from acceptanceTable to set up acceptanceBins
+    // this interpolates acceptanceValues from acceptanceTable to set up acceptanceBins
     // for the given colored sparticle.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -299,7 +324,7 @@ namespace LHC_FASER
     calculateAcceptanceAt( double const givenEnergy,
                            double const givenCut )
     //const
-    /* this interpolates the values in acceptanceBins to the requested value,
+    /* this interpolates the acceptanceValues in acceptanceBins to the requested value,
      * or returns pseudorapidityAcceptance if it's lower, scaled to the given
      * value for the transverse momentum cut.
      */
@@ -403,7 +428,7 @@ namespace LHC_FASER
                                      double const binSize,
                                      double const transverseMomentumCut )
     // this looks to see if there is an existing leptonAcceptanceParameterSet
-    // with the requested values, & if not, makes 1, & returns the pointer.
+    // with the requested acceptanceValues, & if not, makes 1, & returns the pointer.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     leptonAcceptanceParameterSet*
     getLeptonAcceptanceParameterSet( int const beamEnergy,
@@ -416,7 +441,7 @@ namespace LHC_FASER
     leptonAcceptancesForOneBeamEnergy*
     getLeptonAcceptancesForOneBeamEnergy( int const beamEnergy )
     /* this looks to see if there is an existing
-     * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
+     * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, & if not,
      * makes 1, & returns the pointer.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -426,7 +451,7 @@ namespace LHC_FASER
                                           double const binSize,
                                           double const transverseMomentumCut )
     /* this looks to see if there is an existing
-     * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
+     * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, & if not,
      * makes 1, & returns the pointer.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -522,7 +547,7 @@ namespace LHC_FASER
                                               double const givenCut )
   /* this checks to see if the acceptances need updating, then returns
    * calculateAcceptanceAt( givenEnergy,
-   *                        givenCut ), which interpolates the values in
+   *                        givenCut ), which interpolates the acceptanceValues in
    * acceptanceBins to the requested value, or returns
    * pseudorapidityAcceptance if it's lower, scaled to the given value for
    * the transverse momentum cut.
@@ -584,7 +609,7 @@ namespace LHC_FASER
                                                           double const binSize,
                                           double const transverseMomentumCut )
   // this looks to see if there is an existing leptonAcceptanceParameterSet
-  // with the requested values, & if not, makes 1, & returns the pointer.
+  // with the requested acceptanceValues, & if not, makes 1, & returns the pointer.
   {
     return getLeptonAcceptancesForOneBeamEnergy( beamEnergy,
                                                  binSize,
@@ -612,7 +637,7 @@ namespace LHC_FASER
   leptonAcceptanceHandler::getLeptonAcceptancesForOneBeamEnergy(
                                                          int const beamEnergy )
   /* this looks to see if there is an existing
-   * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
+   * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, & if not,
    * makes 1, & returns the pointer.
    */
   {

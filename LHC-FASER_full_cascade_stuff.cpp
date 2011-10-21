@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -1203,13 +1203,13 @@ namespace LHC_FASER
   fullCascadeSetFactory::getFullCascadeSetsForOneBeamEnergy(
                                                          int const beamEnergy )
   /* this looks to see if there is an existing
-   * fullCascadeSetsForOneBeamEnergy with the requested values, & if not,
+   * fullCascadeSetsForOneBeamEnergy with the requested acceptanceValues, & if not,
    * makes 1, & returns the pointer.
    */
   {
     fullCascadeSetsForOneBeamEnergy* returnPointer( NULL );
     // we look to see if we already have a fullCascadeSetsForOneBeamEnergy for
-    // these values:
+    // these acceptanceValues:
     for( std::vector< fullCascadeSetsForOneBeamEnergy* >::iterator
          searchIterator( cascadeSetsPerEnergy.begin() );
          cascadeSetsPerEnergy.end() > searchIterator;

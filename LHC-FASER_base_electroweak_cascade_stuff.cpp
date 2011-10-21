@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -161,7 +161,7 @@ namespace LHC_FASER
                                      int const numberOfPositiveMuons )
   /* this does the common job of checking to see if the point has been
    * updated before calling the relevant protected virtual function, which
-   * returns the set of values for acceptance * branching ratio FOR THE
+   * returns the set of acceptanceValues for acceptance * branching ratio FOR THE
    * CASCADE FROM electroweakDecayer ONWARDS (does NOT include the BR for
    * coloredDecayer to electroweakDecayer - this is dealt with by the
    * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
@@ -190,11 +190,11 @@ namespace LHC_FASER
       {
         calculateAcceptance( cuts,
                              currentAcceptance );
-        // now currentAcceptance has values corresponding to cuts as well as
+        // now currentAcceptance has acceptanceValues corresponding to cuts as well as
         // being keyed to a copy of cuts.
         currentAcceptance->flagAsAlreadyCalculated();
       }
-      /* now currentAcceptance has the values which are calculated by this
+      /* now currentAcceptance has the acceptanceValues which are calculated by this
        * electroweakCascade in the valid entries. the entries in invalid
        * elements have leftover junk, but the condition of validSignal means
        * that they won't be looked at by this code.

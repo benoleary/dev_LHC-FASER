@@ -3419,7 +3419,7 @@ namespace CppSLHA
         double entry_writer;
 
         if( 22 == entry_counter )
-          // if we find the set of repeatable values...
+          // if we find the set of repeatable acceptanceValues...
           {
 
             entry_counter = 26;

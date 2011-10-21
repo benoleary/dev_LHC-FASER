@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -74,97 +74,77 @@
 
 namespace LHC_FASER
 {
-  // this stores the acceptance cut values which are associated with a
+  // this stores the acceptance cut acceptanceValues which are associated with a
   // particular signal.
   class acceptanceCutSet
   {
   public:
-    acceptanceCutSet()
-    // this constructor sets the values to -1.0, which is the default "unset"
+    acceptanceCutSet();
+    // this constructor sets the acceptanceValues to -1.0, which is the default "unset"
     // value.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    acceptanceCutSet( acceptanceCutSet const* const copySource )
-    // this constructor copies the values from a given acceptanceCutSet.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    acceptanceCutSet( acceptanceCutSet const* const copySource );
+    // this constructor copies the acceptanceValues from a given acceptanceCutSet.
     virtual
-    ~acceptanceCutSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~acceptanceCutSet();
 
     static bool
     compareJetAndBothLeptonCuts( acceptanceCutSet const* const firstPointer,
-                                 acceptanceCutSet const* const secondPointer )
+                                 acceptanceCutSet const* const secondPointer );
     // this returns true if both acceptanceCutSets have the same jet cut & both
     // lepton cuts.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     static bool
     compareJustBothLeptonCuts( acceptanceCutSet const* const firstPointer,
-                               acceptanceCutSet const* const secondPointer )
+                               acceptanceCutSet const* const secondPointer );
     // this returns true if both acceptanceCutSets have the same
     // primaryLeptonCut & secondaryLeptonCut, regardless of the jet cut.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     static bool
     compareJustPrimaryLeptonCut( acceptanceCutSet const* const firstPointer,
-                                 acceptanceCutSet const* const secondPointer )
+                                 acceptanceCutSet const* const secondPointer );
     // this returns true if both acceptanceCutSets have the same
-    // primaryLeptonCut, regardless of the other values.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    // primaryLeptonCut, regardless of the other acceptanceValues.
     static bool
     justReturnTrue( acceptanceCutSet const* const firstPointer,
-                    acceptanceCutSet const* const secondPointer )
+                    acceptanceCutSet const* const secondPointer );
     // this just returns true, for when the acceptance cut doesn't matter.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    becomeCopyOf( acceptanceCutSet const* const copyPointer )
-    // this copies the values from a given acceptanceCutSet.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    becomeCopyOf( acceptanceCutSet const* const copyPointer );
+    // this copies the acceptanceValues from a given acceptanceCutSet.
     int
     getBeamEnergy()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     // setBeamEnergy is only defined in the signalDefinitions derived class.
     double
     getPrimaryLeptonCut()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setPrimaryLeptonCut( double inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setPrimaryLeptonCut( double inputValue );
     double
     getSecondaryLeptonCut()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setSecondaryLeptonCut( double inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setSecondaryLeptonCut( double inputValue );
     double
     getLeptonCut()
-    const
+    const;
     // this just returns primary_lepton_cut. it is intended to be used when the
     // signal only has 1 lepton cut.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    setLeptonCut( double inputValue )
+    setLeptonCut( double inputValue );
     // this sets both primary_lepton_cut & secondary_lepton_cut to input_value.
     // it is intended to be used when the signal only has 1 lepton cut.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getJetCut()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setJetCut( double inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setJetCut( double inputValue );
     std::list< int > const*
     getExcludedStandardModelProducts()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setExcludedStandardModelProducts( std::list< int > const* inputList )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setExcludedStandardModelProducts( std::list< int > const* inputList );
     virtual bool
     isSameAcceptanceCutSet( acceptanceCutSet const* const comparisonCuts )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
 
   protected:
     int beamEnergy;
@@ -178,80 +158,25 @@ namespace LHC_FASER
 
 
   /* this class reads in a file in the assumed format, stores it, & gives out
-   * interpolated values. it was written with acceptances for leptons in mind,
+   * interpolated acceptanceValues. it was written with acceptances for leptons in mind,
    * to be adapted for jets plus missing transverse momentum as a special case,
    * with data files in the format
    * squarkMass gluinoMass lighterNeutralinoMass heavierNeutralinoMass
    * (continued) then either
-   * 42 lepton acceptance values (effective squark mass, pseudorapidity cut
+   * 42 lepton acceptance acceptanceValues (effective squark mass, pseudorapidity cut
    * acceptance, then 40 bins for transverse momentum cut acceptances)
    * or
-   * 7 acceptance values for different choices of which jets+MET combination to
+   * 7 acceptance acceptanceValues for different choices of which jets+MET combination to
    * use
    * then newline.
    */
   class acceptanceGrid
   {
   public:
-    acceptanceGrid( std::string const* const gridFileLocation )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~acceptanceGrid()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    acceptanceGrid( std::string const* const gridFileLocation,
+                    inputHandler const* const inputShortcut );
+    ~acceptanceGrid();
 
-    double
-    valueAt( double const squarkMass,
-             double const gluinoMass,
-             double const firstNeutralinoMass,
-             double const secondNeutralinoMass,
-             int const acceptanceElement,
-             bool const heavyNeutralinoEdgeIsLighterScoloredMass,
-             bool const heavyNeutralinoAreaIsConstant )
-    const
-    /* this finds the grid square which the given point is in, & then uses
-     * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
-     * value, assuming that the heavy neutralino edge goes to 0.0 as the
-     * heavier neutralino mass approaches the lighter scolored mass unless
-     * heavy_neutralino_edge_is_lighter_scolored_mass is true, in which case
-     * it interpolates to the lighter scolored mass, or unless
-     * heavy_neutralino_area_is_constant is true, in which case it interpolates
-     * to the same value as the grid points with the heaviest neutralino mass.
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    valueAt( double const squarkMass,
-             double const gluinoMass,
-             double const degenerateNeutralinoMass,
-             int const acceptanceElement,
-             bool const heavyNeutralinoEdgeIsLighterScoloredMass,
-             bool const heavyNeutralinoAreaIsConstant )
-    const
-    /* this finds the grid square which the given point is in, & then uses
-     * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
-     * value, assuming that the heavy neutralino edge goes to 0.0 as the
-     * heavier neutralino mass approaches the lighter scolored mass unless
-     * heavyNeutralinoEdgeIsLighterScoloredMass is true, in which case it
-     * interpolates to the lighter scolored mass, or unless
-     * heavyNeutralinoAreaIsConstant is true, in which case it interpolates
-     * to the same value as the grid points with the heaviest neutralino mass.
-     * N.B.: this version is just to save a little calculation for the
-     * lepton acceptance for a cascade because of the approximation that the
-     * kinematics for the lepton acceptance of 1 cascade is independent of that
-     * of the other cascade. the improvement is probably utterly negligible,
-     * but I want to write this function anyway...
-     */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    neutralinoIndependentValueAt( double const squarkMass,
-                                  double const gluinoMass,
-                                  int const acceptanceElement )
-    const
-    // this interpolates for acceptanceElement assuming that the neutralino
-    // masses are on the light-light grid point.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    int
-    getNumberOfAcceptanceColumns()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getLowestSquarkMass()
     const
@@ -270,6 +195,14 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
+    static int const indexForLightLightNeutralinoPair;
+    static int const indexForLightMediumNeutralinoPair;
+    static int const indexForLightHeavyNeutralinoPair;
+    static int const indexForMediumMediumNeutralinoPair;
+    static int const indexForMediumHeavyNeutralinoPair;
+    static int const indexForHeavyHeavyNeutralinoPair;
+
+    inputHandler const* const inputShortcut;
     double scoloredMassStepSize;
     double lowestSquarkMass;
     double highestSquarkMass;
@@ -279,37 +212,29 @@ namespace LHC_FASER
     double middleNeutralinoMassRatio;
     double highNeutralinoMassRatio;
     std::vector< std::vector< std::vector< std::vector< double >* >* >* >
-    values;
-    unsigned int acceptanceColumns;
+    acceptanceValues;
+    // these are pointers to vectors of pointers to vectors of acceptances
+    // which are used to store the acceptances nearest the current point:
+    std::vector< std::vector< double >* >* lowerLeftVectorOfVectors;
+    std::vector< std::vector< double >* >* lowerRightVectorOfVectors;
+    std::vector< std::vector< double >* >* upperRightVectorOfVectors;
+    std::vector< std::vector< double >* >* upperLeftVectorOfVectors;
+    double squarkMassFraction;
+    // this is the fraction of a step in the squark mass direction that the
+    // current point is from the grid point with squark mass just below.
+    double gluinoMassFraction;
+    // this is the fraction of a step in the gluino mass direction that the
+    // current point is from the grid point with gluino mass just below.
 
-    double
-    vectorElementAt( double const squarkMass,
-                     double const gluinoMass,
-                     int const neutralinoElement,
-                     int const acceptanceElement )
-    const
-    // this interpolates the values for the element of the vector for
-    // neutralino masses requested on the squark & gluino masses.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    double
-    vectorElementForSquarkMass( unsigned int const squarkElement,
-                                double const squarkFraction,
-                                double const gluinoMass,
-                                unsigned int const neutralinoElement,
-                                unsigned int const acceptanceElement )
-    const;
-    // this continues the job of vectorElementAt assuming that the correct
-    // std::vectors for the squark mass has been found.
-    double
-    vectorElementForScoloredMasses( unsigned int const squarkElement,
-                                    double const squarkFraction,
-                                    unsigned int const gluinoElement,
-                                    double const gluinoFraction,
-                                    unsigned int const neutralinoElement,
-                                    unsigned int const acceptanceElement )
-    const;
-    // this continues the job of vectorElementForSquarkMass assuming that the
-    // correct std::vector for the gluino mass has been found.
+    bool
+    pointIsOnGrid( double const squarkMass,
+                   double const gluinoMass );
+    /* this looks to see if the squark & gluino masses are on the grid, & if
+     * so, sets lowerLeftVectorOfVectors, lowerRightVectorOfVectors,
+     * upperRightVectorOfVectors, upperLeftVectorOfVectors, squarkMassFraction,
+     * & gluinoMassFraction appropriately, returning true. otherwise, it
+     * returns false.
+     */
   };
 
 
@@ -321,7 +246,7 @@ namespace LHC_FASER
 
   inline void
   acceptanceCutSet::becomeCopyOf( acceptanceCutSet const* const copyPointer )
-  // this copies the values from a given acceptanceCutSet.
+  // this copies the acceptanceValues from a given acceptanceCutSet.
   {
     beamEnergy = copyPointer->getBeamEnergy();
     primaryLeptonCut = copyPointer->getPrimaryLeptonCut();
@@ -472,12 +397,12 @@ namespace LHC_FASER
 
 
 
-  inline int
+  /*inline int
   acceptanceGrid::getNumberOfAcceptanceColumns()
   const
   {
     return acceptanceColumns;
-  }
+  }*/
 
   inline double
   acceptanceGrid::getLowestSquarkMass()
@@ -505,22 +430,6 @@ namespace LHC_FASER
   const
   {
     return highestGluinoMass;
-  }
-
-  inline double
-  acceptanceGrid::neutralinoIndependentValueAt( double const squarkMass,
-                                                double const gluinoMass,
-                                                int const acceptanceElement )
-  const
-  // this interpolates for acceptanceElement assuming that the neutralino
-  // masses are on the light-light grid point.
-  {
-    return vectorElementAt( squarkMass,
-                            gluinoMass,
-                            2,
-                            acceptanceElement );
-    // this is format-dependent, & corresponds to 2 being the index for
-    // light-light neutralinos in the grid.
   }
 
 }  // end of LHC_FASER namespace.

@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -80,7 +80,7 @@ namespace LHC_FASER
     unitLinearInterpolation( double const xFraction,
                              double const leftValue,
                              double const rightValue )
-    // this does a linear interpolation from the values at the given 2
+    // this does a linear interpolation from the acceptanceValues at the given 2
     // ends of a unit line segment for the given point in the segment.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     static double
@@ -90,7 +90,7 @@ namespace LHC_FASER
                                  double const lowerRightValue,
                                  double const upperRightValue,
                                  double const upperLeftValue )
-    // this does a bilinear interpolation from the values at the given 4
+    // this does a bilinear interpolation from the acceptanceValues at the given 4
     // corners of a unit square for the given point in the unit square.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -226,7 +226,7 @@ namespace LHC_FASER
   lhcFaserGlobal::unitLinearInterpolation( double const xFraction,
                                            double const leftValue,
                                            double const rightValue )
-  /* this does a linear interpolation from the values at the given 2
+  /* this does a linear interpolation from the acceptanceValues at the given 2
    * ends of a unit line segment for the given point in the segment.
    */
   {

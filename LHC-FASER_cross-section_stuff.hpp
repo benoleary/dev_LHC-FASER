@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup values. These should also be
+ *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -62,7 +62,7 @@
 namespace LHC_FASER
 {
   /* this class reads in a file in the assumed format, stores it, & gives out
-   * interpolated values. it was written with cross-sections in mind, with data
+   * interpolated acceptanceValues. it was written with cross-sections in mind, with data
    * files in the format
    * squark_mass gluino_mass cross-section newline
    * or K-factors, in a similar format.
@@ -85,7 +85,7 @@ namespace LHC_FASER
      * 210.0 210.0 432.1
      * ...).
      * if provided with a non-NULL pointer to another squareGrid, it stores
-     * the its values scaled by an interpolated value from this other
+     * the its acceptanceValues scaled by an interpolated value from this other
      * squareGrid.
      */
     squareGrid( std::string baseGridFileLocation,
@@ -188,7 +188,7 @@ namespace LHC_FASER
 
   /* this class holds several squareGrid instances as cross-section lookup
    * tables for various colored sparticle combinations, & returns their
-   * interpolated values for given signedParticleShortcutPair pointers.
+   * interpolated acceptanceValues for given signedParticleShortcutPair pointers.
    */
   class crossSectionTableSet
   {
