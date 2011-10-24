@@ -296,7 +296,7 @@ namespace LHC_FASER
 
     void
     buildOn( fullCascade* const copySource )
-    /* this copies the basic stuff (shortcut, beamEnergy, cascadeDefiner,
+    /* this copies the basic stuff (inputShortcut, beamEnergy, cascadeDefiner,
      * ewinoCascade, vectorCascade) from copySource, though not
      * typeOfColorfulCascade (which is always set by constructors) or
      * initialScolored (which depends on the type of derived class), & also it
@@ -1053,7 +1053,7 @@ namespace LHC_FASER
     getFullCascadeSet( particlePointer const initialScolored )
     /* this returns the fullCascadeSet for the requested colored sparticle, or
      * NULL if we were asked for a sparticle that is not the gluino or in
-     * shortcut->getSquarks().
+     * inputShortcut->getSquarks().
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -1211,7 +1211,7 @@ namespace LHC_FASER
 
   inline void
   fullCascade::buildOn( fullCascade* const copySource )
-  /* this copies the basic stuff (shortcut, beamEnergy, cascadeDefiner,
+  /* this copies the basic stuff (inputShortcut, beamEnergy, cascadeDefiner,
    * ewinoCascade, vectorCascade) from copySource, though not
    * typeOfColorfulCascade (which is always set by constructors) or
    * initialScolored (which depends on the type of derived class), & also it

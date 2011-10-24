@@ -200,7 +200,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    //signalShortcuts* const shortcut;
+    //signalShortcuts* const inputShortcut;
     crossSectionTable* crossSection;
     fullCascadeSet* firstCascadeSet;
     fullCascadeSet* secondCascadeSet;

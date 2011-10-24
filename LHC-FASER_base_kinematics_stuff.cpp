@@ -314,11 +314,11 @@ namespace LHC_FASER
             {
               lighterScoloredMass = lastGluinoMass;
             }
-            lowNeutralinoMassRatio = ( lowestNeutralinoMass
+            lowElectroweakinoMassRatio = ( lowestNeutralinoMass
                                        / lighterScoloredMass );
-            middleNeutralinoMassRatio = ( middleNeutralinoMass
+            mediumElectroweakinoMassRatio = ( middleNeutralinoMass
                                           / lighterScoloredMass );
-            highNeutralinoMassRatio = ( highestNeutralinoMass
+            highElectroweakinoMassRatio = ( highestNeutralinoMass
                                         / lighterScoloredMass );
           }
           gridSizeStillUnknown = false;
@@ -359,34 +359,34 @@ namespace LHC_FASER
     << std::endl << "highestSquarkMass = " << highestSquarkMass
     << std::endl << "lowestGluinoMass = " << lowestGluinoMass
     << std::endl << "highestGluinoMass = " << highestGluinoMass
-    << std::endl << "lowNeutralinoMassRatio = " << lowNeutralinoMassRatio
-    << std::endl << "middleNeutralinoMassRatio = "
-    << middleNeutralinoMassRatio
-    << std::endl << "highNeutralinoMassRatio = "
-    << highNeutralinoMassRatio
+    << std::endl << "lowElectroweakinoMassRatio = " << lowElectroweakinoMassRatio
+    << std::endl << "mediumElectroweakinoMassRatio = "
+    << mediumElectroweakinoMassRatio
+    << std::endl << "highElectroweakinoMassRatio = "
+    << highElectroweakinoMassRatio
     << std::endl << "value at ( " << lowestSquarkMass << ", "
     << lowestGluinoMass << ", "
-    << ( lowNeutralinoMassRatio * lowestSquarkMass ) << ", "
-    << ( highNeutralinoMassRatio * lowestSquarkMass ) << ", 0 ) is "
+    << ( lowElectroweakinoMassRatio * lowestSquarkMass ) << ", "
+    << ( highElectroweakinoMassRatio * lowestSquarkMass ) << ", 0 ) is "
     << valueAt( lowestSquarkMass,
                 lowestGluinoMass,
-                ( lowNeutralinoMassRatio * lowestSquarkMass ),
-                ( highNeutralinoMassRatio * lowestSquarkMass ),
+                ( lowElectroweakinoMassRatio * lowestSquarkMass ),
+                ( highElectroweakinoMassRatio * lowestSquarkMass ),
                 0 )
     << std::endl << "value at ( "
     << ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) << ", "
     << ( 0.5 * ( lowestGluinoMass + highestGluinoMass ) + 0.3 ) << ", "
-    << ( ( lowNeutralinoMassRatio + 0.1 )
+    << ( ( lowElectroweakinoMassRatio + 0.1 )
          * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) )
     << ", "
-    << ( ( middleNeutralinoMassRatio + 0.1 )
+    << ( ( mediumElectroweakinoMassRatio + 0.1 )
          * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) )
     << ", 0 ) is "
     << valueAt( ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ),
                 ( 0.5 * ( lowestGluinoMass + highestGluinoMass ) + 0.3 ),
-                ( ( lowNeutralinoMassRatio + 0.1 )
+                ( ( lowElectroweakinoMassRatio + 0.1 )
                   * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) ),
-                ( ( middleNeutralinoMassRatio + 0.1 )
+                ( ( mediumElectroweakinoMassRatio + 0.1 )
                   * ( 0.5 * ( lowestSquarkMass + highestSquarkMass ) + 0.2 ) ),
                 0 )
     << std::endl << "printing out to test.dat";
@@ -426,40 +426,40 @@ namespace LHC_FASER
           if( 0 == neutralinoCounter )
           {
             testOutput
-            << " " << ( lowNeutralinoMassRatio * outputLighterScoloredMass )
-            << " " << ( highNeutralinoMassRatio * outputLighterScoloredMass );
+            << " " << ( lowElectroweakinoMassRatio * outputLighterScoloredMass )
+            << " " << ( highElectroweakinoMassRatio * outputLighterScoloredMass );
           }
           else if( 1 == neutralinoCounter )
           {
             testOutput
-            << " " << ( lowNeutralinoMassRatio * outputLighterScoloredMass )
+            << " " << ( lowElectroweakinoMassRatio * outputLighterScoloredMass )
             << " "
-            << ( middleNeutralinoMassRatio * outputLighterScoloredMass );
+            << ( mediumElectroweakinoMassRatio * outputLighterScoloredMass );
           }
           else if( 2 == neutralinoCounter )
           {
             testOutput
-            << " " << ( lowNeutralinoMassRatio * outputLighterScoloredMass )
-            << " " << ( lowNeutralinoMassRatio * outputLighterScoloredMass );
+            << " " << ( lowElectroweakinoMassRatio * outputLighterScoloredMass )
+            << " " << ( lowElectroweakinoMassRatio * outputLighterScoloredMass );
           }
           else if( 3 == neutralinoCounter )
           {
             testOutput
-            << " " << ( middleNeutralinoMassRatio * outputLighterScoloredMass )
-            << " " << ( highNeutralinoMassRatio * outputLighterScoloredMass );
+            << " " << ( mediumElectroweakinoMassRatio * outputLighterScoloredMass )
+            << " " << ( highElectroweakinoMassRatio * outputLighterScoloredMass );
           }
           else if( 4 == neutralinoCounter )
           {
             testOutput
-            << " " << ( middleNeutralinoMassRatio * outputLighterScoloredMass )
+            << " " << ( mediumElectroweakinoMassRatio * outputLighterScoloredMass )
             << " "
-            << ( middleNeutralinoMassRatio * outputLighterScoloredMass );
+            << ( mediumElectroweakinoMassRatio * outputLighterScoloredMass );
           }
           else if( 5 == neutralinoCounter )
           {
             testOutput
-            << " " << ( highNeutralinoMassRatio * outputLighterScoloredMass )
-            << " " << ( highNeutralinoMassRatio * outputLighterScoloredMass );
+            << " " << ( highElectroweakinoMassRatio * outputLighterScoloredMass )
+            << " " << ( highElectroweakinoMassRatio * outputLighterScoloredMass );
           }
           for( std::vector< double >::const_iterator
                acceptanceIterator( acceptanceValues.at( squarkCounter )->at(

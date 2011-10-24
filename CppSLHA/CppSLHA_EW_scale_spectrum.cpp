@@ -1223,7 +1223,7 @@ namespace CppSLHA
                                    EW_scale_spectrum const* const copy_source )
   /* this copies in all the data from the given EW_scale_spectrum, *keeping*
    * all *this* EW_scale_spectrum's pointers, updating *their* data, so that
-   * for instance any shortcut pointers to this EW_scale_spectrum's particle
+   * for instance any inputShortcut pointers to this EW_scale_spectrum's particle
    * property sets will continue to work.
    */
   {

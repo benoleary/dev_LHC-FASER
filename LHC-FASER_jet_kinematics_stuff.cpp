@@ -187,11 +187,11 @@ namespace LHC_FASER
       << std::endl
       << "heavierNeutralino = " << heavierNeutralino
       << std::endl
-      << "lowNeutralinoMassRatio = " << lowNeutralinoMassRatio
+      << "lowElectroweakinoMassRatio = " << lowElectroweakinoMassRatio
       << std::endl
-      << "middleNeutralinoMassRatio = " << middleNeutralinoMassRatio
+      << "mediumElectroweakinoMassRatio = " << mediumElectroweakinoMassRatio
       << std::endl
-      << "highNeutralinoMassRatio = " << highNeutralinoMassRatio;
+      << "highElectroweakinoMassRatio = " << highElectroweakinoMassRatio;
       std::cout << std::endl;**//*
 
       if( ( 1.0 > lighterNeutralino )
@@ -212,9 +212,9 @@ namespace LHC_FASER
          * 0, 1, 2, 3, 4, & 5, which is why the comments below seem to not
          * match the code.
          *//*
-        if( lowNeutralinoMassRatio > lighterNeutralino )
+        if( lowElectroweakinoMassRatio > lighterNeutralino )
         {
-          if( lowNeutralinoMassRatio > heavierNeutralino )
+          if( lowElectroweakinoMassRatio > heavierNeutralino )
           {
             return vectorElementAt( squarkMass,
                                     gluinoMass,
@@ -225,11 +225,11 @@ namespace LHC_FASER
             upper_right_point = 3;
             upper_left_point = 3;*//*
           }
-          else if( middleNeutralinoMassRatio > heavierNeutralino )
+          else if( mediumElectroweakinoMassRatio > heavierNeutralino )
           {
             return lhcFaserGlobal::unitLinearInterpolation(
-                               ( ( heavierNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
+                               ( ( heavierNeutralino - lowElectroweakinoMassRatio )
+                    / ( mediumElectroweakinoMassRatio - lowElectroweakinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
                                                                     gluinoMass,
                                                                     2,
@@ -243,11 +243,11 @@ namespace LHC_FASER
             upper_right_point = 2;
             upper_left_point = 2;*//*
           }
-          else if( highNeutralinoMassRatio > heavierNeutralino )
+          else if( highElectroweakinoMassRatio > heavierNeutralino )
           {
             return lhcFaserGlobal::unitLinearInterpolation(
-                            ( ( heavierNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
+                            ( ( heavierNeutralino - mediumElectroweakinoMassRatio )
+                   / ( highElectroweakinoMassRatio - mediumElectroweakinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
                                                                     gluinoMass,
                                                                     1,
@@ -286,8 +286,8 @@ namespace LHC_FASER
                 }
               }
             return lhcFaserGlobal::unitLinearInterpolation(
-                              ( ( heavierNeutralino - highNeutralinoMassRatio )
-                                         / ( 1.0 - highNeutralinoMassRatio ) ),
+                              ( ( heavierNeutralino - highElectroweakinoMassRatio )
+                                         / ( 1.0 - highElectroweakinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
                                                                     gluinoMass,
                                                                     1,
@@ -300,9 +300,9 @@ namespace LHC_FASER
             upper_left_point = 0;*//*
           }
         }
-        else if( middleNeutralinoMassRatio > lighterNeutralino )
+        else if( mediumElectroweakinoMassRatio > lighterNeutralino )
         {
-          if( middleNeutralinoMassRatio > heavierNeutralino )
+          if( mediumElectroweakinoMassRatio > heavierNeutralino )
           {
             double lowerLeftValue( vectorElementAt( squarkMass,
                                                     gluinoMass,
@@ -321,10 +321,10 @@ namespace LHC_FASER
                                       - upperLeftValue ) );
 
             return lhcFaserGlobal::squareBilinearInterpolation(
-                               ( ( lighterNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
-                        ( ( heavierNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
+                               ( ( lighterNeutralino - lowElectroweakinoMassRatio )
+                    / ( mediumElectroweakinoMassRatio - lowElectroweakinoMassRatio ) ),
+                        ( ( heavierNeutralino - lowElectroweakinoMassRatio )
+                    / ( mediumElectroweakinoMassRatio - lowElectroweakinoMassRatio ) ),
                                                                 lowerLeftValue,
                                                                lowerRightValue,
                                                                upperRightValue,
@@ -334,13 +334,13 @@ namespace LHC_FASER
             upper_right_point = 5;
             upper_left_point = 2;*//*
           }
-          else if( highNeutralinoMassRatio > heavierNeutralino )
+          else if( highElectroweakinoMassRatio > heavierNeutralino )
           {
             return lhcFaserGlobal::squareBilinearInterpolation(
-                               ( ( lighterNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
-                            ( ( heavierNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
+                               ( ( lighterNeutralino - lowElectroweakinoMassRatio )
+                    / ( mediumElectroweakinoMassRatio - lowElectroweakinoMassRatio ) ),
+                            ( ( heavierNeutralino - mediumElectroweakinoMassRatio )
+                   / ( highElectroweakinoMassRatio - mediumElectroweakinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
                                                                     gluinoMass,
                                                                     1,
@@ -384,10 +384,10 @@ namespace LHC_FASER
                                                 acceptanceElement );
             }
             return lhcFaserGlobal::squareBilinearInterpolation(
-                               ( ( lighterNeutralino - lowNeutralinoMassRatio )
-                    / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) ),
-                              ( ( heavierNeutralino - highNeutralinoMassRatio )
-                                / ( 1.0 - highNeutralinoMassRatio ) ),
+                               ( ( lighterNeutralino - lowElectroweakinoMassRatio )
+                    / ( mediumElectroweakinoMassRatio - lowElectroweakinoMassRatio ) ),
+                              ( ( heavierNeutralino - highElectroweakinoMassRatio )
+                                / ( 1.0 - highElectroweakinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
                                                                     gluinoMass,
                                                                     0,
@@ -404,14 +404,14 @@ namespace LHC_FASER
             upper_left_point = 0;*//*
           }
         }
-        else if( highNeutralinoMassRatio > lighterNeutralino )
+        else if( highElectroweakinoMassRatio > lighterNeutralino )
         {
-          if( highNeutralinoMassRatio > heavierNeutralino )
+          if( highElectroweakinoMassRatio > heavierNeutralino )
           {
             // debugging:
             *//**std::cout
                     << std::endl
-                    << "so, highNeutralinoMassRatio > both > middle"
+                    << "so, highElectroweakinoMassRatio > both > middle"
                     << std::endl;
                     std::cout << std::endl;**//*
 
@@ -459,10 +459,10 @@ namespace LHC_FASER
                     std::cout << std::endl;**//*
 
             return lhcFaserGlobal::squareBilinearInterpolation(
-                            ( ( lighterNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
-                            ( ( heavierNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
+                            ( ( lighterNeutralino - mediumElectroweakinoMassRatio )
+                   / ( highElectroweakinoMassRatio - mediumElectroweakinoMassRatio ) ),
+                            ( ( heavierNeutralino - mediumElectroweakinoMassRatio )
+                   / ( highElectroweakinoMassRatio - mediumElectroweakinoMassRatio ) ),
                                                                 lowerLeftValue,
                                                                lowerRightValue,
                                                                upperRightValue,
@@ -494,10 +494,10 @@ namespace LHC_FASER
                                                 acceptanceElement );
             }
             return lhcFaserGlobal::squareBilinearInterpolation(
-                            ( ( lighterNeutralino - middleNeutralinoMassRatio )
-                   / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) ),
-                              ( ( heavierNeutralino - highNeutralinoMassRatio )
-                                / ( 1.0 - highNeutralinoMassRatio ) ),
+                            ( ( lighterNeutralino - mediumElectroweakinoMassRatio )
+                   / ( highElectroweakinoMassRatio - mediumElectroweakinoMassRatio ) ),
+                              ( ( heavierNeutralino - highElectroweakinoMassRatio )
+                                / ( 1.0 - highElectroweakinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
                                                                     gluinoMass,
                                                                     3,
@@ -537,8 +537,8 @@ namespace LHC_FASER
           }
 
           return lhcFaserGlobal::unitLinearInterpolation(
-                              ( ( lighterNeutralino - highNeutralinoMassRatio )
-                                / ( 1.0 - highNeutralinoMassRatio ) ),
+                              ( ( lighterNeutralino - highElectroweakinoMassRatio )
+                                / ( 1.0 - highElectroweakinoMassRatio ) ),
                                                    vectorElementAt( squarkMass,
                                                                     gluinoMass,
                                                                     5,
@@ -560,6 +560,532 @@ namespace LHC_FASER
       return CppSLHA::CppSLHA_global::really_wrong_value;
     }
   }*/
+
+
+
+  int const jetAcceptanceGrid::columnsToSkip( 1 );
+  // we want to skip the squark mass & we also want to count from 1 rather than
+  // from 0.
+
+  jetAcceptanceGrid::jetAcceptanceGrid(
+                                     std::string const* const gridFileLocation,
+                                    inputHandler const* const inputShortcut ) :
+      acceptanceValues( gridFileLocation,
+                        inputShortcut )
+  {
+    // just an initialization list.
+  }
+
+  jetAcceptanceGrid::~jetAcceptanceGrid()
+  {
+    // does nothing.
+  }
+
+
+  double
+  jetAcceptanceGrid::interpolateOnElectroweakinoAndAcceptanceIndices(
+                                                 int const electroweakinoIndex,
+                                                    int const acceptanceIndex )
+  /* this checks to see if the appropriate entries in lowerLeftVectorOfVectors,
+   * lowerRightVectorOfVectors, upperRightVectorOfVectors, &
+   * upperLeftVectorOfVectors exist, & if so, sets lowerLeftValue,
+   * lowerRightValue, upperRightValue, & upperLeftValue appropriately.
+   */
+  {
+    if( ( lowerLeftVectorOfVectors->size() > electroweakinoIndex )
+        &&
+        ( lowerLeftVectorOfVectors->at( electroweakinoIndex )->size()
+          > acceptanceIndex )
+        &&
+        ( lowerRightVectorOfVectors->size() > electroweakinoIndex )
+          &&
+        ( lowerRightVectorOfVectors->at( electroweakinoIndex )->size()
+          > acceptanceIndex )
+        &&
+        ( upperRightVectorOfVectors->size() > electroweakinoIndex )
+          &&
+        ( upperRightVectorOfVectors->at( electroweakinoIndex )->size()
+          > acceptanceIndex )
+        &&
+        ( upperLeftVectorOfVectors->size() > electroweakinoIndex )
+        &&
+        ( upperLeftVectorOfVectors->at( electroweakinoIndex )->size()
+          > acceptanceIndex ) )
+    {
+      return lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
+                                                          gluinoMassFraction,
+                                                  lowerLeftVectorOfVectors->at(
+                                                     electroweakinoIndex )->at(
+                                                             acceptanceIndex ),
+                                                 lowerRightVectorOfVectors->at(
+                                                     electroweakinoIndex )->at(
+                                                             acceptanceIndex ),
+                                                 upperRightVectorOfVectors->at(
+                                                     electroweakinoIndex )->at(
+                                                             acceptanceIndex ),
+                                                  upperLeftVectorOfVectors->at(
+                                                     electroweakinoIndex )->at(
+                                                           acceptanceIndex ) );
+    }
+    else
+    {
+      shouldInterpolateOnElectroweakinos = false;
+      // if the lower value was uncalculable, we shouldn't bother interpolating
+      // with an upper value, even if it is calculable.
+      return CppSLHA::CppSLHA_global::really_wrong_value;
+    }
+  }
+
+  double
+  jetAcceptanceGrid::getAcceptance( double const squarkMass,
+                                    double const gluinoMass,
+                                    double firstElectroweakinoMass,
+                                    double secondElectroweakinoMass,
+                                    int acceptanceColumn )
+  // this interpolates the grid to obtain values for the acceptances based on
+  // the given masses.
+  {
+    // 1st we ensure that firstElectroweakinoMass <= secondElectroweakinoMass:
+    if( firstElectroweakinoMass > secondElectroweakinoMass )
+    {
+      otherElectroweakinoValue = firstElectroweakinoMass;
+      firstElectroweakinoMass = secondElectroweakinoMass;
+      secondElectroweakinoMass = otherElectroweakinoValue;
+    }
+    // then we find out which scolored mass is lower:
+    if( squarkMass > gluinoMass )
+    {
+      lowerScoloredMass = gluinoMass;
+    }
+    else
+    {
+      lowerScoloredMass = squarkMass;
+    }
+    if( ( secondElectroweakinoMass < lowerScoloredMass )
+        &&
+        pointIsOnGrid( squarkMass,
+                       gluinoMass ) )
+      // if the point is on the grid...
+    {
+      acceptanceColumn += columnsToSkip;
+      // now acceptanceColumn is the index of the element in the vector that
+      // we want to find.
+      if( secondElectroweakinoMass
+          <= ( lowerScoloredMass * lowElectroweakinoMassRatio ) )
+        // if both electroweakinos are very light, we use just the lightest
+        // electroweakino grid point (interpolated on the scolored masses):
+      {
+        returnValue = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                              indexForLightLightNeutralinoPair,
+                                                            acceptanceColumn );
+        // this sets returnValue appropriately.
+      }
+      else
+        // otherwise, we need to interpolate...
+      {
+        shouldInterpolateOnElectroweakinos = true;
+        /* shouldInterpolateOnElectroweakinos is set to true _before_ calling
+         * interpolateOnElectroweakinoAndAcceptanceIndices because that
+         * function might set it to false because it was unable to calculate
+         * a lower value.
+         */
+
+        if( firstElectroweakinoMass
+            < ( lowerScoloredMass * lowElectroweakinoMassRatio ) )
+          // if we're going to do a linear interpolation...
+        {
+          if( secondElectroweakinoMass
+              <= ( lowerScoloredMass * mediumElectroweakinoMassRatio ) )
+            /* at this point we are sure that
+             * secondElectroweakinoMass
+             * > ( lowerScoloredMass * lowElectroweakinoMassRatio )
+             */
+          {
+            lighterLighterElectroweakinoPointValue
+            = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                              indexForLightLightNeutralinoPair,
+                                                            acceptanceColumn );
+            if( shouldInterpolateOnElectroweakinos )
+              // if that interpolation was successful...
+            {
+              lighterHeavierElectroweakinoPointValue
+              = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                             indexForLightMediumNeutralinoPair,
+                                                            acceptanceColumn );
+              if( shouldInterpolateOnElectroweakinos )
+                // if that interpolation was successful...
+              {
+                heavierElectroweakinoMassFraction
+                = ( ( ( secondElectroweakinoMass / gluinoMass )
+                      - lowElectroweakinoMassRatio )
+                    / ( mediumElectroweakinoMassRatio
+                        - lowElectroweakinoMassRatio ) );
+              }
+            }
+          }
+          else if( secondElectroweakinoMass
+                   <= ( lowerScoloredMass * highElectroweakinoMassRatio ) )
+              /* at this point we are sure that
+               * secondElectroweakinoMass
+               * > ( lowerScoloredMass * mediumElectroweakinoMassRatio )
+               */
+          {
+            lighterLighterElectroweakinoPointValue
+            = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                             indexForLightMediumNeutralinoPair,
+                                                            acceptanceColumn );
+            if( shouldInterpolateOnElectroweakinos )
+              // if that interpolation was successful...
+            {
+              lighterHeavierElectroweakinoPointValue
+              = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                              indexForLightHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+              if( shouldInterpolateOnElectroweakinos )
+                // if that interpolation was successful...
+              {
+                heavierElectroweakinoMassFraction
+                = ( ( ( secondElectroweakinoMass / gluinoMass )
+                      - mediumElectroweakinoMassRatio )
+                   / ( highElectroweakinoMassRatio
+                       - mediumElectroweakinoMassRatio ) );
+              }
+            }
+          }
+          else
+          {
+            lighterLighterElectroweakinoPointValue
+            = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                              indexForLightHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+            if( shouldInterpolateOnElectroweakinos )
+              // if that interpolation was successful...
+            {
+              lighterHeavierElectroweakinoPointValue = 0.0;
+              heavierElectroweakinoMassFraction
+              = ( ( ( secondElectroweakinoMass / gluinoMass )
+                    - highElectroweakinoMassRatio )
+                  / ( 1.0 - highElectroweakinoMassRatio ) );
+            }
+          }
+          if( shouldInterpolateOnElectroweakinos )
+            // if the interpolations so far were successful...
+          {
+            returnValue = lhcFaserGlobal::unitLinearInterpolation(
+                                             heavierElectroweakinoMassFraction,
+                                        lighterLighterElectroweakinoPointValue,
+                                      lighterHeavierElectroweakinoPointValue );
+          }
+          else
+          {
+            returnValue = CppSLHA::CppSLHA_global::really_wrong_value;
+          }
+        }
+        else
+          // otherwise we're going to do a bilinear interpolation:
+        {
+          if( secondElectroweakinoMass
+              <= ( lowerScoloredMass * mediumElectroweakinoMassRatio ) )
+            /* at this point we are sure that
+             * secondElectroweakinoMass
+             * > ( lowerScoloredMass * lowElectroweakinoMassRatio ) & that
+             * firstElectroweakinoMass
+             *  > ( lowerScoloredMass * lowElectroweakinoMassRatio ) &
+             *  <= ( lowerScoloredMass * mediumElectroweakinoMassRatio ) too.
+             */
+          {
+            lighterLighterElectroweakinoPointValue
+            = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                              indexForLightLightNeutralinoPair,
+                                                            acceptanceColumn );
+            if( shouldInterpolateOnElectroweakinos )
+              // if that interpolation was successful...
+            {
+              lighterHeavierElectroweakinoPointValue
+              = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                             indexForLightMediumNeutralinoPair,
+                                                            acceptanceColumn );
+              if( shouldInterpolateOnElectroweakinos )
+                // if that interpolation was successful...
+              {
+                heavierHeavierElectroweakinoPointValue
+                = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                            indexForMediumMediumNeutralinoPair,
+                                                            acceptanceColumn );
+                if( shouldInterpolateOnElectroweakinos )
+                  // if that interpolation was successful...
+                {
+                  heavierLighterElectroweakinoPointValue
+                  = ( lighterLighterElectroweakinoPointValue
+                      + heavierHeavierElectroweakinoPointValue
+                      - lighterHeavierElectroweakinoPointValue );
+                  lighterElectroweakinoMassFraction
+                  = ( ( ( firstElectroweakinoMass / gluinoMass )
+                        - lowElectroweakinoMassRatio )
+                      / ( mediumElectroweakinoMassRatio
+                          - lowElectroweakinoMassRatio ) );
+                  heavierElectroweakinoMassFraction
+                  = ( ( ( secondElectroweakinoMass / gluinoMass )
+                        - lowElectroweakinoMassRatio )
+                      / ( mediumElectroweakinoMassRatio
+                          - lowElectroweakinoMassRatio ) );
+                }
+              }
+            }
+            /* end of checking for successful interpolations. at this point,
+             * shouldInterpolateOnElectroweakinos will be true unless 1 of the
+             * interpolations went wrong, & all the values for the final
+             * bilinear interpolation will also be appropriately set.
+             */
+          }
+          else if( secondElectroweakinoMass
+                   <= ( lowerScoloredMass * highElectroweakinoMassRatio ) )
+            /* at this point we are sure that
+             * secondElectroweakinoMass
+             * > ( lowerScoloredMass * mediumElectroweakinoMassRatio ) & that
+             * firstElectroweakinoMass
+             *  > ( lowerScoloredMass * lowElectroweakinoMassRatio ) too.
+             */
+          {
+            if( firstElectroweakinoMass
+                <= ( lowerScoloredMass * mediumElectroweakinoMassRatio ) )
+              // if the heavier electroweakino is between the middle & high
+              // masses & the lighter is between low & middle...
+            {
+              lighterLighterElectroweakinoPointValue
+              = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                             indexForLightMediumNeutralinoPair,
+                                                            acceptanceColumn );
+              if( shouldInterpolateOnElectroweakinos )
+                // if that interpolation was successful...
+              {
+                lighterHeavierElectroweakinoPointValue
+                = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                              indexForLightHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+                if( shouldInterpolateOnElectroweakinos )
+                  // if that interpolation was successful...
+                {
+                  heavierHeavierElectroweakinoPointValue
+                  = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                             indexForMediumHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+                  if( shouldInterpolateOnElectroweakinos )
+                    // if that interpolation was successful...
+                  {
+                    heavierLighterElectroweakinoPointValue
+                    = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                            indexForMediumMediumNeutralinoPair,
+                                                            acceptanceColumn );
+                    if( shouldInterpolateOnElectroweakinos )
+                      // if that interpolation was successful...
+                    {
+                      lighterElectroweakinoMassFraction
+                      = ( ( ( firstElectroweakinoMass / gluinoMass )
+                            - lowElectroweakinoMassRatio )
+                          / ( mediumElectroweakinoMassRatio
+                              - lowElectroweakinoMassRatio ) );
+                      heavierElectroweakinoMassFraction
+                      = ( ( ( secondElectroweakinoMass / gluinoMass )
+                            - lowElectroweakinoMassRatio )
+                          / ( mediumElectroweakinoMassRatio
+                              - lowElectroweakinoMassRatio ) );
+                    }
+                  }
+                }
+              }
+              /* end of checking for successful interpolations. at this point,
+               * shouldInterpolateOnElectroweakinos will be true unless 1 of the
+               * interpolations went wrong, & all the values for the final
+               * bilinear interpolation will also be appropriately set.
+               */
+            }
+            else
+              // otherwise the heavier electroweakino is between the middle &
+              // high masses & the lighter is between middle & high too...
+            {
+              lighterLighterElectroweakinoPointValue
+              = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                            indexForMediumMediumNeutralinoPair,
+                                                            acceptanceColumn );
+              if( shouldInterpolateOnElectroweakinos )
+                // if that interpolation was successful...
+              {
+                lighterHeavierElectroweakinoPointValue
+                = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                             indexForMediumHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+                if( shouldInterpolateOnElectroweakinos )
+                  // if that interpolation was successful...
+                {
+                  heavierHeavierElectroweakinoPointValue
+                  = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                              indexForHeavyHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+                  if( shouldInterpolateOnElectroweakinos )
+                    // if that interpolation was successful...
+                  {
+                    heavierLighterElectroweakinoPointValue
+                    = ( lighterLighterElectroweakinoPointValue
+                        + heavierHeavierElectroweakinoPointValue
+                        - lighterHeavierElectroweakinoPointValue );
+                    lighterElectroweakinoMassFraction
+                    = ( ( ( firstElectroweakinoMass / gluinoMass )
+                          - mediumElectroweakinoMassRatio )
+                        / ( highElectroweakinoMassRatio
+                            - mediumElectroweakinoMassRatio ) );
+                    heavierElectroweakinoMassFraction
+                    = ( ( ( secondElectroweakinoMass / gluinoMass )
+                          - mediumElectroweakinoMassRatio )
+                        / ( highElectroweakinoMassRatio
+                            - mediumElectroweakinoMassRatio ) );
+                  }
+                }
+              }
+              /* end of checking for successful interpolations. at this point,
+               * shouldInterpolateOnElectroweakinos will be true unless 1 of the
+               * interpolations went wrong, & all the values for the final
+               * bilinear interpolation will also be appropriately set.
+               */
+            }
+          }
+          else
+            // otherwise we're in the region where the heavier electroweakino
+            // is heavier than the heavier grid value...
+          {
+            if( firstElectroweakinoMass
+                <= ( lowerScoloredMass * mediumElectroweakinoMassRatio ) )
+              // if the lighter electroweakino is between the low & middle
+              // masses...
+            {
+              lighterLighterElectroweakinoPointValue
+              = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                             indexForLightMediumNeutralinoPair,
+                                                            acceptanceColumn );
+              if( shouldInterpolateOnElectroweakinos )
+                // if that interpolation was successful...
+              {
+                heavierLighterElectroweakinoPointValue
+                = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                             indexForMediumHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+              if( shouldInterpolateOnElectroweakinos )
+                // if that interpolation was successful...
+              {
+                lighterHeavierElectroweakinoPointValue = 0.0;
+                heavierHeavierElectroweakinoPointValue = 0.0;
+                lighterElectroweakinoMassFraction
+                = ( ( ( firstElectroweakinoMass / gluinoMass )
+                      - lowElectroweakinoMassRatio )
+                    / ( mediumElectroweakinoMassRatio
+                        - lowElectroweakinoMassRatio ) );
+                heavierElectroweakinoMassFraction
+                = ( ( ( secondElectroweakinoMass / gluinoMass )
+                      - highElectroweakinoMassRatio )
+                    / ( 1.0 - highElectroweakinoMassRatio ) );
+                }
+              }
+              /* end of checking for successful interpolations. at this point,
+               * shouldInterpolateOnElectroweakinos will be true unless 1 of the
+               * interpolations went wrong, & all the values for the final
+               * bilinear interpolation will also be appropriately set.
+               */
+            }
+            else if( firstElectroweakinoMass
+                     <= ( lowerScoloredMass * highElectroweakinoMassRatio ) )
+              // if the lighter electroweakino is between the middle & high
+              // masses...
+            {
+              lighterLighterElectroweakinoPointValue
+              = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                             indexForMediumHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+              if( shouldInterpolateOnElectroweakinos )
+                // if that interpolation was successful...
+              {
+                heavierLighterElectroweakinoPointValue
+                = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                              indexForHeavyHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+                if( shouldInterpolateOnElectroweakinos )
+                  // if that interpolation was successful...
+                {
+                  lighterHeavierElectroweakinoPointValue = 0.0;
+                  heavierHeavierElectroweakinoPointValue = 0.0;
+                  lighterElectroweakinoMassFraction
+                  = ( ( ( firstElectroweakinoMass / gluinoMass )
+                        - mediumElectroweakinoMassRatio )
+                      / ( highElectroweakinoMassRatio
+                          - mediumElectroweakinoMassRatio ) );
+                  heavierElectroweakinoMassFraction
+                  = ( ( ( secondElectroweakinoMass / gluinoMass )
+                        - highElectroweakinoMassRatio )
+                      / ( 1.0 - highElectroweakinoMassRatio ) );
+                }
+              }
+              /* end of checking for successful interpolations. at this point,
+               * shouldInterpolateOnElectroweakinos will be true unless 1 of the
+               * interpolations went wrong, & all the values for the final
+               * bilinear interpolation will also be appropriately set.
+               */
+            }
+            else
+              // otherwise both are in the region over the heavier grid value:
+            {
+              lighterLighterElectroweakinoPointValue
+              = interpolateOnElectroweakinoAndAcceptanceIndices(
+                                              indexForHeavyHeavyNeutralinoPair,
+                                                            acceptanceColumn );
+              if( shouldInterpolateOnElectroweakinos )
+                // if that interpolation was successful...
+              {
+                heavierLighterElectroweakinoPointValue = 0.0;
+                lighterHeavierElectroweakinoPointValue = 0.0;
+                heavierHeavierElectroweakinoPointValue = 0.0;
+                lighterElectroweakinoMassFraction
+                = ( ( ( firstElectroweakinoMass / gluinoMass )
+                      - highElectroweakinoMassRatio )
+                    / ( 1.0 - highElectroweakinoMassRatio ) );
+                heavierElectroweakinoMassFraction
+                = ( ( ( secondElectroweakinoMass / gluinoMass )
+                      - highElectroweakinoMassRatio )
+                    / ( 1.0 - highElectroweakinoMassRatio ) );
+              }
+              /* end of checking for successful interpolations. at this point,
+               * shouldInterpolateOnElectroweakinos will be true unless 1 of the
+               * interpolations went wrong, & all the values for the final
+               * bilinear interpolation will also be appropriately set.
+               */
+            }
+          }
+          if( shouldInterpolateOnElectroweakinos )
+            // if the interpolations so far were successful...
+          {
+            returnValue = lhcFaserGlobal::squareBilinearInterpolation(
+                                             lighterElectroweakinoMassFraction,
+                                             heavierElectroweakinoMassFraction,
+                                        lighterLighterElectroweakinoPointValue,
+                                        heavierLighterElectroweakinoPointValue,
+                                        heavierHeavierElectroweakinoPointValue,
+                                      lighterHeavierElectroweakinoPointValue );
+          }
+          else
+          {
+            returnValue = CppSLHA::CppSLHA_global::really_wrong_value;
+          }
+        }
+      }  // end of interpolations.
+    }  // end of if the point is on the grid.
+    else
+    {
+      returnValue = CppSLHA::CppSLHA_global::really_wrong_value;
+    }
+    return returnValue;
+  }
+
+
+
+
 
   jetAcceptanceTable::usedCascades const
   jetAcceptanceTable::lastEnumElement( jetAcceptanceTable::sizeOfEnum );

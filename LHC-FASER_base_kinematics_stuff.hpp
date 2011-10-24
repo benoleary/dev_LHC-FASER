@@ -208,9 +208,9 @@ namespace LHC_FASER
     double highestSquarkMass;
     double lowestGluinoMass;
     double highestGluinoMass;
-    double lowNeutralinoMassRatio;
-    double middleNeutralinoMassRatio;
-    double highNeutralinoMassRatio;
+    double lowElectroweakinoMassRatio;
+    double mediumElectroweakinoMassRatio;
+    double highElectroweakinoMassRatio;
     std::vector< std::vector< std::vector< std::vector< double >* >* >* >
     acceptanceValues;
     // these are pointers to vectors of pointers to vectors of acceptances

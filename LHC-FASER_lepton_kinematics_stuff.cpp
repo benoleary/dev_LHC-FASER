@@ -70,23 +70,27 @@ namespace LHC_FASER
 
 
 
-  /*leptonAcceptanceGrid::leptonAcceptanceGrid(
+  leptonAcceptanceGrid::leptonAcceptanceGrid(
                                      std::string const* const gridFileLocation,
-                                         inputHandler const* const shortcut ) :
-    shortcut( shortcut )
+                                    inputHandler const* const inputShortcut ) :
+    acceptanceGrid( gridFileLocation,
+                    inputShortcut )
   {
-    std::string gridFileName( *gridFileLocation );
-    gridFileName.append( "/gluino+gluino_acceptance.dat" );
-    gluinoTable = new acceptanceGrid( &gridFileName );
-    gridFileName.assign( *gridFileLocation );
-    gridFileName.append( "/squark+antisquark_acceptance.dat" );
-    squarkTable = new acceptanceGrid( &gridFileName );
-  }*/
+    // just an initialization list.
+  }
+
+  leptonAcceptanceGrid::~leptonAcceptanceGrid()
+  {
+    // does nothing.
+  }
+
+
+
   leptonAcceptanceFromSquarkGrid::leptonAcceptanceFromSquarkGrid(
                                      std::string const* const gridFileLocation,
                                     inputHandler const* const inputShortcut ) :
-      acceptanceValues( gridFileLocation,
-                        inputShortcut )
+      leptonAcceptanceGrid( gridFileLocation,
+                            inputShortcut )
   {
     // just an initialization list.
   }
@@ -98,9 +102,10 @@ namespace LHC_FASER
 
 
   void
-  leptonAcceptanceFromSquarkGrid::interpolateAcceptances(
-                                                       double const squarkMass,
+  leptonAcceptanceFromSquarkGrid::interpolateAcceptances( double squarkMass,
                                                           double gluinoMass,
+                                               double const electroweakinoMass,
+                                             double* const effectiveSquarkMass,
                                         double* const pseudorapidityAcceptance,
                                std::vector< double >* const energyAcceptances )
   // this interpolates the grid to obtain values for the acceptances based on
@@ -123,7 +128,7 @@ namespace LHC_FASER
           ( indexForLightLightNeutralinoPair
             < upperRightVectorOfVectors->size() )
           &&
-          ( upperLeftVectorOfVectors
+          ( indexForLightLightNeutralinoPair
             < lowerRightVectorOfVectors->size() ) )
       {
         lowerLeftVector
@@ -134,26 +139,27 @@ namespace LHC_FASER
         = upperRightVectorOfVectors->at( indexForLightLightNeutralinoPair );
         upperLeftVector
         = upperLeftVectorOfVectors->at( indexForLightLightNeutralinoPair );
-        if( ( 3 < lowerLeftVector->size() )
+        if( ( 3 <= lowerLeftVector->size() )
             &&
             ( lowerLeftVector->size() == lowerRightVector->size() )
             &&
             ( lowerLeftVector->size() == upperRightVector->size() )
             &&
             ( lowerLeftVector->size() == upperLeftVector->size() ) )
-
-        *pseudorapidityAcceptance
-        = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
-                                                       gluinoMassFraction,
+        {
+          *effectiveSquarkMass = squarkMass;
+          *pseudorapidityAcceptance
+          = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
+                                                         gluinoMassFraction,
                                                       lowerLeftVector->at( 1 ),
                                                      lowerRightVector->at( 1 ),
                                                      upperRightVector->at( 1 ),
                                                     upperLeftVector->at( 1 ) );
-        for( unsigned int acceptanceCounter( 2 );
-             lowerLeftVector->size() > acceptanceCounter;
-             ++acceptanceCounter )
-        {
-          energyAcceptances->push_back(
+          for( unsigned int acceptanceCounter( 2 );
+               lowerLeftVector->size() > acceptanceCounter;
+               ++acceptanceCounter )
+          {
+            energyAcceptances->push_back(
                                    lhcFaserGlobal::squareBilinearInterpolation(
                                                             squarkMassFraction,
                                                             gluinoMassFraction,
@@ -161,6 +167,7 @@ namespace LHC_FASER
                                      lowerRightVector->at( acceptanceCounter ),
                                      upperRightVector->at( acceptanceCounter ),
                                   upperLeftVector->at( acceptanceCounter ) ) );
+          }
         }
       }
     }
@@ -168,6 +175,7 @@ namespace LHC_FASER
       // if we didn't fill any entries in energyAcceptances, something was
       // wrong with trying to find grid points for interpolation.
     {
+      *effectiveSquarkMass = CppSLHA::CppSLHA_global::really_wrong_value;
       *pseudorapidityAcceptance = CppSLHA::CppSLHA_global::really_wrong_value;
       energyAcceptances->push_back(
                                  CppSLHA::CppSLHA_global::really_wrong_value );
@@ -179,8 +187,8 @@ namespace LHC_FASER
   leptonAcceptanceFromGluinoGrid::leptonAcceptanceFromGluinoGrid(
                                      std::string const* const gridFileLocation,
                                     inputHandler const* const inputShortcut ) :
-      acceptanceValues( gridFileLocation,
-                        inputShortcut )
+      leptonAcceptanceGrid( gridFileLocation,
+                            inputShortcut )
   {
     // just an initialization list.
   }
@@ -193,7 +201,7 @@ namespace LHC_FASER
 
   void
   leptonAcceptanceFromGluinoGrid::interpolateAcceptances( double squarkMass,
-                                                       double const gluinoMass,
+                                                          double gluinoMass,
                                                double const electroweakinoMass,
                                              double* const effectiveSquarkMass,
                                         double* const pseudorapidityAcceptance,
@@ -201,63 +209,75 @@ namespace LHC_FASER
   // this interpolates the grid to obtain values for the acceptances based on
   // the given masses.
   {
+    // 1st we fudge for gluinos not decaying to squarks even if they can at
+    // this point:
     if( squarkMass < gluinoMass )
     {
       squarkMass = ( gluinoMass + 1.0 );
     }
+    // then we ensure that we set up a fresh set of acceptances:
     energyAcceptances->clear();
     if( ( electroweakinoMass < gluinoMass )
         &&
         pointIsOnGrid( squarkMass,
                        gluinoMass ) )
+      // if the grid is valid for this point...
     {
-      if( electroweakinoMass <= ( gluinoMass * lowNeutralinoMassRatio ) )
+      // either we approximate very light electroweakinos by the lightest grid
+      // point...
+      if( electroweakinoMass <= ( gluinoMass * lowElectroweakinoMassRatio ) )
       {
         lowerElectroweakinoMassIndex = indexForLightLightNeutralinoPair;
         shouldInterpolateOnElectroweakino = false;
       }
+      // or we interpolate between light & medium electroweakino masses...
       else if( electroweakinoMass
-               <= ( gluinoMass * middleNeutralinoMassRatio ) )
+               <= ( gluinoMass * mediumElectroweakinoMassRatio ) )
       {
         lowerElectroweakinoMassIndex = indexForLightLightNeutralinoPair;
         upperElectroweakinoMassIndex = indexForMediumMediumNeutralinoPair;
         electroweakinoMassFraction
-        = ( ( ( electroweakinoMass / gluinoMass ) - lowNeutralinoMassRatio )
-            / ( middleNeutralinoMassRatio - lowNeutralinoMassRatio ) );
+        = ( ( ( electroweakinoMass / gluinoMass ) - lowElectroweakinoMassRatio )
+            / ( mediumElectroweakinoMassRatio - lowElectroweakinoMassRatio ) );
         shouldInterpolateOnElectroweakino = true;
       }
+      // or we interpolate between medium & heavy electroweakino masses...
       else if( electroweakinoMass
-               <= ( gluinoMass * highNeutralinoMassRatio ) )
+               <= ( gluinoMass * highElectroweakinoMassRatio ) )
       {
         lowerElectroweakinoMassIndex = indexForMediumMediumNeutralinoPair;
         upperElectroweakinoMassIndex = indexForHeavyHeavyNeutralinoPair;
         electroweakinoMassFraction
-        = ( ( ( electroweakinoMass / gluinoMass ) - middleNeutralinoMassRatio )
-            / ( highNeutralinoMassRatio - middleNeutralinoMassRatio ) );
+        = ( ( ( electroweakinoMass / gluinoMass ) - mediumElectroweakinoMassRatio )
+            / ( highElectroweakinoMassRatio - mediumElectroweakinoMassRatio ) );
         shouldInterpolateOnElectroweakino = true;
       }
       else
+        /* or we approximate very heavy electroweakinos by the heaviest grid
+         * point (with effective squark mass interpolating to 0.0 at the
+         * electroweakino mass = gluino mass edge of the grid)...
+         */
       {
         lowerElectroweakinoMassIndex = indexForHeavyHeavyNeutralinoPair;
+        electroweakinoMassFraction
+        = ( ( ( electroweakinoMass / gluinoMass ) - highElectroweakinoMassRatio )
+            / ( 1.0 - highElectroweakinoMassRatio ) );
         shouldInterpolateOnElectroweakino = false;
       }
-      int requiredSizeMinusOne( upperElectroweakinoMassIndex );
-      if( upperElectroweakinoMassIndex < lowerElectroweakinoMassIndex )
-      {
-        requiredSizeMinusOne = lowerElectroweakinoMassIndex;
-      }
-      if( ( requiredSizeMinusOne
+      // now we check that the required grid point exists:
+      if( ( lowerElectroweakinoMassIndex
             < lowerLeftVectorOfVectors->size() )
           &&
-          ( requiredSizeMinusOne
+          ( lowerElectroweakinoMassIndex
             < lowerRightVectorOfVectors->size() )
           &&
-          ( requiredSizeMinusOne
+          ( lowerElectroweakinoMassIndex
             < upperRightVectorOfVectors->size() )
           &&
-          ( requiredSizeMinusOne
+          ( lowerElectroweakinoMassIndex
             < lowerRightVectorOfVectors->size() ) )
       {
+        // if the grid point exists, we set up the vectors of acceptances:
         foreLowerLeftVector
         = lowerLeftVectorOfVectors->at( lowerElectroweakinoMassIndex );
         foreLowerRightVector
@@ -266,30 +286,17 @@ namespace LHC_FASER
         = upperRightVectorOfVectors->at( lowerElectroweakinoMassIndex );
         foreUpperLeftVector
         = upperLeftVectorOfVectors->at( lowerElectroweakinoMassIndex );
-        rearLowerLeftVector
-        = lowerLeftVectorOfVectors->at( upperElectroweakinoMassIndex );
-        rearLowerRightVector
-        = lowerRightVectorOfVectors->at( upperElectroweakinoMassIndex );
-        rearUpperRightVector
-        = upperRightVectorOfVectors->at( upperElectroweakinoMassIndex );
-        rearUpperLeftVector
-        = upperLeftVectorOfVectors->at( upperElectroweakinoMassIndex );
         if( ( 2 < foreLowerLeftVector->size() )
             &&
             ( foreLowerLeftVector->size() == foreLowerRightVector->size() )
             &&
             ( foreLowerLeftVector->size() == foreUpperRightVector->size() )
             &&
-            ( foreLowerLeftVector->size() == foreUpperLeftVector->size() )
-            &&
-            ( foreLowerLeftVector->size() == rearLowerLeftVector->size() )
-            &&
-            ( foreLowerLeftVector->size() == rearLowerRightVector->size() )
-            &&
-            ( foreLowerLeftVector->size() == rearUpperRightVector->size() )
-            &&
-            ( foreLowerLeftVector->size() == rearUpperLeftVector->size() ) )
+            ( foreLowerLeftVector->size() == foreUpperLeftVector->size() ) )
+          // if the acceptance vectors have enough entries...
         {
+          // we set up all the acceptances assuming that they don't have to be
+          // interpolated, & later we interpolate if necessary:
           *effectiveSquarkMass
           = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
                                                          gluinoMassFraction,
@@ -297,6 +304,16 @@ namespace LHC_FASER
                                                  foreLowerRightVector->front(),
                                                  foreUpperRightVector->front(),
                                                 foreUpperLeftVector->front() );
+          if( electroweakinoMass
+              > ( gluinoMass * highElectroweakinoMassRatio ) )
+            // if we need to interpolate the effective squark mass because the
+            // electroweakino mass is so high...
+          {
+            *effectiveSquarkMass = lhcFaserGlobal::unitLinearInterpolation(
+                                                    electroweakinoMassFraction,
+                                                          *effectiveSquarkMass,
+                                                                         0.0 );
+          }
           *pseudorapidityAcceptance
           = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
                                                          gluinoMassFraction,
@@ -304,36 +321,71 @@ namespace LHC_FASER
                                                  foreLowerRightVector->at( 1 ),
                                                  foreUpperRightVector->at( 1 ),
                                                 foreUpperLeftVector->at( 1 ) );
-          if( shouldInterpolateOnElectroweakino )
+          if( shouldInterpolateOnElectroweakino
+              &&
+              ( upperElectroweakinoMassIndex
+                < lowerLeftVectorOfVectors->size() )
+              &&
+              ( upperElectroweakinoMassIndex
+                < lowerRightVectorOfVectors->size() )
+              &&
+              ( upperElectroweakinoMassIndex
+                < upperRightVectorOfVectors->size() )
+              &&
+              ( upperElectroweakinoMassIndex
+                < lowerRightVectorOfVectors->size() ) )
+            /* if we need to interpolate the values,
+             * shouldInterpolateOnElectroweakinos will have been set to true &
+             * upperElectroweakinoMassIndex will have been set.
+             */
           {
-            otherElectroweakinoValue
-            = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
-                                                           gluinoMassFraction,
+            rearLowerLeftVector
+            = lowerLeftVectorOfVectors->at( upperElectroweakinoMassIndex );
+            rearLowerRightVector
+            = lowerRightVectorOfVectors->at( upperElectroweakinoMassIndex );
+            rearUpperRightVector
+            = upperRightVectorOfVectors->at( upperElectroweakinoMassIndex );
+            rearUpperLeftVector
+            = upperLeftVectorOfVectors->at( upperElectroweakinoMassIndex );
+            if( ( foreLowerLeftVector->size() == rearLowerLeftVector->size() )
+                &&
+                ( foreLowerLeftVector->size() == rearLowerRightVector->size() )
+                &&
+                ( foreLowerLeftVector->size() == rearUpperRightVector->size() )
+                &&
+                ( foreLowerLeftVector->size()
+                  == rearUpperLeftVector->size() ) )
+            {
+              otherElectroweakinoValue
+              = lhcFaserGlobal::squareBilinearInterpolation(
+                                                            squarkMassFraction,
+                                                            gluinoMassFraction,
                                                   rearLowerLeftVector->front(),
                                                  rearLowerRightVector->front(),
                                                  rearUpperRightVector->front(),
                                                 rearUpperLeftVector->front() );
-            *effectiveSquarkMass = lhcFaserGlobal::unitLinearInterpolation(
+              *effectiveSquarkMass = lhcFaserGlobal::unitLinearInterpolation(
                                                     electroweakinoMassFraction,
                                                           *effectiveSquarkMass,
                                                     otherElectroweakinoValue );
-            otherElectroweakinoValue
-            = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
-                                                           gluinoMassFraction,
+              otherElectroweakinoValue
+              = lhcFaserGlobal::squareBilinearInterpolation(
+                                                            squarkMassFraction,
+                                                            gluinoMassFraction,
                                                   rearLowerLeftVector->at( 1 ),
                                                  rearLowerRightVector->at( 1 ),
                                                  rearUpperRightVector->at( 1 ),
                                                 rearUpperLeftVector->at( 1 ) );
-            *pseudorapidityAcceptance
-            = lhcFaserGlobal::unitLinearInterpolation(
+              *pseudorapidityAcceptance
+              = lhcFaserGlobal::unitLinearInterpolation(
                                                     electroweakinoMassFraction,
                                                       lowerElectroweakinoValue,
                                                     otherElectroweakinoValue );
-            for( unsigned int acceptanceCounter( 2 );
-                 lowerLeftVector->size() > acceptanceCounter;
-                 ++acceptanceCounter )
-            {
-              energyAcceptances->push_back(
+              for( unsigned int acceptanceCounter( 2 );
+                   lowerLeftVector->size() > acceptanceCounter;
+                   ++acceptanceCounter )
+              {
+                energyAcceptances->push_back(
                                        lhcFaserGlobal::unitLinearInterpolation(
                                                     electroweakinoMassFraction,
                                    lhcFaserGlobal::squareBilinearInterpolation(
@@ -350,9 +402,14 @@ namespace LHC_FASER
                                  rearLowerRightVector->at( acceptanceCounter ),
                                  rearUpperRightVector->at( acceptanceCounter ),
                             rearUpperLeftVector->at( acceptanceCounter ) ) ) );
-            }  // end of for loop filling energy acceptances.
+              }  // end of for loop filling energy acceptances.
+            }
+            // end of if all the rear vectors have the same size as the fore
+            // vectors.
           }
           else
+            // otherwise, we don't interpolate on the electroweakino mass, but
+            // just use the values from interpolation on the scolored masses:
           {
             for( unsigned int acceptanceCounter( 2 );
                 lowerLeftVector->size() > acceptanceCounter;
@@ -386,74 +443,21 @@ namespace LHC_FASER
 
 
 
-  leptonAcceptanceTable::leptonAcceptanceTable(
-                                  leptonAcceptanceGrid const* const lookupGrid,
-                                                particlePointer const scolored,
-                                         inputHandler const* const shortcut ) :
-    lookupGrid( lookupGrid ),
-    scolored( scolored ),
-    shortcut( shortcut )
-  {
-    // just an initialization list.
-  }
-
-  leptonAcceptanceTable::~leptonAcceptanceTable()
-  {
-    // does nothing.
-  }
-
-
-
-  squarkBasedLeptonAcceptanceTable::squarkBasedLeptonAcceptanceTable(
-                                  leptonAcceptanceGrid const* const lookupGrid,
-                                                  particlePointer const squark,
-                                         inputHandler const* const shortcut ) :
-    leptonAcceptanceTable( lookupGrid,
-                           squark,
-                           shortcut )
-  {
-    // just an initialization list.
-  }
-
-  squarkBasedLeptonAcceptanceTable::~squarkBasedLeptonAcceptanceTable()
-  {
-    // does nothing.
-  }
-
-
-
-  gluinoBasedLeptonAcceptanceTable::gluinoBasedLeptonAcceptanceTable(
-                                  leptonAcceptanceGrid const* const lookupGrid,
-                                         inputHandler const* const shortcut ) :
-    leptonAcceptanceTable( lookupGrid,
-                           shortcut->getGluino(),
-                           shortcut )
-  {
-    // just an initialization list.
-  }
-
-  gluinoBasedLeptonAcceptanceTable::~gluinoBasedLeptonAcceptanceTable()
-  {
-    // does nothing.
-  }
-
-
-
   double const leptonAcceptanceParameterSet::defaultBinSize( 2.0 );
   double const
   leptonAcceptanceParameterSet::defaultTransverseMomentumCut( 10.0 );
 
   leptonAcceptanceParameterSet::leptonAcceptanceParameterSet(
-                                            inputHandler const* const shortcut,
-                                  leptonAcceptanceTable const* acceptanceTable,
+                                       inputHandler const* const inputShortcut,
+                                    leptonAcceptanceGrid* const acceptanceGrid,
                                                 particlePointer const scolored,
                                                    particlePointer const ewino,
                                                           double const binSize,
                                          double const transverseMomentumCut ) :
-    getsReadiedForNewPoint( shortcut->getReadier() ),
+    getsReadiedForNewPoint( inputShortcut->getReadier() ),
     effectiveSquarkMassHolder(),
-    shortcut( shortcut ),
-    acceptanceTable( acceptanceTable ),
+    inputShortcut( inputShortcut ),
+    acceptanceGrid( acceptanceGrid ),
     scolored( scolored ),
     ewino( ewino ),
     binSize( binSize ),
@@ -472,61 +476,14 @@ namespace LHC_FASER
   }
 
 
-  void
-  leptonAcceptanceParameterSet::resetValues()
-  // this interpolates acceptanceValues from acceptanceTable to set up acceptanceBins
-  // for the given colored sparticle.
-  {
-    // debugging:
-    /**std::cout << std::endl << "debugging:"
-    << std::endl
-    << "leptonAcceptanceParameterSet::resetValues() called.";
-    std::cout << std::endl;**/
-
-    acceptanceBins.clear();
-    effectiveSquarkMass = acceptanceTable->getValue( ewino,
-                                                     0 );
-    // the 1st element of the vector is the effective squark mass.
-    pseudorapidityAcceptance = acceptanceTable->getValue( ewino,
-                                                          1 );
-    // the 2nd element of the vector is the pseudorapidity cut acceptance.
-    acceptanceCounter = 1;
-    currentAcceptance = 0.0;
-    while( 0.0 <= currentAcceptance )
-    {
-      // debugging:
-      /**std::cout
-      << std::endl
-      << "debugging: ( 0.0 <= currentAcceptance ) is true:"
-      << " currentAcceptance = " << currentAcceptance
-      << " for bin energy " << ( 2.0 * ( acceptanceCounter - 1 ) );
-      std::cout << std::endl;**/
-
-      ++acceptanceCounter;
-      currentAcceptance = acceptanceTable->getValue( ewino,
-                                                     acceptanceCounter );
-      if( 0.0 <= currentAcceptance )
-      {
-        acceptanceBins.push_back( currentAcceptance );
-        // the remaining elements of the vector are acceptances, so should
-        // be extrapolated to zero.
-      }
-      // debugging:
-      /**std::cout
-      << std::endl
-      << "now currentAcceptance = " << currentAcceptance;
-      std::cout << std::endl;**/
-    }
-  }
-
   double
   leptonAcceptanceParameterSet::calculateAcceptanceAt(
                                                       double const givenEnergy,
                                                        double const givenCut )
   //const
-  /* this interpolates the acceptanceValues in acceptanceBins to the requested value,
-   * or returns pseudorapidityAcceptance if it's lower, scaled to the given
-   * value for the transverse momentum cut.
+  /* this interpolates the acceptanceValues in acceptanceBins to the requested
+   * value, or returns pseudorapidityAcceptance if it's lower, scaled to the
+   * given value for the transverse momentum cut.
    */
   {
     // debugging:
@@ -616,13 +573,11 @@ namespace LHC_FASER
         // we assume the acceptance is dominated by the pseudorapidity cut
         // by this point, so is constant out to any higher energy.
       }
-
       // this is a sanity check that I have decided is unnecessary:
       /*if( pseudorapidityAcceptance < returnValue )
       {
         returnValue = pseudorapidityAcceptance;
       }*/
-
     }
     return returnValue;
   }
@@ -630,27 +585,17 @@ namespace LHC_FASER
 
 
   leptonAcceptancesForOneScolored::leptonAcceptancesForOneScolored(
-                                            inputHandler const* const shortcut,
+                                       inputHandler const* const inputShortcut,
                                                 particlePointer const scolored,
-                                    leptonAcceptanceGrid const* acceptanceGrid,
+                                    leptonAcceptanceGrid* const acceptanceGrid,
                                                           double const binSize,
                                          double const transverseMomentumCut ) :
-    shortcut( shortcut ),
+    inputShortcut( inputShortcut ),
     scolored( scolored ),
     binSize( binSize ),
     transverseMomentumCut( transverseMomentumCut )
   {
-    if( CppSLHA::PDG_code::gluino == scolored->get_PDG_code() )
-    {
-      acceptanceTable = new gluinoBasedLeptonAcceptanceTable( acceptanceGrid,
-                                                              shortcut );
-    }
-    else
-    {
-      acceptanceTable = new squarkBasedLeptonAcceptanceTable( acceptanceGrid,
-                                                              scolored,
-                                                              shortcut );
-    }
+    // just an initialization list.
   }
 
   leptonAcceptancesForOneScolored::~leptonAcceptancesForOneScolored()
@@ -689,8 +634,8 @@ namespace LHC_FASER
       // if we do not already have a leptonAcceptanceParameterSet for this
       // electroweakino, we make a new instance:
     {
-      returnPointer = new leptonAcceptanceParameterSet( shortcut,
-                                                        acceptanceTable,
+      returnPointer = new leptonAcceptanceParameterSet( inputShortcut,
+                                                        acceptanceGrid,
                                                         scolored,
                                                         ewino,
                                                         binSize,
@@ -703,34 +648,36 @@ namespace LHC_FASER
 
 
   leptonAcceptancesForOneBeamEnergy::leptonAcceptancesForOneBeamEnergy(
-                                            inputHandler const* const shortcut,
+                                       inputHandler const* const inputShortcut,
                                                           int const beamEnergy,
                                   std::string const* const gridFileSetLocation,
                                                           double const binSize,
                                          double const transverseMomentumCut ) :
-    shortcut( shortcut ),
+    inputShortcut( inputShortcut ),
     beamEnergy( beamEnergy ),
+    gridFileLocation( *gridFileSetLocation ),
+    acceptanceFromSquarkGrid( NULL ),
+    acceptanceFromGluinoGrid( NULL ),
     binSize( binSize ),
     transverseMomentumCut( transverseMomentumCut )
   {
-    std::string gridFileLocation( *gridFileSetLocation );
     std::stringstream energyStream( "" );
     energyStream << "/" << beamEnergy << "TeV/leptons/";
     gridFileLocation.append( energyStream.str() );
-    acceptanceGrid = new leptonAcceptanceGrid( &gridFileLocation,
-                                               shortcut );
   }
 
   leptonAcceptancesForOneBeamEnergy::~leptonAcceptancesForOneBeamEnergy()
   {
     for( std::vector< leptonAcceptancesForOneScolored* >::iterator
-         deletionIterator( acceptanceSets.begin() );
-         acceptanceSets.end() > deletionIterator;
+         deletionIterator( squarkAcceptanceSets.begin() );
+         squarkAcceptanceSets.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
     }
-    delete acceptanceGrid;
+    delete gluinoAcceptanceSet;
+    delete acceptanceFromSquarkGrid;
+    delete acceptanceFromGluinoGrid;
   }
 
 
@@ -743,27 +690,56 @@ namespace LHC_FASER
     leptonAcceptancesForOneScolored* returnPointer( NULL );
     // we look to see if we already have a leptonAcceptancesForOneScolored for
     // this colored sparticle:
-    for( std::vector< leptonAcceptancesForOneScolored* >::iterator
-         searchIterator( acceptanceSets.begin() );
-         acceptanceSets.end() > searchIterator;
-         ++searchIterator )
+    if( inputShortcut->getGluino() == scolored )
     {
-      if( scolored == (*searchIterator)->getScolored() )
+      if( NULL == gluinoAcceptanceSet )
       {
-        returnPointer = *searchIterator;
-        searchIterator = acceptanceSets.end();
+        std::string gridFileName( gridFileLocation );
+        gridFileName.append( "/gluino+gluino_acceptance.dat" );
+        acceptanceFromGluinoGrid
+        = new leptonAcceptanceFromGluinoGrid( &gridFileName,
+                                              inputShortcut );
+        gluinoAcceptanceSet
+        = new leptonAcceptancesForOneScolored( inputShortcut,
+                                               scolored,
+                                               acceptanceFromGluinoGrid,
+                                               binSize,
+                                               transverseMomentumCut );
       }
+      returnPointer = gluinoAcceptanceSet;
     }
-    if( NULL == returnPointer )
-      // if we do not already have a leptonAcceptanceParameterSet for this
-      // colored sparticle, we make a new instance:
+    else
     {
-      returnPointer = new leptonAcceptancesForOneScolored( shortcut,
-                                                           scolored,
-                                                           acceptanceGrid,
-                                                           binSize,
+      for( std::vector< leptonAcceptancesForOneScolored* >::iterator
+           searchIterator( squarkAcceptanceSets.begin() );
+           squarkAcceptanceSets.end() > searchIterator;
+           ++searchIterator )
+      {
+        if( scolored == (*searchIterator)->getScolored() )
+        {
+          returnPointer = *searchIterator;
+          searchIterator = squarkAcceptanceSets.end();
+        }
+      }
+      if( NULL == returnPointer )
+        // if we do not already have a leptonAcceptanceParameterSet for this
+        // squark, we make a new instance:
+      {
+        if( NULL == acceptanceFromSquarkGrid )
+        {
+          std::string gridFileName( gridFileLocation );
+          gridFileName.append( "/squark+antisquark_acceptance.dat" );
+          acceptanceFromSquarkGrid
+          = new leptonAcceptanceFromSquarkGrid( &gridFileName,
+                                                inputShortcut );
+        }
+        returnPointer = new leptonAcceptancesForOneScolored( inputShortcut,
+                                                             scolored,
+                                                      acceptanceFromSquarkGrid,
+                                                             binSize,
                                                        transverseMomentumCut );
-      acceptanceSets.push_back( returnPointer );
+        squarkAcceptanceSets.push_back( returnPointer );
+      }
     }
     return returnPointer;
   }
@@ -771,9 +747,9 @@ namespace LHC_FASER
 
 
   leptonAcceptanceHandler::leptonAcceptanceHandler(
-                                            inputHandler const* const shortcut,
+                                       inputHandler const* const inputShortcut,
                                std::string const* const gridFileSetLocation ) :
-    shortcut( shortcut ),
+    inputShortcut( inputShortcut ),
     gridFileSetLocation( *gridFileSetLocation )
   {
     // just an initialization list.
@@ -797,8 +773,8 @@ namespace LHC_FASER
                                                           double const binSize,
                                            double const transverseMomentumCut )
   /* this looks to see if there is an existing
-   * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, & if not,
-   * makes 1, & returns the pointer.
+   * leptonAcceptancesForOneBeamEnergy with the requested acceptances, & if
+   * not, makes 1, & returns the pointer.
    */
   {
     leptonAcceptancesForOneBeamEnergy* returnPointer( NULL );
@@ -819,9 +795,9 @@ namespace LHC_FASER
     }
     if( NULL == returnPointer )
       // if we do not already have a leptonAcceptancesForOneBeamEnergy for the
-      // requested acceptanceValues, we make a new instance:
+      // requested acceptances, we make a new instance:
     {
-      returnPointer = new leptonAcceptancesForOneBeamEnergy( shortcut,
+      returnPointer = new leptonAcceptancesForOneBeamEnergy( inputShortcut,
                                                              beamEnergy,
                                                           &gridFileSetLocation,
                                                              binSize,

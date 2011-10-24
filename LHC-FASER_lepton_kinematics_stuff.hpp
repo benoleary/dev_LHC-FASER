@@ -69,7 +69,7 @@
  * - the leptonAcceptanceGrid class, in particular
  *   -- leptonAcceptanceGrid::getValue()
  * - the squarkBasedLeptonAcceptanceTable & gluinoBasedLeptonAcceptanceTable
- *   classes, inparticular
+ *   classes, in particular
  *   -- squarkBasedLeptonAcceptanceTable::getValue
  *   -- gluinoBasedLeptonAcceptanceTable::getValue
  *
@@ -86,16 +86,13 @@ namespace LHC_FASER
   class singleLeptonCut : public acceptanceCutSet
   {
   public:
-    singleLeptonCut()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    singleLeptonCut();
     virtual
-    ~singleLeptonCut()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~singleLeptonCut();
 
     virtual bool
     isSameAcceptanceCutSet( acceptanceCutSet const* const comparisonCuts )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
 
   //protected:
     // nothing
@@ -106,16 +103,47 @@ namespace LHC_FASER
    * lepton distributions. this class, as well as acceptanceGrid, has to be
    * changed if the format of the acceptance grids changes.
    */
-  class leptonAcceptanceFromSquarkGrid : public acceptanceGrid
+  class leptonAcceptanceGrid : public acceptanceGrid
+  {
+  public:
+    leptonAcceptanceGrid( std::string const* const gridFileLocation,
+                          inputHandler const* const inputShortcut );
+    virtual
+    ~leptonAcceptanceGrid();
+
+    virtual void
+    interpolateAcceptances( double squarkMass,
+                            double gluinoMass,
+                            double const electroweakinoMass,
+                            double* const effectiveSquarkMass,
+                            double* const pseudorapidityAcceptance,
+                            std::vector< double >* const energyAcceptances )
+    = 0;
+    // this interpolates the grid to obtain values for the acceptances based on
+    // the given masses.
+
+  //protected:
+    // nothing.
+  };
+
+
+  /* this is a derived class to interpret an acceptanceGrid as acceptances for
+   * lepton distributions. this class, as well as acceptanceGrid, has to be
+   * changed if the format of the acceptance grids changes.
+   */
+  class leptonAcceptanceFromSquarkGrid : public leptonAcceptanceGrid
   {
   public:
     leptonAcceptanceFromSquarkGrid( std::string const* const gridFileLocation,
-                                    inputHandler const* const shortcut );
+                                    inputHandler const* const inputShortcut );
+    virtual
     ~leptonAcceptanceFromSquarkGrid();
 
-    void
-    interpolateAcceptances( double const squarkMass,
+    virtual void
+    interpolateAcceptances( double squarkMass,
                             double gluinoMass,
+                            double const electroweakinoMass,
+                            double* const effectiveSquarkMass,
                             double* const pseudorapidityAcceptance,
                             std::vector< double >* const energyAcceptances );
     // this interpolates the grid to obtain values for the acceptances based on
@@ -133,16 +161,17 @@ namespace LHC_FASER
    * lepton distributions. this class, as well as acceptanceGrid, has to be
    * changed if the format of the acceptance grids changes.
    */
-  class leptonAcceptanceFromGluinoGrid : public acceptanceGrid
+  class leptonAcceptanceFromGluinoGrid : public leptonAcceptanceGrid
   {
   public:
     leptonAcceptanceFromGluinoGrid( std::string const* const gridFileLocation,
-                                    inputHandler const* const shortcut );
+                                    inputHandler const* const inputShortcut );
+    virtual
     ~leptonAcceptanceFromGluinoGrid();
 
-    void
+    virtual void
     interpolateAcceptances( double squarkMass,
-                            double const gluinoMass,
+                            double gluinoMass,
                             double const electroweakinoMass,
                             double* const effectiveSquarkMass,
                             double* const pseudorapidityAcceptance,
@@ -170,89 +199,9 @@ namespace LHC_FASER
   };
 
 
-  /* this class accesses a leptonAcceptanceGrid for a specific colored
-   * sparticle & beam energy. it is an abstract base class, for separate
-   * derived versions for the gluino & squarks.
-   */
-  class leptonAcceptanceTable
-  {
-  public:
-    leptonAcceptanceTable( leptonAcceptanceGrid const* const lookupGrid,
-                           particlePointer const scolored,
-                           inputHandler const* const shortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual
-    ~leptonAcceptanceTable()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    virtual double
-    getValue( particlePointer const ewino,
-              int const requestedColumn )
-    const
-    // this gets the appropriate interpolated value from lookupGrid.
-    = 0;
-
-  protected:
-    leptonAcceptanceGrid const* const lookupGrid;
-    particlePointer const scolored;
-    inputHandler const* const shortcut;
-  };
-
-
-  // this class is the class derived from leptonAcceptanceTable specifically
-  // for squarks.
-  class squarkBasedLeptonAcceptanceTable : public leptonAcceptanceTable
-  {
-  public:
-    squarkBasedLeptonAcceptanceTable(
-                                  leptonAcceptanceGrid const* const lookupGrid,
-                                      particlePointer const squark,
-                                      inputHandler const* const shortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual
-    ~squarkBasedLeptonAcceptanceTable()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    getValue( particlePointer const ewino,
-              int const requestedColumn )
-    const
-    // this gets the appropriate interpolated value from lookupGrid.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  //protected:
-    // nothing.
-  };
-
-
-  // this class is the class derived from leptonAcceptanceTable specifically
-  // for the gluino.
-  class gluinoBasedLeptonAcceptanceTable : public leptonAcceptanceTable
-  {
-  public:
-    gluinoBasedLeptonAcceptanceTable(
-                                  leptonAcceptanceGrid const* const lookupGrid,
-                                      inputHandler const* const shortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual
-    ~gluinoBasedLeptonAcceptanceTable()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    double
-    getValue( particlePointer const ewino,
-              int const requestedColumn )
-    const
-    // this gets the appropriate interpolated value from lookupGrid.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  //protected:
-    // nothing.
-  };
-
-
-  /* this stores the binned lepton transverse momentum acceptance acceptanceValues &
-   * returns interpolated acceptanceValues (given a transverse momentum cut to scale to).
-   * it also stores the effective squark mass & the pseudorapidity cut
+  /* this stores the binned lepton transverse momentum acceptances &
+   * returns interpolated acceptances (given a transverse momentum cut to scale
+   * to). it also stores the effective squark mass & the pseudorapidity cut
    * acceptance.
    */
   class leptonAcceptanceParameterSet : public getsReadiedForNewPoint,
@@ -266,39 +215,34 @@ namespace LHC_FASER
     // by default, the grids provide acceptances assuming a 10 GeV cut on the
     // lepton transverse momentum in the lab rest frame.
 
-    leptonAcceptanceParameterSet( inputHandler const* const shortcut,
-                                  leptonAcceptanceTable const* acceptanceTable,
+    leptonAcceptanceParameterSet( inputHandler const* const inputShortcut,
+                                  leptonAcceptanceGrid* const acceptanceGrid,
                                   particlePointer const scolored,
                                   particlePointer const ewino,
                                   double const binSize = defaultBinSize,
-            double const transverseMomentumCut = defaultTransverseMomentumCut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~leptonAcceptanceParameterSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+           double const transverseMomentumCut = defaultTransverseMomentumCut );
+    ~leptonAcceptanceParameterSet();
 
     double
-    getEffectiveSquarkMass()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getEffectiveSquarkMass();
     double
     acceptanceAt( double const givenEnergy,
-                  double const givenCut )
+                  double const givenCut );
     /* this checks to see if the acceptances need updating, then returns
      * calculateAcceptanceAt( givenEnergy,
-     *                        givenCut ), which interpolates the acceptanceValues in
+     *                        givenCut ), which interpolates the acceptances in
      * acceptanceBins to the requested value, or returns
      * pseudorapidityAcceptance if it's lower, scaled to the given value for
      * the transverse momentum cut.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     particlePointer
     getEwino()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
 
   protected:
-    inputHandler const* const shortcut;
-    leptonAcceptanceTable const* acceptanceTable;
+    inputHandler const* const inputShortcut;
+    leptonAcceptanceGrid* const acceptanceGrid;
     particlePointer const scolored;
     particlePointer const ewino;
     double const binSize;
@@ -315,20 +259,18 @@ namespace LHC_FASER
     double currentAcceptance;
 
     void
-    resetValues()
-    // this interpolates acceptanceValues from acceptanceTable to set up acceptanceBins
-    // for the given colored sparticle.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    resetValues();
+    // this interpolates acceptanceValues from acceptanceTable to set up
+    // acceptanceBins for the given colored sparticle.
 
     double
     calculateAcceptanceAt( double const givenEnergy,
-                           double const givenCut )
+                           double const givenCut );
     //const
-    /* this interpolates the acceptanceValues in acceptanceBins to the requested value,
-     * or returns pseudorapidityAcceptance if it's lower, scaled to the given
-     * value for the transverse momentum cut.
+    /* this interpolates the acceptanceValues in acceptanceBins to the
+     * requested value, or returns pseudorapidityAcceptance if it's lower,
+     * scaled to the given value for the transverse momentum cut.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
 
@@ -337,29 +279,25 @@ namespace LHC_FASER
   class leptonAcceptancesForOneScolored
   {
   public:
-    leptonAcceptancesForOneScolored( inputHandler const* const shortcut,
+    leptonAcceptancesForOneScolored( inputHandler const* const inputShortcut,
                                      particlePointer const scolored,
-                                    leptonAcceptanceGrid const* acceptanceGrid,
+                                    leptonAcceptanceGrid* const acceptanceGrid,
                                      double const binSize,
-                                     double const transverseMomentumCut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~leptonAcceptancesForOneScolored()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                     double const transverseMomentumCut );
+    ~leptonAcceptancesForOneScolored();
 
     leptonAcceptanceParameterSet*
-    getParameterSet( particlePointer const ewino )
+    getParameterSet( particlePointer const ewino );
     // this returns the leptonAcceptanceParameterSet for the requested
     // electroweakino.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     particlePointer
     getScolored()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
 
   protected:
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     particlePointer const scolored;
-    leptonAcceptanceTable const* acceptanceTable;
+    leptonAcceptanceGrid* const acceptanceGrid;
     std::vector< leptonAcceptanceParameterSet* > parameterSets;
     double const binSize;
     // by default, the grids provide acceptances at 2 GeV spacings for the
@@ -375,32 +313,31 @@ namespace LHC_FASER
   class leptonAcceptancesForOneBeamEnergy
   {
   public:
-    leptonAcceptancesForOneBeamEnergy( inputHandler const* const shortcut,
+    leptonAcceptancesForOneBeamEnergy( inputHandler const* const inputShortcut,
                                        int const beamEnergy,
                                   std::string const* const gridFileSetLocation,
                                        double const binSize,
-                                       double const transverseMomentumCut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~leptonAcceptancesForOneBeamEnergy()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                       double const transverseMomentumCut );
+    ~leptonAcceptancesForOneBeamEnergy();
 
     leptonAcceptancesForOneScolored*
-    getParameterSets( particlePointer const scolored )
+    getParameterSets( particlePointer const scolored );
     // this returns the leptonAcceptancesForOneScolored for the requested
     // colored sparticle.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     bool
     isRequested( int const beamEnergy,
                  double const binSize,
                  double const transverseMomentumCut )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
 
   protected:
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     int const beamEnergy;
-    leptonAcceptanceGrid* acceptanceGrid;
-    std::vector< leptonAcceptancesForOneScolored* > acceptanceSets;
+    std::string gridFileLocation;
+    leptonAcceptanceGrid* acceptanceFromSquarkGrid;
+    leptonAcceptanceGrid* acceptanceFromGluinoGrid;
+    std::vector< leptonAcceptancesForOneScolored* > squarkAcceptanceSets;
+    leptonAcceptancesForOneScolored* gluinoAcceptanceSet;
     double const binSize;
     // by default, the grids provide acceptances at 2 GeV spacings for the
     // default cut on the lepton transverse momentum in the lab rest frame.
@@ -415,49 +352,43 @@ namespace LHC_FASER
   class leptonAcceptanceHandler
   {
   public:
-    leptonAcceptanceHandler( inputHandler const* const shortcut,
-                             std::string const* const gridFileSetLocation )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~leptonAcceptanceHandler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    leptonAcceptanceHandler( inputHandler const* const inputShortcut,
+                             std::string const* const gridFileSetLocation );
+    ~leptonAcceptanceHandler();
 
     leptonAcceptanceParameterSet*
     getLeptonAcceptanceParameterSet( int const beamEnergy,
                                      particlePointer const scolored,
                                      particlePointer const ewino,
                                      double const binSize,
-                                     double const transverseMomentumCut )
-    // this looks to see if there is an existing leptonAcceptanceParameterSet
-    // with the requested acceptanceValues, & if not, makes 1, & returns the pointer.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                     double const transverseMomentumCut );
+    /* this looks to see if there is an existing leptonAcceptanceParameterSet
+     * with the requested acceptances, & if not, makes 1, & returns the
+     * pointer.
+     */
     leptonAcceptanceParameterSet*
     getLeptonAcceptanceParameterSet( int const beamEnergy,
                                      particlePointer const scolored,
-                                     particlePointer const ewino )
+                                     particlePointer const ewino );
     // this calls getLeptonAcceptanceParameterSet with the default binSize &
     // transverseMomentumCut.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     leptonAcceptancesForOneBeamEnergy*
-    getLeptonAcceptancesForOneBeamEnergy( int const beamEnergy )
+    getLeptonAcceptancesForOneBeamEnergy( int const beamEnergy );
     /* this looks to see if there is an existing
-     * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, & if not,
-     * makes 1, & returns the pointer.
+     * leptonAcceptancesForOneBeamEnergy with the requested acceptances, & if
+     * not, makes 1, & returns the pointer.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     leptonAcceptancesForOneBeamEnergy*
     getLeptonAcceptancesForOneBeamEnergy( int const beamEnergy,
                                           double const binSize,
-                                          double const transverseMomentumCut )
+                                          double const transverseMomentumCut );
     /* this looks to see if there is an existing
-     * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, & if not,
-     * makes 1, & returns the pointer.
+     * leptonAcceptancesForOneBeamEnergy with the requested acceptances, & if
+     * not, makes 1, & returns the pointer.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     std::string const gridFileSetLocation;
     std::vector< leptonAcceptancesForOneBeamEnergy* > acceptanceTables;
   };
@@ -489,55 +420,12 @@ namespace LHC_FASER
 
 
   inline double
-  squarkBasedLeptonAcceptanceTable::getValue( particlePointer const ewino,
-                                              int const requestedColumn )
-  const
-  // this gets the appropriate interpolated value from lookupGrid.
-  {
-    if( 0 == requestedColumn )
-    {
-      return scolored->get_absolute_mass();
-    }
-    else
-    {
-      return lookupGrid->getSquarkValue( scolored,
-                                         ewino,
-                                         requestedColumn );
-    }
-  }
-
-
-
-  inline double
-  gluinoBasedLeptonAcceptanceTable::getValue( particlePointer const ewino,
-                                              int const requestedColumn )
-  const
-  // this gets the appropriate interpolated value from lookupGrid.
-  {
-    if( 0 == requestedColumn )
-    {
-      return lookupGrid->getGluinoValue( ewino,
-                                         requestedColumn,
-                                         true,
-                                         false );
-    }
-    else
-    {
-      return lookupGrid->getGluinoValue( ewino,
-                                         requestedColumn,
-                                         false,
-                                         true );
-    }
-  }
-
-
-
-  inline double
   leptonAcceptanceParameterSet::getEffectiveSquarkMass()
   {
     if( needsToPrepareForThisPoint() )
     {
       resetValues();
+      finishPreparingForThisPoint();
     }
     return effectiveSquarkMass;
   }
@@ -547,7 +435,7 @@ namespace LHC_FASER
                                               double const givenCut )
   /* this checks to see if the acceptances need updating, then returns
    * calculateAcceptanceAt( givenEnergy,
-   *                        givenCut ), which interpolates the acceptanceValues in
+   *                        givenCut ), which interpolates the acceptances in
    * acceptanceBins to the requested value, or returns
    * pseudorapidityAcceptance if it's lower, scaled to the given value for
    * the transverse momentum cut.
@@ -556,6 +444,7 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       resetValues();
+      finishPreparingForThisPoint();
     }
     return calculateAcceptanceAt( givenEnergy,
                                   givenCut );
@@ -566,6 +455,19 @@ namespace LHC_FASER
   const
   {
     return ewino;
+  }
+
+  inline void
+  leptonAcceptanceParameterSet::resetValues()
+  // this interpolates acceptanceValues from acceptanceTable to set up
+  // acceptanceBins for the given colored sparticle.
+  {
+    acceptanceGrid->interpolateAcceptances( scolored->get_absolute_mass(),
+                                            inputShortcut->getGluinoMass(),
+                                            ewino->get_absolute_mass(),
+                                            &effectiveSquarkMass,
+                                            &pseudorapidityAcceptance,
+                                            &acceptanceBins );
   }
 
 
@@ -609,7 +511,7 @@ namespace LHC_FASER
                                                           double const binSize,
                                           double const transverseMomentumCut )
   // this looks to see if there is an existing leptonAcceptanceParameterSet
-  // with the requested acceptanceValues, & if not, makes 1, & returns the pointer.
+  // with the requested acceptances, & if not, makes 1, & returns the pointer.
   {
     return getLeptonAcceptancesForOneBeamEnergy( beamEnergy,
                                                  binSize,
@@ -637,8 +539,8 @@ namespace LHC_FASER
   leptonAcceptanceHandler::getLeptonAcceptancesForOneBeamEnergy(
                                                          int const beamEnergy )
   /* this looks to see if there is an existing
-   * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, & if not,
-   * makes 1, & returns the pointer.
+   * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, &
+   * if not, makes 1, & returns the pointer.
    */
   {
     return

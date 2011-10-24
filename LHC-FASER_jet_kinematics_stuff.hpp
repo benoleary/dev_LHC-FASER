@@ -180,6 +180,56 @@ namespace LHC_FASER
   };
 
 
+
+
+  /* this is a derived class to interpret an acceptanceGrid as acceptances for
+   * lepton distributions. this class, as well as acceptanceGrid, has to be
+   * changed if the format of the acceptance grids changes.
+   */
+  class jetAcceptanceGrid : public acceptanceGrid
+  {
+  public:
+    jetAcceptanceGrid( std::string const* const gridFileLocation,
+                       inputHandler const* const shortcut );
+    ~jetAcceptanceGrid();
+
+    double
+    getAcceptance( double const squarkMass,
+                   double const gluinoMass,
+                   double firstElectroweakinoMass,
+                   double secondElectroweakinoMass,
+                   int acceptanceColumn );
+    // this interpolates the grid to obtain values for the acceptances based on
+    // the given masses.
+
+  protected:
+    static int const columnsToSkip;
+    // we want to skip the squark mass & we also want to count from 1 rather
+    // than from 0.
+
+    double lowerScoloredMass;
+    double lighterElectroweakinoMassFraction;
+    double heavierElectroweakinoMassFraction;
+    bool shouldInterpolateOnElectroweakinos;
+    double lighterLighterElectroweakinoPointValue;
+    double lighterHeavierElectroweakinoPointValue;
+    double heavierHeavierElectroweakinoPointValue;
+    double heavierLighterElectroweakinoPointValue;
+    double returnValue;
+
+    double
+    interpolateOnElectroweakinoAndAcceptanceIndices(
+                                                 int const electroweakinoIndex,
+                                                   int const acceptanceIndex );
+    /* this checks to see if the appropriate entries in
+     * lowerLeftVectorOfVectors, lowerRightVectorOfVectors,
+     * upperRightVectorOfVectors, & upperLeftVectorOfVectors exist, & if so,
+     * sets lowerLeftValue, lowerRightValue, upperRightValue, & upperLeftValue
+     * appropriately.
+     */
+  };
+
+
   // this class holds an acceptanceGrid with a string identifying the type of
   // jet+MET signal which the acceptances are for.
   class jetAcceptanceTable
@@ -251,7 +301,6 @@ namespace LHC_FASER
                           particlePointer* const squarkFromCascade )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
-
 
 
   // this class holds all the jetAcceptanceTables for a given beam energy.

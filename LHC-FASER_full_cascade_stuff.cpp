@@ -1148,7 +1148,7 @@ namespace LHC_FASER
                                         particlePointer const initialScolored )
   /* this returns the fullCascadeSet for the requested colored sparticle, or
    * NULL if we were asked for a sparticle that is not the gluino or in
-   * shortcut->getSquarks().
+   * inputShortcut->getSquarks().
    */
   {
     if( CppSLHA::PDG_code::gluino == initialScolored->get_PDG_code() )

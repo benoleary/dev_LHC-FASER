@@ -296,7 +296,7 @@ namespace LHC_FASER
     pathToKinematicsGrids.append( "/kinematics/PYTHIA8" );
 
 
-    // find all the shortcut pointers to particles:
+    // find all the inputShortcut pointers to particles:
 
     coloredSparticles.push_back( gluinoPointer );
     sparticleProductionCombinations.push_back(
@@ -403,7 +403,7 @@ namespace LHC_FASER
                                            readier );
 
 
-    // make all the shortcut sparticle lists:
+    // make all the inputShortcut sparticle lists:
 
     electroweakinos.push_back( neutralinoOnePointer );
     neutralinos.push_back( neutralinoOnePointer );
