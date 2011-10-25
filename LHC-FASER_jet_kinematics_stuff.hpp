@@ -78,7 +78,7 @@ namespace LHC_FASER
   class squarkMassForGridDecider
   {
   public:
-    squarkMassForGridDecider( inputHandler const* const shortcut )
+    squarkMassForGridDecider( inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~squarkMassForGridDecider()
@@ -90,7 +90,7 @@ namespace LHC_FASER
     = 0;
 
   protected:
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
   };
 
 
@@ -101,7 +101,7 @@ namespace LHC_FASER
   class heavierThanGluinoSquarkMassForGrid : public squarkMassForGridDecider
   {
   public:
-    heavierThanGluinoSquarkMassForGrid( inputHandler const* const shortcut )
+    heavierThanGluinoSquarkMassForGrid( inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~heavierThanGluinoSquarkMassForGrid()
@@ -122,7 +122,7 @@ namespace LHC_FASER
   class firstMassForGrid : public squarkMassForGridDecider
   {
   public:
-    firstMassForGrid( inputHandler const* const shortcut )
+    firstMassForGrid( inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~firstMassForGrid()
@@ -143,7 +143,7 @@ namespace LHC_FASER
   class secondMassForGrid : public squarkMassForGridDecider
   {
   public:
-    secondMassForGrid( inputHandler const* const shortcut )
+    secondMassForGrid( inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~secondMassForGrid()
@@ -164,7 +164,7 @@ namespace LHC_FASER
   class averageSquarkMassForGrid : public squarkMassForGridDecider
   {
   public:
-    averageSquarkMassForGrid( inputHandler const* const shortcut )
+    averageSquarkMassForGrid( inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~averageSquarkMassForGrid()
@@ -190,7 +190,7 @@ namespace LHC_FASER
   {
   public:
     jetAcceptanceGrid( std::string const* const gridFileLocation,
-                       inputHandler const* const shortcut );
+                       inputHandler const* const inputShortcut );
     ~jetAcceptanceGrid();
 
     double
@@ -230,6 +230,8 @@ namespace LHC_FASER
   };
 
 
+  typedef std::pair< jetAcceptanceGrid*,
+                     squarkMassForGridDecider* > gridWithSquarkMass;
   // this class holds an acceptanceGrid with a string identifying the type of
   // jet+MET signal which the acceptances are for.
   class jetAcceptanceTable
@@ -251,7 +253,7 @@ namespace LHC_FASER
     jetAcceptanceTable( std::string const* const gridFilesLocation,
                         std::string const* const jetCutName,
                         int const acceptanceColumn,
-                        inputHandler const* const shortcut )
+                        inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~jetAcceptanceTable()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -270,21 +272,17 @@ namespace LHC_FASER
   protected:
     std::string const jetCutName;
     int const acceptanceColumn;
-    inputHandler const* const shortcut;
-    acceptanceGrid* gluinoGluinoGrid;
-    acceptanceGrid* squarkGluinoGrid;
-    acceptanceGrid* squarkAntisquarkGrid;
-    acceptanceGrid* squarkSquarkGrid;
-    acceptanceGrid* gridToUse;
-    minimalAllocationVector< minimalAllocationVector< std::pair<
-                                                               acceptanceGrid*,
-                                                squarkMassForGridDecider* > > >
+    inputHandler const* const inputShortcut;
+    jetAcceptanceGrid* gluinoGluinoGrid;
+    jetAcceptanceGrid* squarkGluinoGrid;
+    jetAcceptanceGrid* squarkAntisquarkGrid;
+    jetAcceptanceGrid* squarkSquarkGrid;
+    jetAcceptanceGrid* gridToUse;
+    minimalAllocationVector< minimalAllocationVector< gridWithSquarkMass > >
     gridsMatrix;
-    minimalAllocationVector< std::pair< acceptanceGrid*,
-                                        squarkMassForGridDecider* > >*
+    minimalAllocationVector< gridWithSquarkMass >*
     gridMatrixRow;
-    std::pair< acceptanceGrid*,
-               squarkMassForGridDecider* >* gridMatrixElement;
+    gridWithSquarkMass* gridMatrixElement;
     heavierThanGluinoSquarkMassForGrid heavierThanGluinoSquarkMass;
     firstMassForGrid useFirstMass;
     secondMassForGrid useSecondMass;
@@ -307,7 +305,7 @@ namespace LHC_FASER
   class jetAcceptanceTablesForOneBeamEnergy
   {
   public:
-    jetAcceptanceTablesForOneBeamEnergy( inputHandler const* const shortcut,
+    jetAcceptanceTablesForOneBeamEnergy( inputHandler const* const inputShortcut,
                                          int const beamEnergy,
                                  std::string const* const gridFileSetLocation )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -326,7 +324,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     int const beamEnergy;
     std::string gridFileSetLocation;
     std::vector< jetAcceptanceTable* > jetTables;
@@ -338,7 +336,7 @@ namespace LHC_FASER
   class jetPlusMetAcceptanceHandler
   {
   public:
-    jetPlusMetAcceptanceHandler( inputHandler const* const shortcut,
+    jetPlusMetAcceptanceHandler( inputHandler const* const inputShortcut,
                                  std::string const* const gridFileSetLocation )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~jetPlusMetAcceptanceHandler()
@@ -353,7 +351,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     std::string const gridFileSetLocation;
     std::vector< jetAcceptanceTablesForOneBeamEnergy* > acceptanceTables;
 
@@ -378,10 +376,10 @@ namespace LHC_FASER
                                            particlePointer const firstScolored,
                                          particlePointer const secondScolored )
   {
-    double returnValue( shortcut->getAverageSquarks4Mass() );
-    if( shortcut->getGluinoMass() > returnValue )
+    double returnValue( inputShortcut->getAverageSquarks4Mass() );
+    if( inputShortcut->getGluinoMass() > returnValue )
     {
-      returnValue = ( shortcut->getGluinoMass() + 1.0 );
+      returnValue = ( inputShortcut->getGluinoMass() + 1.0 );
     }
     return returnValue;
   }
@@ -453,6 +451,7 @@ namespace LHC_FASER
     getJetAcceptanceTablesForOneBeamEnergy( beamEnergy )->getTable( jetCutName,
                                                             acceptanceColumn );
   }
+
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_JET_KINEMATICS_STUFF_HPP_ */

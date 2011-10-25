@@ -9,14 +9,15 @@
 
 namespace LHC_FASER
 {
-  lightestNeutralinoCascade::lightestNeutralinoCascade() :
+  lightestNeutralinoCascade::lightestNeutralinoCascade(
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( NULL,
                         NULL,
                         NULL,
                         NULL,
                         NULL,
                         false,
-                        NULL )
+                        inputShortcut )
   {
     acceptances.setComparison( &acceptanceCutSet::justReturnTrue );
   }
@@ -36,7 +37,7 @@ namespace LHC_FASER
                                       particlePointer const electroweakDecayer,
                               //bool const electroweakDecayerIsNotAntiparticle,
                                      particlePointer const intermediateDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
@@ -45,7 +46,7 @@ namespace LHC_FASER
                         //electroweakDecayerIsNotAntiparticle,
                         intermediateDecayer,
                         true,
-                        shortcut )
+                        inputShortcut )
   {
     if( ( CppSLHA::PDG_code::smuon_L == intermediateDecayer->get_PDG_code() )
         ||
@@ -58,44 +59,44 @@ namespace LHC_FASER
       muonsNotElectrons = false;
     }
     // we set up the BR of the (only) channel:
-    firstBr = shortcut->getExclusiveBrCalculator( electroweakDecayer,
-                                                  intermediateDecayer,
-                                                  true,
-                                                  shortcut->getEmptyList() );
-    secondBr = shortcut->getExclusiveBrCalculator( intermediateDecayer,
-                                                  shortcut->getNeutralinoOne(),
-                                                   true,
-                                                   shortcut->getEmptyList() );
+    firstBr = inputShortcut->getExclusiveBrCalculator( electroweakDecayer,
+                                                       intermediateDecayer,
+                                                       true,
+                                               inputShortcut->getEmptyList() );
+    secondBr = inputShortcut->getExclusiveBrCalculator( intermediateDecayer,
+                                             inputShortcut->getNeutralinoOne(),
+                                                        true,
+                                               inputShortcut->getEmptyList() );
     nearSameDistribution
-    = new sameChiralityNearMuon( shortcut->getReadier(),
-                                    shortcut->getCppSlha(),
+    = new sameChiralityNearMuon( inputShortcut->getReadier(),
+                                    inputShortcut->getCppSlha(),
                                     coloredDecayer,
                                     effectiveSquarkMass,
                                     electroweakDecayer,
                                     intermediateDecayer );
     nearOppositeDistribution
-    = new oppositeChiralityNearMuon( shortcut->getReadier(),
-                                        shortcut->getCppSlha(),
+    = new oppositeChiralityNearMuon( inputShortcut->getReadier(),
+                                        inputShortcut->getCppSlha(),
                                         coloredDecayer,
                                         effectiveSquarkMass,
                                         electroweakDecayer,
                                         intermediateDecayer );
     farSameDistribution
-    = new sameChiralityFarMuon( shortcut->getReadier(),
-                                   shortcut->getCppSlha(),
+    = new sameChiralityFarMuon( inputShortcut->getReadier(),
+                                   inputShortcut->getCppSlha(),
                                    coloredDecayer,
                                    effectiveSquarkMass,
                                    electroweakDecayer,
                                    intermediateDecayer,
-                                   shortcut->getNeutralinoOne() );
+                                   inputShortcut->getNeutralinoOne() );
     farOppositeDistribution
-    = new oppositeChiralityFarMuon( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new oppositeChiralityFarMuon( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
                                        intermediateDecayer,
-                                       shortcut->getNeutralinoOne() );
+                                       inputShortcut->getNeutralinoOne() );
     activeDistributions.push_back( nearSameDistribution );
     activeDistributions.push_back( nearOppositeDistribution );
     activeDistributions.push_back( farSameDistribution );
@@ -153,14 +154,20 @@ namespace LHC_FASER
   // from the electroweakino through the selectron or smuon to the LSP.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "cascadeBr = " << cascadeBr;
+    std::cout << std::endl;/**/
+
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
-      jetLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness( coloredDecayer->get_PDG_code(),
+      jetLeftHandedness = inputShortcut->quarkOrLeptonLeftHandedness(
+                                                coloredDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       nearNegativeLeptonLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness(
+      = inputShortcut->quarkOrLeptonLeftHandedness(
                                            intermediateDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       nearNegativeLeptonSameHandednessTimesBr
@@ -186,20 +193,18 @@ namespace LHC_FASER
       farOppositeFail = ( 1.0 - integrateAcceptance( farOppositeDistribution,
                                              cuts->getSecondaryLeptonCut() ) );
 
-      currentAcceptance->setOssfMinusOsdf(
-                                      ( nearNegativeLeptonSameHandednessTimesBr
-                                        * nearSamePass * farSamePass
-                                        + ( cascadeBr
-                                    - nearNegativeLeptonSameHandednessTimesBr )
-                                          * nearOppositePass
-                                          * farOppositePass ) );
-      currentAcceptance->setZeroJetsZeroLeptons(
-                                      ( nearNegativeLeptonSameHandednessTimesBr
-                                        * nearSameFail * farSameFail
-                                        + ( cascadeBr
-                                    - nearNegativeLeptonSameHandednessTimesBr )
-                                          * nearOppositeFail
-                                          * farOppositeFail ) );
+      /* for both ossfMinusOsdf & zeroJetsZeroLeptons, the handed contributions
+       * sum up to 1, so there are no factors of
+       * nearNegativeLeptonSameHandednessTimesBr involved.
+       */
+      currentAcceptance->setOssfMinusOsdf( cascadeBr
+                                           * ( nearSamePass * farSamePass
+                                               + nearOppositePass
+                                                 * farOppositePass ) );
+      currentAcceptance->setZeroJetsZeroLeptons( cascadeBr
+                                                 * ( nearSameFail * farSameFail
+                                                     + nearOppositeFail
+                                                       * farOppositeFail ) );
       double nearSamePassFarFailPlusConjugate( ( nearSamePass * farSameFail
                                       + farOppositePass * nearOppositeFail ) );
       double farSamePassNearFailPlusConjugate( ( farSamePass * nearSameFail
@@ -233,6 +238,25 @@ namespace LHC_FASER
         currentAcceptance->setZeroJetsOnePositiveElectron(
                                                    justOnePositiveLeptonPass );
       }
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "nearSamePass = " << nearSamePass
+      << std::endl
+      << "nearSameFail = " << nearSameFail
+      << std::endl
+      << "farSamePass = " << farSamePass
+      << std::endl
+      << "farSameFail = " << farSameFail
+      << std::endl
+      << "nearOppositePass = " << nearOppositePass
+      << std::endl
+      << "nearOppositeFail = " << nearOppositeFail
+      << std::endl
+      << "farOppositePass = " << farOppositePass
+      << std::endl
+      << "farOppositeFail = " << farOppositeFail;
+      std::cout << std::endl;/**/
     }  // end of if cascade branching ratio was large enough to care about.
     // debugging:
     /**std::cout
@@ -249,14 +273,14 @@ namespace LHC_FASER
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                      particlePointer const intermediateDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
                         intermediateDecayer,
                         true,
-                        shortcut ),
+                        inputShortcut ),
     nearDistribution( NULL ),
     farDistribution( NULL )
   {
@@ -271,29 +295,29 @@ namespace LHC_FASER
       muonsNotElectrons = false;
     }
     // we set up the BR of the (only) channel:
-    firstBr = shortcut->getExclusiveBrCalculator( electroweakDecayer,
-                                                  intermediateDecayer,
-                                                  true,
-                                                  shortcut->getEmptyList() );
-    secondBr = shortcut->getExclusiveBrCalculator( intermediateDecayer,
-                                                  shortcut->getNeutralinoOne(),
-                                                   true,
-                                                   shortcut->getEmptyList() );
+    firstBr = inputShortcut->getExclusiveBrCalculator( electroweakDecayer,
+                                                       intermediateDecayer,
+                                                       true,
+                                               inputShortcut->getEmptyList() );
+    secondBr = inputShortcut->getExclusiveBrCalculator( intermediateDecayer,
+                                             inputShortcut->getNeutralinoOne(),
+                                                        true,
+                                               inputShortcut->getEmptyList() );
     nearDistribution
-    = new flatNearMuonPlusAntimuon( shortcut->getReadier(),
-                                        shortcut->getCppSlha(),
+    = new flatNearMuonPlusAntimuon( inputShortcut->getReadier(),
+                                        inputShortcut->getCppSlha(),
                                         coloredDecayer,
                                         effectiveSquarkMass,
                                         electroweakDecayer,
                                         intermediateDecayer );
     farDistribution
-    = new flatFarMuonPlusAntimuon( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new flatFarMuonPlusAntimuon( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
                                        intermediateDecayer,
-                                       shortcut->getNeutralinoOne() );
+                                       inputShortcut->getNeutralinoOne() );
     activeDistributions.push_back( nearDistribution );
     activeDistributions.push_back( farDistribution );
   }
@@ -399,123 +423,123 @@ namespace LHC_FASER
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                      particlePointer const intermediateDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
                         intermediateDecayer,
                         false,
-                        shortcut )
+                        inputShortcut )
   {
     // we set up the BR of the (only-ish) channel:
-    firstBr = shortcut->getExclusiveBrCalculator( electroweakDecayer,
-                                                  intermediateDecayer,
-                                                  true,
-                                                  shortcut->getEmptyList() );
-    secondBr = shortcut->getExclusiveBrCalculator( intermediateDecayer,
-                                                  shortcut->getNeutralinoOne(),
-                                                   true,
-                                                   shortcut->getEmptyList() );
+    firstBr = inputShortcut->getExclusiveBrCalculator( electroweakDecayer,
+                                                       intermediateDecayer,
+                                                       true,
+                                               inputShortcut->getEmptyList() );
+    secondBr = inputShortcut->getExclusiveBrCalculator( intermediateDecayer,
+                                             inputShortcut->getNeutralinoOne(),
+                                                        true,
+                                               inputShortcut->getEmptyList() );
     nearSameTauDistribution
-    = new sameChiralityNearMuon( shortcut->getReadier(),
-                                    shortcut->getCppSlha(),
+    = new sameChiralityNearMuon( inputShortcut->getReadier(),
+                                    inputShortcut->getCppSlha(),
                                     coloredDecayer,
                                     effectiveSquarkMass,
                                     electroweakDecayer,
                                     intermediateDecayer );
     nearOppositeTauDistribution
-    = new oppositeChiralityNearMuon( shortcut->getReadier(),
-                                        shortcut->getCppSlha(),
+    = new oppositeChiralityNearMuon( inputShortcut->getReadier(),
+                                        inputShortcut->getCppSlha(),
                                         coloredDecayer,
                                         effectiveSquarkMass,
                                         electroweakDecayer,
                                         intermediateDecayer );
     farSameTauDistribution
-    = new sameChiralityFarMuon( shortcut->getReadier(),
-                                   shortcut->getCppSlha(),
+    = new sameChiralityFarMuon( inputShortcut->getReadier(),
+                                   inputShortcut->getCppSlha(),
                                    coloredDecayer,
                                    effectiveSquarkMass,
                                    electroweakDecayer,
                                    intermediateDecayer,
-                                   shortcut->getNeutralinoOne() );
+                                   inputShortcut->getNeutralinoOne() );
     farOppositeTauDistribution
-    = new oppositeChiralityFarMuon( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new oppositeChiralityFarMuon( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
                                        intermediateDecayer,
-                                       shortcut->getNeutralinoOne() );
+                                       inputShortcut->getNeutralinoOne() );
     activeDistributions.push_back( nearSameTauDistribution );
     activeDistributions.push_back( nearOppositeTauDistribution );
     activeDistributions.push_back( farSameTauDistribution );
     activeDistributions.push_back( farOppositeTauDistribution );
 
     nearSameHardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearSameTauDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     nearSameSoftMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearSameTauDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     nearSameHardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearSameTauDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     nearSameSoftPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearSameTauDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     nearOppositeHardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearOppositeTauDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     nearOppositeSoftMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearOppositeTauDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     nearOppositeHardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearOppositeTauDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     nearOppositeSoftPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearOppositeTauDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     farSameHardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farSameTauDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     farSameSoftMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farSameTauDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     farSameHardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farSameTauDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     farSameSoftPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farSameTauDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     farOppositeHardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farOppositeTauDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     farOppositeSoftMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farOppositeTauDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     farOppositeHardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farOppositeTauDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     farOppositeSoftPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farOppositeTauDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( nearSameHardMuonDistribution );
     activeDistributions.push_back( nearSameSoftMuonDistribution );
     activeDistributions.push_back( nearSameHardPionDistribution );
@@ -610,17 +634,19 @@ namespace LHC_FASER
     {
       currentCuts = cuts;
       this->currentAcceptance = currentAcceptance;
-      jetLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness( coloredDecayer->get_PDG_code(),
+      jetLeftHandedness = inputShortcut->quarkOrLeptonLeftHandedness(
+                                                coloredDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       jetRightHandedness = ( 1.0 - jetLeftHandedness );
-      nearNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
+      nearNegativeTauLeftHandedness
+      = inputShortcut->quarkOrLeptonLeftHandedness(
                                            intermediateDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       nearNegativeTauRightHandedness = ( 1.0 - nearNegativeTauLeftHandedness );
-      farNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
+      farNegativeTauLeftHandedness
+      = inputShortcut->quarkOrLeptonLeftHandedness(
                                            intermediateDecayer->get_PDG_code(),
-                                shortcut->getNeutralinoOne()->get_PDG_code() );
+                           inputShortcut->getNeutralinoOne()->get_PDG_code() );
       farNegativeTauRightHandedness = ( 1.0 - farNegativeTauLeftHandedness );
 
       /* in the following, XY(bar)Z(bar) is quark handedness, near tau
@@ -876,74 +902,74 @@ namespace LHC_FASER
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                      particlePointer const intermediateDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
                         intermediateDecayer,
                         false,
-                        shortcut )
+                        inputShortcut )
   {
     // we set up the BR of the (only-ish) channel:
-    firstBr = shortcut->getExclusiveBrCalculator( electroweakDecayer,
-                                                  intermediateDecayer,
-                                                  true,
-                                                  shortcut->getEmptyList() );
-    secondBr = shortcut->getExclusiveBrCalculator( intermediateDecayer,
-                                                  shortcut->getNeutralinoOne(),
-                                                   true,
-                                                   shortcut->getEmptyList() );
+    firstBr = inputShortcut->getExclusiveBrCalculator( electroweakDecayer,
+                                                       intermediateDecayer,
+                                                       true,
+                                               inputShortcut->getEmptyList() );
+    secondBr = inputShortcut->getExclusiveBrCalculator( intermediateDecayer,
+                                             inputShortcut->getNeutralinoOne(),
+                                                        true,
+                                               inputShortcut->getEmptyList() );
     nearTauDistribution
-    = new flatNearMuonPlusAntimuon( shortcut->getReadier(),
-                                        shortcut->getCppSlha(),
+    = new flatNearMuonPlusAntimuon( inputShortcut->getReadier(),
+                                        inputShortcut->getCppSlha(),
                                         coloredDecayer,
                                         effectiveSquarkMass,
                                         electroweakDecayer,
                                         intermediateDecayer );
     farTauDistribution
-    = new flatFarMuonPlusAntimuon( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new flatFarMuonPlusAntimuon( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
                                        intermediateDecayer,
-                                       shortcut->getNeutralinoOne() );
+                                       inputShortcut->getNeutralinoOne() );
     activeDistributions.push_back( nearTauDistribution );
     activeDistributions.push_back( farTauDistribution );
 
     nearHardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearTauDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     nearSoftMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearTauDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     nearHardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearTauDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     nearSoftPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      nearTauDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     farHardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farTauDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     farSoftMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farTauDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     farHardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farTauDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     farSoftPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      farTauDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( nearHardMuonDistribution );
     activeDistributions.push_back( nearSoftMuonDistribution );
     activeDistributions.push_back( nearHardPionDistribution );
@@ -1030,17 +1056,19 @@ namespace LHC_FASER
     {
       currentCuts = cuts;
       this->currentAcceptance = currentAcceptance;
-      jetLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness( coloredDecayer->get_PDG_code(),
+      jetLeftHandedness = inputShortcut->quarkOrLeptonLeftHandedness(
+                                                coloredDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       jetRightHandedness = ( 1.0 - jetLeftHandedness );
-      nearNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
+      nearNegativeTauLeftHandedness
+      = inputShortcut->quarkOrLeptonLeftHandedness(
                                            intermediateDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       nearNegativeTauRightHandedness = ( 1.0 - nearNegativeTauLeftHandedness );
-      farNegativeTauLeftHandedness = shortcut->quarkOrLeptonLeftHandedness(
+      farNegativeTauLeftHandedness
+      = inputShortcut->quarkOrLeptonLeftHandedness(
                                            intermediateDecayer->get_PDG_code(),
-                                shortcut->getNeutralinoOne()->get_PDG_code() );
+                           inputShortcut->getNeutralinoOne()->get_PDG_code() );
       farNegativeTauRightHandedness = ( 1.0 - farNegativeTauLeftHandedness );
 
       /* 1st, left-handed quark, left-handed near negative tau lepton
@@ -1208,18 +1236,18 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
-                        shortcut->getZ(),
+                        inputShortcut->getZ(),
                         true,
-                        shortcut )
+                        inputShortcut )
   {
     double
-    twiceSquareOfWeakCosine
-    = ( 2.0 * shortcut->getWeakCosine() * shortcut->getWeakCosine() );
+    twiceSquareOfWeakCosine = ( 2.0 * inputShortcut->getWeakCosine()
+                                    * inputShortcut->getWeakCosine() );
     negativeTauLeftHandedness
     = ( ( 1 - 2.0 * twiceSquareOfWeakCosine
           + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
@@ -1229,69 +1257,70 @@ namespace LHC_FASER
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
 
-    directMuonDistribution = new zHandedMuon( shortcut->getReadier(),
-                                                shortcut->getCppSlha(),
-                                                coloredDecayer,
-                                                effectiveSquarkMass,
-                                                electroweakDecayer,
-                                                intermediateDecayer,
-                                                shortcut->getNeutralinoOne(),
-                                                true,
-                                                true );
-    sameHandedTauDistribution = new zHandedMuon( shortcut->getReadier(),
-                                                   shortcut->getCppSlha(),
-                                                   coloredDecayer,
-                                                   effectiveSquarkMass,
-                                                   electroweakDecayer,
-                                                   intermediateDecayer,
-                                                  shortcut->getNeutralinoOne(),
-                                                   true,
-                                                   false );
-    oppositeHandedTauDistribution = new zHandedMuon( shortcut->getReadier(),
-                                                       shortcut->getCppSlha(),
-                                                       coloredDecayer,
-                                                       effectiveSquarkMass,
-                                                       electroweakDecayer,
-                                                       intermediateDecayer,
-                                                  shortcut->getNeutralinoOne(),
-                                                       false,
-                                                       false );
+    directMuonDistribution = new zHandedMuon( inputShortcut->getReadier(),
+                                              inputShortcut->getCppSlha(),
+                                              coloredDecayer,
+                                              effectiveSquarkMass,
+                                              electroweakDecayer,
+                                              intermediateDecayer,
+                                             inputShortcut->getNeutralinoOne(),
+                                              true,
+                                              true );
+    sameHandedTauDistribution = new zHandedMuon( inputShortcut->getReadier(),
+                                                 inputShortcut->getCppSlha(),
+                                                 coloredDecayer,
+                                                 effectiveSquarkMass,
+                                                 electroweakDecayer,
+                                                 intermediateDecayer,
+                                             inputShortcut->getNeutralinoOne(),
+                                                 true,
+                                                 false );
+    oppositeHandedTauDistribution
+    = new zHandedMuon( inputShortcut->getReadier(),
+                       inputShortcut->getCppSlha(),
+                       coloredDecayer,
+                       effectiveSquarkMass,
+                       electroweakDecayer,
+                       intermediateDecayer,
+                       inputShortcut->getNeutralinoOne(),
+                       false,
+                       false );
     activeDistributions.push_back( directMuonDistribution );
     activeDistributions.push_back( sameHandedTauDistribution );
     activeDistributions.push_back( oppositeHandedTauDistribution );
 
     sameHardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      sameHandedTauDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     sameSoftMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      sameHandedTauDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     sameHardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      sameHandedTauDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     sameSoftPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      sameHandedTauDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     oppositeHardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      oppositeHandedTauDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     oppositeSoftMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      oppositeHandedTauDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     oppositeHardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      oppositeHandedTauDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     oppositeSoftPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      oppositeHandedTauDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( sameHardMuonDistribution );
     activeDistributions.push_back( sameSoftMuonDistribution );
     activeDistributions.push_back( sameHardPionDistribution );
@@ -1434,8 +1463,8 @@ namespace LHC_FASER
 
       // now Z decays to tau-antitau pairs, followed by the decays of the taus:
       cascadeBr *= CppSLHA::PDG_data::Z_to_tau_lepton_antilepton_BR;
-      jetLeftHandedness
-      = shortcut->quarkOrLeptonLeftHandedness( coloredDecayer->get_PDG_code(),
+      jetLeftHandedness = inputShortcut->quarkOrLeptonLeftHandedness(
+                                                coloredDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       // left-handed quark, left-handed negative tau lepton:
       configurationBr
@@ -1597,18 +1626,18 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
-                        shortcut->getZ(),
+                        inputShortcut->getZ(),
                         true,
-                        shortcut )
+                        inputShortcut )
   {
     double
-    twiceSquareOfWeakCosine
-    = ( 2.0 * shortcut->getWeakCosine() * shortcut->getWeakCosine() );
+    twiceSquareOfWeakCosine = ( 2.0 * inputShortcut->getWeakCosine()
+                                    * inputShortcut->getWeakCosine() );
     negativeTauLeftHandedness
     = ( ( 1 - 2.0 * twiceSquareOfWeakCosine
           + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
@@ -1618,33 +1647,33 @@ namespace LHC_FASER
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
 
-    directMuonDistribution = new zHandedMuon( shortcut->getReadier(),
-                                                shortcut->getCppSlha(),
-                                                coloredDecayer,
-                                                effectiveSquarkMass,
-                                                electroweakDecayer,
-                                                intermediateDecayer,
-                                                shortcut->getNeutralinoOne(),
-                                                true,
-                                                true );
+    directMuonDistribution = new zHandedMuon( inputShortcut->getReadier(),
+                                              inputShortcut->getCppSlha(),
+                                              coloredDecayer,
+                                              effectiveSquarkMass,
+                                              electroweakDecayer,
+                                              intermediateDecayer,
+                                             inputShortcut->getNeutralinoOne(),
+                                              true,
+                                              true );
     activeDistributions.push_back( directMuonDistribution );
 
     hardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     softMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     hardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     softPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( hardMuonDistribution );
     activeDistributions.push_back( softMuonDistribution );
     activeDistributions.push_back( hardPionDistribution );
@@ -1875,14 +1904,14 @@ namespace LHC_FASER
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                      particlePointer const intermediateDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
                         intermediateDecayer,
                         true,
-                        shortcut ),
+                        inputShortcut ),
     intermediateDecayerDecays(
                           intermediateDecayer->inspect_direct_decay_handler() )
   {
@@ -1890,31 +1919,31 @@ namespace LHC_FASER
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
     directMuonDistribution
-    = new HiggsMuonPlusAntimuon( shortcut->getReadier(),
-                                    shortcut->getCppSlha(),
+    = new HiggsMuonPlusAntimuon( inputShortcut->getReadier(),
+                                    inputShortcut->getCppSlha(),
                                     coloredDecayer,
                                     effectiveSquarkMass,
                                     electroweakDecayer,
                                     intermediateDecayer,
-                                    shortcut->getNeutralinoOne() );
+                                    inputShortcut->getNeutralinoOne() );
     activeDistributions.push_back( directMuonDistribution );
 
     hardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     softMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     hardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     softPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( hardMuonDistribution );
     activeDistributions.push_back( softMuonDistribution );
     activeDistributions.push_back( hardPionDistribution );
@@ -2213,14 +2242,14 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
                         NULL,
                         true,
-                        shortcut ),
+                        inputShortcut ),
     electroweakDecayerDecays(
                            electroweakDecayer->inspect_direct_decay_handler() )
   {
@@ -2232,77 +2261,77 @@ namespace LHC_FASER
     // ratios from the CppSLHA::particle_property_set pointers.
 
     directDownDistribution
-    = new neutralinoThreeBodyDecay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new neutralinoThreeBodyDecay( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getSdownL(),
-                                       shortcut->getSdownR() );
+                                       inputShortcut->getNeutralinoOne(),
+                                       inputShortcut->getSdownL(),
+                                       inputShortcut->getSdownR() );
     directUpDistribution
-    = new neutralinoThreeBodyDecay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new neutralinoThreeBodyDecay( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getSupL(),
-                                       shortcut->getSupR() );
+                                       inputShortcut->getNeutralinoOne(),
+                                       inputShortcut->getSupL(),
+                                       inputShortcut->getSupR() );
     directStrangeDistribution
-    = new neutralinoThreeBodyDecay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new neutralinoThreeBodyDecay( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getSstrangeL(),
-                                       shortcut->getSstrangeR() );
+                                       inputShortcut->getNeutralinoOne(),
+                                       inputShortcut->getSstrangeL(),
+                                       inputShortcut->getSstrangeR() );
     directCharmDistribution
-    = new neutralinoThreeBodyDecay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new neutralinoThreeBodyDecay( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getScharmL(),
-                                       shortcut->getScharmR() );
+                                       inputShortcut->getNeutralinoOne(),
+                                       inputShortcut->getScharmL(),
+                                       inputShortcut->getScharmR() );
     directBottomDistribution
-    = new neutralinoThreeBodyDecay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new neutralinoThreeBodyDecay( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getSbottomOne(),
-                                       shortcut->getSbottomTwo() );
+                                       inputShortcut->getNeutralinoOne(),
+                                       inputShortcut->getSbottomOne(),
+                                       inputShortcut->getSbottomTwo() );
     directElectronDistribution
-    = new neutralinoThreeBodyDecay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new neutralinoThreeBodyDecay( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getSelectronL(),
-                                       shortcut->getSelectronR() );
+                                       inputShortcut->getNeutralinoOne(),
+                                       inputShortcut->getSelectronL(),
+                                       inputShortcut->getSelectronR() );
     directMuonDistribution
-    = new neutralinoThreeBodyDecay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new neutralinoThreeBodyDecay( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getSmuonL(),
-                                       shortcut->getSmuonR() );
+                                       inputShortcut->getNeutralinoOne(),
+                                       inputShortcut->getSmuonL(),
+                                       inputShortcut->getSmuonR() );
     directTauDistribution
-    = new neutralinoThreeBodyDecay( shortcut->getReadier(),
-                                       shortcut->getCppSlha(),
+    = new neutralinoThreeBodyDecay( inputShortcut->getReadier(),
+                                       inputShortcut->getCppSlha(),
                                        coloredDecayer,
                                        effectiveSquarkMass,
                                        electroweakDecayer,
-                                       shortcut->getNeutralinoOne(),
-                                       shortcut->getStauOne(),
-                                       shortcut->getStauTwo() );
+                                       inputShortcut->getNeutralinoOne(),
+                                       inputShortcut->getStauOne(),
+                                       inputShortcut->getStauTwo() );
     activeDistributions.push_back( directDownDistribution );
     activeDistributions.push_back( directUpDistribution );
     activeDistributions.push_back( directStrangeDistribution );
@@ -2313,21 +2342,21 @@ namespace LHC_FASER
     activeDistributions.push_back( directTauDistribution );
 
     hardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directTauDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     softMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directTauDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     hardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directTauDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     softPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directTauDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( hardMuonDistribution );
     activeDistributions.push_back( softMuonDistribution );
     activeDistributions.push_back( hardPionDistribution );
@@ -2606,12 +2635,12 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     chargeSummedNeutralinoVirtualCascade( kinematics,
                                           effectiveSquarkMass,
                                           coloredDecayer,
                                           electroweakDecayer,
-                                          shortcut )
+                                          inputShortcut )
   {
     // just substituting in a chargeSummedNeutralinoVirtualCascade instead.
   }
@@ -2628,18 +2657,18 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                          particlePointer const lighterScolored,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     electroweakCascade( kinematics,
                         effectiveSquarkMass,
                         coloredDecayer,
                         lighterScolored,
-                        shortcut->getZ(),
+                        inputShortcut->getZ(),
                         true,
-                        shortcut )
+                        inputShortcut )
   {
     double
-    twiceSquareOfWeakCosine
-    = ( 2.0 * shortcut->getWeakCosine() * shortcut->getWeakCosine() );
+    twiceSquareOfWeakCosine = ( 2.0 * inputShortcut->getWeakCosine()
+                                    * inputShortcut->getWeakCosine() );
     negativeTauLeftHandedness
     = ( ( 1 - 2.0 * twiceSquareOfWeakCosine
           + twiceSquareOfWeakCosine * twiceSquareOfWeakCosine )
@@ -2650,8 +2679,8 @@ namespace LHC_FASER
     // ratios from the CppSLHA::particle_property_set pointers.
 
     directMuonDistribution
-    = new vectorFromSquarkToMuon( shortcut->getReadier(),
-                                      shortcut->getCppSlha(),
+    = new vectorFromSquarkToMuon( inputShortcut->getReadier(),
+                                      inputShortcut->getCppSlha(),
                                       coloredDecayer,
                                       effectiveSquarkMass,
                                       lighterScolored,
@@ -2659,21 +2688,21 @@ namespace LHC_FASER
     activeDistributions.push_back( directMuonDistribution );
 
     hardMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getHardMuonFromTau() );
+                                     inputShortcut->getHardMuonFromTau() );
     softMuonDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getSoftMuonFromTau() );
+                                     inputShortcut->getSoftMuonFromTau() );
     hardPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getHardPionFromTau() );
+                                     inputShortcut->getHardPionFromTau() );
     softPionDistribution
-    = new visibleTauDecayProduct( shortcut->getReadier(),
+    = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                      directMuonDistribution,
-                                     shortcut->getSoftPionFromTau() );
+                                     inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( hardMuonDistribution );
     activeDistributions.push_back( softMuonDistribution );
     activeDistributions.push_back( hardPionDistribution );

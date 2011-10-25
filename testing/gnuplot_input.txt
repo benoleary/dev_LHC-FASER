@@ -1,0 +1,4 @@
+set term postscript eps enhanced color solid
+set output "lepton_acceptance_from_SPS1a_sdownRS_neu2.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'gnuplot_data.txt' index 0 notitle with lines ls 1

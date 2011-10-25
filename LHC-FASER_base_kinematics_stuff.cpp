@@ -102,25 +102,18 @@ namespace LHC_FASER
    * 0, 1, 2, 3, 4, & 5, which is why the comments below seem to not
    * match the code.
    */
-  int const acceptanceGrid::indexForLightLightNeutralinoPair( 2 );
-  int const acceptanceGrid::indexForLightMediumNeutralinoPair( 1 );
-  int const acceptanceGrid::indexForLightHeavyNeutralinoPair( 0 );
-  int const acceptanceGrid::indexForMediumMediumNeutralinoPair( 4 );
-  int const acceptanceGrid::indexForMediumHeavyNeutralinoPair( 3 );
-  int const acceptanceGrid::indexForHeavyHeavyNeutralinoPair( 5 );
+  unsigned int const acceptanceGrid::indexForLightLightNeutralinoPair( 2 );
+  unsigned int const acceptanceGrid::indexForLightMediumNeutralinoPair( 1 );
+  unsigned int const acceptanceGrid::indexForLightHeavyNeutralinoPair( 0 );
+  unsigned int const acceptanceGrid::indexForMediumMediumNeutralinoPair( 4 );
+  unsigned int const acceptanceGrid::indexForMediumHeavyNeutralinoPair( 3 );
+  unsigned int const acceptanceGrid::indexForHeavyHeavyNeutralinoPair( 5 );
 
 
   acceptanceGrid::acceptanceGrid( std::string const* const gridFileLocation,
                                   inputHandler const* const inputShortcut ) :
       inputShortcut( inputShortcut )
   {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: acceptanceGrid::acceptanceGrid( " << *gridFileLocation
-    << " ) called";
-    std::cout << std::endl;**/
-
     // read in the grid:
     if( NULL != gridFileLocation )
     {
@@ -525,12 +518,13 @@ namespace LHC_FASER
         &&
         ( gluinoMass >= lowestGluinoMass ) )
     {
-      squarkFraction
+      squarkMassFraction
       = ( ( squarkMass - lowestSquarkMass ) / scoloredMassStepSize );
-      unsigned int squarkElement( (unsigned int)squarkFraction );
+      unsigned int squarkElement( (unsigned int)squarkMassFraction );
+      squarkMassFraction -= (double)squarkElement;
       if( ( acceptanceValues.size() == ( squarkElement + 1 ) )
           &&
-          ( 0.0 == squarkFraction ) )
+          ( 0.0 == squarkMassFraction ) )
       {
         --squarkElement;
         squarkMassFraction = 1.0;
@@ -538,15 +532,17 @@ namespace LHC_FASER
       if( acceptanceValues.size() > ( squarkElement + 1 ) )
         // if the x co-ordinate is less than its maximal grid value...
       {
-        gluinoFraction
+        gluinoMassFraction
         = ( ( gluinoMass - lowestGluinoMass ) / scoloredMassStepSize );
-        unsigned int gluinoElement( (unsigned int)gluinoFraction );
-        if( ( acceptanceValues.at( squarkElement ) == ( gluinoElement + 1 ) )
+        unsigned int gluinoElement( (unsigned int)gluinoMassFraction );
+        gluinoMassFraction -= (double)gluinoElement;
+        if( ( acceptanceValues.at( squarkElement )->size()
+              == ( gluinoElement + 1 ) )
             &&
-            ( 0.0 == gluinoFraction ) )
+            ( 0.0 == gluinoMassFraction ) )
         {
           --gluinoElement;
-          gluinoFraction = 1.0;
+          gluinoMassFraction = 1.0;
         }
         if( ( acceptanceValues.at( squarkElement )->size()
               > ( gluinoElement + 1 ) )

@@ -80,10 +80,10 @@ namespace LHC_FASER
   {
   public:
     acceptanceCutSet();
-    // this constructor sets the acceptanceValues to -1.0, which is the default "unset"
-    // value.
+    // this constructor sets the acceptances to -1.0, which is the default
+    // "unset" value.
     acceptanceCutSet( acceptanceCutSet const* const copySource );
-    // this constructor copies the acceptanceValues from a given acceptanceCutSet.
+    // this constructor copies the acceptances from a given acceptanceCutSet.
     virtual
     ~acceptanceCutSet();
 
@@ -126,11 +126,11 @@ namespace LHC_FASER
     double
     getLeptonCut()
     const;
-    // this just returns primary_lepton_cut. it is intended to be used when the
+    // this just returns primaryLeptonCut. it is intended to be used when the
     // signal only has 1 lepton cut.
     void
     setLeptonCut( double inputValue );
-    // this sets both primary_lepton_cut & secondary_lepton_cut to input_value.
+    // this sets both primaryLeptonCut & secondaryLeptonCut to inputValue.
     // it is intended to be used when the signal only has 1 lepton cut.
     double
     getJetCut()
@@ -153,7 +153,7 @@ namespace LHC_FASER
     double primaryLeptonCut;
     double secondaryLeptonCut;
     double jetCut;
-    std::list< int > const* const excludedStandardModelProducts;
+    std::list< int > const* excludedStandardModelProducts;
   };  // end of acceptanceCutSet class.
 
 
@@ -179,28 +179,30 @@ namespace LHC_FASER
 
     double
     getLowestSquarkMass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getHighestSquarkMass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getLowestGluinoMass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getHighestGluinoMass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
+
+    double
+    testFunction( double const squarkMass,
+                  double const gluinoMass,
+                  int const electroweakinoIndex,
+                  int const acceptanceIndex );
 
   protected:
-    static int const indexForLightLightNeutralinoPair;
-    static int const indexForLightMediumNeutralinoPair;
-    static int const indexForLightHeavyNeutralinoPair;
-    static int const indexForMediumMediumNeutralinoPair;
-    static int const indexForMediumHeavyNeutralinoPair;
-    static int const indexForHeavyHeavyNeutralinoPair;
+    static unsigned int const indexForLightLightNeutralinoPair;
+    static unsigned int const indexForLightMediumNeutralinoPair;
+    static unsigned int const indexForLightHeavyNeutralinoPair;
+    static unsigned int const indexForMediumMediumNeutralinoPair;
+    static unsigned int const indexForMediumHeavyNeutralinoPair;
+    static unsigned int const indexForHeavyHeavyNeutralinoPair;
 
     inputHandler const* const inputShortcut;
     double scoloredMassStepSize;
@@ -373,6 +375,20 @@ namespace LHC_FASER
     jetCut = inputValue;
   }
 
+  inline std::list< int > const*
+  acceptanceCutSet::getExcludedStandardModelProducts()
+  const
+  {
+    return excludedStandardModelProducts;
+  }
+
+  inline void
+  acceptanceCutSet::setExcludedStandardModelProducts(
+                                            std::list< int > const* inputList )
+  {
+    excludedStandardModelProducts = inputList;
+  }
+
   inline bool
   acceptanceCutSet::isSameAcceptanceCutSet(
                                  acceptanceCutSet const* const comparisonCuts )
@@ -396,13 +412,6 @@ namespace LHC_FASER
   }
 
 
-
-  /*inline int
-  acceptanceGrid::getNumberOfAcceptanceColumns()
-  const
-  {
-    return acceptanceColumns;
-  }*/
 
   inline double
   acceptanceGrid::getLowestSquarkMass()
@@ -430,6 +439,69 @@ namespace LHC_FASER
   const
   {
     return highestGluinoMass;
+  }
+
+  inline double
+  acceptanceGrid::testFunction( double const squarkMass,
+                                double const gluinoMass,
+                                int const electroweakinoIndex,
+                                int const acceptanceIndex )
+  {
+    if( pointIsOnGrid( squarkMass,
+                       gluinoMass )
+        &&
+        ( 0 <= electroweakinoIndex )
+        &&
+        ( lowerLeftVectorOfVectors->size()
+          > (unsigned int)electroweakinoIndex )
+        &&
+        ( 0 <= acceptanceIndex )
+        &&
+        ( lowerLeftVectorOfVectors->at( electroweakinoIndex )->size()
+          > (unsigned int)acceptanceIndex ) )
+    {
+      std::cout
+      << std::endl
+      << "squarkMassFraction = " << squarkMassFraction
+      << std::endl
+      << "gluinoMassFraction = " << gluinoMassFraction
+      << std::endl
+      << "lower left value = "
+      << lowerLeftVectorOfVectors->at( electroweakinoIndex )->at(
+                                                             acceptanceIndex )
+      << std::endl
+      << "lower right value = "
+      << lowerRightVectorOfVectors->at( electroweakinoIndex )->at(
+                                                             acceptanceIndex )
+      << std::endl
+      << "upper right value = "
+      << upperRightVectorOfVectors->at( electroweakinoIndex )->at(
+                                                             acceptanceIndex )
+      << std::endl
+      << "upper left value = "
+      << upperLeftVectorOfVectors->at( electroweakinoIndex )->at(
+                                                             acceptanceIndex );
+      std::cout << std::endl;
+
+      return lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
+                                                          gluinoMassFraction,
+                                                  lowerLeftVectorOfVectors->at(
+                                                     electroweakinoIndex )->at(
+                                                             acceptanceIndex ),
+                                                 lowerRightVectorOfVectors->at(
+                                                     electroweakinoIndex )->at(
+                                                             acceptanceIndex ),
+                                                 upperRightVectorOfVectors->at(
+                                                     electroweakinoIndex )->at(
+                                                             acceptanceIndex ),
+                                                  upperLeftVectorOfVectors->at(
+                                                     electroweakinoIndex )->at(
+                                                           acceptanceIndex ) );
+    }
+    else
+    {
+      return CppSLHA::CppSLHA_global::really_wrong_value;
+    }
   }
 
 }  // end of LHC_FASER namespace.

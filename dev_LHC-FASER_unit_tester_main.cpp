@@ -124,6 +124,7 @@
 // includes:
 
 #include <sys/time.h>
+//#include "BOL_useful_stuff/BOL_useful_stuff.hpp"
 //#include "CppSLHA/CppSLHA.hpp"
 //#include "LHC-FASER_template_classes.hpp"
 //#include "LHC-FASER_global_stuff.hpp"
@@ -135,9 +136,9 @@
 //#include "LHC-FASER_base_kinematics_stuff.hpp"
 #include "LHC-FASER_lepton_kinematics_stuff.hpp"
 #include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
+#include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
 
 // future includes:
-//#include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
 //#include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
 //#include "LHC-FASER_electroweak_cascade_collection_stuff.hpp"
 //#include "LHC-FASER_full_cascade_stuff.hpp"
@@ -227,7 +228,7 @@ public:
   }
 
   std::vector< std::string* > const*
-  get_namesVector()
+  getNamesVector()
   const
   {
     return &namesVector;
@@ -607,7 +608,7 @@ int main( int argumentCount,
       std::ofstream* gnuplotDataFile( new std::ofstream() );
       gnuplotDataFileName.assign( "./lepton_distributions/" );
       gnuplotDataFileName.append(
-                         *(distributions.get_namesVector()->at( graphCount )) );
+                         *(distributions.getNamesVector()->at( graphCount )) );
       gnuplotDataFileName.append( ".dat" );
       gnuplotDataFile->open( gnuplotDataFileName.c_str() );
       int const numberOfBins( 100 );
@@ -620,16 +621,16 @@ int main( int argumentCount,
       {
         *gnuplotCommandFile
         << "set output \""
-        << *(distributions.get_namesVector()->at( graphCount ))
+        << *(distributions.getNamesVector()->at( graphCount ))
         << ".eps\"" << std::endl
         << "set style line 1 lt rgb \"red\" lw 3" << std::endl
         << "plot '"
-        << *(distributions.get_namesVector()->at( graphCount ))
+        << *(distributions.getNamesVector()->at( graphCount ))
         << ".dat' index 0 notitle with lines ls 1" << std::endl;
 
         std::cout
         << std::endl
-        << *(distributions.get_namesVector()->at( graphCount ))
+        << *(distributions.getNamesVector()->at( graphCount ))
         << ": "
         << distributions.getDistributionsVector()->at( graphCount
                                                           )->getMinimumEnergy()
@@ -1546,122 +1547,97 @@ int main( int argumentCount,
   acceptanceGridPathToFile.append(
                         "/7TeV/jets/Atlas4jMET/squark+gluino_acceptance.dat" );
   LHC_FASER::acceptanceGrid
-  jetsTestAcceptance( &acceptanceGridPathToFile );
+  jetsTestAcceptance( &acceptanceGridPathToFile,
+                      &testInputHandler );
   std::cout
-  << std::endl << "jetsTestAcceptance.valueAt( "
+  << std::endl << "jetsTestAcceptance.testFunction( "
   << jetsTestAcceptance.getLowestSquarkMass() << ", "
-  << jetsTestAcceptance.getLowestGluinoMass() << ", 0.0, 0.0, 0 ) = "
-  << jetsTestAcceptance.valueAt( jetsTestAcceptance.getLowestSquarkMass(),
-                                 jetsTestAcceptance.getLowestGluinoMass(),
-                                 0.0,
-                                 0.0,
-                                 0,
-                                 false,
-                                 false )
+  << jetsTestAcceptance.getLowestGluinoMass() << ", 0, 3 ) = "
+  << jetsTestAcceptance.testFunction( jetsTestAcceptance.getLowestSquarkMass(),
+                                      jetsTestAcceptance.getLowestGluinoMass(),
+                                      0,
+                                      3 )
   << std::endl;
   std::cout
-  << "jetsTestAcceptance.valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
-  << jetsTestAcceptance.valueAt( 123.4,
-                                 567.8,
-                                 12.3,
-                                 45.6,
-                                 4,
-                                 false,
-                                 false )
+  << "jetsTestAcceptance.testFunction( 123.4, 567.8, 0, 3 ) = "
+  << jetsTestAcceptance.testFunction( 123.4,
+                                      567.8,
+                                      0,
+                                      3 )
   << std::endl;
   std::cout
-  << "jetsTestAcceptance.valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
-  << jetsTestAcceptance.valueAt( 234.5,
-                                 678.9,
-                                 12.3,
-                                 45.6,
-                                 4,
-                                 false,
-                                 false )
+  << "jetsTestAcceptance.testFunction( 234.5, 678.9, 0, 3 ) = "
+  << jetsTestAcceptance.testFunction( 234.5,
+                                      678.9,
+                                      0,
+                                      3 )
   << std::endl;
   std::cout
-  << "jetsTestAcceptance.valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
-  << jetsTestAcceptance.valueAt( 876.5,
-                                 432.1,
-                                 1.0,
-                                 1.0,
-                                 4,
-                                 false,
-                                 false )
+  << "jetsTestAcceptance.testFunction( 876.5, 432.1, 1, 3 ) = "
+  << jetsTestAcceptance.testFunction( 876.5,
+                                      432.1,
+                                      1,
+                                      3 )
   << std::endl;
   std::cout
-  << "jetsTestAcceptance.valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
-  << jetsTestAcceptance.valueAt( 501.0,
-                                 501.0,
-                                 0.0,
-                                 0.0,
-                                 4,
-                                 false,
-                                 false );
+  << "jetsTestAcceptance.testFunction( 501.0, 501.0, 1, 3 ) = "
+  << jetsTestAcceptance.testFunction( 501.0,
+                                      501.0,
+                                      1,
+                                      3 );
   std::cout << std::endl;
-  acceptanceGridPathToFile.assign( *(testInputHandler.getPathToKinematicsGrids()) );
+  acceptanceGridPathToFile.assign(
+                              *(testInputHandler.getPathToKinematicsGrids()) );
   std::cout
   << std::endl << "path to kinematics grids = " << acceptanceGridPathToFile;
   std::cout << std::endl;
-  acceptanceGridPathToFile.append( "/7TeV/leptons/squark+gluino_acceptance.dat" );
+  acceptanceGridPathToFile.append(
+                                "/7TeV/leptons/squark+gluino_acceptance.dat" );
   LHC_FASER::acceptanceGrid*
   leptonsTestAcceptance
-  = new LHC_FASER::acceptanceGrid( &acceptanceGridPathToFile );
+  = new LHC_FASER::acceptanceGrid( &acceptanceGridPathToFile,
+                                   &testInputHandler );
   std::cout
-  << std::endl << "leptonsTestAcceptance->valueAt( "
+  << std::endl << "leptonsTestAcceptance->testFunction( "
   << leptonsTestAcceptance->getLowestSquarkMass() << ", "
-  << leptonsTestAcceptance->getLowestGluinoMass() << ", 0.0, 0.0, 0 ) = "
-  << leptonsTestAcceptance->valueAt(
+  << leptonsTestAcceptance->getLowestGluinoMass() << ", 0, 0 ) = "
+  << leptonsTestAcceptance->testFunction(
                                   leptonsTestAcceptance->getLowestSquarkMass(),
                                   leptonsTestAcceptance->getLowestGluinoMass(),
-                                     0.0,
-                                     0.0,
-                                     0,
-                                     true,
-                                     false )
+                                          0,
+                                          0 )
   << std::endl
-  << "leptonsTestAcceptance->valueAt( 123.4, 567.8, 12.3, 45.6, 4 ) = "
-  << leptonsTestAcceptance->valueAt( 123.4,
-                                     567.8,
-                                     12.3,
-                                     45.6,
-                                     4,
-                                     false,
-                                     false )
+  << "leptonsTestAcceptance->testFunction( 123.4, 567.8, 0, 0 ) = "
+  << leptonsTestAcceptance->testFunction( 123.4,
+                                          567.8,
+                                          0,
+                                          0 )
   << std::endl
-  << "leptonsTestAcceptance->valueAt( 234.5, 678.9, 12.3, 45.6, 4 ) = "
-  << leptonsTestAcceptance->valueAt( 234.5,
-                                     678.9,
-                                     12.3,
-                                     45.6,
-                                     4,
-                                     false,
-                                     false )
+  << "leptonsTestAcceptance->testFunction( 234.5, 678.9, 0, 0 ) = "
+  << leptonsTestAcceptance->testFunction( 234.5,
+                                          678.9,
+                                          0,
+                                          0 )
   << std::endl
-  << "leptonsTestAcceptance->valueAt( 876.5, 432.1, 1.0, 1.0, 4 ) = "
-  << leptonsTestAcceptance->valueAt( 876.5,
-                                     432.1,
-                                     1.0,
-                                     1.0,
-                                     4,
-                                     false,
-                                     false )
+  << "leptonsTestAcceptance->testFunction( 876.5, 432.1, 3, 10 ) = "
+  << leptonsTestAcceptance->testFunction( 876.5,
+                                          432.1,
+                                          3,
+                                          10 )
   << std::endl
-  << "leptonsTestAcceptance->valueAt( 501.0, 501.0, 0.0, 0.0, 4 ) = "
-  << leptonsTestAcceptance->valueAt( 501.0,
-                                     501.0,
-                                     0.0,
-                                     0.0,
-                                     4,
-                                     false,
-                                     false );
+  << "leptonsTestAcceptance->testFunction( 501.0, 501.0, 3, 10 ) = "
+  << leptonsTestAcceptance->testFunction( 501.0,
+                                          501.0,
+                                          3,
+                                          10 );
   std::cout << std::endl;
   delete leptonsTestAcceptance;
   **/
 
 
   /* testing the lepton kinematics grid stuff:
-   * (works)*//**/
+   * (works, but the testing needs BOL_useful_stuff, which I'm not including in
+   * the repository)*//**
 
   std::string
   acceptanceGridPathToLeptons(
@@ -1669,57 +1645,57 @@ int main( int argumentCount,
   std::cout
   << std::endl << "path to kinematics grids = " << acceptanceGridPathToLeptons;
   std::cout << std::endl;
-  acceptanceGridPathToLeptons.append( "/7TeV/leptons" );
-  LHC_FASER::leptonAcceptanceGrid
+  acceptanceGridPathToLeptons.append(
+                            "/7TeV/leptons/squark+antisquark_acceptance.dat" );
+  LHC_FASER::leptonAcceptanceFromSquarkGrid
   testLeptonAcceptanceGrid( &acceptanceGridPathToLeptons,
                             &testInputHandler );
+
+  double testEffectiveSquarkMass;
+  double testPseudorapidityAcceptance;
+  std::vector< double > testEnergyAcceptances;
+  testLeptonAcceptanceGrid.interpolateAcceptances(
+                             testInputHandler.getSdownR()->get_absolute_mass(),
+                                              testInputHandler.getGluinoMass(),
+                      testInputHandler.getNeutralinoTwo()->get_absolute_mass(),
+                                                   &testEffectiveSquarkMass,
+                                                 &testPseudorapidityAcceptance,
+                                                   &testEnergyAcceptances );
   std::cout
   << std::endl
-  << "testLeptonAcceptanceGrid.getSquarkValue("
-  << " sdown_R, neutralino_2, 4 => 6 GeV ) = "
-  << testLeptonAcceptanceGrid.getSquarkValue( testInputHandler.getSdownR(),
-                                           testInputHandler.getNeutralinoTwo(),
-                                              4 );
-  std::cout << std::endl;
-  std::cout
-  << std::endl
-  << "testLeptonAcceptanceGrid.getGluinoValue("
-  << " neutralino_2, 4 => 6 GeV ) = "
-  << testLeptonAcceptanceGrid.getGluinoValue(
-                                           testInputHandler.getNeutralinoTwo(),
-                                              4,
-                                              false,
-                                              true );
-  std::cout << std::endl;
-  std::cout
-  << std::endl
-  << "testLeptonAcceptanceGrid.getGluinoValue("
-  << " neutralino_2, 14 => 26 GeV ) = "
-  << testLeptonAcceptanceGrid.getGluinoValue(
-                                           testInputHandler.getNeutralinoTwo(),
-                                              14,
-                                              false,
-                                              true );
-  std::cout << std::endl;
-  std::cout
-  << std::endl
-  << "testLeptonAcceptanceGrid.getGluinoValue("
-  << " neutralino_2, 84 => 166 GeV ) = "
-  << testLeptonAcceptanceGrid.getGluinoValue(
-                                           testInputHandler.getNeutralinoTwo(),
-                                              84,
-                                              false,
-                                              true );
+  << "after testLeptonAcceptanceGrid.interpolateAcceptances( "
+  << testInputHandler.getSdownR()->get_absolute_mass() << ", "
+  << testInputHandler.getGluinoMass() << ", "
+  << testInputHandler.getNeutralinoTwo()->get_absolute_mass() << ", ...),"
+  << " testEffectiveSquarkMass = " << testEffectiveSquarkMass
+  << " testPseudorapidityAcceptance = " << testPseudorapidityAcceptance;
   std::cout << std::endl;
 
-  LHC_FASER::leptonAcceptanceTable*
-  testSquarkBasedLeptonAcceptanceTable
-  = new LHC_FASER::squarkBasedLeptonAcceptanceTable( &testLeptonAcceptanceGrid,
-                                                testInputHandler.getSdownR(),
-                                                     &testInputHandler );
+  BOL::twoDimensionalDataPlotter*
+  testPlotter = new BOL::twoDimensionalDataPlotter( "/opt/local/bin/gnuplot",
+                              "lepton_acceptance_from_SPS1a_sdownRS_neu2.eps");
+  double xValue;
+  double yValue;
+  testPlotter->addPoint( 0.0,
+                         0.0 );
+  for( unsigned int binCounter( 0 );
+       testEnergyAcceptances.size() > binCounter;
+       ++binCounter )
+  {
+    xValue = ( 2.0 * ( (double)( binCounter + 1 ) ) );
+    yValue = testEnergyAcceptances.at( binCounter );
+    testPlotter->addPoint( xValue,
+                           yValue );
+  }
+  testPlotter->plotData();
+  std::cout
+  << std::endl << "testPlotter->plotData() seems to have been successful.";
+  std::cout << std::endl;
+  delete testPlotter;
+
   LHC_FASER::leptonAcceptanceParameterSet
   testLeptonAcceptanceParameterSet( &testInputHandler,
-                                    testSquarkBasedLeptonAcceptanceTable,
+                                    &testLeptonAcceptanceGrid,
                                     testInputHandler.getSdownR(),
                                     testInputHandler.getNeutralinoTwo() );
   std::cout
@@ -1742,7 +1718,6 @@ int main( int argumentCount,
   << testLeptonAcceptanceParameterSet.acceptanceAt( 1007.4,
                                                     12.3 );
   std::cout << std::endl;
-  delete testSquarkBasedLeptonAcceptanceTable;
 
   LHC_FASER::leptonAcceptanceHandler
   testLeptonAcceptanceHandler( &testInputHandler,
@@ -1773,8 +1748,451 @@ int main( int argumentCount,
   << testLeptonAcceptanceParameterSetPointer->acceptanceAt( 7.4,
                                                             12.3 );
   std::cout << std::endl;
-   /**/
+  **/
 
+
+  /* testing the cascade calculation stuff:
+   * (needs work)*//**/
+
+  LHC_FASER::lightestNeutralinoCascade
+  testLightestNeutralinoCascade( &testInputHandler );
+
+  LHC_FASER::acceptanceCutSet testAcceptanceCutSet;
+  testAcceptanceCutSet.setJetCut( 40.0 );
+  testAcceptanceCutSet.setPrimaryLeptonCut( 20.0 );
+  testAcceptanceCutSet.setSecondaryLeptonCut( 10.0 );
+  testAcceptanceCutSet.setExcludedStandardModelProducts(
+                                            testInputHandler.getNotInJets4() );
+
+  std::cout
+  << std::endl
+  << "testLightestNeutralinoCascade.getAcceptance( " << &testAcceptanceCutSet
+  << ", 0, 0, 0, 0, 0 ) = "
+  << testLightestNeutralinoCascade.getAcceptance( &testAcceptanceCutSet,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                  0 )
+  << std::endl
+  << "testLightestNeutralinoCascade.getAcceptance( " << &testAcceptanceCutSet
+  << ", 1, 1, 0, 0, 0 ) = "
+  << testLightestNeutralinoCascade.getAcceptance( &testAcceptanceCutSet,
+                                                  1,
+                                                  1,
+                                                  0,
+                                                  0,
+                                                  0 )
+  << std::endl
+  << "testLightestNeutralinoCascade.getOssfMinusOsdf( "
+  << &testAcceptanceCutSet << " ) = "
+  << testLightestNeutralinoCascade.getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+
+  LHC_FASER::leptonAcceptanceHandler
+  cascadeTestingLeptonAcceptanceHandler( &testInputHandler,
+                                 testInputHandler.getPathToKinematicsGrids() );
+  LHC_FASER::leptonAcceptanceParameterSet*
+  cascadeTestingLeptonAcceptanceParameterSetPointer(
+      cascadeTestingLeptonAcceptanceHandler.getLeptonAcceptanceParameterSet( 7,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                                           2.0,
+                                                                       9.0 ) );
+  LHC_FASER::neutralinoToSemuCascade*
+  testNeutralinoToSemuCascade
+  = new LHC_FASER::neutralinoToSemuCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                            testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                            testInputHandler.getSmuonR(),
+                                            &testInputHandler );
+
+  std::cout
+  << std::endl
+  << "testNeutralinoToSemuCascade->getAcceptance( " << &testAcceptanceCutSet
+  << ", 0, 0, 0, 0, 0 ) = "
+  << testNeutralinoToSemuCascade->getAcceptance( &testAcceptanceCutSet,
+                                                 0,
+                                                 0,
+                                                 0,
+                                                 0,
+                                                 0 )
+  << std::endl
+  << "testNeutralinoToSemuCascade->getAcceptance( " << &testAcceptanceCutSet
+  << ", 1, 1, 0, 0, 0 ) = "
+  << testNeutralinoToSemuCascade->getAcceptance( &testAcceptanceCutSet,
+                                                 1,
+                                                 1,
+                                                 0,
+                                                 0,
+                                                 0 )
+  << std::endl
+  << "testNeutralinoToSemuCascade->getAcceptance( " << &testAcceptanceCutSet
+  << ", 0, 0, 0, 1, 1 ) = "
+  << testNeutralinoToSemuCascade->getAcceptance( &testAcceptanceCutSet,
+                                                 0,
+                                                 0,
+                                                 0,
+                                                 1,
+                                                 1 )
+  << std::endl
+  << "testNeutralinoToSemuCascade->getOssfMinusOsdf( " << &testAcceptanceCutSet
+  << " ) = "
+  << testNeutralinoToSemuCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testNeutralinoToSemuCascade;
+
+  std::cout
+  << std::endl
+  << "neutralinoToSemuCascade seems OK.";
+  std::cout << std::endl;
+
+  LHC_FASER::electroweakCascade*
+  testElectroweakCascade = new LHC_FASER::chargeSummedNeutralinoToSemuCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                  testInputHandler.getSmuonR(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "chargeSummedNeutralinoToSemuCascade (needs checking):"
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  testElectroweakCascade = new LHC_FASER::neutralinoToStauCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                 testInputHandler.getStauOne(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "neutralinoToStauCascade (needs checking):"
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  testElectroweakCascade = new LHC_FASER::chargeSummedNeutralinoToStauCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                 testInputHandler.getStauOne(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "chargeSummedNeutralinoToStauCascade (needs checking):"
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  testElectroweakCascade = new LHC_FASER::neutralinoToZCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "neutralinoToZCascade (needs checking):"
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  testElectroweakCascade = new LHC_FASER::chargeSummedNeutralinoToZCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "chargeSummedNeutralinoToZCascade (needs checking):"
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  std::cout
+  << std::endl
+  << "deleted chargeSummedNeutralinoToZCascade without problems.";
+  std::cout << std::endl;
+
+  testElectroweakCascade = new LHC_FASER::neutralinoToHiggsCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                         testInputHandler.getNeutralinoThree(),
+                                  testInputHandler.getLightNeutralEwsbScalar(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "neutralinoToHiggsCascade (needs checking):"
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  testElectroweakCascade = new LHC_FASER::chargeSummedNeutralinoVirtualCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "chargeSummedNeutralinoVirtualCascade (needs checking):"
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  testElectroweakCascade = new LHC_FASER::neutralinoVirtualCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "neutralinoVirtualCascade (needs checking):"
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  testElectroweakCascade = new LHC_FASER::scoloredToZPlusScoloredCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                              testInputHandler.getSbottomTwo(),
+                                                 testInputHandler.getStopOne(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "scoloredToZPlusScoloredCascade (needs checking):"
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  /**/
 
   /* testing the jet kinematics grid stuff:
    * (needs work)*//**

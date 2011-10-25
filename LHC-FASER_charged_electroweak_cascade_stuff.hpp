@@ -25,7 +25,7 @@ namespace LHC_FASER
                                    particlePointer const coloredDecayer,
                                    particlePointer const electroweakDecayer,
                                    particlePointer const intermediateDecayer,
-                                   inputHandler const* const shortcut,
+                                   inputHandler const* const inputShortcut,
                                    bool const sneutrinoVersion )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
@@ -83,7 +83,7 @@ namespace LHC_FASER
                                    particlePointer const coloredDecayer,
                                    particlePointer const electroweakDecayer,
                                    particlePointer const intermediateDecayer,
-                                   inputHandler const* const shortcut,
+                                   inputHandler const* const inputShortcut,
                                    bool const sneutrinoVersion )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
@@ -146,7 +146,7 @@ namespace LHC_FASER
                         effectiveSquarkMassHolder* const effectiveSquarkMass,
                         particlePointer const coloredDecayer,
                         particlePointer const electroweakDecayer,
-                        inputHandler const* const shortcut )
+                        inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~charginoToWCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -215,7 +215,7 @@ namespace LHC_FASER
                             particlePointer const coloredDecayer,
                             particlePointer const electroweakDecayer,
                             particlePointer const intermediateDecayer,
-                        inputHandler const* const shortcut )
+                            inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~charginoToHiggsCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -277,7 +277,7 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                             particlePointer const coloredDecayer,
                             particlePointer const electroweakDecayer,
-                            inputHandler const* const shortcut )
+                            inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~charginoVirtualCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -353,7 +353,7 @@ namespace LHC_FASER
                                     particlePointer const coloredDecayer,
                                     particlePointer const electroweakDecayer,
                                     particlePointer const lighterScolored,
-                                    inputHandler const* const shortcut )
+                                    inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~scoloredToWPlusScoloredCascade()
     /* code after the classes in this .hpp file, or in the .cpp file. */;

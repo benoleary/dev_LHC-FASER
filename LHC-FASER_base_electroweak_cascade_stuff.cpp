@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -58,23 +58,23 @@
 namespace LHC_FASER
 {
   acceptanceValues::acceptanceValues( double const defaultUnsetValues ) :
-    notAlreadyCalculatedFlag( true ),
-    twoJets( defaultUnsetValues ),
-    oneJetOneNegativeElectron( defaultUnsetValues ),
-    oneJetOnePositiveElectron( defaultUnsetValues ),
-    oneJetOneNegativeMuon( defaultUnsetValues ),
-    oneJetOnePositiveMuon( defaultUnsetValues ),
-    oneJetZeroLeptons( defaultUnsetValues ),
-    ossfMinusOsdf( defaultUnsetValues ),
-    electronPlusAntielectron( defaultUnsetValues ),
-    negativeElectronPlusPositiveMuon( defaultUnsetValues ),
-    negativeMuonPlusPositiveElectron( defaultUnsetValues ),
-    muonPlusAntimuon( defaultUnsetValues ),
-    zeroJetsOneNegativeElectron( defaultUnsetValues ),
-    zeroJetsOnePositiveElectron( defaultUnsetValues ),
-    zeroJetsOneNegativeMuon( defaultUnsetValues ),
-    zeroJetsOnePositiveMuon( defaultUnsetValues ),
-    zeroJetsZeroLeptons( defaultUnsetValues )
+      notAlreadyCalculatedFlag( true ),
+      twoJets( defaultUnsetValues ),
+      oneJetOneNegativeElectron( defaultUnsetValues ),
+      oneJetOnePositiveElectron( defaultUnsetValues ),
+      oneJetOneNegativeMuon( defaultUnsetValues ),
+      oneJetOnePositiveMuon( defaultUnsetValues ),
+      oneJetZeroLeptons( defaultUnsetValues ),
+      ossfMinusOsdf( defaultUnsetValues ),
+      electronPlusAntielectron( defaultUnsetValues ),
+      negativeElectronPlusPositiveMuon( defaultUnsetValues ),
+      negativeMuonPlusPositiveElectron( defaultUnsetValues ),
+      muonPlusAntimuon( defaultUnsetValues ),
+      zeroJetsOneNegativeElectron( defaultUnsetValues ),
+      zeroJetsOnePositiveElectron( defaultUnsetValues ),
+      zeroJetsOneNegativeMuon( defaultUnsetValues ),
+      zeroJetsOnePositiveMuon( defaultUnsetValues ),
+      zeroJetsZeroLeptons( defaultUnsetValues )
   {
     // just an initialization list.
   }
@@ -121,22 +121,24 @@ namespace LHC_FASER
                               //bool const electroweakDecayerIsNotAntiparticle,
                                      particlePointer const intermediateDecayer,
                                           bool const canDoOssfMinusOsdf,
-                                         inputHandler const* const shortcut ) :
-    getsReadiedForNewPoint( shortcut->getReadier() ),
-    kinematics( kinematics ),
-    effectiveSquarkMass( effectiveSquarkMass ),
-    coloredDecayer( coloredDecayer ),
-    //coloredDecayerIsNotAntiparticle( coloredDecayerIsNotAntiparticle ),
-    electroweakDecayer( electroweakDecayer ),
-    intermediateDecayer( intermediateDecayer ),
-    canDoOssfMinusOsdf( canDoOssfMinusOsdf ),
-    firstBr( NULL ),
-    secondBr( NULL ),
-    cascadeBr( CppSLHA::CppSLHA_global::really_wrong_value ),
-    shortcut( shortcut ),
-    acceptances( &acceptanceCutSet::compareJetAndBothLeptonCuts,
-                 &electroweakCascade::cachePairConstruction,
-                 &electroweakCascade::cachePairReset )
+                                    inputHandler const* const inputShortcut ) :
+      getsReadiedForNewPoint( inputShortcut->getReadier() ),
+      kinematics( kinematics ),
+      effectiveSquarkMass( effectiveSquarkMass ),
+      coloredDecayer( coloredDecayer ),
+      //coloredDecayerIsNotAntiparticle( coloredDecayerIsNotAntiparticle ),
+      electroweakDecayer( electroweakDecayer ),
+      intermediateDecayer( intermediateDecayer ),
+      canDoOssfMinusOsdf( canDoOssfMinusOsdf ),
+      firstBr( NULL ),
+      secondBr( NULL ),
+      cascadeBr( CppSLHA::CppSLHA_global::really_wrong_value ),
+      inputShortcut( inputShortcut ),
+      currentAcceptance( NULL ),
+      acceptances( &acceptanceCutSet::compareJetAndBothLeptonCuts,
+                   &electroweakCascade::cachePairConstruction,
+                   &electroweakCascade::cachePairReset ),
+      activeDistributions()
   {
     // just an initialization list.
   }
@@ -151,6 +153,7 @@ namespace LHC_FASER
       delete *deletionIterator;
     }
   }
+
 
   double
   electroweakCascade::getAcceptance( acceptanceCutSet const* const cuts,
@@ -289,7 +292,6 @@ namespace LHC_FASER
     }
   }
 
-
   double
   electroweakCascade::integrateAcceptance(
                             leptonEnergyDistribution* const leptonDistribution,
@@ -313,10 +315,10 @@ namespace LHC_FASER
        * also is a half rectangle.
        */
       double
-      returnValue = ( 0.5 * binSize
-                          * kinematics->acceptanceAt( binEnergy,
-                                                      transverseMomentumCut )
-                          * leptonDistribution->valueAt( binEnergy ) );
+      returnValue( ( 0.5 * binSize
+                         * kinematics->acceptanceAt( binEnergy,
+                                                     transverseMomentumCut )
+                         * leptonDistribution->valueAt( binEnergy ) ) );
       for( int binCounter( 1 );
            numberOfIntegrationBins > binCounter;
            ++binCounter )

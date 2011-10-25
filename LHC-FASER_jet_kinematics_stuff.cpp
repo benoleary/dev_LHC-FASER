@@ -58,8 +58,8 @@
 namespace LHC_FASER
 {
   squarkMassForGridDecider::squarkMassForGridDecider(
-                                         inputHandler const* const shortcut ) :
-    shortcut( shortcut )
+                                         inputHandler const* const inputShortcut ) :
+    inputShortcut( inputShortcut )
   {
     // just an initialization list.
   }
@@ -71,8 +71,8 @@ namespace LHC_FASER
 
 
   heavierThanGluinoSquarkMassForGrid::heavierThanGluinoSquarkMassForGrid(
-                                         inputHandler const* const shortcut ) :
-    squarkMassForGridDecider( shortcut )
+                                         inputHandler const* const inputShortcut ) :
+    squarkMassForGridDecider( inputShortcut )
   {
     // just an initialization list.
   }
@@ -83,8 +83,8 @@ namespace LHC_FASER
   }
 
 
-  firstMassForGrid::firstMassForGrid( inputHandler const* const shortcut ) :
-    squarkMassForGridDecider( shortcut )
+  firstMassForGrid::firstMassForGrid( inputHandler const* const inputShortcut ) :
+    squarkMassForGridDecider( inputShortcut )
   {
     // just an initialization list.
   }
@@ -95,8 +95,8 @@ namespace LHC_FASER
   }
 
 
-  secondMassForGrid::secondMassForGrid( inputHandler const* const shortcut ) :
-    squarkMassForGridDecider( shortcut )
+  secondMassForGrid::secondMassForGrid( inputHandler const* const inputShortcut ) :
+    squarkMassForGridDecider( inputShortcut )
   {
     // just an initialization list.
   }
@@ -108,8 +108,8 @@ namespace LHC_FASER
 
 
   averageSquarkMassForGrid::averageSquarkMassForGrid(
-                                         inputHandler const* const shortcut ) :
-    squarkMassForGridDecider( shortcut )
+                                         inputHandler const* const inputShortcut ) :
+    squarkMassForGridDecider( inputShortcut )
   {
     // just an initialization list.
   }
@@ -130,7 +130,7 @@ namespace LHC_FASER
                            bool const heavyNeutralinoEdgeIsLighterScoloredMass,
                            bool const heavyNeutralinoAreaIsConstant )
   const
-  /* this finds the grid square which the given point is in, & then uses
+  *//* this finds the grid square which the given point is in, & then uses
    * lhcFaserGlobal::squareBilinearInterpolation to get an interpolated
    * value, assuming that the heavy neutralino edge goes to 0.0 as the
    * heavier neutralino mass approaches the lighter scolored mass unless
@@ -198,7 +198,7 @@ namespace LHC_FASER
           &&
           ( 1.0 > heavierNeutralino ) )
       {
-        /* now we work out which elements of the acceptanceValues vector of vectors
+        *//* now we work out which elements of the acceptanceValues vector of vectors
          * of vectors to use.
          * N.B.! this bit is HIGHLY format-dependent, since the acceptanceValues are
          * read in in the order:
@@ -570,8 +570,8 @@ namespace LHC_FASER
   jetAcceptanceGrid::jetAcceptanceGrid(
                                      std::string const* const gridFileLocation,
                                     inputHandler const* const inputShortcut ) :
-      acceptanceValues( gridFileLocation,
-                        inputShortcut )
+      acceptanceGrid( gridFileLocation,
+                      inputShortcut )
   {
     // just an initialization list.
   }
@@ -592,25 +592,33 @@ namespace LHC_FASER
    * lowerRightValue, upperRightValue, & upperLeftValue appropriately.
    */
   {
-    if( ( lowerLeftVectorOfVectors->size() > electroweakinoIndex )
+    if( ( 0 <= electroweakinoIndex )
+        &&
+        ( 0 <= acceptanceIndex )
+        &&
+        ( lowerLeftVectorOfVectors->size()
+          > (unsigned int)electroweakinoIndex )
         &&
         ( lowerLeftVectorOfVectors->at( electroweakinoIndex )->size()
-          > acceptanceIndex )
+          > (unsigned int)acceptanceIndex )
         &&
-        ( lowerRightVectorOfVectors->size() > electroweakinoIndex )
+        ( lowerRightVectorOfVectors->size()
+          > (unsigned int)electroweakinoIndex )
           &&
         ( lowerRightVectorOfVectors->at( electroweakinoIndex )->size()
-          > acceptanceIndex )
+          > (unsigned int)acceptanceIndex )
         &&
-        ( upperRightVectorOfVectors->size() > electroweakinoIndex )
+        ( upperRightVectorOfVectors->size()
+          > (unsigned int)electroweakinoIndex )
           &&
         ( upperRightVectorOfVectors->at( electroweakinoIndex )->size()
-          > acceptanceIndex )
+          > (unsigned int)acceptanceIndex )
         &&
-        ( upperLeftVectorOfVectors->size() > electroweakinoIndex )
+        ( upperLeftVectorOfVectors->size()
+          > (unsigned int)electroweakinoIndex )
         &&
         ( upperLeftVectorOfVectors->at( electroweakinoIndex )->size()
-          > acceptanceIndex ) )
+          > (unsigned int)acceptanceIndex ) )
     {
       return lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
                                                           gluinoMassFraction,
@@ -648,9 +656,9 @@ namespace LHC_FASER
     // 1st we ensure that firstElectroweakinoMass <= secondElectroweakinoMass:
     if( firstElectroweakinoMass > secondElectroweakinoMass )
     {
-      otherElectroweakinoValue = firstElectroweakinoMass;
+      lowerScoloredMass = firstElectroweakinoMass;
       firstElectroweakinoMass = secondElectroweakinoMass;
-      secondElectroweakinoMass = otherElectroweakinoValue;
+      secondElectroweakinoMass = lowerScoloredMass;
     }
     // then we find out which scolored mass is lower:
     if( squarkMass > gluinoMass )
@@ -1097,30 +1105,34 @@ namespace LHC_FASER
                                     std::string const* const gridFilesLocation,
                                           std::string const* const jetCutName,
                                           int const acceptanceColumn,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     jetCutName( *jetCutName ),
     acceptanceColumn( acceptanceColumn ),
-    shortcut( shortcut ),
-    heavierThanGluinoSquarkMass( shortcut ),
-    useFirstMass( shortcut ),
-    useSecondMass( shortcut ),
-    useAverageMass( shortcut )
+    inputShortcut( inputShortcut ),
+    heavierThanGluinoSquarkMass( inputShortcut ),
+    useFirstMass( inputShortcut ),
+    useSecondMass( inputShortcut ),
+    useAverageMass( inputShortcut )
   {
     std::string gridFileBaseName( *gridFilesLocation );
     gridFileBaseName.append( "/" );
     gridFileBaseName.append( *jetCutName );
     std::string gridFileName( gridFileBaseName );
     gridFileName.append( "/gluino+gluino_acceptance.dat" );
-    gluinoGluinoGrid = new acceptanceGrid( &gridFileName );
+    gluinoGluinoGrid = new jetAcceptanceGrid( &gridFileName,
+                                              inputShortcut );
     gridFileName.assign( gridFileBaseName );
     gridFileName.append( "/squark+gluino_acceptance.dat" );
-    squarkGluinoGrid = new acceptanceGrid( &gridFileName );
+    squarkGluinoGrid = new jetAcceptanceGrid( &gridFileName,
+                                              inputShortcut );
     gridFileName.assign( gridFileBaseName );
     gridFileName.append( "/squark+antisquark_acceptance.dat" );
-    squarkAntisquarkGrid = new acceptanceGrid( &gridFileName );
+    squarkAntisquarkGrid = new jetAcceptanceGrid( &gridFileName,
+                                                  inputShortcut );
     gridFileName.assign( gridFileBaseName );
     gridFileName.append( "/squark+squark_acceptance.dat" );
-    squarkSquarkGrid = new acceptanceGrid( &gridFileName );
+    squarkSquarkGrid = new jetAcceptanceGrid( &gridFileName,
+                                              inputShortcut );
     for( int vectorAdder( sizeOfUsedCascades );
          0 < vectorAdder;
          --vectorAdder )
@@ -1260,25 +1272,24 @@ namespace LHC_FASER
     }
     // now we just use the general valueAt(...) function of acceptanceGrid:
     return
-    gridToUse->valueAt( (*(gridMatrixElement->second))( firstCascadeSquark,
-                                                        secondCascadeSquark ),
-                        shortcut->getGluinoMass(),
-                        firstCascade->getCascadeDefiner()->front(
+    gridToUse->getAcceptance( (*(gridMatrixElement->second))(
+                                                            firstCascadeSquark,
+                                                         secondCascadeSquark ),
+                              inputShortcut->getGluinoMass(),
+                              firstCascade->getCascadeDefiner()->front(
                                                  )->first->get_absolute_mass(),
-                        secondCascade->getCascadeDefiner()->front(
+                              secondCascade->getCascadeDefiner()->front(
                                                  )->first->get_absolute_mass(),
-                        acceptanceColumn,
-                        false,
-                        false );
+                              acceptanceColumn );
   }
 
 
 
   jetAcceptanceTablesForOneBeamEnergy::jetAcceptanceTablesForOneBeamEnergy(
-                                           inputHandler const* const shortcut,
+                                           inputHandler const* const inputShortcut,
                                                           int const beamEnergy,
                                std::string const* const gridFileSetLocation ) :
-    shortcut( shortcut ),
+    inputShortcut( inputShortcut ),
     beamEnergy( beamEnergy ),
     gridFileSetLocation( *gridFileSetLocation )
   {
@@ -1326,7 +1337,7 @@ namespace LHC_FASER
       returnPointer = new jetAcceptanceTable( &gridFileSetLocation,
                                               jetCutName,
                                               acceptanceColumn,
-                                              shortcut );
+                                              inputShortcut );
       jetTables.push_back( returnPointer );
     }
     return returnPointer;
@@ -1335,9 +1346,9 @@ namespace LHC_FASER
 
 
   jetPlusMetAcceptanceHandler::jetPlusMetAcceptanceHandler(
-                                           inputHandler const* const shortcut,
+                                           inputHandler const* const inputShortcut,
                                std::string const* const gridFileSetLocation ) :
-    shortcut( shortcut ),
+    inputShortcut( inputShortcut ),
     gridFileSetLocation( *gridFileSetLocation )
   {
     // just an initialization list.
@@ -1380,7 +1391,7 @@ namespace LHC_FASER
       // if we do not already have a leptonAcceptanceParameterSet for this
       // electroweakino, we make a new instance:
     {
-      returnPointer = new jetAcceptanceTablesForOneBeamEnergy( shortcut,
+      returnPointer = new jetAcceptanceTablesForOneBeamEnergy( inputShortcut,
                                                                beamEnergy,
                                                         &gridFileSetLocation );
       acceptanceTables.push_back( returnPointer );

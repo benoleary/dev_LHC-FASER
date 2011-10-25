@@ -85,14 +85,14 @@ namespace LHC_FASER
     electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
                            particlePointer const coloredDecayer,
                            particlePointer const electroweakDecayer,
-                           inputHandler const* const shortcut )
+                           inputHandler const* const inputShortcut )
     // this is the version for electroweakinos.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
                            particlePointer const coloredDecayer,
                            particlePointer const electroweakDecayer,
                            particlePointer const lighterScolored,
-                           inputHandler const* const shortcut )
+                           inputHandler const* const inputShortcut )
     // this is the version for vector bosons.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~electroweakCascadeSet()
@@ -131,7 +131,7 @@ namespace LHC_FASER
                    int const numberOfPositiveMuons )
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
-     * returns the set of acceptanceValues for acceptance * branching ratio FOR THE
+     * returns the set of values for acceptance * branching ratio FOR THE
      * CASCADES FROM electroweakDecayer ONWARDS (does NOT include the BR for
      * coloredDecayer to electroweakDecayer - this is dealt with by the
      * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
@@ -160,7 +160,7 @@ namespace LHC_FASER
 
   protected:
     leptonAcceptanceParameterSet* const kinematics;
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     particlePointer const coloredDecayer;
     particlePointer const electroweakDecayer;
     particlePointer const lighterScolored;
@@ -176,7 +176,7 @@ namespace LHC_FASER
     electroweakCascadesForOneBeamEnergy(
                                leptonAcceptanceHandler* const kinematicsSource,
                                          int const beamEnergy,
-                                         inputHandler const* const shortcut )
+                                      inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~electroweakCascadesForOneBeamEnergy()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -208,7 +208,7 @@ namespace LHC_FASER
   protected:
     leptonAcceptancesForOneBeamEnergy* const kinematicsTable;
     int const beamEnergy;
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     std::vector< electroweakCascadeSet* > electroweakinoCascadeSets;
     std::vector< electroweakCascadeSet* > bosonCascadeSets;
     electroweakCascadeSet* currentCascadeSet;
@@ -221,7 +221,7 @@ namespace LHC_FASER
   class electroweakCascadeHandler
   {
   public:
-    electroweakCascadeHandler( inputHandler const* const shortcut,
+    electroweakCascadeHandler( inputHandler const* const inputShortcut,
                                std::string const* const gridFileSetLocation )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~electroweakCascadeHandler()
@@ -230,14 +230,14 @@ namespace LHC_FASER
     electroweakCascadesForOneBeamEnergy*
     getElectroweakCascadesForOneBeamEnergy( int const beamEnergy )
     /* this looks to see if there is an existing
-     * leptonAcceptancesForOneBeamEnergy with the requested acceptanceValues, & if not,
+     * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
      * makes 1, & returns the pointer.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     leptonAcceptanceHandler kinematicsSource;
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     std::vector< electroweakCascadesForOneBeamEnergy* >
     cascadeSetAtBeamEnergies;
   };

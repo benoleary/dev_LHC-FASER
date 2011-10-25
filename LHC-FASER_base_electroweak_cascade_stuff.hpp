@@ -68,186 +68,130 @@ namespace LHC_FASER
   class acceptanceValues
   {
   public:
-    acceptanceValues( double const defaultUnsetValues )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~acceptanceValues()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    acceptanceValues( double const defaultUnsetValues );
+    ~acceptanceValues();
 
     void
-    reset( double const unsetValues )
-    // this sets all acceptanceValues to unsetValues & alreadyCalculatedFlag to false.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    void
-    reset()
-    // this sets all acceptanceValues to CppSLHA::CppSLHA_global::really_wrong_value &
-    // alreadyCalculatedFlag to false.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    reset(
+      double const unsetValues = CppSLHA::CppSLHA_global::really_wrong_value );
+    // this sets all acceptances to unsetValues & alreadyCalculatedFlag to
+    // false.
     bool
-    notAlreadyCalculated()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    notAlreadyCalculated();
     void
-    flagAsAlreadyCalculated()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    flagAsAlreadyCalculated();
     double
     getTwoJets()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setTwoJets( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setTwoJets( double const inputValue );
     void
-    addToTwoJets( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToTwoJets( double const inputValue );
     double
     getOneJetOneNegativeElectron()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setOneJetOneNegativeElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setOneJetOneNegativeElectron( double const inputValue );
     void
-    addToOneJetOneNegativeElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToOneJetOneNegativeElectron( double const inputValue );
     double
     getOneJetOnePositiveElectron()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setOneJetOnePositiveElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setOneJetOnePositiveElectron( double const inputValue );
     void
-    addToOneJetOnePositiveElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToOneJetOnePositiveElectron( double const inputValue );
     double
     getOneJetOneNegativeMuon()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setOneJetOneNegativeMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setOneJetOneNegativeMuon( double const inputValue );
     void
-    addToOneJetOneNegativeMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToOneJetOneNegativeMuon( double const inputValue );
     double
     getOneJetOnePositiveMuon()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setOneJetOnePositiveMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setOneJetOnePositiveMuon( double const inputValue );
     void
-    addToOneJetOnePositiveMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToOneJetOnePositiveMuon( double const inputValue );
     double
     getOneJetZeroLeptons()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setOneJetZeroLeptons( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setOneJetZeroLeptons( double const inputValue );
     void
-    addToOneJetZeroLeptons( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToOneJetZeroLeptons( double const inputValue );
     double
     getOssfMinusOsdf()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setOssfMinusOsdf( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setOssfMinusOsdf( double const inputValue );
     void
-    addToOssfMinusOsdf( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToOssfMinusOsdf( double const inputValue );
     double
     getElectronPlusAntielectron()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setElectronPlusAntielectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setElectronPlusAntielectron( double const inputValue );
     void
-    addToElectronPlusAntielectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToElectronPlusAntielectron( double const inputValue );
     double
     getNegativeElectronPlusPositiveMuon()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setNegativeElectronPlusPositiveMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setNegativeElectronPlusPositiveMuon( double const inputValue );
     void
-    addToNegativeElectronPlusPositiveMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToNegativeElectronPlusPositiveMuon( double const inputValue );
     double
     getNegativeMuonPlusPositiveElectron()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setNegativeMuonPlusPositiveElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setNegativeMuonPlusPositiveElectron( double const inputValue );
     void
-    addToNegativeMuonPlusPositiveElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToNegativeMuonPlusPositiveElectron( double const inputValue );
     double
     getMuonPlusAntimuon()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setMuonPlusAntimuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setMuonPlusAntimuon( double const inputValue );
     void
-    addToMuonPlusAntimuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToMuonPlusAntimuon( double const inputValue );
     double
     getZeroJetsOneNegativeElectron()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setZeroJetsOneNegativeElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setZeroJetsOneNegativeElectron( double const inputValue );
     void
-    addToZeroJetsOneNegativeElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToZeroJetsOneNegativeElectron( double const inputValue );
     double
     getZeroJetsOnePositiveElectron()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setZeroJetsOnePositiveElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setZeroJetsOnePositiveElectron( double const inputValue );
     void
-    addToZeroJetsOnePositiveElectron( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToZeroJetsOnePositiveElectron( double const inputValue );
     double
     getZeroJetsOneNegativeMuon()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setZeroJetsOneNegativeMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setZeroJetsOneNegativeMuon( double const inputValue );
     void
-    addToZeroJetsOneNegativeMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToZeroJetsOneNegativeMuon( double const inputValue );
     double
     getZeroJetsOnePositiveMuon()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setZeroJetsOnePositiveMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setZeroJetsOnePositiveMuon( double const inputValue );
     void
-    addToZeroJetsOnePositiveMuon( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToZeroJetsOnePositiveMuon( double const inputValue );
     double
     getZeroJetsZeroLeptons()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setZeroJetsZeroLeptons( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setZeroJetsZeroLeptons( double const inputValue );
     void
-    addToZeroJetsZeroLeptons( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToZeroJetsZeroLeptons( double const inputValue );
 
   protected:
     bool notAlreadyCalculatedFlag;
@@ -271,7 +215,7 @@ namespace LHC_FASER
 
 
   /* this is an abstract base class for objects that prepare lepton
-   * distributions & cache acceptanceValues for their distribution combined with given
+   * distributions & cache values for their distribution combined with given
    * acceptance cuts.
    *
    * it isn't actually intended as a kind of interface to allow multiple
@@ -287,25 +231,20 @@ namespace LHC_FASER
                         particlePointer const electroweakDecayer,
                         particlePointer const intermediateDecayer,
                         bool const canDoOssfMinusOsdf,
-                        inputHandler const* const shortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
+                        inputHandler const* const inputShortcut );
     virtual
-    ~electroweakCascade()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~electroweakCascade();
 
     inputHandler const*
     getShortcut()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
+    const;
     double
     getAcceptance( acceptanceCutSet const* const cuts,
                    int const numberOfAdditionalJets,
                    int const numberOfNegativeElectrons,
                    int const numberOfPositiveElectrons,
                    int const numberOfNegativeMuons,
-                   int const numberOfPositiveMuons )
+                   int const numberOfPositiveMuons );
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the set of acceptanceValues for acceptance * branching ratio FOR THE
@@ -320,10 +259,9 @@ namespace LHC_FASER
      * NOT from the decay of the colored sparticle to the decaying electroweak
      * particle.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     double
-    getOssfMinusOsdf( acceptanceCutSet* const cuts )
+    getOssfMinusOsdf( acceptanceCutSet* const cuts );
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the value for acceptance * branching ratio FOR THE
@@ -334,27 +272,24 @@ namespace LHC_FASER
      * this function returns 0.0 if the cascade never results in an OSSF - OSDF
      * signal.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     static void
     cachePairConstruction( acceptanceValues** const cachedValuesAndFlag,
                            acceptanceCutSet** const cachedKey,
-                           acceptanceCutSet const* const constructionKey )
+                           acceptanceCutSet const* const constructionKey );
     /* this makes a new acceptanceValues instance to hold an acceptance value
      * along with a flag for whether it has been calculated or not, &
      * associates it with a key.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     static void
     cachePairReset( acceptanceValues* const cachedValuesAndFlag,
                     acceptanceCutSet* const cachedKey,
-                    acceptanceCutSet const* const constructionKey )
+                    acceptanceCutSet const* const constructionKey );
     /* this resets an acceptanceValues instance to hold an acceptance value
      * along with a flag for whether it has been calculated or not, &
      * associates it with a key.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     static double const tauPairToPionPairBr;
@@ -376,7 +311,7 @@ namespace LHC_FASER
     exclusiveBrCalculator* firstBr;
     exclusiveBrCalculator* secondBr;
     double cascadeBr;
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     acceptanceValues* currentAcceptance;
     minimalAllocationKeyedVector< acceptanceValues,
                                   acceptanceCutSet > acceptances;
@@ -396,7 +331,7 @@ namespace LHC_FASER
     calculateAcceptance( acceptanceCutSet const* const cuts,
                          acceptanceValues* const currentAcceptance )
     = 0;
-    // this should set all the appropriate acceptance * branching ratio acceptanceValues
+    // this should set all the appropriate acceptance * branching ratio values
     // for the cascade.
 
     double
@@ -418,7 +353,8 @@ namespace LHC_FASER
 
   inline void
   acceptanceValues::reset( double const unsetValues )
-  // this sets all acceptanceValues to unsetValues & notAlreadyCalculatedFlag to true.
+  // this sets all acceptances to unsetValues & notAlreadyCalculatedFlag to
+  // true.
   {
     notAlreadyCalculatedFlag = true;
     twoJets = unsetValues;
@@ -437,14 +373,6 @@ namespace LHC_FASER
     zeroJetsOneNegativeMuon = unsetValues;
     zeroJetsOnePositiveMuon = unsetValues;
     zeroJetsZeroLeptons = unsetValues;
-  }
-
-  inline void
-  acceptanceValues::reset()
-  // this sets all acceptanceValues to CppSLHA::CppSLHA_global::really_wrong_value &
-  // alreadyCalculatedFlag to false.
-  {
-    reset( CppSLHA::CppSLHA_global::really_wrong_value );
   }
 
   inline bool
@@ -773,14 +701,14 @@ namespace LHC_FASER
   electroweakCascade::getShortcut()
   const
   {
-    return shortcut;
+    return inputShortcut;
   }
 
   inline double
   electroweakCascade::getOssfMinusOsdf( acceptanceCutSet* const cuts )
   /* this does the common job of checking to see if the point has been
    * updated before calling the relevant protected virtual function, which
-   * returns the set of acceptanceValues for acceptance * branching ratio FOR THE
+   * returns the set of values for acceptance * branching ratio FOR THE
    * CASCADE FROM electroweakDecayer ONWARDS (does NOT include the BR for
    * coloredDecayer to electroweakDecayer - this is dealt with by the
    * cutSpecifiedFullCascade, because it depends on what flavors of quark jet

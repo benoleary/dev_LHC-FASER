@@ -20,11 +20,9 @@ namespace LHC_FASER
   class lightestNeutralinoCascade : public electroweakCascade
   {
   public:
-    lightestNeutralinoCascade()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    lightestNeutralinoCascade( inputHandler const* const inputShortcut );
     virtual
-    ~lightestNeutralinoCascade()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~lightestNeutralinoCascade();
 
   protected:
     virtual bool
@@ -32,15 +30,13 @@ namespace LHC_FASER
                  int const numberOfNegativeElectrons,
                  int const numberOfPositiveElectrons,
                  int const numberOfNegativeMuons,
-                 int const numberOfPositiveMuons )
+                 int const numberOfPositiveMuons );
     // this returns false except for the case of 0 jets & 0 leptons, when it
     // returns true.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
     calculateAcceptance( acceptanceCutSet const* const cuts,
-                         acceptanceValues* const currentAcceptance )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                         acceptanceValues* const currentAcceptance );
   };
 
 

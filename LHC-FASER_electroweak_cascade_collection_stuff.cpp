@@ -61,86 +61,86 @@ namespace LHC_FASER
                                 leptonAcceptanceParameterSet* const kinematics,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     kinematics( kinematics ),
-    shortcut( shortcut ),
+    inputShortcut( inputShortcut ),
     coloredDecayer( coloredDecayer ),
     electroweakDecayer( electroweakDecayer ),
     lighterScolored( NULL )
   // this is the version for electroweakinos.
   {
     effectiveSquarkMassHolder* effectiveSquarkMassPointer;
-    if( shortcut->getGluino() == coloredDecayer )
+    if( inputShortcut->getGluino() == coloredDecayer )
     {
       effectiveSquarkMassPointer = kinematics;
     }
     else
     {
       effectiveSquarkMassPointer
-      = shortcut->getOnShellEffectiveSquarkMass( coloredDecayer );
+      = inputShortcut->getOnShellEffectiveSquarkMass( coloredDecayer );
     }
 
     if( CppSLHA::PDG_code::neutralino_one
         == electroweakDecayer->get_PDG_code() )
     {
-      currentCascade = new lightestNeutralinoCascade();
+      currentCascade = new lightestNeutralinoCascade( inputShortcut );
       cascades.push_back( currentCascade );
     }
-    else if( shortcut->isIn( electroweakDecayer->get_PDG_code(),
-                             shortcut->getUnstableNeutralinos() ) )
+    else if( inputShortcut->isIn( electroweakDecayer->get_PDG_code(),
+                             inputShortcut->getUnstableNeutralinos() ) )
     {
       currentCascade = new neutralinoToSemuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->getSelectronL(),
-                                                    shortcut );
+                                                inputShortcut->getSelectronL(),
+                                                    inputShortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToSemuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->getSelectronR(),
-                                                    shortcut );
+                                                inputShortcut->getSelectronR(),
+                                                    inputShortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToSemuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->getSmuonL(),
-                                                    shortcut );
+                                                    inputShortcut->getSmuonL(),
+                                                    inputShortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToSemuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->getSmuonR(),
-                                                    shortcut );
+                                                    inputShortcut->getSmuonR(),
+                                                    inputShortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->getStauOne(),
-                                                    shortcut );
+                                                   inputShortcut->getStauOne(),
+                                                    inputShortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToStauCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
-                                                    shortcut->getStauTwo(),
-                                                    shortcut );
+                                                   inputShortcut->getStauTwo(),
+                                                    inputShortcut );
       cascades.push_back( currentCascade );
       currentCascade = new neutralinoToZCascade( kinematics,
                                                  effectiveSquarkMassPointer,
                                                  coloredDecayer,
                                                  electroweakDecayer,
-                                                 shortcut );
+                                                 inputShortcut );
       cascades.push_back( currentCascade );
       for( std::vector< particlePointer >::const_iterator
            bosonIterator(
-                  shortcut->getNeutralEwsbScalarsAndPseudoscalars()->begin() );
-           shortcut->getNeutralEwsbScalarsAndPseudoscalars()->end()
+             inputShortcut->getNeutralEwsbScalarsAndPseudoscalars()->begin() );
+           inputShortcut->getNeutralEwsbScalarsAndPseudoscalars()->end()
            > bosonIterator;
            ++bosonIterator )
       {
@@ -149,133 +149,133 @@ namespace LHC_FASER
                                                        coloredDecayer,
                                                        electroweakDecayer,
                                                        *bosonIterator,
-                                                       shortcut );
+                                                       inputShortcut );
         cascades.push_back( currentCascade );
       }
       currentCascade = new neutralinoVirtualCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                      coloredDecayer,
                                                      electroweakDecayer,
-                                                     shortcut );
+                                                     inputShortcut );
       cascades.push_back( currentCascade );
     }
-    else if( shortcut->isIn( electroweakDecayer->get_PDG_code(),
-                             shortcut->getCharginos() ) )
+    else if( inputShortcut->isIn( electroweakDecayer->get_PDG_code(),
+                             inputShortcut->getCharginos() ) )
     {
       currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                                     shortcut->getSelectronL(),
-                                                          shortcut,
+                                                inputShortcut->getSelectronL(),
+                                                          inputShortcut,
                                                           false );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                                     shortcut->getSelectronR(),
-                                                          shortcut,
+                                                inputShortcut->getSelectronR(),
+                                                          inputShortcut,
                                                           false );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                             shortcut->getElectronSneutrinoL(),
-                                                          shortcut,
+                                        inputShortcut->getElectronSneutrinoL(),
+                                                          inputShortcut,
                                                           true );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                             shortcut->getElectronSneutrinoR(),
-                                                          shortcut,
+                                        inputShortcut->getElectronSneutrinoR(),
+                                                          inputShortcut,
                                                           true );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                                         shortcut->getSmuonL(),
-                                                          shortcut,
+                                                    inputShortcut->getSmuonL(),
+                                                          inputShortcut,
                                                           false );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                                         shortcut->getSmuonR(),
-                                                          shortcut,
+                                                    inputShortcut->getSmuonR(),
+                                                          inputShortcut,
                                                           false );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                                 shortcut->getMuonSneutrinoL(),
-                                                          shortcut,
+                                            inputShortcut->getMuonSneutrinoL(),
+                                                          inputShortcut,
                                                           true );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                                 shortcut->getMuonSneutrinoR(),
-                                                          shortcut,
-                                                          true );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
-                                          effectiveSquarkMassPointer,
-                                                          coloredDecayer,
-                                                          electroweakDecayer,
-                                                        shortcut->getStauOne(),
-                                                          shortcut,
-                                                          false );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
-                                          effectiveSquarkMassPointer,
-                                                          coloredDecayer,
-                                                          electroweakDecayer,
-                                                        shortcut->getStauTwo(),
-                                                          shortcut,
-                                                          false );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
-                                          effectiveSquarkMassPointer,
-                                                          coloredDecayer,
-                                                          electroweakDecayer,
-                                                  shortcut->getTauSneutrinoL(),
-                                                          shortcut,
+                                            inputShortcut->getMuonSneutrinoR(),
+                                                          inputShortcut,
                                                           true );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
                                           effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
-                                                  shortcut->getTauSneutrinoR(),
-                                                          shortcut,
+                                                   inputShortcut->getStauOne(),
+                                                          inputShortcut,
+                                                          false );
+      cascades.push_back( currentCascade );
+      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
+                                          effectiveSquarkMassPointer,
+                                                          coloredDecayer,
+                                                          electroweakDecayer,
+                                                   inputShortcut->getStauTwo(),
+                                                          inputShortcut,
+                                                          false );
+      cascades.push_back( currentCascade );
+      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
+                                          effectiveSquarkMassPointer,
+                                                          coloredDecayer,
+                                                          electroweakDecayer,
+                                             inputShortcut->getTauSneutrinoL(),
+                                                          inputShortcut,
+                                                          true );
+      cascades.push_back( currentCascade );
+      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
+                                          effectiveSquarkMassPointer,
+                                                          coloredDecayer,
+                                                          electroweakDecayer,
+                                             inputShortcut->getTauSneutrinoR(),
+                                                          inputShortcut,
                                                           true );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToWCascade( kinematics,
                                                effectiveSquarkMassPointer,
                                                coloredDecayer,
                                                electroweakDecayer,
-                                               shortcut );
+                                               inputShortcut );
       cascades.push_back( currentCascade );
       currentCascade = new charginoToHiggsCascade( kinematics,
                                                    effectiveSquarkMassPointer,
                                                    coloredDecayer,
                                                    electroweakDecayer,
-                                              shortcut->getChargedEwsbScalar(),
-                                                   shortcut );
+                                         inputShortcut->getChargedEwsbScalar(),
+                                                   inputShortcut );
       cascades.push_back( currentCascade );
       currentCascade = new charginoVirtualCascade( kinematics,
                                                    effectiveSquarkMassPointer,
                                                    coloredDecayer,
                                                    electroweakDecayer,
-                                                   shortcut );
+                                                   inputShortcut );
       cascades.push_back( currentCascade );
     }
   }
@@ -285,23 +285,23 @@ namespace LHC_FASER
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                          particlePointer const lighterScolored,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     kinematics( kinematics ),
-    shortcut( shortcut ),
+    inputShortcut( inputShortcut ),
     coloredDecayer( coloredDecayer ),
     electroweakDecayer( electroweakDecayer ),
     lighterScolored( lighterScolored )
   // this is the version for vector bosons.
   {
     effectiveSquarkMassHolder* effectiveSquarkMassPointer;
-    if( shortcut->getGluino() == coloredDecayer )
+    if( inputShortcut->getGluino() == coloredDecayer )
     {
       effectiveSquarkMassPointer = kinematics;
     }
     else
     {
       effectiveSquarkMassPointer
-      = shortcut->getOnShellEffectiveSquarkMass( coloredDecayer );
+      = inputShortcut->getOnShellEffectiveSquarkMass( coloredDecayer );
     }
 
     if( CppSLHA::PDG_code::W_plus == electroweakDecayer->get_PDG_code() )
@@ -311,7 +311,7 @@ namespace LHC_FASER
                                                            coloredDecayer,
                                                            electroweakDecayer,
                                                            lighterScolored,
-                                                           shortcut );
+                                                           inputShortcut );
       cascades.push_back( currentCascade );
     }
     else if( CppSLHA::PDG_code::Z == electroweakDecayer->get_PDG_code() )
@@ -320,7 +320,7 @@ namespace LHC_FASER
                                                     effectiveSquarkMassPointer,
                                                            coloredDecayer,
                                                            lighterScolored,
-                                                           shortcut );
+                                                           inputShortcut );
       cascades.push_back( currentCascade );
     }
   }
@@ -341,11 +341,11 @@ namespace LHC_FASER
   electroweakCascadesForOneBeamEnergy::electroweakCascadesForOneBeamEnergy(
                                leptonAcceptanceHandler* const kinematicsSource,
                                                         int const beamEnergy,
-                                         inputHandler const* const shortcut ) :
+                                    inputHandler const* const inputShortcut ) :
     kinematicsTable( kinematicsSource->getLeptonAcceptancesForOneBeamEnergy(
                                                                 beamEnergy ) ),
     beamEnergy( beamEnergy ),
-    shortcut( shortcut )
+    inputShortcut( inputShortcut )
   {
     // just an initialization list.
   }
@@ -400,7 +400,7 @@ namespace LHC_FASER
                                                           electroweakDecayer ),
                                    coloredDecayer,
                                    electroweakDecayer,
-                                   shortcut );
+                                   inputShortcut );
       electroweakinoCascadeSets.push_back( returnPointer );
     }
     return returnPointer;
@@ -436,14 +436,14 @@ namespace LHC_FASER
       returnPointer
       = new electroweakCascadeSet( kinematicsTable->getParameterSets(
                                              coloredDecayer )->getParameterSet(
-                                                   shortcut->getNeutralinoOne()
+                                              inputShortcut->getNeutralinoOne()
                                    /* it shouldn't really matter which
                                     *  neutralino is used here, just as long as
                                     *   it's lighter than coloredDecayer */ ),
                                    coloredDecayer,
                                    electroweakBoson,
                                    lighterScolored,
-                                   shortcut );
+                                   inputShortcut );
       bosonCascadeSets.push_back( returnPointer );
     }
     return returnPointer;
@@ -451,11 +451,11 @@ namespace LHC_FASER
 
 
   electroweakCascadeHandler::electroweakCascadeHandler(
-                                            inputHandler const* const shortcut,
+                                       inputHandler const* const inputShortcut,
                                std::string const* const gridFileSetLocation ) :
-    kinematicsSource( shortcut,
+    kinematicsSource( inputShortcut,
                       gridFileSetLocation ),
-    shortcut( shortcut )
+    inputShortcut( inputShortcut )
   {
     // just an initialization list.
   }
@@ -501,7 +501,7 @@ namespace LHC_FASER
       returnPointer
       = new electroweakCascadesForOneBeamEnergy( &kinematicsSource,
                                                  beamEnergy,
-                                                 shortcut );
+                                                 inputShortcut );
       cascadeSetAtBeamEnergies.push_back( returnPointer );
     }
     return returnPointer;

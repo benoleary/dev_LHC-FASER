@@ -180,8 +180,8 @@ namespace LHC_FASER
     // the given masses.
 
   protected:
-    int lowerElectroweakinoMassIndex;
-    int upperElectroweakinoMassIndex;
+    unsigned int lowerElectroweakinoMassIndex;
+    unsigned int upperElectroweakinoMassIndex;
     double electroweakinoMassFraction;
     bool shouldInterpolateOnElectroweakino;
     double otherElectroweakinoValue;

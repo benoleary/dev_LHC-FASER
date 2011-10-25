@@ -90,7 +90,11 @@ namespace LHC_FASER
                                      std::string const* const gridFileLocation,
                                     inputHandler const* const inputShortcut ) :
       leptonAcceptanceGrid( gridFileLocation,
-                            inputShortcut )
+                            inputShortcut ),
+      lowerLeftVector( NULL ),
+      lowerRightVector( NULL ),
+      upperRightVector( NULL ),
+      upperLeftVector( NULL )
   {
     // just an initialization list.
   }
@@ -188,7 +192,21 @@ namespace LHC_FASER
                                      std::string const* const gridFileLocation,
                                     inputHandler const* const inputShortcut ) :
       leptonAcceptanceGrid( gridFileLocation,
-                            inputShortcut )
+                            inputShortcut ),
+      lowerElectroweakinoMassIndex( 0 ),
+      upperElectroweakinoMassIndex( 0 ),
+      electroweakinoMassFraction(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      shouldInterpolateOnElectroweakino( false ),
+      otherElectroweakinoValue( CppSLHA::CppSLHA_global::really_wrong_value ),
+      foreLowerLeftVector( NULL ),
+      foreLowerRightVector( NULL ),
+      foreUpperRightVector( NULL ),
+      foreUpperLeftVector( NULL ),
+      rearLowerLeftVector( NULL ),
+      rearLowerRightVector( NULL ),
+      rearUpperRightVector( NULL ),
+      rearUpperLeftVector( NULL )
   {
     // just an initialization list.
   }
@@ -379,10 +397,10 @@ namespace LHC_FASER
               *pseudorapidityAcceptance
               = lhcFaserGlobal::unitLinearInterpolation(
                                                     electroweakinoMassFraction,
-                                                      lowerElectroweakinoValue,
+                                                     *pseudorapidityAcceptance,
                                                     otherElectroweakinoValue );
               for( unsigned int acceptanceCounter( 2 );
-                   lowerLeftVector->size() > acceptanceCounter;
+                   foreLowerLeftVector->size() > acceptanceCounter;
                    ++acceptanceCounter )
               {
                 energyAcceptances->push_back(
@@ -412,7 +430,7 @@ namespace LHC_FASER
             // just use the values from interpolation on the scolored masses:
           {
             for( unsigned int acceptanceCounter( 2 );
-                lowerLeftVector->size() > acceptanceCounter;
+                 foreLowerLeftVector->size() > acceptanceCounter;
                 ++acceptanceCounter )
             {
               energyAcceptances->push_back(
@@ -463,7 +481,13 @@ namespace LHC_FASER
     binSize( binSize ),
     transverseMomentumCut( transverseMomentumCut ),
     effectiveSquarkMass( CppSLHA::CppSLHA_global::really_wrong_value ),
-    pseudorapidityAcceptance( CppSLHA::CppSLHA_global::really_wrong_value )
+    acceptanceBins(),
+    pseudorapidityAcceptance( CppSLHA::CppSLHA_global::really_wrong_value ),
+    returnValue( CppSLHA::CppSLHA_global::really_wrong_value ),
+    binFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+    lowerBin( (int)CppSLHA::CppSLHA_global::really_wrong_value ),
+    acceptanceCounter( (int)CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentAcceptance( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     acceptanceBins.push_back( CppSLHA::CppSLHA_global::really_wrong_value );
     // this is to ensure that there is at least 1 entry for the transverse
@@ -592,6 +616,8 @@ namespace LHC_FASER
                                          double const transverseMomentumCut ) :
     inputShortcut( inputShortcut ),
     scolored( scolored ),
+    acceptanceGrid( acceptanceGrid ),
+    parameterSets(),
     binSize( binSize ),
     transverseMomentumCut( transverseMomentumCut )
   {
@@ -658,6 +684,8 @@ namespace LHC_FASER
     gridFileLocation( *gridFileSetLocation ),
     acceptanceFromSquarkGrid( NULL ),
     acceptanceFromGluinoGrid( NULL ),
+    squarkAcceptanceSets(),
+    gluinoAcceptanceSet( NULL ),
     binSize( binSize ),
     transverseMomentumCut( transverseMomentumCut )
   {
@@ -750,7 +778,8 @@ namespace LHC_FASER
                                        inputHandler const* const inputShortcut,
                                std::string const* const gridFileSetLocation ) :
     inputShortcut( inputShortcut ),
-    gridFileSetLocation( *gridFileSetLocation )
+    gridFileSetLocation( *gridFileSetLocation ),
+    acceptanceTables()
   {
     // just an initialization list.
   }
