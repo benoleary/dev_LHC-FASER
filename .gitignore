@@ -931,3 +931,11 @@ Debug/LHC-FASER_base_electroweak_cascade_stuff.o
 Debug/LHC-FASER.o
 
 .DS_Store
+
+Debug/LHC-FASER_base_electroweak_cascade_stuff.o
+
+Debug/LHC-FASER_derived_lepton_distributions.o
+
+Debug/LHC-FASER_charged_electroweak_cascade_stuff.o
+
+.DS_Store

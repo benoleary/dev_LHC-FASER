@@ -73,7 +73,7 @@ namespace LHC_FASER
 
     void
     reset(
-      double const unsetValues = CppSLHA::CppSLHA_global::really_wrong_value );
+      double const unsetValues = 0.0 );
     // this sets all acceptances to unsetValues & alreadyCalculatedFlag to
     // false.
     bool
@@ -239,7 +239,7 @@ namespace LHC_FASER
     getShortcut()
     const;
     double
-    getAcceptance( acceptanceCutSet const* const cuts,
+    getAcceptance( acceptanceCutSet const* const currentCuts,
                    int const numberOfAdditionalJets,
                    int const numberOfNegativeElectrons,
                    int const numberOfPositiveElectrons,
@@ -247,7 +247,7 @@ namespace LHC_FASER
                    int const numberOfPositiveMuons );
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
-     * returns the set of acceptanceValues for acceptance * branching ratio FOR THE
+     * returns the set of values for acceptance * branching ratio FOR THE
      * CASCADE FROM electroweakDecayer ONWARDS (does NOT include the BR for
      * coloredDecayer to electroweakDecayer - this is dealt with by the
      * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
@@ -261,7 +261,7 @@ namespace LHC_FASER
      */
 
     double
-    getOssfMinusOsdf( acceptanceCutSet* const cuts );
+    getOssfMinusOsdf( acceptanceCutSet* const currentCuts );
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the value for acceptance * branching ratio FOR THE
@@ -328,7 +328,7 @@ namespace LHC_FASER
     // value for the requested signal, false otherwise.
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     = 0;
     // this should set all the appropriate acceptance * branching ratio values
@@ -705,7 +705,7 @@ namespace LHC_FASER
   }
 
   inline double
-  electroweakCascade::getOssfMinusOsdf( acceptanceCutSet* const cuts )
+  electroweakCascade::getOssfMinusOsdf( acceptanceCutSet* const currentCuts )
   /* this does the common job of checking to see if the point has been
    * updated before calling the relevant protected virtual function, which
    * returns the set of values for acceptance * branching ratio FOR THE
@@ -723,10 +723,10 @@ namespace LHC_FASER
       {
         acceptances.clearEntries();
       }
-      currentAcceptance = acceptances.getPointer( cuts );
+      currentAcceptance = acceptances.getPointer( currentCuts );
       if( currentAcceptance->notAlreadyCalculated() )
       {
-        calculateAcceptance( cuts,
+        calculateAcceptance( currentCuts,
                              currentAcceptance );
         currentAcceptance->flagAsAlreadyCalculated();
       }

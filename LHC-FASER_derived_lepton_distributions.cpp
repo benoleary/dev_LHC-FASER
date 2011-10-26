@@ -51,7 +51,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -2049,6 +2049,32 @@ namespace LHC_FASER
   }
 
   vectorFromSquarkToMuon::~vectorFromSquarkToMuon()
+  {
+    // does nothing.
+  }
+
+
+  scalarFromSquarkToMuon::scalarFromSquarkToMuon(
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
+                          effectiveSquarkMassHolder* const effectiveSquarkMass,
+                    CppSLHA::particle_property_set const* const secondParticle,
+                  CppSLHA::particle_property_set const* const thirdParticle ) :
+    leptonEnergyDistribution( readierPointer,
+                              spectrumData,
+                              firstParticle,
+                              effectiveSquarkMass,
+                              secondParticle,
+                              thirdParticle,
+                              NULL ),
+    minToMaxConst( minToMaxSegment.addTerm( 0,
+                                            0 ) )
+  {
+    segments.push_back( &minToMaxSegment );
+  }
+
+  scalarFromSquarkToMuon::~scalarFromSquarkToMuon()
   {
     // does nothing.
   }

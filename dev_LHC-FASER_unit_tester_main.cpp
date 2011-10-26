@@ -129,17 +129,17 @@
 //#include "LHC-FASER_template_classes.hpp"
 //#include "LHC-FASER_global_stuff.hpp"
 //#include "LHC-FASER_base_lepton_distribution_stuff.hpp"
-#include "LHC-FASER_derived_lepton_distributions.hpp"
+//#include "LHC-FASER_derived_lepton_distributions.hpp"
 //#include "LHC-FASER_sparticle_decay_stuff.hpp"
 //#include "LHC-FASER_input_handling_stuff.hpp"
 #include "LHC-FASER_cross-section_stuff.hpp"
 //#include "LHC-FASER_base_kinematics_stuff.hpp"
-#include "LHC-FASER_lepton_kinematics_stuff.hpp"
+//#include "LHC-FASER_lepton_kinematics_stuff.hpp"
 #include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
 #include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
+#include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
 
 // future includes:
-//#include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
 //#include "LHC-FASER_electroweak_cascade_collection_stuff.hpp"
 //#include "LHC-FASER_full_cascade_stuff.hpp"
 //#include "LHC-FASER_jet_kinematics_stuff.hpp"
@@ -270,6 +270,61 @@ protected:
 };
 
 
+double
+getRemainderBr( double const cascadeBr,
+                LHC_FASER::electroweakCascade* testElectroweakCascade,
+                LHC_FASER::acceptanceCutSet* testAcceptanceCutSet )
+{
+  double previousRemainder( cascadeBr );
+  double returnValue( cascadeBr );
+  /**std::cout
+  << std::endl
+  << "remainder starts = " << cascadeBr;**/
+
+  for( int jetCounter( -1 );
+       3 > jetCounter;
+       ++jetCounter )
+  {
+    for( int eMinusCounter( -1 );
+         3 > eMinusCounter;
+         ++eMinusCounter )
+    {
+      for( int ePlusCounter( -1 );
+           3 > ePlusCounter;
+           ++ePlusCounter )
+      {
+        for( int muMinusCounter( -1 );
+             3 > muMinusCounter;
+             ++muMinusCounter )
+        {
+          for( int muPlusCounter( -1 );
+               3 > muPlusCounter;
+               ++muPlusCounter )
+          {
+            returnValue
+            -= testElectroweakCascade->getAcceptance( testAcceptanceCutSet,
+                                                      jetCounter,
+                                                      eMinusCounter,
+                                                      ePlusCounter,
+                                                      muMinusCounter,
+                                                      muPlusCounter );
+            if( previousRemainder != returnValue )
+            {
+              /**std::cout
+              << std::endl
+              << jetCounter << eMinusCounter << ePlusCounter << muMinusCounter
+              << muPlusCounter << " remainder = " << returnValue;**/
+              previousRemainder = returnValue;
+            }
+          }
+        }
+      }
+    }
+  }
+  return returnValue;
+}
+
+
 // the main program:
 
 int main( int argumentCount,
@@ -301,63 +356,71 @@ int main( int argumentCount,
                                             "./grids",
                                             &testReadier );
   testInputHandler.setVerbosity( true );
-  std::string bluh( "bluh" );
+  std::string bluhString( "bluh" );
 
 
   /* testing the lepton energy distributions in the squark rest frame:
    * (works) *//**
 
-  distributionSet distributions( &testReadier );
+  distributionSet testDistributionSet( &testReadier );
 
   CppSLHA::EW_scale_spectrum* const
-  spectrum( slhaData.get_particle_spectrum() );
+  testSpectrum( slhaData.get_particle_spectrum() );
   LHC_FASER::particlePointer const
-  sdownLPointer( spectrum->inspect_particle_property_set(
+  sdownLPointer( testSpectrum->inspect_particle_property_set(
                                                 CppSLHA::PDG_code::sdown_L ) );
   squarkMassReturner sdownLMass( sdownLPointer );
   CppSLHA::particle_property_set* const
   scharmLPointer(
-          spectrum->get_particle_property_set( CppSLHA::PDG_code::scharm_L ) );
+      testSpectrum->get_particle_property_set( CppSLHA::PDG_code::scharm_L ) );
+  CppSLHA::particle_property_set* const
+  stopOnePointer(
+      testSpectrum->get_particle_property_set( CppSLHA::PDG_code::stop_one ) );
+  CppSLHA::particle_property_set* const
+  stopTwoPointer(
+      testSpectrum->get_particle_property_set( CppSLHA::PDG_code::stop_two ) );
+  squarkMassReturner stopTwoMass( stopTwoPointer );
   LHC_FASER::particlePointer const
-  neutralinoFourPointer( spectrum->inspect_particle_property_set(
+  neutralinoFourPointer( testSpectrum->inspect_particle_property_set(
                                         CppSLHA::PDG_code::neutralino_four ) );
   CppSLHA::particle_property_set* const
-  neutralinoThreePointer( spectrum->get_particle_property_set(
+  neutralinoThreePointer( testSpectrum->get_particle_property_set(
                                        CppSLHA::PDG_code::neutralino_three ) );
   LHC_FASER::particlePointer const
-  neutralinoTwoPointer( spectrum->inspect_particle_property_set(
+  neutralinoTwoPointer( testSpectrum->inspect_particle_property_set(
                                          CppSLHA::PDG_code::neutralino_two ) );
   LHC_FASER::particlePointer const
-  charginoTwoPointer( spectrum->inspect_particle_property_set(
+  charginoTwoPointer( testSpectrum->inspect_particle_property_set(
                                            CppSLHA::PDG_code::chargino_two ) );
   LHC_FASER::particlePointer const
-  charginoOnePointer( spectrum->inspect_particle_property_set(
+  charginoOnePointer( testSpectrum->inspect_particle_property_set(
                                            CppSLHA::PDG_code::chargino_one ) );
   LHC_FASER::particlePointer const
-  smuonLPointer( spectrum->inspect_particle_property_set(
+  smuonLPointer( testSpectrum->inspect_particle_property_set(
                                                 CppSLHA::PDG_code::smuon_L ) );
   LHC_FASER::particlePointer const
-  smuonRPointer( spectrum->inspect_particle_property_set(
+  smuonRPointer( testSpectrum->inspect_particle_property_set(
                                                 CppSLHA::PDG_code::smuon_R ) );
   LHC_FASER::particlePointer const
-  muonSneutrinoLPointer( spectrum->inspect_particle_property_set(
+  muonSneutrinoLPointer( testSpectrum->inspect_particle_property_set(
                                        CppSLHA::PDG_code::muon_sneutrino_L ) );
   LHC_FASER::particlePointer const
-  muonSneutrinoRPointer( spectrum->inspect_particle_property_set(
+  muonSneutrinoRPointer( testSpectrum->inspect_particle_property_set(
                                        CppSLHA::PDG_code::muon_sneutrino_R ) );
   LHC_FASER::particlePointer const
-  lightNeutralEwsbScalarPointer( spectrum->inspect_particle_property_set(
+  lightNeutralEwsbScalarPointer( testSpectrum->inspect_particle_property_set(
                               CppSLHA::PDG_code::light_neutral_EWSB_scalar ) );
   CppSLHA::particle_property_set* const
-  chargedEwsbScalarPointer( spectrum->get_particle_property_set(
+  chargedEwsbScalarPointer( testSpectrum->get_particle_property_set(
                                     CppSLHA::PDG_code::charged_EWSB_scalar ) );
   LHC_FASER::particlePointer const
-  zPointer( spectrum->inspect_particle_property_set( CppSLHA::PDG_code::Z ) );
+  zPointer( testSpectrum->inspect_particle_property_set(
+                                                      CppSLHA::PDG_code::Z ) );
   LHC_FASER::particlePointer const
-  wPointer( spectrum->inspect_particle_property_set(
+  wPointer( testSpectrum->inspect_particle_property_set(
                                                  CppSLHA::PDG_code::W_plus ) );
   LHC_FASER::particlePointer const
-  neutralinoOnePointer( spectrum->inspect_particle_property_set(
+  neutralinoOnePointer( testSpectrum->inspect_particle_property_set(
                                          CppSLHA::PDG_code::neutralino_one ) );
 
   // here we set n3 to have enough mass to decay to a h/Z + n1:
@@ -382,24 +445,24 @@ int main( int argumentCount,
                                                                 &sdownLMass,
                                                           neutralinoTwoPointer,
                                                              smuonRPointer ) );
-  distributions.addDistributions( currentDistribution,
-                                  "flat_near" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "flat_near" );
   currentDistribution = new LHC_FASER::sameChiralityNearMuon( &testReadier,
                                                               &slhaData,
                                                               sdownLPointer,
                                                               &sdownLMass,
                                                           neutralinoTwoPointer,
                                                               smuonRPointer );
-  distributions.addDistributions( currentDistribution,
-                                  "same_near" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "same_near" );
   currentDistribution = new LHC_FASER::oppositeChiralityNearMuon( &testReadier,
                                                                   &slhaData,
                                                                  sdownLPointer,
                                                                   &sdownLMass,
                                                           neutralinoTwoPointer,
                                                                smuonRPointer );
-  distributions.addDistributions( currentDistribution,
-                                  "opp_near" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "opp_near" );
   currentDistribution = new LHC_FASER::flatFarMuonPlusAntimuon( &testReadier,
                                                                 &slhaData,
                                                                 sdownLPointer,
@@ -407,8 +470,8 @@ int main( int argumentCount,
                                                           neutralinoTwoPointer,
                                                                 smuonRPointer,
                                                         neutralinoOnePointer );
-  distributions.addDistributions( currentDistribution,
-                                  "flat_far" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "flat_far" );
   currentDistribution = new LHC_FASER::sameChiralityFarMuon( &testReadier,
                                                              &slhaData,
                                                              sdownLPointer,
@@ -416,8 +479,8 @@ int main( int argumentCount,
                                                           neutralinoTwoPointer,
                                                              smuonRPointer,
                                                         neutralinoOnePointer );
-  distributions.addDistributions( currentDistribution,
-                                  "same_far" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "same_far" );
   currentDistribution = new LHC_FASER::oppositeChiralityFarMuon( &testReadier,
                                                                  &slhaData,
                                                                  sdownLPointer,
@@ -425,8 +488,8 @@ int main( int argumentCount,
                                                           neutralinoTwoPointer,
                                                                  smuonRPointer,
                                                         neutralinoOnePointer );
-  distributions.addDistributions( currentDistribution,
-                                  "opp_far" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "opp_far" );
   currentDistribution = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
                                                               &slhaData,
                                                               sdownLPointer,
@@ -434,8 +497,8 @@ int main( int argumentCount,
                                                          neutralinoFourPointer,
                                                  lightNeutralEwsbScalarPointer,
                                                         neutralinoOnePointer );
-  distributions.addDistributions( currentDistribution,
-                                  "hn4" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "hn4" );
   currentDistribution = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
                                                               &slhaData,
                                                               sdownLPointer,
@@ -443,8 +506,8 @@ int main( int argumentCount,
                                                         neutralinoThreePointer,
                                                  lightNeutralEwsbScalarPointer,
                                                         neutralinoOnePointer );
-  distributions.addDistributions( currentDistribution,
-                                  "hn3" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "hn3" );
   currentDistribution = new LHC_FASER::HiggsMuonPlusAntimuon( &testReadier,
                                                               &slhaData,
                                                               sdownLPointer,
@@ -452,8 +515,8 @@ int main( int argumentCount,
                                                             charginoTwoPointer,
                                                       chargedEwsbScalarPointer,
                                                         neutralinoOnePointer );
-  distributions.addDistributions( currentDistribution,
-                                  "H+" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "H+" );
   currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
                                                     &slhaData,
                                                     sdownLPointer,
@@ -463,8 +526,8 @@ int main( int argumentCount,
                                                     neutralinoOnePointer,
                                                     true,
                                                     false );
-  distributions.addDistributions( currentDistribution,
-                                  "Zn3L" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Zn3L" );
   currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
                                                     &slhaData,
                                                     sdownLPointer,
@@ -474,8 +537,8 @@ int main( int argumentCount,
                                                     neutralinoOnePointer,
                                                     false,
                                                     false );
-  distributions.addDistributions( currentDistribution,
-                                  "Zn3R" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Zn3R" );
   currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
                                                     &slhaData,
                                                     sdownLPointer,
@@ -485,8 +548,8 @@ int main( int argumentCount,
                                                     neutralinoOnePointer,
                                                     false,
                                                     true );
-  distributions.addDistributions( currentDistribution,
-                                  "Zn3summed" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Zn3summed" );
   currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
                                                     &slhaData,
                                                     sdownLPointer,
@@ -496,8 +559,8 @@ int main( int argumentCount,
                                                     neutralinoOnePointer,
                                                     true,
                                                     false );
-  distributions.addDistributions( currentDistribution,
-                                  "Zn4L" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Zn4L" );
   currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
                                                     &slhaData,
                                                     sdownLPointer,
@@ -507,8 +570,8 @@ int main( int argumentCount,
                                                     neutralinoOnePointer,
                                                     false,
                                                     false );
-  distributions.addDistributions( currentDistribution,
-                                  "Zn4R" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Zn4R" );
   currentDistribution = new LHC_FASER::zHandedMuon( &testReadier,
                                                     &slhaData,
                                                     sdownLPointer,
@@ -518,16 +581,24 @@ int main( int argumentCount,
                                                     neutralinoOnePointer,
                                                     false,
                                                     true );
-  distributions.addDistributions( currentDistribution,
-                                  "Zn4summed" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Zn4summed" );
   currentDistribution = new LHC_FASER::vectorFromSquarkToMuon( &testReadier,
                                                                &slhaData,
                                                                sdownLPointer,
                                                                &sdownLMass,
                                                                scharmLPointer,
                                                                wPointer );
-  distributions.addDistributions( currentDistribution,
-                                  "sdscW" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "sdscW" );
+  currentDistribution = new LHC_FASER::scalarFromSquarkToMuon( &testReadier,
+                                                               &slhaData,
+                                                               stopTwoPointer,
+                                                               &stopTwoMass,
+                                                               stopOnePointer,
+                                               lightNeutralEwsbScalarPointer );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "st2st1h" );
   currentDistribution = new LHC_FASER::wMinusHandedMuon( &testReadier,
                                                          &slhaData,
                                                          sdownLPointer,
@@ -536,8 +607,8 @@ int main( int argumentCount,
                                                          wPointer,
                                                          neutralinoOnePointer,
                                                          true );
-  distributions.addDistributions( currentDistribution,
-                                  "Wx1L" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Wx1L" );
   currentDistribution = new LHC_FASER::wMinusHandedMuon( &testReadier,
                                                          &slhaData,
                                                          sdownLPointer,
@@ -546,8 +617,8 @@ int main( int argumentCount,
                                                          wPointer,
                                                          neutralinoOnePointer,
                                                          false );
-  distributions.addDistributions( currentDistribution,
-                                  "Wx1R" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Wx1R" );
   currentDistribution = new LHC_FASER::wMinusHandedMuon( &testReadier,
                                                          &slhaData,
                                                          sdownLPointer,
@@ -556,8 +627,8 @@ int main( int argumentCount,
                                                          wPointer,
                                                          neutralinoOnePointer,
                                                          true );
-  distributions.addDistributions( currentDistribution,
-                                  "Wx2L" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Wx2L" );
   currentDistribution = new LHC_FASER::wMinusHandedMuon( &testReadier,
                                                          &slhaData,
                                                          sdownLPointer,
@@ -566,8 +637,8 @@ int main( int argumentCount,
                                                          wPointer,
                                                          neutralinoOnePointer,
                                                          false );
-  distributions.addDistributions( currentDistribution,
-                                  "Wx2R" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "Wx2R" );
   currentDistribution = new LHC_FASER::neutralinoThreeBodyDecay( &testReadier,
                                                                  &slhaData,
                                                                  sdownLPointer,
@@ -576,8 +647,8 @@ int main( int argumentCount,
                                                           neutralinoOnePointer,
                                                                  smuonLPointer,
                                                                smuonRPointer );
-  distributions.addDistributions( currentDistribution,
-                                  "nn3b" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "nn3b" );
   currentDistribution = new LHC_FASER::charginoThreeBodyDecay( &testReadier,
                                                                &slhaData,
                                                                sdownLPointer,
@@ -588,8 +659,8 @@ int main( int argumentCount,
                                                                smuonRPointer,
                                                          muonSneutrinoLPointer,
                                                        muonSneutrinoRPointer );
-  distributions.addDistributions( currentDistribution,
-                                  "xx3b" );
+  testDistributionSet.addDistributions( currentDistribution,
+                                        "xx3b" );
 
   std::ofstream* gnuplotCommandFile( new std::ofstream() );
   gnuplotCommandFile->open( "./lepton_distributions/test_plotter.input" );
@@ -600,7 +671,7 @@ int main( int argumentCount,
     << "set term postscript enhanced color solid" << std::endl;
     std::string gnuplotDataFileName;
     for( int graphCount( 0 );
-         distributions.getDistributionsVector()->size()
+         testDistributionSet.getDistributionsVector()->size()
          > (unsigned int)graphCount;
          ++graphCount )
     {
@@ -608,7 +679,7 @@ int main( int argumentCount,
       std::ofstream* gnuplotDataFile( new std::ofstream() );
       gnuplotDataFileName.assign( "./lepton_distributions/" );
       gnuplotDataFileName.append(
-                         *(distributions.getNamesVector()->at( graphCount )) );
+                   *(testDistributionSet.getNamesVector()->at( graphCount )) );
       gnuplotDataFileName.append( ".dat" );
       gnuplotDataFile->open( gnuplotDataFileName.c_str() );
       int const numberOfBins( 100 );
@@ -621,29 +692,30 @@ int main( int argumentCount,
       {
         *gnuplotCommandFile
         << "set output \""
-        << *(distributions.getNamesVector()->at( graphCount ))
+        << *(testDistributionSet.getNamesVector()->at( graphCount ))
         << ".eps\"" << std::endl
         << "set style line 1 lt rgb \"red\" lw 3" << std::endl
         << "plot '"
-        << *(distributions.getNamesVector()->at( graphCount ))
+        << *(testDistributionSet.getNamesVector()->at( graphCount ))
         << ".dat' index 0 notitle with lines ls 1" << std::endl;
 
         std::cout
         << std::endl
-        << *(distributions.getNamesVector()->at( graphCount ))
+        << *(testDistributionSet.getNamesVector()->at( graphCount ))
         << ": "
-        << distributions.getDistributionsVector()->at( graphCount
+        << testDistributionSet.getDistributionsVector()->at( graphCount
                                                           )->getMinimumEnergy()
         << " to "
-        << distributions.getDistributionsVector()->at( graphCount
+        << testDistributionSet.getDistributionsVector()->at( graphCount
                                                          )->getMaximumEnergy();
         std::cout << std::endl;
 
-        binSize = ( ( distributions.getDistributionsVector()->at( graphCount
+        binSize
+        = ( ( testDistributionSet.getDistributionsVector()->at( graphCount
                                                           )->getMaximumEnergy()
-                      - distributions.getDistributionsVector()->at( graphCount
+              - testDistributionSet.getDistributionsVector()->at( graphCount
                                                         )->getMinimumEnergy() )
-                    / numberOfBins );
+            / numberOfBins );
         areaSum = 0.0;
         for( int binCounter( 0 );
              numberOfBins >= binCounter;
@@ -651,10 +723,10 @@ int main( int argumentCount,
         {
           binPosition
           = ( (double)binCounter * binSize
-              + distributions.getDistributionsVector()->at(
+              + testDistributionSet.getDistributionsVector()->at(
                                             graphCount )->getMinimumEnergy() );
           plotValue
-          = distributions.getDistributionsVector()->at( graphCount
+          = testDistributionSet.getDistributionsVector()->at( graphCount
                                                      )->valueAt( binPosition );
           areaSum += ( plotValue * binSize );
           *gnuplotDataFile << binPosition << " " << plotValue << std::endl;
@@ -1763,6 +1835,12 @@ int main( int argumentCount,
   testAcceptanceCutSet.setSecondaryLeptonCut( 10.0 );
   testAcceptanceCutSet.setExcludedStandardModelProducts(
                                             testInputHandler.getNotInJets4() );
+  LHC_FASER::acceptanceCutSet noLeptonGapAcceptanceCutSet;
+  noLeptonGapAcceptanceCutSet.setJetCut( 40.0 );
+  noLeptonGapAcceptanceCutSet.setPrimaryLeptonCut( 10.0 );
+  noLeptonGapAcceptanceCutSet.setSecondaryLeptonCut( 10.0 );
+  noLeptonGapAcceptanceCutSet.setExcludedStandardModelProducts(
+                                            testInputHandler.getNotInJets4() );
 
   std::cout
   << std::endl
@@ -1799,8 +1877,17 @@ int main( int argumentCount,
                                            testInputHandler.getNeutralinoTwo(),
                                                                            2.0,
                                                                        9.0 ) );
-  LHC_FASER::neutralinoToSemuCascade*
-  testNeutralinoToSemuCascade
+  CppSLHA::particle_decay_set_handler const*
+  neutralinoTwoDecay
+  = testInputHandler.getNeutralinoTwo()->inspect_direct_decay_handler();
+  double
+  cascadeBr( 2.0
+             * neutralinoTwoDecay->get_branching_ratio_for_exact_match(
+                                                 -(CppSLHA::PDG_code::smuon_R),
+                                                   CppSLHA::PDG_code::muon ) );
+  double remainderBr;
+  LHC_FASER::electroweakCascade*
+  testElectroweakCascade
   = new LHC_FASER::neutralinoToSemuCascade(
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
@@ -1808,48 +1895,53 @@ int main( int argumentCount,
                                            testInputHandler.getNeutralinoTwo(),
                                             testInputHandler.getSmuonR(),
                                             &testInputHandler );
-
   std::cout
   << std::endl
-  << "testNeutralinoToSemuCascade->getAcceptance( " << &testAcceptanceCutSet
-  << ", 0, 0, 0, 0, 0 ) = "
-  << testNeutralinoToSemuCascade->getAcceptance( &testAcceptanceCutSet,
-                                                 0,
-                                                 0,
-                                                 0,
-                                                 0,
-                                                 0 )
+  << "neutralinoToSemuCascade (seems OK):"
   << std::endl
-  << "testNeutralinoToSemuCascade->getAcceptance( " << &testAcceptanceCutSet
-  << ", 1, 1, 0, 0, 0 ) = "
-  << testNeutralinoToSemuCascade->getAcceptance( &testAcceptanceCutSet,
-                                                 1,
-                                                 1,
-                                                 0,
-                                                 0,
-                                                 0 )
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
   << std::endl
-  << "testNeutralinoToSemuCascade->getAcceptance( " << &testAcceptanceCutSet
-  << ", 0, 0, 0, 1, 1 ) = "
-  << testNeutralinoToSemuCascade->getAcceptance( &testAcceptanceCutSet,
-                                                 0,
-                                                 0,
-                                                 0,
-                                                 1,
-                                                 1 )
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
   << std::endl
-  << "testNeutralinoToSemuCascade->getOssfMinusOsdf( " << &testAcceptanceCutSet
-  << " ) = "
-  << testNeutralinoToSemuCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
-  std::cout << std::endl;
-  delete testNeutralinoToSemuCascade;
-
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
   std::cout
   << std::endl
-  << "neutralinoToSemuCascade seems OK.";
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
   std::cout << std::endl;
-
-  LHC_FASER::electroweakCascade*
+  std::cout << std::endl;
+  delete testElectroweakCascade;
   testElectroweakCascade = new LHC_FASER::chargeSummedNeutralinoToSemuCascade(
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
@@ -1859,7 +1951,8 @@ int main( int argumentCount,
                                                            &testInputHandler );
   std::cout
   << std::endl
-  << "chargeSummedNeutralinoToSemuCascade (needs checking):"
+  << "chargeSummedNeutralinoToSemuCascade (seems OK):"
+  << std::endl
   << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
   << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
                                             0,
@@ -1886,8 +1979,27 @@ int main( int argumentCount,
   << std::endl
   << "->getOssfMinusOsdf( ... ) = "
   << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
   std::cout << std::endl;
   delete testElectroweakCascade;
+  cascadeBr = ( 2.0
+                * neutralinoTwoDecay->get_branching_ratio_for_exact_match(
+                                                -(CppSLHA::PDG_code::stau_one),
+                                             CppSLHA::PDG_code::tau_lepton ) );
   testElectroweakCascade = new LHC_FASER::neutralinoToStauCascade(
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
@@ -1897,7 +2009,8 @@ int main( int argumentCount,
                                                            &testInputHandler );
   std::cout
   << std::endl
-  << "neutralinoToStauCascade (needs checking):"
+  << "neutralinoToStauCascade (seems OK):"
+  << std::endl
   << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
   << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
                                             0,
@@ -1924,6 +2037,21 @@ int main( int argumentCount,
   << std::endl
   << "->getOssfMinusOsdf( ... ) = "
   << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
   std::cout << std::endl;
   delete testElectroweakCascade;
   testElectroweakCascade = new LHC_FASER::chargeSummedNeutralinoToStauCascade(
@@ -1935,7 +2063,8 @@ int main( int argumentCount,
                                                            &testInputHandler );
   std::cout
   << std::endl
-  << "chargeSummedNeutralinoToStauCascade (needs checking):"
+  << "chargeSummedNeutralinoToStauCascade (seems OK):"
+  << std::endl
   << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
   << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
                                             0,
@@ -1962,8 +2091,26 @@ int main( int argumentCount,
   << std::endl
   << "->getOssfMinusOsdf( ... ) = "
   << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
   std::cout << std::endl;
   delete testElectroweakCascade;
+  cascadeBr = neutralinoTwoDecay->get_branching_ratio_for_exact_match(
+                                                          CppSLHA::PDG_code::Z,
+                                           CppSLHA::PDG_code::neutralino_one );
   testElectroweakCascade = new LHC_FASER::neutralinoToZCascade(
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
@@ -1972,7 +2119,8 @@ int main( int argumentCount,
                                                            &testInputHandler );
   std::cout
   << std::endl
-  << "neutralinoToZCascade (needs checking):"
+  << "neutralinoToZCascade (seems OK):"
+  << std::endl
   << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
   << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
                                             0,
@@ -1999,6 +2147,21 @@ int main( int argumentCount,
   << std::endl
   << "->getOssfMinusOsdf( ... ) = "
   << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
   std::cout << std::endl;
   delete testElectroweakCascade;
   testElectroweakCascade = new LHC_FASER::chargeSummedNeutralinoToZCascade(
@@ -2009,7 +2172,8 @@ int main( int argumentCount,
                                                            &testInputHandler );
   std::cout
   << std::endl
-  << "chargeSummedNeutralinoToZCascade (needs checking):"
+  << "chargeSummedNeutralinoToZCascade (seems OK):"
+  << std::endl
   << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
   << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
                                             0,
@@ -2036,23 +2200,153 @@ int main( int argumentCount,
   << std::endl
   << "->getOssfMinusOsdf( ... ) = "
   << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
-  std::cout << std::endl;
-  delete testElectroweakCascade;
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
   std::cout
   << std::endl
-  << "deleted chargeSummedNeutralinoToZCascade without problems.";
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
   std::cout << std::endl;
-
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  cascadeBr
+  = testInputHandler.getNeutralinoFour()->inspect_direct_decay_handler(
+                                        )->get_branching_ratio_for_exact_match(
+                                                          CppSLHA::PDG_code::Z,
+                                           CppSLHA::PDG_code::neutralino_one );
+  testElectroweakCascade = new LHC_FASER::neutralinoToZCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                          testInputHandler.getNeutralinoFour(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "neutralinoToZCascade by chi^0_4 (seems OK):";
+  std::cout
+  << std::endl;
+  std::cout
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  testElectroweakCascade = new LHC_FASER::chargeSummedNeutralinoToZCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                          testInputHandler.getNeutralinoFour(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "chargeSummedNeutralinoToZCascade by chi^0_4 (seems OK):"
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  cascadeBr = testInputHandler.getNeutralinoFour(
+                                               )->inspect_direct_decay_handler(
+                                        )->get_branching_ratio_for_exact_match(
+                                  CppSLHA::PDG_code::light_neutral_EWSB_scalar,
+                                           CppSLHA::PDG_code::neutralino_one );
   testElectroweakCascade = new LHC_FASER::neutralinoToHiggsCascade(
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
                                                  testInputHandler.getScharmL(),
-                                         testInputHandler.getNeutralinoThree(),
+                                          testInputHandler.getNeutralinoFour(),
                                   testInputHandler.getLightNeutralEwsbScalar(),
                                                            &testInputHandler );
   std::cout
   << std::endl
-  << "neutralinoToHiggsCascade (needs checking):"
+  << "neutralinoToHiggsCascade"
+  << " (seems OK, since 5% of the h BR is photon pair or 3-body):"
+  << std::endl
   << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
   << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
                                             0,
@@ -2079,6 +2373,21 @@ int main( int argumentCount,
   << std::endl
   << "->getOssfMinusOsdf( ... ) = "
   << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
   std::cout << std::endl;
   delete testElectroweakCascade;
   testElectroweakCascade = new LHC_FASER::chargeSummedNeutralinoVirtualCascade(
@@ -2089,7 +2398,9 @@ int main( int argumentCount,
                                                            &testInputHandler );
   std::cout
   << std::endl
-  << "chargeSummedNeutralinoVirtualCascade (needs checking):"
+  << "chargeSummedNeutralinoVirtualCascade"
+  << " (probably fine, not really checked though):"
+  << std::endl
   << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
   << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
                                             0,
@@ -2116,7 +2427,6 @@ int main( int argumentCount,
   << std::endl
   << "->getOssfMinusOsdf( ... ) = "
   << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
-  std::cout << std::endl;
   delete testElectroweakCascade;
   testElectroweakCascade = new LHC_FASER::neutralinoVirtualCascade(
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
@@ -2126,7 +2436,9 @@ int main( int argumentCount,
                                                            &testInputHandler );
   std::cout
   << std::endl
-  << "neutralinoVirtualCascade (needs checking):"
+  << "neutralinoVirtualCascade"
+  << " (probably fine, not really checked though):"
+  << std::endl
   << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
   << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
                                             0,
@@ -2154,16 +2466,22 @@ int main( int argumentCount,
   << "->getOssfMinusOsdf( ... ) = "
   << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
   std::cout << std::endl;
+  std::cout << std::endl;
   delete testElectroweakCascade;
+  cascadeBr = testInputHandler.getStopTwo()->inspect_direct_decay_handler(
+                                        )->get_branching_ratio_for_exact_match(
+                                                   CppSLHA::PDG_code::stop_one,
+                                                        CppSLHA::PDG_code::Z );
   testElectroweakCascade = new LHC_FASER::scoloredToZPlusScoloredCascade(
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
                              cascadeTestingLeptonAcceptanceParameterSetPointer,
-                                              testInputHandler.getSbottomTwo(),
+                                                 testInputHandler.getStopTwo(),
                                                  testInputHandler.getStopOne(),
                                                            &testInputHandler );
   std::cout
   << std::endl
-  << "scoloredToZPlusScoloredCascade (needs checking):"
+  << "scoloredToZPlusScoloredCascade (seems OK):"
+  << std::endl
   << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
   << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
                                             0,
@@ -2190,6 +2508,412 @@ int main( int argumentCount,
   << std::endl
   << "->getOssfMinusOsdf( ... ) = "
   << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  cascadeBr = testInputHandler.getStopTwo()->inspect_direct_decay_handler(
+                                        )->get_branching_ratio_for_exact_match(
+                                                   CppSLHA::PDG_code::stop_one,
+                                CppSLHA::PDG_code::light_neutral_EWSB_scalar );
+  testElectroweakCascade = new LHC_FASER::scoloredToHiggsPlusScoloredCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getStopTwo(),
+                                                 testInputHandler.getStopOne(),
+                                  testInputHandler.getLightNeutralEwsbScalar(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "scoloredToHiggsPlusScoloredCascade"
+  << " (seems OK, since 5% of the h BR is photon pair or 3-body):"
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  CppSLHA::particle_decay_set_handler const*
+  charginoOneDecay
+  = testInputHandler.getCharginoOne()->inspect_direct_decay_handler();
+  cascadeBr = charginoOneDecay->get_branching_ratio_for_exact_match(
+                                                 -(CppSLHA::PDG_code::smuon_R),
+                                            CppSLHA::PDG_code::muon_neutrino );
+  testElectroweakCascade = new LHC_FASER::charginoToSemuOrEmuSnuCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                             testInputHandler.getCharginoOne(),
+                                                  testInputHandler.getSmuonR(),
+                                                             &testInputHandler,
+                                                                       false );
+  std::cout
+  << std::endl
+  << "charginoToSemuOrEmuSnuCascade (seems OK):"
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  cascadeBr = charginoOneDecay->get_branching_ratio_for_exact_match(
+                                                 -(CppSLHA::PDG_code::smuon_R),
+                                            CppSLHA::PDG_code::muon_neutrino );
+  testElectroweakCascade = new LHC_FASER::charginoToSemuOrEmuSnuCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                             testInputHandler.getCharginoOne(),
+                                                  testInputHandler.getSmuonR(),
+                                                             &testInputHandler,
+                                                                        true );
+  std::cout
+  << std::endl
+  << "charginoToSemuOrEmuSnuCascade pretending to be sneutrino cascade"
+  << " (seems OK):"
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  cascadeBr = charginoOneDecay->get_branching_ratio_for_exact_match(
+                                                -(CppSLHA::PDG_code::stau_one),
+                                             CppSLHA::PDG_code::tau_neutrino );
+  testElectroweakCascade = new LHC_FASER::charginoToStauOrTauSnuCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                             testInputHandler.getCharginoOne(),
+                                                 testInputHandler.getStauOne(),
+                                                             &testInputHandler,
+                                                                       false );
+  std::cout
+  << std::endl
+  << "charginoToStauOrTauSnuCascade (seems OK):"
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  cascadeBr = charginoOneDecay->get_branching_ratio_for_exact_match(
+                                                     CppSLHA::PDG_code::W_plus,
+                                           CppSLHA::PDG_code::neutralino_one );
+  testElectroweakCascade = new LHC_FASER::charginoToWCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                             testInputHandler.getCharginoOne(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "charginoToWCascade (seems OK):"
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  cascadeBr = charginoOneDecay->get_branching_ratio_for_exact_match(
+                                                     CppSLHA::PDG_code::W_plus,
+                                           CppSLHA::PDG_code::neutralino_one );
+  testElectroweakCascade = new LHC_FASER::charginoToHiggsCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                             testInputHandler.getCharginoOne(),
+                                       testInputHandler.getChargedEwsbScalar(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "charginoToHiggsCascade"
+  << " (needs checking, but it's going to need a hacked spectrum):"
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &testAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "20 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  remainderBr = getRemainderBr( cascadeBr,
+                                testElectroweakCascade,
+                                &noLeptonGapAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "10 GeV / 10 GeV remainderBr = " << remainderBr
+  << ", ( remainderBr / cascadeBr ) = " << ( remainderBr / cascadeBr );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testElectroweakCascade;
+  testElectroweakCascade = new LHC_FASER::charginoVirtualCascade(
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                             cascadeTestingLeptonAcceptanceParameterSetPointer,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                           &testInputHandler );
+  std::cout
+  << std::endl
+  << "charginoVirtualCascade"
+  << " (probably fine, not really checked though):"
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 1, 1, 0, 0, 0 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            1,
+                                            1,
+                                            0,
+                                            0,
+                                            0 )
+  << std::endl
+  << "->getAcceptance( ..., 0, 0, 0, 1, 1 ) = "
+  << testElectroweakCascade->getAcceptance( &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            1 )
+  << std::endl
+  << "->getOssfMinusOsdf( ... ) = "
+  << testElectroweakCascade->getOssfMinusOsdf( &testAcceptanceCutSet );
+  std::cout << std::endl;
   std::cout << std::endl;
   delete testElectroweakCascade;
   /**/
@@ -3993,6 +4717,8 @@ int main( int argumentCount,
 
   std::cout << std::endl;
   std::cout << std::endl << "ended successfully, I hope";
+  std::cout << std::endl;
+  std::cout << std::endl;
   std::cout << std::endl;
 
   return EXIT_SUCCESS;

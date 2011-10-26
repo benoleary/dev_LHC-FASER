@@ -323,6 +323,28 @@ namespace LHC_FASER
                                                            inputShortcut );
       cascades.push_back( currentCascade );
     }
+    else if( CppSLHA::PDG_code::charged_EWSB_scalar
+             == electroweakDecayer->get_PDG_code() )
+    {
+      currentCascade = new scoloredToHiggsPlusScoloredCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
+                                                               coloredDecayer,
+                                                               lighterScolored,
+                                                            electroweakDecayer,
+                                                               inputShortcut );
+      cascades.push_back( currentCascade );
+    }
+    else if( inputShortcut->isIn( electroweakDecayer->get_PDG_code(),
+                     inputShortcut->getNeutralEwsbScalarsAndPseudoscalars() ) )
+    {
+      currentCascade = new scoloredToHiggsPlusScoloredCascade( kinematics,
+                                                    effectiveSquarkMassPointer,
+                                                               coloredDecayer,
+                                                               lighterScolored,
+                                                            electroweakDecayer,
+                                                               inputShortcut );
+      cascades.push_back( currentCascade );
+    }
   }
 
   electroweakCascadeSet::~electroweakCascadeSet()

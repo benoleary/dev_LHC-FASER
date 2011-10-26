@@ -35,7 +35,7 @@ namespace LHC_FASER
     // returns true.
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
   };
 
@@ -104,7 +104,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -159,7 +159,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -254,7 +254,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -342,7 +342,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -420,7 +420,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -485,7 +485,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -562,7 +562,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -642,7 +642,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -728,7 +728,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -739,6 +739,77 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
+
+  // this is a derived class that implements the channel
+  // decaying neutralino -> spin-0 neutral boson + lightest neutralino
+  class scoloredToHiggsPlusScoloredCascade : public electroweakCascade
+  {
+  public:
+    scoloredToHiggsPlusScoloredCascade(
+                                leptonAcceptanceParameterSet* const kinematics,
+                          effectiveSquarkMassHolder* const effectiveSquarkMass,
+                                        particlePointer const coloredDecayer,
+                                        particlePointer const lighterScolored,
+                                     particlePointer const intermediateDecayer,
+                                        inputHandler const* const shortcut )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~scoloredToHiggsPlusScoloredCascade()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    leptonEnergyDistribution* directMuonDistribution;
+    leptonEnergyDistribution* hardMuonDistribution;
+    leptonEnergyDistribution* softMuonDistribution;
+    leptonEnergyDistribution* hardPionDistribution;
+    leptonEnergyDistribution* softPionDistribution;
+    leptonEnergyDistribution* currentMuonDistribution;
+    leptonEnergyDistribution* currentPionDistribution;
+    double negativeTauLeftHandedness;
+    double directMuonPass;
+    double directMuonFail;
+    double directJetPass;
+    double directJetFail;
+    double tauMuonPass;
+    double tauMuonFail;
+    double tauPionPass;
+    double tauPionFail;
+    double currentPass;
+    // these are for holding the pass & fail rates for whichever configuration
+    // is being calculated.
+    double configurationBr;
+    // this is the branching ratio for the particular polarization & charge
+    // configuration of the tau leptons being calculated.
+    acceptanceCutSet const* currentCuts;
+    acceptanceValues* currentAcceptance;
+    CppSLHA::particle_decay_set_handler const* intermediateDecayerDecays;
+    double currentBrToHadrons;
+    double currentBrToElectrons;
+    double currentBrToMuons;
+    double currentBrToTaus;
+
+    virtual bool
+    validSignal( int const numberOfJets,
+                 int const numberOfNegativeElectrons,
+                 int const numberOfPositiveElectrons,
+                 int const numberOfNegativeMuons,
+                 int const numberOfPositiveMuons )
+    /* this returns true if a configuration where each of the signs of tau
+     * lepton decayed either into a detected jet, detected lepton, or
+     * undetected particle, & false otherwise.
+     */
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    virtual void
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
+                         acceptanceValues* const currentAcceptance )
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through the selectron or smuon to the LSP.
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+    void
+    calculateForCurrentConfiguration()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+  };
 
 
 
@@ -777,7 +848,7 @@ namespace LHC_FASER
 
   inline void
   lightestNeutralinoCascade::calculateAcceptance(
-                                            acceptanceCutSet const* const cuts,
+                                     acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
   {
     currentAcceptance->setZeroJetsZeroLeptons( 1.0 );

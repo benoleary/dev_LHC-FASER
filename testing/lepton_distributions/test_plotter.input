@@ -239,6 +239,21 @@ plot 'sdscW_tLp.dat' index 0 notitle with lines ls 1
 set output "sdscW_tRp.eps"
 set style line 1 lt rgb "red" lw 3
 plot 'sdscW_tRp.dat' index 0 notitle with lines ls 1
+set output "st2st1h_ll.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'st2st1h_ll.dat' index 0 notitle with lines ls 1
+set output "st2st1h_tLm.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'st2st1h_tLm.dat' index 0 notitle with lines ls 1
+set output "st2st1h_tRm.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'st2st1h_tRm.dat' index 0 notitle with lines ls 1
+set output "st2st1h_tLp.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'st2st1h_tLp.dat' index 0 notitle with lines ls 1
+set output "st2st1h_tRp.eps"
+set style line 1 lt rgb "red" lw 3
+plot 'st2st1h_tRp.dat' index 0 notitle with lines ls 1
 set output "Wx1L_ll.eps"
 set style line 1 lt rgb "red" lw 3
 plot 'Wx1L_ll.dat' index 0 notitle with lines ls 1

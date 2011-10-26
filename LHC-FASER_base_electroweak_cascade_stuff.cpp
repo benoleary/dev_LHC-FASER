@@ -156,7 +156,7 @@ namespace LHC_FASER
 
 
   double
-  electroweakCascade::getAcceptance( acceptanceCutSet const* const cuts,
+  electroweakCascade::getAcceptance( acceptanceCutSet const* const currentCuts,
                                      int const numberOfAdditionalJets,
                                      int const numberOfNegativeElectrons,
                                      int const numberOfPositiveElectrons,
@@ -187,17 +187,17 @@ namespace LHC_FASER
                      numberOfNegativeMuons,
                      numberOfPositiveMuons ) )
     {
-      currentAcceptance = acceptances.getPointer( cuts );
+      currentAcceptance = acceptances.getPointer( currentCuts );
       // at this point, currentAcceptance is keyed to a copy of cuts.
       if( currentAcceptance->notAlreadyCalculated() )
       {
-        calculateAcceptance( cuts,
+        calculateAcceptance( currentCuts,
                              currentAcceptance );
-        // now currentAcceptance has acceptanceValues corresponding to cuts as well as
+        // now currentAcceptance has values corresponding to cuts as well as
         // being keyed to a copy of cuts.
         currentAcceptance->flagAsAlreadyCalculated();
       }
-      /* now currentAcceptance has the acceptanceValues which are calculated by this
+      /* now currentAcceptance has the values which are calculated by this
        * electroweakCascade in the valid entries. the entries in invalid
        * elements have leftover junk, but the condition of validSignal means
        * that they won't be looked at by this code.
@@ -306,7 +306,7 @@ namespace LHC_FASER
       double binSize( ( ( leptonDistribution->getMaximumEnergy()
                           - leptonDistribution->getMinimumEnergy() )
                         / (double)numberOfIntegrationBins ) );
-      double binEnergy = leptonDistribution->getMinimumEnergy();
+      double binEnergy( leptonDistribution->getMinimumEnergy() );
 
       /* I could do it so that it works out the area of each trapezium & sums
        * them, but it's equivalent to taking half a rectangle centered on the

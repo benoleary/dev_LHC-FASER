@@ -13,7 +13,7 @@
 namespace LHC_FASER
 {
   /* this is a derived class that implements the channel
-   * chargino -> smuon or selectron or electron snuetrino or muon sneutrino
+   * chargino -> smuon or selectron or electron sneutrino or muon sneutrino
    * -> lightest neutralino.
    */
   class charginoToSemuOrEmuSnuCascade : public electroweakCascade
@@ -64,7 +64,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -129,7 +129,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -193,7 +193,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -260,7 +260,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -329,7 +329,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
@@ -390,7 +390,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
-    calculateAcceptance( acceptanceCutSet const* const cuts,
+    calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
     // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.

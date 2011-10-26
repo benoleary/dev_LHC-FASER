@@ -697,6 +697,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
+
   /* this derived class sets up the energy distribution for a light lepton
    * which is from the decay of an on-shell gauge vector boson from the
    * cascade decay of a squark to a lighter squark.
@@ -730,7 +731,7 @@ namespace LHC_FASER
     double betaV;
     // the beta factor of the boost from the Qh rest frame to the vector boson
     // rest frame.
-    double energyDifference;
+    //double energyDifference;
     // maximumEnergy - minimumEnergy
 
     segmentTermSet minToMaxSegment;
@@ -741,6 +742,51 @@ namespace LHC_FASER
     // the term linear in inputEnergy in the above segment.
     leptonDistributionExpansionTerm* const minToMaxSq;
     // the term quadratic in inputEnergy in the above segment.
+
+    void
+    calculateCoefficients()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+  };
+
+
+  /* this derived class sets up the energy distribution for a light lepton
+   * which is from the decay of an on-shell spin-0 boson from the
+   * cascade decay of a squark to a lighter squark.
+   */
+  class scalarFromSquarkToMuon : public leptonEnergyDistribution
+  {
+  public:
+    scalarFromSquarkToMuon( readierForNewPoint* const readierPointer,
+                            CppSLHA::CppSLHA0 const* const spectrumData,
+              CppSLHA::particle_property_set const* const firstParticle,
+                          effectiveSquarkMassHolder* const effectiveSquarkMass,
+                    CppSLHA::particle_property_set const* const secondParticle,
+             CppSLHA::particle_property_set const* const thirdParticle )
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~scalarFromSquarkToMuon()
+    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
+  protected:
+    // these are for ease of calculating the coefficients (referring to the
+    // decaying squark as Qh & the product squark as Ql):
+    double mQhSq;
+    // the square of the mass of the heavier squark.
+    double mQlSq;
+    // the square of the mass of the lighter squark.
+    double mSSq;
+    // the square of the mass of the spin-0 boson.
+    double gammaS;
+    // the gamma factor of the boost from the Qh rest frame to the spin-0 boson
+    // rest frame.
+    double betaS;
+    // the beta factor of the boost from the Qh rest frame to the spin-0 boson
+    // rest frame.
+
+    segmentTermSet minToMaxSegment;
+    // the terms between minimumEnergy & maximumEnergy.
+    leptonDistributionExpansionTerm* const minToMaxConst;
+    // the term constant with respect to inputEnergy in the above segment.
 
     void
     calculateCoefficients()
@@ -1023,7 +1069,7 @@ namespace LHC_FASER
     productionFrameEnergy = ( 0.5 * thirdMass );
     minimumEnergy = ( gammaV * ( 1.0 - betaV ) * productionFrameEnergy );
     maximumEnergy = ( gammaV * ( 1.0 + betaV ) * productionFrameEnergy );
-    energyDifference = ( maximumEnergy - minimumEnergy );
+    //energyDifference = ( maximumEnergy - minimumEnergy );
 
     // now we set up the coefficients of various terms:
     // MIN to MAX segment:
@@ -1034,6 +1080,29 @@ namespace LHC_FASER
     minToMaxSq->setCoefficient( -1.0 );
     //normalization
     //= ( ( energyDifference * energyDifference * energyDifference ) / 6.0 );
+  }
+
+
+
+  inline void
+  scalarFromSquarkToMuon::calculateCoefficients()
+  {
+    mQhSq = ( firstMass * firstMass );
+    mQlSq = ( secondMass * secondMass );
+    mSSq = ( thirdMass * thirdMass );
+    gammaS = ( ( mQhSq - mQlSq + mSSq ) / ( 2.0 * firstMass * thirdMass ) );
+    betaS = sqrt( ( 1.0 - ( 1.0 / ( gammaS * gammaS ) ) ) );
+    productionFrameEnergy = ( 0.5 * thirdMass );
+    minimumEnergy = ( gammaS * ( 1.0 - betaS ) * productionFrameEnergy );
+    maximumEnergy = ( gammaS * ( 1.0 + betaS ) * productionFrameEnergy );
+
+    // now we set up the coefficients of various terms:
+    // MIN to MAX segment:
+    minToMaxSegment.setSegmentRange( minimumEnergy,
+                                      maximumEnergy );
+    minToMaxConst->setCoefficient( 1.0 );
+    //normalization
+    //= ( maximumEnergy - minimumEnergy );
   }
 
 

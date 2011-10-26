@@ -62,7 +62,7 @@
 namespace LHC_FASER
 {
   /* this is a class to hold a set of electroweakCascadeSource associated with
-   * a single decaying electroweakino or vector boson (from the decay of a
+   * a single decaying electroweakino or EWSB boson (from the decay of a
    * single colored sparticle). the decaying colored sparticle is assumed to be
    * the version with a PDG code which is POSITIVE, rather than the
    * antiparticle with negative code. hence for example an instance of this
@@ -76,7 +76,7 @@ namespace LHC_FASER
    * are using this class.
    *
    * there are 2 different constructors: 1 for electroweakino cascades, the
-   * other for vector boson cascades. I could use derived classes here, but I
+   * other for EWSB boson cascades. I could use derived classes here, but I
    * think that it's not worth it.
    */
   class electroweakCascadeSet
