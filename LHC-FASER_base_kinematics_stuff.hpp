@@ -62,7 +62,7 @@
 /* this file contains the common code relevant to obtaining the acceptance for
  * jet transverse momentum plus missing transverse momentum and lepton
  * transverse momentum and pseudorapidity cuts. the code specific to lepton or
- * jet acceptances are in LHC-FASER_lepton_kinematics_stuff.hpp &
+ * jet acceptancesPerCutSet are in LHC-FASER_lepton_kinematics_stuff.hpp &
  * LHC-FASER_jet_kinematics_stuff.hpp respectively (& the appropriate source
  * files).
  *
@@ -80,10 +80,10 @@ namespace LHC_FASER
   {
   public:
     acceptanceCutSet();
-    // this constructor sets the acceptances to -1.0, which is the default
+    // this constructor sets the acceptancesPerCutSet to -1.0, which is the default
     // "unset" value.
     acceptanceCutSet( acceptanceCutSet const* const copySource );
-    // this constructor copies the acceptances from a given acceptanceCutSet.
+    // this constructor copies the acceptancesPerCutSet from a given acceptanceCutSet.
     virtual
     ~acceptanceCutSet();
 
@@ -158,13 +158,13 @@ namespace LHC_FASER
 
 
   /* this class reads in a file in the assumed format, stores it, & gives out
-   * interpolated acceptanceValues. it was written with acceptances for leptons in mind,
+   * interpolated acceptanceValues. it was written with acceptancesPerCutSet for leptons in mind,
    * to be adapted for jets plus missing transverse momentum as a special case,
    * with data files in the format
    * squarkMass gluinoMass lighterNeutralinoMass heavierNeutralinoMass
    * (continued) then either
    * 42 lepton acceptance acceptanceValues (effective squark mass, pseudorapidity cut
-   * acceptance, then 40 bins for transverse momentum cut acceptances)
+   * acceptance, then 40 bins for transverse momentum cut acceptancesPerCutSet)
    * or
    * 7 acceptance acceptanceValues for different choices of which jets+MET combination to
    * use
@@ -215,8 +215,8 @@ namespace LHC_FASER
     double highElectroweakinoMassRatio;
     std::vector< std::vector< std::vector< std::vector< double >* >* >* >
     acceptanceValues;
-    // these are pointers to vectors of pointers to vectors of acceptances
-    // which are used to store the acceptances nearest the current point:
+    // these are pointers to vectors of pointers to vectors of acceptancesPerCutSet
+    // which are used to store the acceptancesPerCutSet nearest the current point:
     std::vector< std::vector< double >* >* lowerLeftVectorOfVectors;
     std::vector< std::vector< double >* >* lowerRightVectorOfVectors;
     std::vector< std::vector< double >* >* upperRightVectorOfVectors;

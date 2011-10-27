@@ -182,12 +182,7 @@ namespace LHC_FASER
     readierForNewPoint* const readier;
 
     bool
-    needsToPrepareForThisPoint()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    void
-    finishPreparingForThisPoint()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    needsToPrepareForThisPoint();
   };  // end of getsReadiedForNewPoint class.
 
 
@@ -205,12 +200,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     bool
-    publicNeedsToPrepareForThisPoint()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    void
-    publicFinishPreparingForThisPoint()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    publicNeedsToPrepareForThisPoint();
 
   //protected:
     // nothing.
@@ -276,19 +266,20 @@ namespace LHC_FASER
 
   inline bool
   getsReadiedForNewPoint::needsToPrepareForThisPoint()
-  const
   {
-    return needsToPrepare;
-  }
-
-  inline void
-  getsReadiedForNewPoint::finishPreparingForThisPoint()
-  {
-    needsToPrepare = false;
-    if( readierStillExists )
-      // if the readier still exists...
+    if( needsToPrepare )
     {
-      readier->resetMeOnNextUpdate( &needsToPrepare );
+      needsToPrepare = false;
+      if( readierStillExists )
+        // if the readier still exists...
+      {
+        readier->resetMeOnNextUpdate( &needsToPrepare );
+      }
+      return true;
+    }
+    else
+    {
+      return false;
     }
   }
 
@@ -296,16 +287,10 @@ namespace LHC_FASER
 
   inline bool
   publicGetsReadiedForNewPoint::publicNeedsToPrepareForThisPoint()
-  const
   {
     return needsToPrepareForThisPoint();
   }
 
-  inline void
-  publicGetsReadiedForNewPoint::publicFinishPreparingForThisPoint()
-  {
-    finishPreparingForThisPoint();
-  }
 }  // end of LHC_FASER namespace.
 
 #endif /* LHC_FASER_GLOBAL_STUFF_HPP_ */

@@ -305,7 +305,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       decayerDoesDecayToAtLeastOneProduct = checkForDecay();
-      finishPreparingForThisPoint();
     }
     return decayerDoesDecayToAtLeastOneProduct;
   }
@@ -386,7 +385,6 @@ namespace LHC_FASER
       {
         branchingRatioValue = 0.0;
       }
-      finishPreparingForThisPoint();
     }
     return branchingRatioValue;
   }

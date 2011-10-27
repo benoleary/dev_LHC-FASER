@@ -320,7 +320,7 @@ namespace LHC_FASER
                                       int const numberOfPositiveElectrons,
                                       int const numberOfNegativeMuons,
                                       int const numberOfPositiveMuons )
-  /* this combines the acceptances from ewinoCascade & vectorCascade. Whether
+  /* this combines the acceptancesPerCutSet from ewinoCascade & vectorCascade. Whether
    * the relevant scoloreds are particles or antiparticles should be decided
    * by the derived class using this function.
    */
@@ -740,7 +740,6 @@ namespace LHC_FASER
     if( squarkCascadeSetList->second->publicNeedsToPrepareForThisPoint() )
     {
       squarkCascadeSetList->first->sort( &massOrdered );
-      squarkCascadeSetList->second->publicFinishPreparingForThisPoint();
     }
     // now squarkCascadeSetList has been ordered such that the cascades of the
     // lighter squarks come before those of the heavier squarks.

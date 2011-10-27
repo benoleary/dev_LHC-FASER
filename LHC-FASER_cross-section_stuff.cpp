@@ -821,8 +821,8 @@ namespace LHC_FASER
     /**std::cout
     << std::endl
     << "debugging: crossSectionTable::getValue() called."
-    << " needsToPrepareForThisPoint() = "
-    << needsToPrepareForThisPoint() << ", "
+    << " needsToPrepare = "
+    << needsToPrepare << ", "
     << "flavorFactor = " << flavorFactor;
     std::cout << std::endl;**/
 
@@ -885,7 +885,6 @@ namespace LHC_FASER
       {
         storedValue = 0.0;
       }
-      finishPreparingForThisPoint();
     }
     return storedValue;
   }

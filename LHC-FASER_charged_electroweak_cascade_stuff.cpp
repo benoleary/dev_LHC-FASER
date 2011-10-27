@@ -142,7 +142,7 @@ namespace LHC_FASER
   charginoToSemuOrEmuSnuCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
   // from the electroweakino through the slepton to the LSP.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
@@ -395,7 +395,7 @@ namespace LHC_FASER
   charginoToStauOrTauSnuCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
   // from the electroweakino through the slepton to the LSP.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
@@ -581,7 +581,7 @@ namespace LHC_FASER
                         inputShortcut )
   {
     if( inputShortcut->isIn( coloredDecayer->get_PDG_code(),
-                         inputShortcut->getSdownTypes() ) )
+                             inputShortcut->getSdownTypes() ) )
     {
       downTypeQuark = true;
     }
@@ -609,22 +609,22 @@ namespace LHC_FASER
      */
     leftHandedJetRightHandedAntimuonDistribution
     = new wMinusHandedMuon( inputShortcut->getReadier(),
-                               inputShortcut->getCppSlha(),
-                               coloredDecayer,
-                               effectiveSquarkMass,
-                               electroweakDecayer,
-                               intermediateDecayer,
-                               inputShortcut->getNeutralinoOne(),
-                               false /* see above */ );
+                            inputShortcut->getCppSlha(),
+                            coloredDecayer,
+                            effectiveSquarkMass,
+                            electroweakDecayer,
+                            intermediateDecayer,
+                            inputShortcut->getNeutralinoOne(),
+                            false /* see above */ );
     rightHandedJetRightHandedAntimuonDistribution
     = new wMinusHandedMuon( inputShortcut->getReadier(),
-                               inputShortcut->getCppSlha(),
-                               coloredDecayer,
-                               effectiveSquarkMass,
-                               electroweakDecayer,
-                               intermediateDecayer,
-                               inputShortcut->getNeutralinoOne(),
-                               true /* see above */ );
+                            inputShortcut->getCppSlha(),
+                            coloredDecayer,
+                            effectiveSquarkMass,
+                            electroweakDecayer,
+                            intermediateDecayer,
+                            inputShortcut->getNeutralinoOne(),
+                            true /* see above */ );
     activeDistributions.push_back(
                                 leftHandedJetRightHandedAntimuonDistribution );
     activeDistributions.push_back(
@@ -633,19 +633,19 @@ namespace LHC_FASER
     leftHandedJetTauMuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                   leftHandedJetRightHandedAntimuonDistribution,
-                                     inputShortcut->getHardMuonFromTau() );
+                                  inputShortcut->getHardMuonFromTau() );
     rightHandedJetTauMuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                  rightHandedJetRightHandedAntimuonDistribution,
-                                     inputShortcut->getHardMuonFromTau() );
+                                  inputShortcut->getHardMuonFromTau() );
     leftHandedJetTauPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                   leftHandedJetRightHandedAntimuonDistribution,
-                                     inputShortcut->getSoftPionFromTau() );
+                                  inputShortcut->getSoftPionFromTau() );
     rightHandedJetTauPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
                                  rightHandedJetRightHandedAntimuonDistribution,
-                                     inputShortcut->getSoftPionFromTau() );
+                                  inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( leftHandedJetTauMuonDistribution );
     activeDistributions.push_back( rightHandedJetTauMuonDistribution );
     activeDistributions.push_back( leftHandedJetTauPionDistribution );
@@ -715,7 +715,7 @@ namespace LHC_FASER
   charginoToWCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetZeroLeptons( 0.0 );
@@ -860,27 +860,26 @@ namespace LHC_FASER
   {
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
-
     directAntimuonDistribution
     = new negativelyChargedHiggsMuon( inputShortcut->getReadier(),
-                                         inputShortcut->getCppSlha(),
-                                         coloredDecayer,
-                                         effectiveSquarkMass,
-                                         electroweakDecayer,
-                                         intermediateDecayer,
-                                         inputShortcut->getNeutralinoOne() );
+                                      inputShortcut->getCppSlha(),
+                                      coloredDecayer,
+                                      effectiveSquarkMass,
+                                      electroweakDecayer,
+                                      intermediateDecayer,
+                                      inputShortcut->getNeutralinoOne() );
     activeDistributions.push_back( directAntimuonDistribution );
 
     // the spin-0 nature of the boson combined with the left-handed nature of
     // the tau neutrino forces the tau antilepton to be left-handed.
     antitauAntimuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     directAntimuonDistribution,
-                                     inputShortcut->getSoftMuonFromTau() );
+                                  directAntimuonDistribution,
+                                  inputShortcut->getSoftMuonFromTau() );
     antitauPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     directAntimuonDistribution,
-                                     inputShortcut->getHardPionFromTau() );
+                                  directAntimuonDistribution,
+                                  inputShortcut->getHardPionFromTau() );
     activeDistributions.push_back( antitauAntimuonDistribution );
     activeDistributions.push_back( antitauPionDistribution );
   }
@@ -1229,7 +1228,7 @@ namespace LHC_FASER
   charginoVirtualCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetZeroLeptons( 0.0 );
@@ -1369,24 +1368,33 @@ namespace LHC_FASER
   {
     // here firstBr & secondBr don't work as well as just getting the branching
     // ratios from the CppSLHA::particle_property_set pointers.
+    if( inputShortcut->isIn( coloredDecayer->get_PDG_code(),
+                             inputShortcut->getSdownTypes() ) )
+    {
+      wPdgCode = -(CppSLHA::PDG_code::W_plus);
+    }
+    else
+    {
+      wPdgCode = CppSLHA::PDG_code::W_plus;
+    }
 
     directMuonDistribution
     = new vectorFromSquarkToMuon( inputShortcut->getReadier(),
-                                      inputShortcut->getCppSlha(),
-                                      coloredDecayer,
-                                      effectiveSquarkMass,
-                                      lighterScolored,
-                                      intermediateDecayer );
+                                  inputShortcut->getCppSlha(),
+                                  coloredDecayer,
+                                  effectiveSquarkMass,
+                                  lighterScolored,
+                                  intermediateDecayer );
     activeDistributions.push_back( directMuonDistribution );
 
     antitauAntimuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     directMuonDistribution,
-                                     inputShortcut->getHardMuonFromTau() );
+                                  directMuonDistribution,
+                                  inputShortcut->getHardMuonFromTau() );
     antitauPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     directMuonDistribution,
-                                     inputShortcut->getSoftPionFromTau() );
+                                  directMuonDistribution,
+                                  inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( antitauAntimuonDistribution );
     activeDistributions.push_back( antitauPionDistribution );
   }
@@ -1442,6 +1450,12 @@ namespace LHC_FASER
             &&
             ( 1 == numberOfPositiveMuons ) ) ) )
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "scoloredToWPlusScoloredCascade::validSignal() returning true";
+      std::cout << std::endl;**/
+
       return true;
     }
     else
@@ -1461,86 +1475,84 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsOnePositiveElectron( 0.0 );
     currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
-    cascadeBr = ( electroweakDecayer->inspect_direct_decay_handler(
-                                        )->get_branching_ratio_for_exact_match(
-                                                     CppSLHA::PDG_code::W_plus,
-                                             electroweakDecayer->get_PDG_code()
-      /* the lighter scolored got put into electroweakDecayer, while the W
-       * boson got put into intermediateDecayer. */ ) );
-    // the branching ratios of the W into the various SM fermions are covered
-    // by the following code.
-    if( lhcFaserGlobal::negligibleBr < cascadeBr )
-      // if the branching ratio into this channel is not negligible...
-    {
-      /* at some point, it'd be nice to break this down into transverse
-       * contributions & longitudinal contributions, since actually the
-       * Goldstone boson contribution could both be large (for sbottom -> stop,
-       * for example) & has a different (& easier to calculate) distribution.
-       *
-       * however, ( ( m_top * m_tau ) / m_W^2 ) is still pretty small, so it
-       * should be fine to neglect the longitudinal contributions.
-       */
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "scoloredToWPlusScoloredCascade::calculateAcceptance( [ "
+    << currentCuts->getJetCut() << "J, "
+    << currentCuts->getPrimaryLeptonCut() << "L1, "
+    << currentCuts->getSecondaryLeptonCut() << "L2 ] ) called. cascadeBr = "
+    << cascadeBr;
+    std::cout << std::endl;**/
 
-      directMuonPass
-      = ( cascadeBr * integrateAcceptance( directMuonDistribution,
-                                        currentCuts->getPrimaryLeptonCut() ) );
-      directMuonFail
-      = ( cascadeBr * ( 1.0 - integrateAcceptance( directMuonDistribution,
-                                    currentCuts->getSecondaryLeptonCut() ) ) );
-      directJetPass = integrateAcceptance( directMuonDistribution,
-                                           currentCuts->getJetCut() );
-      directJetFail = ( 1.0 - directJetPass );
+    /* the branching ratios of the W into the various SM fermions are covered
+     * by the following code.  the BR into the W itself should already be
+     * covered.
+     */
+    /* at some point, it'd be nice to break this down into transverse
+     * contributions & longitudinal contributions, since actually the
+     * Goldstone boson contribution could both be large (for sbottom -> stop,
+     * for example) & has a different (& easier to calculate) distribution.
+     *
+     * however, ( ( m_top * m_tau ) / m_W^2 ) is still pretty small, so it
+     * should be fine to neglect the longitudinal contributions.
+     */
 
-      configurationBr = ( cascadeBr * CppSLHA::PDG_data::W_plus_to_hadrons_BR
-                                    * directJetPass );
-      currentAcceptance->setTwoJets( configurationBr * directJetPass );
-      currentAcceptance->setOneJetZeroLeptons( 2.0 * configurationBr
-                                                   * directJetFail );
-      currentAcceptance->setZeroJetsOnePositiveElectron( directMuonPass
+    directMuonPass = integrateAcceptance( directMuonDistribution,
+                                          currentCuts->getPrimaryLeptonCut() );
+    directMuonFail
+    = ( 1.0 - integrateAcceptance( directMuonDistribution,
+                                   currentCuts->getSecondaryLeptonCut() ) );
+    directJetPass = integrateAcceptance( directMuonDistribution,
+                                         currentCuts->getJetCut() );
+    directJetFail = ( 1.0 - directJetPass );
+
+    configurationBr
+    = ( CppSLHA::PDG_data::W_plus_to_hadrons_BR * directJetPass );
+    currentAcceptance->setTwoJets( configurationBr * directJetPass );
+    currentAcceptance->setOneJetZeroLeptons( 2.0 * configurationBr
+                                                 * directJetFail );
+    currentAcceptance->setZeroJetsOnePositiveElectron( directMuonPass
                      * CppSLHA::PDG_data::W_plus_to_neutrino_antielectron_BR );
-      currentAcceptance->setZeroJetsOnePositiveMuon( directMuonPass
+    currentAcceptance->setZeroJetsOnePositiveMuon( directMuonPass
                          * CppSLHA::PDG_data::W_plus_to_neutrino_antimuon_BR );
 
-      currentAcceptance->setZeroJetsZeroLeptons( cascadeBr
-                                      * CppSLHA::PDG_data::W_plus_to_hadrons_BR
-                                                 * directJetFail
-                                                 * directJetFail
+    currentAcceptance->setZeroJetsZeroLeptons(
+                                        CppSLHA::PDG_data::W_plus_to_hadrons_BR
+                                        * directJetFail
+                                        * directJetFail
                             + CppSLHA::PDG_data::W_plus_to_neutrino_antimuon_BR
                               * directMuonFail );
 
-      // now W^+ decays to tau antileptons, followed by the decays of the tau
-      // antileptons:
-      cascadeBr *= CppSLHA::PDG_data::W_plus_to_neutrino_tau_antilepton_BR;
-      antitauAntimuonPass = integrateAcceptance( antitauAntimuonDistribution,
+    // now W^+ decays to tau antileptons, followed by the decays of the tau
+    // antileptons:
+    antitauAntimuonPass = integrateAcceptance( antitauAntimuonDistribution,
                                           currentCuts->getPrimaryLeptonCut() );
-      antitauAntimuonFail
-      = ( 1.0 - integrateAcceptance( antitauAntimuonDistribution,
-                                     currentCuts->getSecondaryLeptonCut() ) );
-      antitauPionPass = integrateAcceptance( antitauPionDistribution,
-                                             currentCuts->getJetCut() );
-      antitauPionFail = ( 1.0 - antitauPionPass );
+    antitauAntimuonFail
+    = ( 1.0 - integrateAcceptance( antitauAntimuonDistribution,
+                                   currentCuts->getSecondaryLeptonCut() ) );
+    antitauPionPass = integrateAcceptance( antitauPionDistribution,
+                                           currentCuts->getJetCut() );
+    antitauPionFail = ( 1.0 - antitauPionPass );
 
-      currentAcceptance->addToOneJetZeroLeptons( configurationBr
-                          * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
-                                                 * antitauPionPass );
-      currentPass = ( configurationBr * antitauAntimuonPass );
-      currentAcceptance->addToZeroJetsOnePositiveElectron( currentPass
+    currentAcceptance->addToOneJetZeroLeptons(
+                        CppSLHA::PDG_data::W_plus_to_neutrino_tau_antilepton_BR
+                        * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
+                        * antitauPionPass );
+    currentPass = ( CppSLHA::PDG_data::W_plus_to_neutrino_tau_antilepton_BR
+                    * antitauAntimuonPass );
+    currentAcceptance->addToZeroJetsOnePositiveElectron( currentPass
                     * CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR );
-      currentAcceptance->addToZeroJetsOnePositiveMuon( currentPass
+    currentAcceptance->addToZeroJetsOnePositiveMuon( currentPass
                        * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR  );
 
-      currentAcceptance->addToZeroJetsZeroLeptons( configurationBr
+    currentAcceptance->addToZeroJetsZeroLeptons(
+                        CppSLHA::PDG_data::W_plus_to_neutrino_tau_antilepton_BR
                         * ( CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
-                                                   * antitauPionFail
+                            * antitauPionFail
                      + ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR
                          + CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR )
-                         * antitauAntimuonFail ) );
-    }
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
+                       * antitauAntimuonFail ) );
   }
 
 }  // end of LHC_FASER namespace.

@@ -650,7 +650,7 @@ namespace LHC_FASER
                                     double firstElectroweakinoMass,
                                     double secondElectroweakinoMass,
                                     int acceptanceColumn )
-  // this interpolates the grid to obtain values for the acceptances based on
+  // this interpolates the grid to obtain values for the acceptancesPerCutSet based on
   // the given masses.
   {
     // 1st we ensure that firstElectroweakinoMass <= secondElectroweakinoMass:

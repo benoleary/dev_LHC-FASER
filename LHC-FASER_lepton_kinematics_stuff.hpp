@@ -73,7 +73,7 @@
  *   -- squarkBasedLeptonAcceptanceTable::getValue
  *   -- gluinoBasedLeptonAcceptanceTable::getValue
  *
- * other thoughts: actually, for lepton acceptances, it's probably just as
+ * other thoughts: actually, for lepton acceptancesPerCutSet, it's probably just as
  * accurate to just take the grid points nearest the requested point rather
  * than bothering with a lot of interpolation. I might get around to
  * implementing that (without removing the interpolating versions though!).
@@ -99,7 +99,7 @@ namespace LHC_FASER
   };
 
 
-  /* this is a derived class to interpret an acceptanceGrid as acceptances for
+  /* this is a derived class to interpret an acceptanceGrid as acceptancesPerCutSet for
    * lepton distributions. this class, as well as acceptanceGrid, has to be
    * changed if the format of the acceptance grids changes.
    */
@@ -119,7 +119,7 @@ namespace LHC_FASER
                             double* const pseudorapidityAcceptance,
                             std::vector< double >* const energyAcceptances )
     = 0;
-    // this interpolates the grid to obtain values for the acceptances based on
+    // this interpolates the grid to obtain values for the acceptancesPerCutSet based on
     // the given masses.
 
   //protected:
@@ -127,7 +127,7 @@ namespace LHC_FASER
   };
 
 
-  /* this is a derived class to interpret an acceptanceGrid as acceptances for
+  /* this is a derived class to interpret an acceptanceGrid as acceptancesPerCutSet for
    * lepton distributions. this class, as well as acceptanceGrid, has to be
    * changed if the format of the acceptance grids changes.
    */
@@ -146,7 +146,7 @@ namespace LHC_FASER
                             double* const effectiveSquarkMass,
                             double* const pseudorapidityAcceptance,
                             std::vector< double >* const energyAcceptances );
-    // this interpolates the grid to obtain values for the acceptances based on
+    // this interpolates the grid to obtain values for the acceptancesPerCutSet based on
     // the given masses.
 
   protected:
@@ -157,7 +157,7 @@ namespace LHC_FASER
   };
 
 
-  /* this is a derived class to interpret an acceptanceGrid as acceptances for
+  /* this is a derived class to interpret an acceptanceGrid as acceptancesPerCutSet for
    * lepton distributions. this class, as well as acceptanceGrid, has to be
    * changed if the format of the acceptance grids changes.
    */
@@ -176,7 +176,7 @@ namespace LHC_FASER
                             double* const effectiveSquarkMass,
                             double* const pseudorapidityAcceptance,
                             std::vector< double >* const energyAcceptances );
-    // this interpolates the grid to obtain values for the acceptances based on
+    // this interpolates the grid to obtain values for the acceptancesPerCutSet based on
     // the given masses.
 
   protected:
@@ -199,8 +199,8 @@ namespace LHC_FASER
   };
 
 
-  /* this stores the binned lepton transverse momentum acceptances &
-   * returns interpolated acceptances (given a transverse momentum cut to scale
+  /* this stores the binned lepton transverse momentum acceptancesPerCutSet &
+   * returns interpolated acceptancesPerCutSet (given a transverse momentum cut to scale
    * to). it also stores the effective squark mass & the pseudorapidity cut
    * acceptance.
    */
@@ -209,10 +209,10 @@ namespace LHC_FASER
   {
   public:
     static double const defaultBinSize;
-    // by default, the grids provide acceptances at 2 GeV spacings for the
+    // by default, the grids provide acceptancesPerCutSet at 2 GeV spacings for the
     // default cut on the lepton transverse momentum in the lab rest frame.
     static double const defaultTransverseMomentumCut;
-    // by default, the grids provide acceptances assuming a 10 GeV cut on the
+    // by default, the grids provide acceptancesPerCutSet assuming a 10 GeV cut on the
     // lepton transverse momentum in the lab rest frame.
 
     leptonAcceptanceParameterSet( inputHandler const* const inputShortcut,
@@ -228,9 +228,9 @@ namespace LHC_FASER
     double
     acceptanceAt( double const givenEnergy,
                   double const givenCut );
-    /* this checks to see if the acceptances need updating, then returns
+    /* this checks to see if the acceptancesPerCutSet need updating, then returns
      * calculateAcceptanceAt( givenEnergy,
-     *                        givenCut ), which interpolates the acceptances in
+     *                        givenCut ), which interpolates the acceptancesPerCutSet in
      * acceptanceBins to the requested value, or returns
      * pseudorapidityAcceptance if it's lower, scaled to the given value for
      * the transverse momentum cut.
@@ -300,10 +300,10 @@ namespace LHC_FASER
     leptonAcceptanceGrid* const acceptanceGrid;
     std::vector< leptonAcceptanceParameterSet* > parameterSets;
     double const binSize;
-    // by default, the grids provide acceptances at 2 GeV spacings for the
+    // by default, the grids provide acceptancesPerCutSet at 2 GeV spacings for the
     // default cut on the lepton transverse momentum in the lab rest frame.
     double const transverseMomentumCut;
-    // by default, the grids provide acceptances assuming a 10 GeV cut on the
+    // by default, the grids provide acceptancesPerCutSet assuming a 10 GeV cut on the
     // lepton transverse momentum in the lab rest frame.
   };
 
@@ -339,10 +339,10 @@ namespace LHC_FASER
     std::vector< leptonAcceptancesForOneScolored* > squarkAcceptanceSets;
     leptonAcceptancesForOneScolored* gluinoAcceptanceSet;
     double const binSize;
-    // by default, the grids provide acceptances at 2 GeV spacings for the
+    // by default, the grids provide acceptancesPerCutSet at 2 GeV spacings for the
     // default cut on the lepton transverse momentum in the lab rest frame.
     double const transverseMomentumCut;
-    // by default, the grids provide acceptances assuming a 10 GeV cut on the
+    // by default, the grids provide acceptancesPerCutSet assuming a 10 GeV cut on the
     // lepton transverse momentum in the lab rest frame.
   };
 
@@ -363,7 +363,7 @@ namespace LHC_FASER
                                      double const binSize,
                                      double const transverseMomentumCut );
     /* this looks to see if there is an existing leptonAcceptanceParameterSet
-     * with the requested acceptances, & if not, makes 1, & returns the
+     * with the requested acceptancesPerCutSet, & if not, makes 1, & returns the
      * pointer.
      */
     leptonAcceptanceParameterSet*
@@ -375,7 +375,7 @@ namespace LHC_FASER
     leptonAcceptancesForOneBeamEnergy*
     getLeptonAcceptancesForOneBeamEnergy( int const beamEnergy );
     /* this looks to see if there is an existing
-     * leptonAcceptancesForOneBeamEnergy with the requested acceptances, & if
+     * leptonAcceptancesForOneBeamEnergy with the requested acceptancesPerCutSet, & if
      * not, makes 1, & returns the pointer.
      */
     leptonAcceptancesForOneBeamEnergy*
@@ -383,7 +383,7 @@ namespace LHC_FASER
                                           double const binSize,
                                           double const transverseMomentumCut );
     /* this looks to see if there is an existing
-     * leptonAcceptancesForOneBeamEnergy with the requested acceptances, & if
+     * leptonAcceptancesForOneBeamEnergy with the requested acceptancesPerCutSet, & if
      * not, makes 1, & returns the pointer.
      */
 
@@ -425,7 +425,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       resetValues();
-      finishPreparingForThisPoint();
     }
     return effectiveSquarkMass;
   }
@@ -433,9 +432,9 @@ namespace LHC_FASER
   inline double
   leptonAcceptanceParameterSet::acceptanceAt( double const givenEnergy,
                                               double const givenCut )
-  /* this checks to see if the acceptances need updating, then returns
+  /* this checks to see if the acceptancesPerCutSet need updating, then returns
    * calculateAcceptanceAt( givenEnergy,
-   *                        givenCut ), which interpolates the acceptances in
+   *                        givenCut ), which interpolates the acceptancesPerCutSet in
    * acceptanceBins to the requested value, or returns
    * pseudorapidityAcceptance if it's lower, scaled to the given value for
    * the transverse momentum cut.
@@ -444,7 +443,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       resetValues();
-      finishPreparingForThisPoint();
     }
     return calculateAcceptanceAt( givenEnergy,
                                   givenCut );
@@ -511,7 +509,7 @@ namespace LHC_FASER
                                                           double const binSize,
                                           double const transverseMomentumCut )
   // this looks to see if there is an existing leptonAcceptanceParameterSet
-  // with the requested acceptances, & if not, makes 1, & returns the pointer.
+  // with the requested acceptancesPerCutSet, & if not, makes 1, & returns the pointer.
   {
     return getLeptonAcceptancesForOneBeamEnergy( beamEnergy,
                                                  binSize,

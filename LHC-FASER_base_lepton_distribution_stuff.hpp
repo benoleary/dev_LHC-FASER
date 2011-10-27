@@ -952,7 +952,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       reset();
-      finishPreparingForThisPoint();
     }
     double returnValue( 0.0 );
     for( std::vector< segmentTermSet* >::const_iterator
@@ -971,7 +970,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       reset();
-      finishPreparingForThisPoint();
     }
     return minimumEnergy;
   }
@@ -982,7 +980,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       reset();
-      finishPreparingForThisPoint();
     }
     return maximumEnergy;
   }

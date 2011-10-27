@@ -112,7 +112,7 @@ namespace LHC_FASER
                                              double* const effectiveSquarkMass,
                                         double* const pseudorapidityAcceptance,
                                std::vector< double >* const energyAcceptances )
-  // this interpolates the grid to obtain values for the acceptances based on
+  // this interpolates the grid to obtain values for the acceptancesPerCutSet based on
   // the given masses.
   {
     if( gluinoMass < squarkMass)
@@ -224,7 +224,7 @@ namespace LHC_FASER
                                              double* const effectiveSquarkMass,
                                         double* const pseudorapidityAcceptance,
                                std::vector< double >* const energyAcceptances )
-  // this interpolates the grid to obtain values for the acceptances based on
+  // this interpolates the grid to obtain values for the acceptancesPerCutSet based on
   // the given masses.
   {
     // 1st we fudge for gluinos not decaying to squarks even if they can at
@@ -233,7 +233,7 @@ namespace LHC_FASER
     {
       squarkMass = ( gluinoMass + 1.0 );
     }
-    // then we ensure that we set up a fresh set of acceptances:
+    // then we ensure that we set up a fresh set of acceptancesPerCutSet:
     energyAcceptances->clear();
     if( ( electroweakinoMass < gluinoMass )
         &&
@@ -295,7 +295,7 @@ namespace LHC_FASER
           ( lowerElectroweakinoMassIndex
             < lowerRightVectorOfVectors->size() ) )
       {
-        // if the grid point exists, we set up the vectors of acceptances:
+        // if the grid point exists, we set up the vectors of acceptancesPerCutSet:
         foreLowerLeftVector
         = lowerLeftVectorOfVectors->at( lowerElectroweakinoMassIndex );
         foreLowerRightVector
@@ -313,7 +313,7 @@ namespace LHC_FASER
             ( foreLowerLeftVector->size() == foreUpperLeftVector->size() ) )
           // if the acceptance vectors have enough entries...
         {
-          // we set up all the acceptances assuming that they don't have to be
+          // we set up all the acceptancesPerCutSet assuming that they don't have to be
           // interpolated, & later we interpolate if necessary:
           *effectiveSquarkMass
           = lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
@@ -420,7 +420,7 @@ namespace LHC_FASER
                                  rearLowerRightVector->at( acceptanceCounter ),
                                  rearUpperRightVector->at( acceptanceCounter ),
                             rearUpperLeftVector->at( acceptanceCounter ) ) ) );
-              }  // end of for loop filling energy acceptances.
+              }  // end of for loop filling energy acceptancesPerCutSet.
             }
             // end of if all the rear vectors have the same size as the fore
             // vectors.
@@ -441,7 +441,7 @@ namespace LHC_FASER
                                  foreLowerRightVector->at( acceptanceCounter ),
                                  foreUpperRightVector->at( acceptanceCounter ),
                               foreUpperLeftVector->at( acceptanceCounter ) ) );
-            }  // end of for loop filling energy acceptances.
+            }  // end of for loop filling energy acceptancesPerCutSet.
           }  // end of whether we should interpolate on the electroweakino.
         }  // end of if the acceptance vectors were the correct size.
       }
@@ -802,7 +802,7 @@ namespace LHC_FASER
                                                           double const binSize,
                                            double const transverseMomentumCut )
   /* this looks to see if there is an existing
-   * leptonAcceptancesForOneBeamEnergy with the requested acceptances, & if
+   * leptonAcceptancesForOneBeamEnergy with the requested acceptancesPerCutSet, & if
    * not, makes 1, & returns the pointer.
    */
   {
@@ -824,7 +824,7 @@ namespace LHC_FASER
     }
     if( NULL == returnPointer )
       // if we do not already have a leptonAcceptancesForOneBeamEnergy for the
-      // requested acceptances, we make a new instance:
+      // requested acceptancesPerCutSet, we make a new instance:
     {
       returnPointer = new leptonAcceptancesForOneBeamEnergy( inputShortcut,
                                                              beamEnergy,

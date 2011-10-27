@@ -71,7 +71,7 @@ namespace LHC_FASER
    * another example an instance could be for a negatively-charged down squark,
    * which decays into a positively-charged up quark & a negatively-charged
    * chargino (which has negative PDG code!). the charge-conjugate process,
-   * which is assumed to have the same branching ratios & acceptances, though
+   * which is assumed to have the same branching ratios & acceptancesPerCutSet, though
    * for opposite-charge SM fermions, must be taken care of by whatever objects
    * are using this class.
    *
@@ -93,7 +93,7 @@ namespace LHC_FASER
                            particlePointer const electroweakDecayer,
                            particlePointer const lighterScolored,
                            inputHandler const* const inputShortcut )
-    // this is the version for vector bosons.
+    // this is the version for EWSB bosons.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~electroweakCascadeSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -123,7 +123,7 @@ namespace LHC_FASER
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
-    getAcceptance( acceptanceCutSet const* const cuts,
+    getAcceptance( acceptanceCutSet const* const acceptanceCuts,
                    int const numberOfAdditionalJets,
                    int const numberOfNegativeElectrons,
                    int const numberOfPositiveElectrons,
@@ -145,7 +145,7 @@ namespace LHC_FASER
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
-    getOssfMinusOsdf( acceptanceCutSet* const cuts )
+    getOssfMinusOsdf( acceptanceCutSet* const acceptanceCuts )
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the value for acceptance * branching ratio FOR THE
@@ -256,7 +256,9 @@ namespace LHC_FASER
   {
     if( ( coloredDecayer == this->coloredDecayer )
         &&
-        ( electroweakDecayer == this->electroweakDecayer ) )
+        ( electroweakDecayer == this->electroweakDecayer )
+        &&
+        ( NULL == lighterScolored ) )
     {
       return true;
     }
@@ -309,13 +311,14 @@ namespace LHC_FASER
   }
 
   inline double
-  electroweakCascadeSet::getAcceptance( acceptanceCutSet const* const cuts,
+  electroweakCascadeSet::getAcceptance(
+                                  acceptanceCutSet const* const acceptanceCuts,
                                         int const numberOfAdditionalJets,
                                         int const numberOfNegativeElectrons,
                                         int const numberOfPositiveElectrons,
                                         int const numberOfNegativeMuons,
                                         int const numberOfPositiveMuons )
-  // this adds up the acceptances from the stored electroweakCascadeSource.
+  // this adds up the acceptancesPerCutSet from the stored electroweakCascadeSource.
   {
     double returnValue( 0.0 );
     for( std::vector< electroweakCascade* >::iterator
@@ -323,7 +326,7 @@ namespace LHC_FASER
          cascades.end() > cascadeIterator;
          ++cascadeIterator )
     {
-      returnValue += (*cascadeIterator)->getAcceptance( cuts,
+      returnValue += (*cascadeIterator)->getAcceptance( acceptanceCuts,
                                                         numberOfAdditionalJets,
                                                      numberOfNegativeElectrons,
                                                      numberOfPositiveElectrons,
@@ -334,7 +337,8 @@ namespace LHC_FASER
   }
 
   inline double
-  electroweakCascadeSet::getOssfMinusOsdf( acceptanceCutSet* const cuts )
+  electroweakCascadeSet::getOssfMinusOsdf(
+                                       acceptanceCutSet* const acceptanceCuts )
   /* this does the common job of checking to see if the point has been
    * updated before calling the relevant protected virtual function, which
    * returns the value for acceptance * branching ratio FOR THE
@@ -352,7 +356,7 @@ namespace LHC_FASER
          cascades.end() > cascadeIterator;
          ++cascadeIterator )
     {
-      returnValue += (*cascadeIterator)->getOssfMinusOsdf( cuts );
+      returnValue += (*cascadeIterator)->getOssfMinusOsdf( acceptanceCuts );
     }
     return returnValue;
   }

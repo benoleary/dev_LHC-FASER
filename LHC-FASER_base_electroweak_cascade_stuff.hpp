@@ -68,12 +68,11 @@ namespace LHC_FASER
   class acceptanceValues
   {
   public:
-    acceptanceValues( double const defaultUnsetValues );
+    acceptanceValues( double const defaultUnsetValues = 0.0 );
     ~acceptanceValues();
 
     void
-    reset(
-      double const unsetValues = 0.0 );
+    reset( double const unsetValues = 0.0 );
     // this sets all acceptances to unsetValues & alreadyCalculatedFlag to
     // false.
     bool
@@ -314,7 +313,7 @@ namespace LHC_FASER
     inputHandler const* const inputShortcut;
     acceptanceValues* currentAcceptance;
     minimalAllocationKeyedVector< acceptanceValues,
-                                  acceptanceCutSet > acceptances;
+                                  acceptanceCutSet > acceptancesPerCutSet;
     std::vector< leptonEnergyDistribution* > activeDistributions;
 
     virtual bool
@@ -721,9 +720,9 @@ namespace LHC_FASER
     {
       if( needsToPrepareForThisPoint() )
       {
-        acceptances.clearEntries();
+        acceptancesPerCutSet.clearEntries();
       }
-      currentAcceptance = acceptances.getPointer( currentCuts );
+      currentAcceptance = acceptancesPerCutSet.getPointer( currentCuts );
       if( currentAcceptance->notAlreadyCalculated() )
       {
         calculateAcceptance( currentCuts,
@@ -746,8 +745,7 @@ namespace LHC_FASER
   // this makes a new std::pair to hold an acceptance value along with a flag
   // for whether it has been calculated or not, & associates it with a key.
   {
-    *cachedValuesAndFlag
-    = new acceptanceValues( CppSLHA::CppSLHA_global::really_wrong_value );
+    *cachedValuesAndFlag = new acceptanceValues( 0.0 );
     // the new pair has the default "unset" acceptanceValues.
     *cachedKey = new acceptanceCutSet( constructionKey );
   }
@@ -760,7 +758,7 @@ namespace LHC_FASER
   // this resets a std::pair to hold an acceptance value along with a flag
   // for whether it has been calculated or not, & associates it with a key.
   {
-    cachedValuesAndFlag->reset();
+    cachedValuesAndFlag->reset( 0.0 );
     // the new pair has the default "unset" acceptanceValues.
     cachedKey->becomeCopyOf( constructionKey );
   }

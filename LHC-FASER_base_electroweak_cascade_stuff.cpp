@@ -135,9 +135,9 @@ namespace LHC_FASER
       cascadeBr( CppSLHA::CppSLHA_global::really_wrong_value ),
       inputShortcut( inputShortcut ),
       currentAcceptance( NULL ),
-      acceptances( &acceptanceCutSet::compareJetAndBothLeptonCuts,
-                   &electroweakCascade::cachePairConstruction,
-                   &electroweakCascade::cachePairReset ),
+      acceptancesPerCutSet( &acceptanceCutSet::compareJetAndBothLeptonCuts,
+                            &electroweakCascade::cachePairConstruction,
+                            &electroweakCascade::cachePairReset ),
       activeDistributions()
   {
     // just an initialization list.
@@ -179,7 +179,7 @@ namespace LHC_FASER
   {
     if( needsToPrepareForThisPoint() )
     {
-      acceptances.clearEntries();
+      acceptancesPerCutSet.clearEntries();
     }
     if( validSignal( numberOfAdditionalJets,
                      numberOfNegativeElectrons,
@@ -187,7 +187,16 @@ namespace LHC_FASER
                      numberOfNegativeMuons,
                      numberOfPositiveMuons ) )
     {
-      currentAcceptance = acceptances.getPointer( currentCuts );
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "electroweakCascade::getAcceptance( ... ) about to look for pointer"
+      << " from acceptancesPerCutSet, [ "
+      << *(coloredDecayer->get_name()) << ", "
+      << *(electroweakDecayer->get_name()) << " ].";
+      std::cout << std::endl;**/
+
+      currentAcceptance = acceptancesPerCutSet.getPointer( currentCuts );
       // at this point, currentAcceptance is keyed to a copy of cuts.
       if( currentAcceptance->notAlreadyCalculated() )
       {

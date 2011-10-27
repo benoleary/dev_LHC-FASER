@@ -126,7 +126,7 @@ namespace LHC_FASER
      * - obtains its jet acceptance from its kinematics table, checks
      *   cross-section * scew BRs * jet acceptance, if high enough, proceeds
      * - obtains lepton acceptance from kinematics table, passes it with scew
-     *   pairs to cascade handler, now has lepton & additional jet acceptances
+     *   pairs to cascade handler, now has lepton & additional jet acceptancesPerCutSet
      * - puts it all together
      * then all the channel totals are added together
      */
@@ -222,7 +222,7 @@ namespace LHC_FASER
   };
 
   /* this is a derived class to test whether I break down the production
-   * channels & recombine them correctly. all acceptances are set to 1.0 so
+   * channels & recombine them correctly. all acceptancesPerCutSet are set to 1.0 so
    * that I should just recover the total cross-section.
    */
   class sigmaBreakdownTestCalculator : public signalCalculator
@@ -388,7 +388,6 @@ namespace LHC_FASER
         rateCalculator->calculate( &signalValue,
                                    &uncertaintyFactor );
         signalValue *= crossSectionUnitFactor;
-        finishPreparingForThisPoint();
       }
     return signalValue;
   }
@@ -426,7 +425,6 @@ namespace LHC_FASER
       {
         rateCalculator->calculate( &signalValue,
                                    &uncertaintyFactor );
-        finishPreparingForThisPoint();
       }
     return log( uncertaintyFactor );
   }

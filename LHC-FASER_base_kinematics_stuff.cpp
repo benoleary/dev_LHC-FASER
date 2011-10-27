@@ -63,8 +63,8 @@ namespace LHC_FASER
     secondaryLeptonCut( -1.0 ),
     jetCut( -1.0 ),
     excludedStandardModelProducts( NULL )
-  // this constructor sets the acceptanceValues to -1.0, which is the default "unset"
-  // value.
+  // this constructor sets the acceptances to -1.0, which is the default
+  // "unset" value.
   {
     // just an initialization list.
   }
@@ -76,7 +76,7 @@ namespace LHC_FASER
     secondaryLeptonCut( copyPointer->secondaryLeptonCut ),
     jetCut( copyPointer->jetCut ),
     excludedStandardModelProducts( copyPointer->excludedStandardModelProducts )
-  // this constructor copies the acceptanceValues from a given acceptanceCutSet.
+  // this constructor copies the acceptances from a given acceptanceCutSet.
   {
     // just an initialization list.
   }

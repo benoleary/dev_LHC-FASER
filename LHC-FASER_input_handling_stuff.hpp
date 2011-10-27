@@ -758,7 +758,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       calculateGaugeCouplings();
-      finishPreparingForThisPoint();
     }
     return electromagneticFineStructureConstant;
   }
@@ -769,7 +768,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       calculateGaugeCouplings();
-      finishPreparingForThisPoint();
     }
     return hyperchargeGaugeCoupling;
   }
@@ -780,7 +778,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       calculateGaugeCouplings();
-      finishPreparingForThisPoint();
     }
     return weakGaugeCoupling;
   }
@@ -791,7 +788,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       calculateGaugeCouplings();
-      finishPreparingForThisPoint();
     }
     return colorGaugeCoupling;
   }
@@ -802,7 +798,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       calculateGaugeCouplings();
-      finishPreparingForThisPoint();
     }
     return weakSine;
   }
@@ -813,7 +808,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       calculateGaugeCouplings();
-      finishPreparingForThisPoint();
     }
     return weakCosine;
   }
@@ -826,7 +820,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
       {
         gluinoMass = gluinoPointer->get_absolute_mass();
-        finishPreparingForThisPoint();
       }
     return gluinoMass;
   }
@@ -847,7 +840,6 @@ namespace LHC_FASER
         averageMass += (*particleIterator)->get_absolute_mass();
       }
       averageMass *= ( 1.0 / (double)setPointer->size() );
-      finishPreparingForThisPoint();
     }
     return averageMass;
   }

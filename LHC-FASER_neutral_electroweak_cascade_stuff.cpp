@@ -19,7 +19,7 @@ namespace LHC_FASER
                         false,
                         inputShortcut )
   {
-    acceptances.setComparison( &acceptanceCutSet::justReturnTrue );
+    acceptancesPerCutSet.setComparison( &acceptanceCutSet::justReturnTrue );
   }
 
   lightestNeutralinoCascade::~lightestNeutralinoCascade()
@@ -150,7 +150,7 @@ namespace LHC_FASER
   neutralinoToSemuCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
   // from the electroweakino through the selectron or smuon to the LSP.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
@@ -369,7 +369,7 @@ namespace LHC_FASER
   chargeSummedNeutralinoToSemuCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
   // from the electroweakino through the selectron or smuon to the LSP.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
@@ -610,7 +610,7 @@ namespace LHC_FASER
   neutralinoToStauCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
   // from the electroweakino through the stau to the LSP.
   {
     currentAcceptance->setTwoJets( 0.0 );
@@ -1077,7 +1077,7 @@ namespace LHC_FASER
   chargeSummedNeutralinoToStauCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
   // from the electroweakino through the stau to the LSP.
   {
     currentAcceptance->setTwoJets( 0.0 );
@@ -1434,7 +1434,7 @@ namespace LHC_FASER
   neutralinoToZCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios..
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios..
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -1864,7 +1864,7 @@ namespace LHC_FASER
   chargeSummedNeutralinoToZCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -2140,7 +2140,7 @@ namespace LHC_FASER
   neutralinoToHiggsCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -2576,7 +2576,7 @@ namespace LHC_FASER
   chargeSummedNeutralinoVirtualCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -2923,7 +2923,7 @@ namespace LHC_FASER
   scoloredToZPlusScoloredCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -3211,7 +3211,7 @@ namespace LHC_FASER
   scoloredToHiggsPlusScoloredCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );

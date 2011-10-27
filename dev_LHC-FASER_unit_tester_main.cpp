@@ -138,9 +138,9 @@
 #include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
 #include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
 #include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
+#include "LHC-FASER_electroweak_cascade_collection_stuff.hpp"
 
 // future includes:
-//#include "LHC-FASER_electroweak_cascade_collection_stuff.hpp"
 //#include "LHC-FASER_full_cascade_stuff.hpp"
 //#include "LHC-FASER_jet_kinematics_stuff.hpp"
 //#include "LHC-FASER_signal_data_collection_stuff.hpp"
@@ -322,6 +322,59 @@ getRemainderBr( double const cascadeBr,
     }
   }
   return returnValue;
+}
+
+void
+printAcceptances( LHC_FASER::electroweakCascadeSet* cascadeSet,
+                  LHC_FASER::acceptanceCutSet const* const acceptanceCuts )
+{
+  double acceptanceValue( 0.0 );
+  std::cout
+  << std::endl
+  << "jet cut: " << acceptanceCuts->getJetCut()
+  << ", primary lepton cut: " << acceptanceCuts->getPrimaryLeptonCut()
+  << ", secondary lepton cut: " << acceptanceCuts->getSecondaryLeptonCut();
+
+  for( int jetCounter( -1 );
+       3 > jetCounter;
+       ++jetCounter )
+  {
+    for( int eMinusCounter( -1 );
+         3 > eMinusCounter;
+         ++eMinusCounter )
+    {
+      for( int ePlusCounter( -1 );
+           3 > ePlusCounter;
+           ++ePlusCounter )
+      {
+        for( int muMinusCounter( -1 );
+             3 > muMinusCounter;
+             ++muMinusCounter )
+        {
+          for( int muPlusCounter( -1 );
+               3 > muPlusCounter;
+               ++muPlusCounter )
+          {
+            acceptanceValue = cascadeSet->getAcceptance( acceptanceCuts,
+                                                         jetCounter,
+                                                         eMinusCounter,
+                                                         ePlusCounter,
+                                                         muMinusCounter,
+                                                         muPlusCounter );
+            if( 0.0 != acceptanceValue )
+            {
+              std::cout
+              << std::endl
+              << jetCounter << "j "
+              << eMinusCounter << "e- " << ePlusCounter << "e+ "
+              << muMinusCounter << "mu- " << muPlusCounter << "mu+ "
+              << "acceptance = " << acceptanceValue;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 
@@ -1624,14 +1677,14 @@ int main( int argumentCount,
   std::cout
   << std::endl << "jetsTestAcceptance.testFunction( "
   << jetsTestAcceptance.getLowestSquarkMass() << ", "
-  << jetsTestAcceptance.getLowestGluinoMass() << ", 0, 3 ) = "
+  << jetsTestAcceptance.getLowestGluinoMass() << ", 0, 9 ) = "
   << jetsTestAcceptance.testFunction( jetsTestAcceptance.getLowestSquarkMass(),
                                       jetsTestAcceptance.getLowestGluinoMass(),
                                       0,
-                                      3 )
+                                      9 )
   << std::endl;
   std::cout
-  << "jetsTestAcceptance.testFunction( 123.4, 567.8, 0, 3 ) = "
+  << "jetsTestAcceptance.testFunction( 123.4, 567.8, 0, 9 ) = "
   << jetsTestAcceptance.testFunction( 123.4,
                                       567.8,
                                       0,
@@ -1642,21 +1695,21 @@ int main( int argumentCount,
   << jetsTestAcceptance.testFunction( 234.5,
                                       678.9,
                                       0,
-                                      3 )
+                                      9 )
   << std::endl;
   std::cout
-  << "jetsTestAcceptance.testFunction( 876.5, 432.1, 1, 3 ) = "
+  << "jetsTestAcceptance.testFunction( 876.5, 432.1, 1, 9 ) = "
   << jetsTestAcceptance.testFunction( 876.5,
                                       432.1,
                                       1,
-                                      3 )
+                                      9 )
   << std::endl;
   std::cout
-  << "jetsTestAcceptance.testFunction( 501.0, 501.0, 1, 3 ) = "
+  << "jetsTestAcceptance.testFunction( 501.0, 501.0, 1, 9 ) = "
   << jetsTestAcceptance.testFunction( 501.0,
                                       501.0,
                                       1,
-                                      3 );
+                                      9 );
   std::cout << std::endl;
   acceptanceGridPathToFile.assign(
                               *(testInputHandler.getPathToKinematicsGrids()) );
@@ -1823,8 +1876,8 @@ int main( int argumentCount,
   **/
 
 
-  /* testing the cascade calculation stuff:
-   * (needs work)*//**/
+  /* testing the basic cascade calculation stuff:
+   * (works)*//**
 
   LHC_FASER::lightestNeutralinoCascade
   testLightestNeutralinoCascade( &testInputHandler );
@@ -2916,7 +2969,157 @@ int main( int argumentCount,
   std::cout << std::endl;
   std::cout << std::endl;
   delete testElectroweakCascade;
-  /**/
+  **/
+
+  /* testing the cascade combination stuff:
+   * (works)*//**/
+
+  LHC_FASER::leptonAcceptanceHandler
+  cascadeCollectionLeptonAcceptanceHandler( &testInputHandler,
+                                 testInputHandler.getPathToKinematicsGrids() );
+  LHC_FASER::leptonAcceptanceParameterSet*
+  cascadeKinematics(
+   cascadeCollectionLeptonAcceptanceHandler.getLeptonAcceptanceParameterSet( 7,
+                                                 testInputHandler.getScharmL(),
+                                           testInputHandler.getNeutralinoTwo(),
+                                                                           2.0,
+                                                                      10.0 ) );
+  LHC_FASER::electroweakCascadeSet*
+  testEwinoCascadeSet
+  = new LHC_FASER::electroweakCascadeSet( cascadeKinematics,
+                                          testInputHandler.getSdownL(),
+                                          testInputHandler.getNeutralinoTwo(),
+                                          &testInputHandler );
+  LHC_FASER::electroweakCascadeSet*
+  testBosonCascadeSet
+  = new LHC_FASER::electroweakCascadeSet( cascadeKinematics,
+                                          testInputHandler.getSbottomTwo(),
+                                          testInputHandler.getWPlus(),
+                                          testInputHandler.getStopOne(),
+                                          &testInputHandler );
+  if( testEwinoCascadeSet->isEquivalent( testInputHandler.getSdownL(),
+                                         testInputHandler.getNeutralinoTwo()) )
+  {
+    std::cout
+    << std::endl
+    << "testEwinoCascadeSet is equivalent for "
+    << *(testInputHandler.getSdownL()->get_name()) << ", "
+    << *(testInputHandler.getNeutralinoTwo()->get_name());
+    std::cout << std::endl;
+  }
+  else
+  {
+    std::cout
+    << std::endl
+    << "testEwinoCascadeSet is not equivalent for "
+    << *(testInputHandler.getSdownL()->get_name()) << ", "
+    << *(testInputHandler.getNeutralinoTwo()->get_name()) << "?!";
+    std::cout << std::endl;
+  }
+  if( testBosonCascadeSet->isEquivalent( testInputHandler.getSdownL(),
+                                        testInputHandler.getNeutralinoTwo() ) )
+  {
+    std::cout
+    << std::endl
+    << "testBosonCascadeSet is equivalent for "
+    << *(testInputHandler.getSdownL()->get_name()) << ", "
+    << *(testInputHandler.getNeutralinoTwo()->get_name()) << "?!";
+    std::cout << std::endl;
+  }
+  else
+  {
+    std::cout
+    << std::endl
+    << "testBosonCascadeSet is not equivalent for "
+    << *(testInputHandler.getSdownL()->get_name()) << ", "
+    << *(testInputHandler.getNeutralinoTwo()->get_name());
+    std::cout << std::endl;
+  }
+  LHC_FASER::acceptanceCutSet cascadeAcceptanceCutSet;
+  cascadeAcceptanceCutSet.setJetCut( 40.0 );
+  cascadeAcceptanceCutSet.setPrimaryLeptonCut( 20.0 );
+  cascadeAcceptanceCutSet.setSecondaryLeptonCut( 10.0 );
+  cascadeAcceptanceCutSet.setExcludedStandardModelProducts(
+                                            testInputHandler.getNotInJets4() );
+  LHC_FASER::acceptanceCutSet noGapsCutSet;
+  noGapsCutSet.setJetCut( 40.0 );
+  noGapsCutSet.setPrimaryLeptonCut( 10.0 );
+  noGapsCutSet.setSecondaryLeptonCut( 10.0 );
+  noGapsCutSet.setExcludedStandardModelProducts(
+                                            testInputHandler.getNotInJets4() );
+  std::cout
+  << std::endl
+  << "testEwinoCascadeSet->getOssfMinusOsdf( ... ) = "
+  << testEwinoCascadeSet->getOssfMinusOsdf( &cascadeAcceptanceCutSet );
+  std::cout << std::endl;
+  printAcceptances( testEwinoCascadeSet,
+                    &cascadeAcceptanceCutSet );
+  std::cout << std::endl;
+  printAcceptances( testEwinoCascadeSet,
+                    &noGapsCutSet );
+  std::cout
+  << std::endl
+  << "testEwinoCascadeSet->getOssfMinusOsdf( &cascadeAcceptanceCutSet ) = "
+  << testEwinoCascadeSet->getOssfMinusOsdf( &cascadeAcceptanceCutSet );
+  std::cout
+  << std::endl
+  << "testEwinoCascadeSet->getOssfMinusOsdf( &noGapsCutSet ) = "
+  << testEwinoCascadeSet->getOssfMinusOsdf( &noGapsCutSet );
+  std::cout
+  << std::endl
+  << "testEwinoCascadeSet seems fine (remember that OSSF-OSDF requires"
+  << " subtraction of OSDF :P )";
+  std::cout << std::endl;
+
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "testBosonCascadeSet->getOssfMinusOsdf( ... ) = "
+  << testBosonCascadeSet->getOssfMinusOsdf( &cascadeAcceptanceCutSet );
+  std::cout << std::endl;
+  printAcceptances( testBosonCascadeSet,
+                    &cascadeAcceptanceCutSet );
+  std::cout << std::endl;
+  printAcceptances( testBosonCascadeSet,
+                    &noGapsCutSet );
+  std::cout << std::endl;
+  std::cout << std::endl;
+  delete testBosonCascadeSet;
+  delete testEwinoCascadeSet;
+
+  std::cout
+  << std::endl
+  << "direct testEwinoCascadeSet & testBosonCascadeSet seem fine.";
+  std::cout << std::endl;
+  LHC_FASER::electroweakCascadeHandler*
+  testElectroweakCascadeHandler
+  = new LHC_FASER::electroweakCascadeHandler( &testInputHandler,
+                                 testInputHandler.getPathToKinematicsGrids() );
+  testBosonCascadeSet
+  = testElectroweakCascadeHandler->getElectroweakCascadesForOneBeamEnergy(
+                                                            7 )->getCascadeSet(
+                                              testInputHandler.getSbottomTwo(),
+                                                   testInputHandler.getWPlus(),
+                                               testInputHandler.getStopOne() );
+  testEwinoCascadeSet
+  = testElectroweakCascadeHandler->getElectroweakCascadesForOneBeamEnergy(
+                                                            7 )->getCascadeSet(
+                                                  testInputHandler.getSdownL(),
+                                         testInputHandler.getNeutralinoTwo() );
+  std::cout << std::endl;
+  printAcceptances( testEwinoCascadeSet,
+                    &cascadeAcceptanceCutSet );
+  std::cout << std::endl;
+  printAcceptances( testBosonCascadeSet,
+                    &cascadeAcceptanceCutSet );
+  delete testElectroweakCascadeHandler;
+  std::cout
+  << std::endl
+  << "testEwinoCascadeSet & testBosonCascadeSet from"
+  << " testElectroweakCascadeHandler seem fine.";
+  std::cout << std::endl;
+   /**/
+
 
   /* testing the jet kinematics grid stuff:
    * (needs work)*//**

@@ -581,6 +581,14 @@ namespace LHC_FASER
    * pointer to that.
    */
   {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "minimalAllocationKeyedVector< ... >::getPointer( "
+    << keyPointer << " ) called. allConstructedPointers.size() = "
+    << allConstructedPointers.size() << ", currentPointers.size() = "
+    << currentPointers.size() << ", this pointer = " << this;
+    std::cout << std::endl;**/
     // set things up for the search:
     keyNotFound = true;
     searchCounter = 0;
@@ -600,6 +608,11 @@ namespace LHC_FASER
     if( keyNotFound )
       // if we didn't find a match...
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "keyNotFound is true";
+      std::cout << std::endl;**/
       if( allConstructedPointers.size() > currentPointers.size() )
         // if we have stored-but-not-current storedClass instances...
       {
@@ -630,6 +643,16 @@ namespace LHC_FASER
       currentPointers.push_back( returnPointer );
       // note that we have a new current storedClass instance.
     }
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "minimalAllocationKeyedVector< ... >::getPointer( "
+    << keyPointer << " ) returning " << returnPointer
+    << "; allConstructedPointers.size() = "
+    << allConstructedPointers.size() << ", currentPointers.size() = "
+    << currentPointers.size();
+    std::cout << std::endl;**/
+
     return returnPointer;
   }
 
@@ -653,6 +676,12 @@ namespace LHC_FASER
   // as stored-but-not-current, & drops their pointers from currentPointers.
   {
     //currentlyStoredNumber = 0;
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "minimalAllocationKeyedVector< ... >::clearEntries() called.";
+    std::cout << std::endl;**/
+
     currentPointers.clear();
   }
 

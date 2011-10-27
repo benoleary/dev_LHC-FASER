@@ -182,7 +182,7 @@ namespace LHC_FASER
     getBrToEwino( std::list< int > const* excludedSmParticles )
     /* this works out the branching ratio for the decays of colored sparticles
      * down to the 1st electroweakino in the cascade (including any decays to
-     * vector bosons + squarks), using the given list of excluded SM particles
+     * EWSB bosons + squarks), using the given list of excluded SM particles
      * to exclude unwanted parts of the BR. by default, it multiplies the BR
      * for the initial decay by subcascade->getBrToEwino.
      */
@@ -315,7 +315,7 @@ namespace LHC_FASER
                            int const numberOfPositiveElectrons,
                            int const numberOfNegativeMuons,
                            int const numberOfPositiveMuons )
-    /* this combines the acceptances from ewinoCascade & vectorCascade. Whether
+    /* this combines the acceptancesPerCutSet from ewinoCascade & vectorCascade. Whether
      * the relevant scoloreds are particles or antiparticles should be decided
      * by the derived class using this function.
      */
@@ -619,7 +619,7 @@ namespace LHC_FASER
                    int const numberOfNegativeMuons,
                    int const numberOfPositiveMuons )
     /* the assumptions made by this code mean that the branching ratios to
-     * electroweakinos multiplied by acceptances through squark & antisquark
+     * electroweakinos multiplied by acceptancesPerCutSet through squark & antisquark
      * factorize. if the electroweakino is a chargino, it is assumed that only
      * either the squark or the antisquark has a non-zero BR to the chargino,
      * hence the compound BR from the gluino to the positively-charged chargino
@@ -1255,8 +1255,20 @@ namespace LHC_FASER
     this->initialScolored = initialSquark;
     this->beamEnergy = beamEnergy;
     this->ewinoCascades = ewinoCascade;
-    soughtDecayProductList.front() =
-                         ewinoCascade->getElectroweakDecayer()->get_PDG_code();
+    int ewinoPdgCode( ewinoCascade->getElectroweakDecayer()->get_PDG_code() );
+    if( ( shortcut->isIn( ewinoPdgCode,
+                          shortcut->getCharginos() ) )
+        &&
+        ( shortcut->isIn( initialSquark->get_PDG_code(),
+                          shortcut->getSdownTypes() ) ) )
+      // if we have to worry about which sign of PDG code to use...
+    {
+      soughtDecayProductList.front() = -(ewinoPdgCode);
+    }
+    else
+    {
+    soughtDecayProductList.front() = ewinoPdgCode;
+    }
     resetCachedBranchingRatio();
     cascadeDefiner.clearEntries();
     // reset cascadeDefiner.
@@ -1293,10 +1305,11 @@ namespace LHC_FASER
   {
     if( branchingRatioNeedsToBeReCalculated )
     {
-      cachedBranchingRatio =
-      initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles );
+      cachedBranchingRatio
+      = initialScolored->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                                         excludedSmParticles );
       resetCachedBranchingRatio();
     }
     return cachedBranchingRatio;
@@ -1392,14 +1405,16 @@ namespace LHC_FASER
       {
         cachedBranchingRatio
         = initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles );
+                                             )->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                                         excludedSmParticles );
       }
       else
       {
         cachedBranchingRatio
         = ( 2.0 * initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
+                                             )->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
                                                        excludedSmParticles ) );
       }
       resetCachedBranchingRatio();
@@ -1460,7 +1475,7 @@ namespace LHC_FASER
                                   int const numberOfNegativeMuons,
                                   int const numberOfPositiveMuons )
   /* the assumptions made by this code mean that the branching ratios to
-   * electroweakinos multiplied by acceptances through squark & antisquark
+   * electroweakinos multiplied by acceptancesPerCutSet through squark & antisquark
    * factorize. if the electroweakino is a chargino, it is assumed that only
    * either the squark or the antisquark has a non-zero BR to the chargino,
    * hence the compound BR from the gluino to the positively-charged chargino
@@ -1482,7 +1497,7 @@ namespace LHC_FASER
                                                   numberOfPositiveElectrons,
                                                   numberOfNegativeMuons,
                                                   numberOfPositiveMuons ) ) );
-    // return the weighted acceptances of the squark & the antisquark versions.
+    // return the weighted acceptancesPerCutSet of the squark & the antisquark versions.
   }
 
 
@@ -1625,7 +1640,7 @@ namespace LHC_FASER
                                               numberOfNegativeMuons,
                                               numberOfPositiveMuons ) ) );
     // getBrToEwino gives the sum of the decays via squark & antisquark, so the
-    // acceptances factorize this way.
+    // acceptancesPerCutSet factorize this way.
   }
 
 
@@ -1647,7 +1662,7 @@ namespace LHC_FASER
                                     int const numberOfNegativeMuons,
                                     int const numberOfPositiveMuons )
   /* the assumptions made by this code mean that the branching ratios to
-   * electroweakinos multiplied by acceptances through squark & antisquark
+   * electroweakinos multiplied by acceptancesPerCutSet through squark & antisquark
    * factorize. if the electroweakino is a chargino, it is assumed that only
    * either the squark or the antisquark has a non-zero BR to the chargino,
    * hence the compound BR from the gluino to the positively-charged chargino
@@ -1669,7 +1684,7 @@ namespace LHC_FASER
                                                    numberOfPositiveElectrons,
                                                    numberOfNegativeMuons,
                                                    numberOfPositiveMuons ) ) );
-    // return the weighted acceptances of the squark & the antisquark versions.
+    // return the weighted acceptancesPerCutSet of the squark & the antisquark versions.
   }
 
 
@@ -2089,7 +2104,6 @@ namespace LHC_FASER
     if( needsToPrepareForThisPoint() )
     {
       setUpCascades();
-      finishPreparingForThisPoint();
     }
   }
 

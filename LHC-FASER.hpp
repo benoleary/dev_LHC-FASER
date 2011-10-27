@@ -170,7 +170,7 @@ namespace LHC_FASER
     std::string pathToGrids;
     // this is where the lookup tables live.
     std::string pathToJetPlusMetAcceptanceGrids;
-    // this is where the lookup tables for jet+MET acceptances live.
+    // this is where the lookup tables for jet+MET acceptancesPerCutSet live.
     double crossSectionUnitFactor;
     // this is to allow for the user to specify event rates in fb, pb or nb.
     bool usingNlo;

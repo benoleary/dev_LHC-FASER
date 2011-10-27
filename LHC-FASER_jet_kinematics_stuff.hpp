@@ -182,7 +182,7 @@ namespace LHC_FASER
 
 
 
-  /* this is a derived class to interpret an acceptanceGrid as acceptances for
+  /* this is a derived class to interpret an acceptanceGrid as acceptancesPerCutSet for
    * lepton distributions. this class, as well as acceptanceGrid, has to be
    * changed if the format of the acceptance grids changes.
    */
@@ -199,7 +199,7 @@ namespace LHC_FASER
                    double firstElectroweakinoMass,
                    double secondElectroweakinoMass,
                    int acceptanceColumn );
-    // this interpolates the grid to obtain values for the acceptances based on
+    // this interpolates the grid to obtain values for the acceptancesPerCutSet based on
     // the given masses.
 
   protected:
@@ -233,7 +233,7 @@ namespace LHC_FASER
   typedef std::pair< jetAcceptanceGrid*,
                      squarkMassForGridDecider* > gridWithSquarkMass;
   // this class holds an acceptanceGrid with a string identifying the type of
-  // jet+MET signal which the acceptances are for.
+  // jet+MET signal which the acceptancesPerCutSet are for.
   class jetAcceptanceTable
   {
   public:
