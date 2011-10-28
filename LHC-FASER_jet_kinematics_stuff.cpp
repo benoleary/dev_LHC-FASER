@@ -1218,23 +1218,23 @@ namespace LHC_FASER
                                      particlePointer* const squarkFromCascade )
   {
     usedCascades typeToCountAs;
-    if( fullCascade::gx == givenCascade->getColofulCascadeType() )
+    if( fullCascade::gx == givenCascade->getColorfulCascadeType() )
     {
       typeToCountAs = gx;
       *squarkFromCascade = NULL;
     }
-    else if( ( fullCascade::sx == givenCascade->getColofulCascadeType() )
+    else if( ( fullCascade::sx == givenCascade->getColorfulCascadeType() )
              ||
-             ( fullCascade::svsx == givenCascade->getColofulCascadeType() ) )
+             ( fullCascade::sbsx == givenCascade->getColorfulCascadeType() ) )
     {
       typeToCountAs = sx;
       *squarkFromCascade = givenCascade->getCascadeDefiner()->back()->first;
     }
-    else if( ( fullCascade::sjgx == givenCascade->getColofulCascadeType() )
+    else if( ( fullCascade::sjgx == givenCascade->getColorfulCascadeType() )
              ||
-             ( fullCascade::svgx == givenCascade->getColofulCascadeType() )
+             ( fullCascade::sbgx == givenCascade->getColorfulCascadeType() )
              ||
-             ( fullCascade::svsjgx == givenCascade->getColofulCascadeType() ) )
+             ( fullCascade::sbsjgx == givenCascade->getColorfulCascadeType() ) )
     {
       typeToCountAs = sgx;
       *squarkFromCascade = givenCascade->getCascadeDefiner()->at( 2 )->first;

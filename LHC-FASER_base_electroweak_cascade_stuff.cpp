@@ -111,6 +111,8 @@ namespace LHC_FASER
                       * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR ) );
   int const
   electroweakCascade::numberOfIntegrationBins( 10 );
+  double const
+  electroweakCascade::cachedAcceptanceResetValue( 0.0 );
 
   electroweakCascade::electroweakCascade(
                                 leptonAcceptanceParameterSet* const kinematics,
@@ -198,13 +200,12 @@ namespace LHC_FASER
 
       currentAcceptance = acceptancesPerCutSet.getPointer( currentCuts );
       // at this point, currentAcceptance is keyed to a copy of cuts.
-      if( currentAcceptance->notAlreadyCalculated() )
+      if( currentAcceptance->needsToBeCalculated() )
       {
         calculateAcceptance( currentCuts,
                              currentAcceptance );
         // now currentAcceptance has values corresponding to cuts as well as
         // being keyed to a copy of cuts.
-        currentAcceptance->flagAsAlreadyCalculated();
       }
       /* now currentAcceptance has the values which are calculated by this
        * electroweakCascade in the valid entries. the entries in invalid

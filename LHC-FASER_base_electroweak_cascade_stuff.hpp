@@ -76,9 +76,7 @@ namespace LHC_FASER
     // this sets all acceptances to unsetValues & alreadyCalculatedFlag to
     // false.
     bool
-    notAlreadyCalculated();
-    void
-    flagAsAlreadyCalculated();
+    needsToBeCalculated();
     double
     getTwoJets()
     const;
@@ -298,6 +296,7 @@ namespace LHC_FASER
     static double const tauToElectronTimesTauToMuonBr;
     static double const tauPairToMuonPairBr;
     static int const numberOfIntegrationBins;
+    static double const cachedAcceptanceResetValue;
 
     leptonAcceptanceParameterSet* const kinematics;
     effectiveSquarkMassHolder* const effectiveSquarkMass;
@@ -375,15 +374,17 @@ namespace LHC_FASER
   }
 
   inline bool
-  acceptanceValues::notAlreadyCalculated()
+  acceptanceValues::needsToBeCalculated()
   {
-    return notAlreadyCalculatedFlag;
-  }
-
-  inline void
-  acceptanceValues::flagAsAlreadyCalculated()
-  {
-    notAlreadyCalculatedFlag = false;
+    if( notAlreadyCalculatedFlag )
+    {
+      notAlreadyCalculatedFlag = false;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   inline double
@@ -723,11 +724,10 @@ namespace LHC_FASER
         acceptancesPerCutSet.clearEntries();
       }
       currentAcceptance = acceptancesPerCutSet.getPointer( currentCuts );
-      if( currentAcceptance->notAlreadyCalculated() )
+      if( currentAcceptance->needsToBeCalculated() )
       {
         calculateAcceptance( currentCuts,
                              currentAcceptance );
-        currentAcceptance->flagAsAlreadyCalculated();
       }
       return currentAcceptance->getOssfMinusOsdf();
     }
@@ -745,9 +745,16 @@ namespace LHC_FASER
   // this makes a new std::pair to hold an acceptance value along with a flag
   // for whether it has been calculated or not, & associates it with a key.
   {
-    *cachedValuesAndFlag = new acceptanceValues( 0.0 );
+    *cachedValuesAndFlag = new acceptanceValues( cachedAcceptanceResetValue );
     // the new pair has the default "unset" acceptanceValues.
     *cachedKey = new acceptanceCutSet( constructionKey );
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "electroweakCascade::cachePairConstruction( ..., "
+    << constructionKey << " ) called.";
+    std::cout << std::endl;**/
+
   }
 
   inline void
@@ -758,9 +765,15 @@ namespace LHC_FASER
   // this resets a std::pair to hold an acceptance value along with a flag
   // for whether it has been calculated or not, & associates it with a key.
   {
-    cachedValuesAndFlag->reset( 0.0 );
+    cachedValuesAndFlag->reset( cachedAcceptanceResetValue );
     // the new pair has the default "unset" acceptanceValues.
     cachedKey->becomeCopyOf( constructionKey );
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "electroweakCascade::cachePairReset( ..., "
+    << constructionKey << " ) called.";
+    std::cout << std::endl;**/
   }
 
 }

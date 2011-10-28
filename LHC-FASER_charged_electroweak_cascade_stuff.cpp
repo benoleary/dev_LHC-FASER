@@ -400,11 +400,11 @@ namespace LHC_FASER
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "charginoToStauOrTauSnuCascade::calculateAcceptance(...) called."
     << " cascadeBr = " << cascadeBr;
-    std::cout << std::endl;/**/
+    std::cout << std::endl;**/
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
@@ -448,31 +448,31 @@ namespace LHC_FASER
                                            currentCuts->getPrimaryLeptonCut() )
                     + ( 1.0 - nearLeptonLeftHandedness )
                       * integrateAcceptance( oppositeHardMuonDistribution,
-                                             currentCuts->getPrimaryLeptonCut() ) )
+                                         currentCuts->getPrimaryLeptonCut() ) )
                 + ( 1.0 - jetLeftHandedness )
                   * ( nearLeptonLeftHandedness
                       * integrateAcceptance( oppositeSoftMuonDistribution,
-                                             currentCuts->getPrimaryLeptonCut() )
+                                           currentCuts->getPrimaryLeptonCut() )
                       + ( 1.0 - nearLeptonLeftHandedness )
                         * integrateAcceptance( sameHardMuonDistribution,
-                                           currentCuts->getPrimaryLeptonCut() ) ) ) );
+                                    currentCuts->getPrimaryLeptonCut() ) ) ) );
         muonFail
         = ( cascadeBr
             * ( 1.0
                 - ( jetLeftHandedness
                     * ( nearLeptonLeftHandedness
                         * integrateAcceptance( sameSoftMuonDistribution,
-                                               currentCuts->getSecondaryLeptonCut() )
+                                         currentCuts->getSecondaryLeptonCut() )
                         + ( 1.0 - nearLeptonLeftHandedness )
                           * integrateAcceptance( oppositeHardMuonDistribution,
-                                              currentCuts->getSecondaryLeptonCut() ) )
+                                       currentCuts->getSecondaryLeptonCut() ) )
                     + ( 1.0 - jetLeftHandedness )
                       * ( nearLeptonLeftHandedness
                           * integrateAcceptance( oppositeSoftMuonDistribution,
-                                                currentCuts->getSecondaryLeptonCut() )
+                                         currentCuts->getSecondaryLeptonCut() )
                           + ( 1.0 - nearLeptonLeftHandedness )
                             * integrateAcceptance( sameHardMuonDistribution,
-                                       currentCuts->getSecondaryLeptonCut() ) ) ) ) );
+                                currentCuts->getSecondaryLeptonCut() ) ) ) ) );
         pionPass
         = ( cascadeBr
             * ( jetLeftHandedness
@@ -500,31 +500,31 @@ namespace LHC_FASER
                                            currentCuts->getPrimaryLeptonCut() )
                     + ( 1.0 - antitauRightHandedness )
                       * integrateAcceptance( sameSoftMuonDistribution,
-                                             currentCuts->getPrimaryLeptonCut() ) )
+                                         currentCuts->getPrimaryLeptonCut() ) )
                 + ( 1.0 - jetLeftHandedness )
                   * ( antitauRightHandedness
                       * integrateAcceptance( oppositeHardMuonDistribution,
-                                             currentCuts->getPrimaryLeptonCut() )
+                                           currentCuts->getPrimaryLeptonCut() )
                       + ( 1.0 - antitauRightHandedness )
                         * integrateAcceptance( oppositeSoftMuonDistribution,
-                                           currentCuts->getPrimaryLeptonCut() ) ) ) );
+                                    currentCuts->getPrimaryLeptonCut() ) ) ) );
         muonFail
         = ( cascadeBr
             * ( 1.0
                 - ( jetLeftHandedness
                     * ( antitauRightHandedness
                         * integrateAcceptance( sameHardMuonDistribution,
-                                               currentCuts->getSecondaryLeptonCut() )
+                                         currentCuts->getSecondaryLeptonCut() )
                         + ( 1.0 - antitauRightHandedness )
                           * integrateAcceptance( sameSoftMuonDistribution,
-                                              currentCuts->getSecondaryLeptonCut() ) )
+                                       currentCuts->getSecondaryLeptonCut() ) )
                     + ( 1.0 - jetLeftHandedness )
                       * ( antitauRightHandedness
                           * integrateAcceptance( oppositeHardMuonDistribution,
-                                                currentCuts->getSecondaryLeptonCut() )
+                                         currentCuts->getSecondaryLeptonCut() )
                           + ( 1.0 - antitauRightHandedness )
                            * integrateAcceptance( oppositeSoftMuonDistribution,
-                                       currentCuts->getSecondaryLeptonCut() ) ) ) ) );
+                                currentCuts->getSecondaryLeptonCut() ) ) ) ) );
         pionPass
         = ( cascadeBr
             * ( jetLeftHandedness

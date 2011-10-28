@@ -135,13 +135,13 @@
 #include "LHC-FASER_cross-section_stuff.hpp"
 //#include "LHC-FASER_base_kinematics_stuff.hpp"
 //#include "LHC-FASER_lepton_kinematics_stuff.hpp"
-#include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
-#include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
-#include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
+//#include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
+//#include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
+//#include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
 #include "LHC-FASER_electroweak_cascade_collection_stuff.hpp"
+#include "LHC-FASER_full_cascade_stuff.hpp"
 
 // future includes:
-//#include "LHC-FASER_full_cascade_stuff.hpp"
 //#include "LHC-FASER_jet_kinematics_stuff.hpp"
 //#include "LHC-FASER_signal_data_collection_stuff.hpp"
 //#include "LHC-FASER_signal_calculator_stuff.hpp"
@@ -1876,7 +1876,7 @@ int main( int argumentCount,
   **/
 
 
-  /* testing the basic cascade calculation stuff:
+  /* testing the basic electroweak cascade calculation stuff:
    * (works)*//**
 
   LHC_FASER::lightestNeutralinoCascade
@@ -2971,8 +2971,8 @@ int main( int argumentCount,
   delete testElectroweakCascade;
   **/
 
-  /* testing the cascade combination stuff:
-   * (works)*//**/
+  /* testing the electroweak cascade combination stuff:
+   * (works)*//**
 
   LHC_FASER::leptonAcceptanceHandler
   cascadeCollectionLeptonAcceptanceHandler( &testInputHandler,
@@ -3091,18 +3091,17 @@ int main( int argumentCount,
   << std::endl
   << "direct testEwinoCascadeSet & testBosonCascadeSet seem fine.";
   std::cout << std::endl;
-  LHC_FASER::electroweakCascadeHandler*
-  testElectroweakCascadeHandler
-  = new LHC_FASER::electroweakCascadeHandler( &testInputHandler,
+  LHC_FASER::electroweakCascadeHandler
+  testElectroweakCascadeHandler( &testInputHandler,
                                  testInputHandler.getPathToKinematicsGrids() );
   testBosonCascadeSet
-  = testElectroweakCascadeHandler->getElectroweakCascadesForOneBeamEnergy(
+  = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy(
                                                             7 )->getCascadeSet(
                                               testInputHandler.getSbottomTwo(),
                                                    testInputHandler.getWPlus(),
                                                testInputHandler.getStopOne() );
   testEwinoCascadeSet
-  = testElectroweakCascadeHandler->getElectroweakCascadesForOneBeamEnergy(
+  = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy(
                                                             7 )->getCascadeSet(
                                                   testInputHandler.getSdownL(),
                                          testInputHandler.getNeutralinoTwo() );
@@ -3112,13 +3111,226 @@ int main( int argumentCount,
   std::cout << std::endl;
   printAcceptances( testBosonCascadeSet,
                     &cascadeAcceptanceCutSet );
-  delete testElectroweakCascadeHandler;
+  std::cout
+  << std::endl
+  << "checking caching:"
+  << std::endl
+  << "testEwinoCascadeSet->getAcceptance( &cascadeAcceptanceCutSet,"
+  << " 0, 1, 1, 0, 0 ) = "
+  << testEwinoCascadeSet->getAcceptance( &cascadeAcceptanceCutSet,
+                                         0,
+                                         1,
+                                         1,
+                                         0,
+                                         0 )
+  << std::endl
+  << "testEwinoCascadeSet->getAcceptance( &cascadeAcceptanceCutSet,"
+  << " 0, 0, 0, 1, 1 ) = "
+  << testEwinoCascadeSet->getAcceptance( &cascadeAcceptanceCutSet,
+                                         0,
+                                         0,
+                                         0,
+                                         1,
+                                         1 )
+  << std::endl
+  << "testEwinoCascadeSet->getAcceptance( &noGapsCutSet,"
+  << " 0, 0, 0, 1, 1 ) = "
+  << testEwinoCascadeSet->getAcceptance( &noGapsCutSet,
+                                         0,
+                                         0,
+                                         0,
+                                         1,
+                                         1 );
+  std::cout
+  << std::endl
+  << std::endl
+  << "resetting readier.";
+  std::cout << std::endl;
+  testReadier.readyObserversForNewPoint();
+  std::cout
+  << std::endl
+  << "testEwinoCascadeSet->getAcceptance( &cascadeAcceptanceCutSet,"
+  << " 0, 0, 0, 1, 1 ) = "
+  << testEwinoCascadeSet->getAcceptance( &cascadeAcceptanceCutSet,
+                                         0,
+                                         0,
+                                         0,
+                                         1,
+                                         1 )
+  << std::endl
+  << "testEwinoCascadeSet->getAcceptance( &noGapsCutSet,"
+  << " 0, 1, 1, 0, 0 ) = "
+  << testEwinoCascadeSet->getAcceptance( &noGapsCutSet,
+                                         0,
+                                         1,
+                                         1,
+                                         0,
+                                         0 );
+  std::cout << std::endl
+  << "testEwinoCascadeSet->getAcceptance( &cascadeAcceptanceCutSet,"
+  << " 0, 0, 0, 1, 1 ) = "
+  << testEwinoCascadeSet->getAcceptance( &cascadeAcceptanceCutSet,
+                                         0,
+                                         0,
+                                         0,
+                                         1,
+                                         1 )
+  << std::endl
+  << "testEwinoCascadeSet->getAcceptance( &noGapsCutSet,"
+  << " 0, 1, 1, 0, 0 ) = "
+  << testEwinoCascadeSet->getAcceptance( &noGapsCutSet,
+                                         0,
+                                         1,
+                                         1,
+                                         0,
+                                         0 );
+  std::cout << std::endl;
   std::cout
   << std::endl
   << "testEwinoCascadeSet & testBosonCascadeSet from"
   << " testElectroweakCascadeHandler seem fine.";
   std::cout << std::endl;
-   /**/
+  **/
+
+
+  /* testing the full cascade stuff (building on above):
+   * (works)*//**
+
+  LHC_FASER::sxFullCascade testSxFullCascade;
+  std::cout
+  << std::endl
+  << "testSxFullCascade constructed without problem.";
+  std::cout << std::endl;
+
+  testSxFullCascade.setProperties( &testInputHandler,
+                                   testInputHandler.getSdownL(),
+                                   7,
+                                   testEwinoCascadeSet );
+  std::cout
+  << std::endl
+  << "testSxFullCascade set as sdown_L -> chi^0_2";
+  std::cout << std::endl;
+  if( testSxFullCascade.isOpen() )
+  {
+    std::cout
+    << std::endl
+    << "testSxFullCascade is open.";
+    std::cout << std::endl;
+  }
+  else
+  {
+    std::cout
+    << std::endl
+    << "testSxFullCascade is not open?!";
+    std::cout << std::endl;
+  }
+  std::list< int > testSmParticleExclusion;
+  std::cout
+  << std::endl
+  << "BR with no excluded SM fermions = "
+  << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
+  testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+  std::cout
+  << std::endl
+  << "BR excluding downs (but not antidowns) in final state = "
+  << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << ".getAcceptance( [particle], &cascadeAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+  << testSxFullCascade.getAcceptance( true,
+                                      &cascadeAcceptanceCutSet,
+                                      0,
+                                      1,
+                                      1,
+                                      0,
+                                      0 );
+  std::cout
+  << std::endl
+  << ".getAcceptance("
+  << " [antiparticle], &cascadeAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+  << testSxFullCascade.getAcceptance( false,
+                                      &cascadeAcceptanceCutSet,
+                                      0,
+                                      1,
+                                      1,
+                                      0,
+                                      0 );
+  std::cout << std::endl;
+
+  testEwinoCascadeSet
+  = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy(
+                                                            7 )->getCascadeSet(
+                                                  testInputHandler.getSdownL(),
+                                           testInputHandler.getCharginoOne() );
+  testSxFullCascade.setProperties( &testInputHandler,
+                                   testInputHandler.getSdownL(),
+                                   7,
+                                   testEwinoCascadeSet );
+  std::cout
+  << std::endl
+  << "testSxFullCascade set as sdown_L -> chi^-_1";
+  std::cout << std::endl;
+  if( testSxFullCascade.isOpen() )
+  {
+    std::cout
+    << std::endl
+    << "testSxFullCascade is open.";
+    std::cout << std::endl;
+  }
+  else
+  {
+    std::cout
+    << std::endl
+    << "testSxFullCascade is not open?!";
+    std::cout << std::endl;
+  }
+  testSmParticleExclusion.clear();
+  std::cout
+  << std::endl
+  << "BR with no excluded SM fermions = "
+  << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
+  testSmParticleExclusion.push_back( CppSLHA::PDG_code::up );
+  testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::up) );
+  std::cout
+  << std::endl
+  << "BR excluding ups & antiups in final state = "
+  << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << ".getAcceptance( [particle], &cascadeAcceptanceCutSet, 0, 1, 0, 0, 0 ) = "
+  << testSxFullCascade.getAcceptance( true,
+                                      &cascadeAcceptanceCutSet,
+                                      0,
+                                      1,
+                                      0,
+                                      0,
+                                      0 );
+  std::cout
+  << std::endl
+  << ".getAcceptance("
+  << " [antiparticle], &cascadeAcceptanceCutSet, 0, 1, 0, 0, 0 ) = "
+  << testSxFullCascade.getAcceptance( false,
+                                      &cascadeAcceptanceCutSet,
+                                      0,
+                                      1,
+                                      0,
+                                      0,
+                                      0 );
+  std::cout
+  << std::endl
+  << ".getAcceptance("
+  << " [antiparticle], &cascadeAcceptanceCutSet, 0, 0, 1, 0, 0 ) = "
+  << testSxFullCascade.getAcceptance( false,
+                                      &cascadeAcceptanceCutSet,
+                                      0,
+                                      0,
+                                      1,
+                                      0,
+                                      0 );
+  std::cout << std::endl;
+  **/
 
 
   /* testing the jet kinematics grid stuff:
