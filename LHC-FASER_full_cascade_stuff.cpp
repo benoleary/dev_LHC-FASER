@@ -1221,7 +1221,7 @@ namespace LHC_FASER
 
   fullCascadeSetFactory::fullCascadeSetFactory(
                                        inputHandler const* const inputShortcut,
-        electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource ) :
+                  electroweakCascadeHandler* const electroweakCascadeSource ) :
       inputShortcut( inputShortcut ),
       electroweakCascadeSource( electroweakCascadeSource )
   {
@@ -1246,7 +1246,7 @@ namespace LHC_FASER
   fullCascadeSetFactory::getFullCascadeSetsForOneBeamEnergy(
                                                          int const beamEnergy )
   /* this looks to see if there is an existing
-   * fullCascadeSetsForOneBeamEnergy with the requested acceptanceValues, & if not,
+   * fullCascadeSetsForOneBeamEnergy with the requested values, & if not,
    * makes 1, & returns the pointer.
    */
   {
@@ -1268,9 +1268,11 @@ namespace LHC_FASER
       // if we do not already have a fullCascadeSetsForOneBeamEnergy for this
       // beam energy, we make a new instance:
     {
-      returnPointer = new fullCascadeSetsForOneBeamEnergy( inputShortcut,
-                                                      electroweakCascadeSource,
-                                                           beamEnergy );
+      returnPointer
+      = new fullCascadeSetsForOneBeamEnergy( inputShortcut,
+              electroweakCascadeSource->getElectroweakCascadesForOneBeamEnergy(
+                                                                  beamEnergy ),
+                                             beamEnergy );
       cascadeSetsPerEnergy.push_back( returnPointer );
     }
     return returnPointer;

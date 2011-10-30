@@ -161,6 +161,9 @@ namespace LHC_FASER
     particlePointer
     getInitialScolored()
     const;
+    particlePointer
+    getElectroweakinoAtEndOfScoloredness()
+    const;
     void
     resetCachedBranchingRatio();
     /* this sets branchingRatioNeedsToBeRecalculated to true, so that
@@ -965,7 +968,7 @@ namespace LHC_FASER
   {
   public:
     fullCascadeSetFactory( inputHandler const* const inputShortcut,
-         electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
+                   electroweakCascadeHandler* const electroweakCascadeSource );
     ~fullCascadeSetFactory();
 
     fullCascadeSetsForOneBeamEnergy*
@@ -980,7 +983,7 @@ namespace LHC_FASER
 
   protected:
     inputHandler const* const inputShortcut;
-    electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource;
+    electroweakCascadeHandler* const electroweakCascadeSource;
     std::vector< fullCascadeSetsForOneBeamEnergy* > cascadeSetsPerEnergy;
   };
 
@@ -996,6 +999,13 @@ namespace LHC_FASER
   const
   {
     return initialScolored;
+  }
+
+  inline particlePointer
+  fullCascade::getElectroweakinoAtEndOfScoloredness()
+  const
+  {
+    return ewinoCascades->getElectroweakDecayer();
   }
 
   inline void
@@ -1029,8 +1039,9 @@ namespace LHC_FASER
     {
       cachedBranchingRatio =
       ( initialScolored->inspect_direct_decay_handler(
-                    )->get_branching_ratio_for_subset( &soughtDecayProductList,
-                                                       excludedSmParticles )
+                                             )->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                                          excludedSmParticles )
         * chargeConjugateSumFactor
         * subcascadePointer->getBrToEwino( excludedSmParticles ) );
       branchingRatioNeedsToBeRecalculated = false;

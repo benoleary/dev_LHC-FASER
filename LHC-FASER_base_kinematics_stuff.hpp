@@ -215,8 +215,8 @@ namespace LHC_FASER
     double highElectroweakinoMassRatio;
     std::vector< std::vector< std::vector< std::vector< double >* >* >* >
     acceptanceValues;
-    // these are pointers to vectors of pointers to vectors of acceptancesPerCutSet
-    // which are used to store the acceptancesPerCutSet nearest the current point:
+    // these are pointers to vectors of pointers to vectors of acceptances
+    // which are used to store the acceptances nearest the current point:
     std::vector< std::vector< double >* >* lowerLeftVectorOfVectors;
     std::vector< std::vector< double >* >* lowerRightVectorOfVectors;
     std::vector< std::vector< double >* >* upperRightVectorOfVectors;
@@ -439,69 +439,6 @@ namespace LHC_FASER
   const
   {
     return highestGluinoMass;
-  }
-
-  inline double
-  acceptanceGrid::testFunction( double const squarkMass,
-                                double const gluinoMass,
-                                int const electroweakinoIndex,
-                                int const acceptanceIndex )
-  {
-    if( pointIsOnGrid( squarkMass,
-                       gluinoMass )
-        &&
-        ( 0 <= electroweakinoIndex )
-        &&
-        ( lowerLeftVectorOfVectors->size()
-          > (unsigned int)electroweakinoIndex )
-        &&
-        ( 0 <= acceptanceIndex )
-        &&
-        ( lowerLeftVectorOfVectors->at( electroweakinoIndex )->size()
-          > (unsigned int)acceptanceIndex ) )
-    {
-      std::cout
-      << std::endl
-      << "squarkMassFraction = " << squarkMassFraction
-      << std::endl
-      << "gluinoMassFraction = " << gluinoMassFraction
-      << std::endl
-      << "lower left value = "
-      << lowerLeftVectorOfVectors->at( electroweakinoIndex )->at(
-                                                             acceptanceIndex )
-      << std::endl
-      << "lower right value = "
-      << lowerRightVectorOfVectors->at( electroweakinoIndex )->at(
-                                                             acceptanceIndex )
-      << std::endl
-      << "upper right value = "
-      << upperRightVectorOfVectors->at( electroweakinoIndex )->at(
-                                                             acceptanceIndex )
-      << std::endl
-      << "upper left value = "
-      << upperLeftVectorOfVectors->at( electroweakinoIndex )->at(
-                                                             acceptanceIndex );
-      std::cout << std::endl;
-
-      return lhcFaserGlobal::squareBilinearInterpolation( squarkMassFraction,
-                                                          gluinoMassFraction,
-                                                  lowerLeftVectorOfVectors->at(
-                                                     electroweakinoIndex )->at(
-                                                             acceptanceIndex ),
-                                                 lowerRightVectorOfVectors->at(
-                                                     electroweakinoIndex )->at(
-                                                             acceptanceIndex ),
-                                                 upperRightVectorOfVectors->at(
-                                                     electroweakinoIndex )->at(
-                                                             acceptanceIndex ),
-                                                  upperLeftVectorOfVectors->at(
-                                                     electroweakinoIndex )->at(
-                                                           acceptanceIndex ) );
-    }
-    else
-    {
-      return CppSLHA::CppSLHA_global::really_wrong_value;
-    }
   }
 
 }  // end of LHC_FASER namespace.
