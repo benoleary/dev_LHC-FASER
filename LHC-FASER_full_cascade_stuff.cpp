@@ -814,7 +814,7 @@ namespace LHC_FASER
     // we have to set up sxCascades now:
     for( std::vector< particlePointer >::const_iterator
          ewinoIterator( inputShortcut->getElectroweakinos()->begin() );
-         inputShortcut->getUnstableElectroweakinos()->end() > ewinoIterator;
+         inputShortcut->getElectroweakinos()->end() > ewinoIterator;
          ++ewinoIterator )
     {
       sxCascades.addNewAtEnd()->setProperties( inputShortcut,
@@ -1040,7 +1040,7 @@ namespace LHC_FASER
     // we have to set up gxCascades now:
     for( std::vector< particlePointer >::const_iterator
          ewinoIterator( inputShortcut->getElectroweakinos()->begin() );
-         inputShortcut->getUnstableElectroweakinos()->end() > ewinoIterator;
+         inputShortcut->getElectroweakinos()->end() > ewinoIterator;
          ++ewinoIterator )
     {
       gxCascades.addNewAtEnd()->setProperties( inputShortcut,

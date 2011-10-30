@@ -489,9 +489,15 @@ namespace LHC_FASER
       std::cout << std::endl;
       std::vector< fullCascade* >*
       openCascades( testFullCascadeSetFromFactory->getOpenCascades() );
+      testSmParticleExclusion.clear();
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::top );
+      testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::top) );
       std::cout
       << std::endl
-      << "has " << openCascades->size() << " open cascades";
+      << "has " << openCascades->size() << " open cascades. 1 is sx."
+      << " BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
+      << " excludes top & antitop, \"acc\" is for ->getAcceptance("
+      << " [particle], &testAcceptanceCutSet, 0, 0, 0, 1, 0 ).";
       for( std::vector< fullCascade* >::iterator
            cascadeIterator( openCascades->begin() );
            openCascades->end() > cascadeIterator;
@@ -504,17 +510,57 @@ namespace LHC_FASER
         << " => "
         << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(
                                                                  )->get_name())
-        << "->getAcceptance("
-        << " [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
-        << " = " << (*cascadeIterator)->getAcceptance( true,
-                                                       &testAcceptanceCutSet,
-                                                       0,
-                                                       1,
-                                                       1,
-                                                       0,
-                                                       0 );
+        << ", BR = "
+        << (*cascadeIterator)->getBrToEwino( &testSmParticleExclusion )
+        << ", acc = "
+        << (*cascadeIterator)->getAcceptance( true,
+                                              &testAcceptanceCutSet,
+                                              0,
+                                              0,
+                                              0,
+                                              1,
+                                              0 );
       }
+      testFullCascadeSetFromFactory
+      = testFullCascadeSetFactory.getFullCascadeSet(
+                                                 testInputHandler->getGluino(),
+                                                     7 );
+    std::cout
+    << std::endl
+    << "testFullCascadeSetFromFactory = " << testFullCascadeSetFromFactory;
+    std::cout << std::endl;
+    openCascades = testFullCascadeSetFromFactory->getOpenCascades();
+    std::cout
+    << std::endl
+    << "has " << openCascades->size() << " open cascades. 2 is gx, 4 is gjsx,"
+    << " 8 is gjsbsx."
+    << " BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
+    << " excludes top & antitop, \"acc\" is for ->getAcceptance("
+    << " [particle], &testAcceptanceCutSet, 0, 0, 0, 1, 0 ).";
+    for( std::vector< fullCascade* >::iterator
+         cascadeIterator( openCascades->begin() );
+         openCascades->end() > cascadeIterator;
+         ++cascadeIterator )
+    {
+      std::cout
+      << std::endl
+      << *((*cascadeIterator)->getInitialScolored()->get_name())
+      << " => " << (*cascadeIterator)->getColorfulCascadeType()
+      << " => "
+      << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(
+                                                               )->get_name())
+      << ", BR = "
+      << (*cascadeIterator)->getBrToEwino( &testSmParticleExclusion )
+      << ", acc = "
+      << (*cascadeIterator)->getAcceptance( true,
+                                            &testAcceptanceCutSet,
+                                            0,
+                                            0,
+                                            0,
+                                            1,
+                                            0 );
     }
+  }
 
 
   protected:
