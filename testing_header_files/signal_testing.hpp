@@ -73,6 +73,8 @@
 
 #include "basic_testing_stuff.hpp"
 #include "input_testing.hpp"
+#include "LHC-FASER_signal_data_collection_stuff.hpp"
+#include "LHC-FASER_signal_calculator_stuff.hpp"
 
 namespace LHC_FASER
 {

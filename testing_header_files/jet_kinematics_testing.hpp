@@ -73,6 +73,7 @@
 
 #include "basic_testing_stuff.hpp"
 #include "input_testing.hpp"
+#include "LHC-FASER_jet_kinematics_stuff.hpp"
 
 namespace LHC_FASER
 {

@@ -95,9 +95,6 @@
  *      LHC-FASER_cross-section_stuff.cpp
  *      LHC-FASER_base_kinematics_stuff.hpp
  *      LHC-FASER_base_kinematics_stuff.cpp
- *
- *
- * still to test:
  *      LHC-FASER_lepton_kinematics_stuff.hpp
  *      LHC-FASER_lepton_kinematics_stuff.cpp
  *      LHC-FASER_base_electroweak_cascade_stuff.hpp
@@ -110,6 +107,9 @@
  *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
+ *
+ *
+ * still to test:
  *      LHC-FASER_jet_kinematics_stuff.hpp
  *      LHC-FASER_jet_kinematics_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
@@ -132,26 +132,11 @@
 #include "testing_header_files/base_electroweak_cascade_testing.hpp"
 #include "testing_header_files/full_electroweak_cascade_testing.hpp"
 #include "testing_header_files/full_cascade_testing.hpp"
-//#include "LHC-FASER_template_classes.hpp"
-//#include "LHC-FASER_global_stuff.hpp"
-//#include "LHC-FASER_base_lepton_distribution_stuff.hpp"
-//#include "LHC-FASER_derived_lepton_distributions.hpp"
-//#include "LHC-FASER_sparticle_decay_stuff.hpp"
-//#include "LHC-FASER_input_handling_stuff.hpp"
-//#include "LHC-FASER_cross-section_stuff.hpp"
-//#include "LHC-FASER_base_kinematics_stuff.hpp"
-//#include "LHC-FASER_lepton_kinematics_stuff.hpp"
-//#include "LHC-FASER_base_electroweak_cascade_stuff.hpp"
-//#include "LHC-FASER_neutral_electroweak_cascade_stuff.hpp"
-//#include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
-//#include "LHC-FASER_electroweak_cascade_collection_stuff.hpp"
-//#include "LHC-FASER_full_cascade_stuff.hpp"
 
 // future includes:
-//#include "LHC-FASER_jet_kinematics_stuff.hpp"
-//#include "LHC-FASER_signal_data_collection_stuff.hpp"
-//#include "LHC-FASER_signal_calculator_stuff.hpp"
-//#include "LHC-FASER.hpp"
+//#include "testing_header_files/jet_kinematics_testing.hpp"
+//#include "testing_header_files/signal_testing.hpp"
+//#include "testing_header_files/lhcFaser_testing.hpp"
 
 
 // the main program:
