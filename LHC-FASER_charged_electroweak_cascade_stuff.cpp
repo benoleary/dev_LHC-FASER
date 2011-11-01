@@ -187,11 +187,11 @@ namespace LHC_FASER
       samePass = integrateAcceptance( sameDistribution,
                                       currentCuts->getPrimaryLeptonCut() );
       sameFail = ( 1.0 - integrateAcceptance( sameDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       oppositePass = integrateAcceptance( oppositeDistribution,
                                           currentCuts->getPrimaryLeptonCut() );
       oppositeFail = ( 1.0 - integrateAcceptance( oppositeDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
 
       currentAcceptance->setZeroJetsZeroLeptons(
                                               ( nearLeptonSameHandednessTimesBr

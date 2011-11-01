@@ -78,11 +78,9 @@ namespace LHC_FASER
   class squarkMassForGridDecider
   {
   public:
-    squarkMassForGridDecider( inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    squarkMassForGridDecider( inputHandler const* const inputShortcut );
     virtual
-    ~squarkMassForGridDecider()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~squarkMassForGridDecider();
 
     virtual double
     operator()( particlePointer const firstScolored,
@@ -101,58 +99,48 @@ namespace LHC_FASER
   class heavierThanGluinoSquarkMassForGrid : public squarkMassForGridDecider
   {
   public:
-    heavierThanGluinoSquarkMassForGrid( inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    heavierThanGluinoSquarkMassForGrid(
+                                     inputHandler const* const inputShortcut );
     virtual
-    ~heavierThanGluinoSquarkMassForGrid()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~heavierThanGluinoSquarkMassForGrid();
 
     virtual double
     operator()( particlePointer const firstScolored,
-                particlePointer const secondScolored )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                particlePointer const secondScolored );
 
   //protected:
     // nothing
   };
 
 
-  // this is a derived class returning the mass of the 1st provided
-  // squarks.
+  // this is a derived class returning the mass of the 1st provided squark.
   class firstMassForGrid : public squarkMassForGridDecider
   {
   public:
-    firstMassForGrid( inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    firstMassForGrid( inputHandler const* const inputShortcut );
     virtual
-    ~firstMassForGrid()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~firstMassForGrid();
 
     virtual double
     operator()( particlePointer const firstScolored,
-                particlePointer const secondScolored )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                particlePointer const secondScolored );
 
   //protected:
     // nothing
   };
 
 
-  // this is a derived class returning the mass of the 2nd provided
-  // squarks.
+  // this is a derived class returning the mass of the 2nd provided squark.
   class secondMassForGrid : public squarkMassForGridDecider
   {
   public:
-    secondMassForGrid( inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    secondMassForGrid( inputHandler const* const inputShortcut );
     virtual
-    ~secondMassForGrid()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~secondMassForGrid();
 
     virtual double
     operator()( particlePointer const firstScolored,
-                particlePointer const secondScolored )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                particlePointer const secondScolored );
 
   //protected:
     // nothing
@@ -164,16 +152,13 @@ namespace LHC_FASER
   class averageSquarkMassForGrid : public squarkMassForGridDecider
   {
   public:
-    averageSquarkMassForGrid( inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    averageSquarkMassForGrid( inputHandler const* const inputShortcut );
     virtual
-    ~averageSquarkMassForGrid()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~averageSquarkMassForGrid();
 
     virtual double
     operator()( particlePointer const firstScolored,
-                particlePointer const secondScolored )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                particlePointer const secondScolored );
 
   //protected:
     // nothing
@@ -182,7 +167,7 @@ namespace LHC_FASER
 
 
 
-  /* this is a derived class to interpret an acceptanceGrid as acceptancesPerCutSet for
+  /* this is a derived class to interpret an acceptanceGrid as acceptances for
    * lepton distributions. this class, as well as acceptanceGrid, has to be
    * changed if the format of the acceptance grids changes.
    */
@@ -199,13 +184,13 @@ namespace LHC_FASER
                    double firstElectroweakinoMass,
                    double secondElectroweakinoMass,
                    int acceptanceColumn );
-    // this interpolates the grid to obtain values for the acceptancesPerCutSet based on
+    // this interpolates the grid to obtain values for the acceptances based on
     // the given masses.
 
   protected:
-    static int const columnsToSkip;
-    // we want to skip the squark mass & we also want to count from 1 rather
-    // than from 0.
+    static int const columnsNotInAcceptanceVector;
+    // we want to skip the squark, gluino, & electroweakino masses, & we also
+    // want to count from 1 rather than from 0.
 
     double lowerScoloredMass;
     double lighterElectroweakinoMassFraction;
@@ -224,8 +209,7 @@ namespace LHC_FASER
     /* this checks to see if the appropriate entries in
      * lowerLeftVectorOfVectors, lowerRightVectorOfVectors,
      * upperRightVectorOfVectors, & upperLeftVectorOfVectors exist, & if so,
-     * sets lowerLeftValue, lowerRightValue, upperRightValue, & upperLeftValue
-     * appropriately.
+     * interpolates on the squark & gluino masses for these indices.
      */
   };
 
@@ -253,21 +237,17 @@ namespace LHC_FASER
     jetAcceptanceTable( std::string const* const gridFilesLocation,
                         std::string const* const jetCutName,
                         int const acceptanceColumn,
-                        inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~jetAcceptanceTable()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                        inputHandler const* const inputShortcut );
+    ~jetAcceptanceTable();
 
     bool
     isRequested( std::string const* const jetCutName,
                  int const acceptanceColumn )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getAcceptance( signedParticleShortcutPair const* const initialPair,
                    fullCascade const* const firstCascade,
-                   fullCascade const* const secondCascade )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                   fullCascade const* const secondCascade );
 
   protected:
     std::string const jetCutName;
@@ -296,8 +276,7 @@ namespace LHC_FASER
 
     int
     getIntForCascadeType( fullCascade const* const givenCascade,
-                          particlePointer* const squarkFromCascade )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                          particlePointer* const squarkFromCascade );
   };
 
 
@@ -305,23 +284,19 @@ namespace LHC_FASER
   class jetAcceptanceTablesForOneBeamEnergy
   {
   public:
-    jetAcceptanceTablesForOneBeamEnergy( inputHandler const* const inputShortcut,
+    jetAcceptanceTablesForOneBeamEnergy(
+                                       inputHandler const* const inputShortcut,
                                          int const beamEnergy,
-                                 std::string const* const gridFileSetLocation )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~jetAcceptanceTablesForOneBeamEnergy()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                std::string const* const gridFileSetLocation );
+    ~jetAcceptanceTablesForOneBeamEnergy();
 
     jetAcceptanceTable*
     getTable( std::string const* const jetCutName,
-              int const acceptanceColumn )
+              int const acceptanceColumn );
     // this returns the jetAcceptanceTable for the requested signal & column.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
     int
     getBeamEnergy()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
 
   protected:
     inputHandler const* const inputShortcut;
@@ -331,24 +306,21 @@ namespace LHC_FASER
   };
 
 
-  // this class holds all the leptonAcceptancesForOneBeamEnergy & passes out
-  // pointers to requested leptonAcceptanceParameterSets.
+  // this class holds all the jetAcceptanceTablesForOneBeamEnergys & passes out
+  // pointers to requested jetAcceptanceTables.
   class jetPlusMetAcceptanceHandler
   {
   public:
     jetPlusMetAcceptanceHandler( inputHandler const* const inputShortcut,
-                                 std::string const* const gridFileSetLocation )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~jetPlusMetAcceptanceHandler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                std::string const* const gridFileSetLocation );
+    ~jetPlusMetAcceptanceHandler();
 
     jetAcceptanceTable*
     getJetPlusMetAcceptanceTable( int const beamEnergy,
                                   std::string const* const jetCutName,
-                                  int const acceptanceColumn )
+                                  int const acceptanceColumn );
     // this looks to see if there is an existing jetAcceptanceTable with the
     // requested acceptanceValues, & if not, makes 1, & returns the pointer.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     inputHandler const* const inputShortcut;
@@ -356,12 +328,11 @@ namespace LHC_FASER
     std::vector< jetAcceptanceTablesForOneBeamEnergy* > acceptanceTables;
 
     jetAcceptanceTablesForOneBeamEnergy*
-    getJetAcceptanceTablesForOneBeamEnergy( int const beamEnergy )
+    getJetAcceptanceTablesForOneBeamEnergy( int const beamEnergy );
     /* this looks to see if there is an existing
      * jetAcceptanceTablesForOneBeamEnergy with the requested beamEnergy, & if
      * not, makes 1, & returns the pointer.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
 
@@ -445,7 +416,7 @@ namespace LHC_FASER
                                            std::string const* const jetCutName,
                                                    int const acceptanceColumn )
   // this looks to see if there is an existing jetAcceptanceTable with the
-  // requested acceptanceValues, & if not, makes 1, & returns the pointer.
+  // requested values, & if not, makes 1, & returns the pointer.
   {
     return
     getJetAcceptanceTablesForOneBeamEnergy( beamEnergy )->getTable( jetCutName,

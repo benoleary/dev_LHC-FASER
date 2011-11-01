@@ -767,14 +767,14 @@ namespace CppSLHA
     else
       {
 
-        std::cout
+        /*std::cout
         << std::endl
         << "CppSLHA::error! a particle mass was asked for which has not been"
         << " recorded.";
         std::cout
         << std::endl <<  CppSLHA_global::really_wrong_value_string
         << " has been returned.";
-        std::cout << std::endl;
+        std::cout << std::endl;*/
 
         return CppSLHA_global::really_wrong_value;
 
@@ -807,14 +807,14 @@ namespace CppSLHA
     else
       {
 
-        std::cout
+        /*std::cout
         << std::endl
         << "CppSLHA::error! a particle mass was asked for which has not been"
         << " recorded.";
         std::cout
         << std::endl <<  CppSLHA_global::really_wrong_value_string
         << " has been returned.";
-        std::cout << std::endl;
+        std::cout << std::endl;*/
 
         return CppSLHA_global::really_wrong_value;
 

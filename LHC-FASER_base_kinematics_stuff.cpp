@@ -112,7 +112,25 @@ namespace LHC_FASER
 
   acceptanceGrid::acceptanceGrid( std::string const* const gridFileLocation,
                                   inputHandler const* const inputShortcut ) :
-      inputShortcut( inputShortcut )
+      inputShortcut( inputShortcut ),
+      scoloredMassStepSize( CppSLHA::CppSLHA_global::really_wrong_value ),
+      lowestSquarkMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+      highestSquarkMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+      lowestGluinoMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+      highestGluinoMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+      lowElectroweakinoMassRatio(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      mediumElectroweakinoMassRatio(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      highElectroweakinoMassRatio(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      acceptanceValues(),
+      lowerLeftVectorOfVectors( NULL ),
+      lowerRightVectorOfVectors( NULL ),
+      upperRightVectorOfVectors( NULL ),
+      upperLeftVectorOfVectors( NULL ),
+      squarkMassFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+      gluinoMassFraction( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // read in the grid:
     if( NULL != gridFileLocation )
@@ -290,9 +308,14 @@ namespace LHC_FASER
 
           // now we need to work out the neutralino mass ratios to the
           // lighter colored sparticle:
-          double lowestNeutralinoMass( lowestSquarkMass );
-          double middleNeutralinoMass( lowestSquarkMass );
-          double highestNeutralinoMass( lowestSquarkMass );
+          double lighterScoloredMass( lastSquarkMass );
+          if( lastGluinoMass < lastSquarkMass )
+          {
+            lighterScoloredMass = lastGluinoMass;
+          }
+          double lowestNeutralinoMass( lighterScoloredMass );
+          double middleNeutralinoMass( lighterScoloredMass );
+          double highestNeutralinoMass( lighterScoloredMass );
           for( std::vector< double >::const_iterator
                massIterator( neutralinoMasses.begin() );
                neutralinoMasses.end() > massIterator;
@@ -317,17 +340,22 @@ namespace LHC_FASER
             {
               highestNeutralinoMass = *massIterator;
             }
-            double lighterScoloredMass( lastSquarkMass );
-            if( lastGluinoMass < lastSquarkMass )
-            {
-              lighterScoloredMass = lastGluinoMass;
-            }
             lowElectroweakinoMassRatio = ( lowestNeutralinoMass
                                            / lighterScoloredMass );
             mediumElectroweakinoMassRatio = ( middleNeutralinoMass
                                               / lighterScoloredMass );
             highElectroweakinoMassRatio = ( highestNeutralinoMass
                                             / lighterScoloredMass );
+            // debugging:
+            /**std::cout << std::endl << "debugging:"
+            << std::endl
+            << "lowElectroweakinoMassRatio = " << lowElectroweakinoMassRatio
+            << std::endl
+            << "mediumElectroweakinoMassRatio = "
+            << mediumElectroweakinoMassRatio
+            << std::endl
+            << "highElectroweakinoMassRatio = " << highElectroweakinoMassRatio;
+            std::cout << std::endl;**/
           }
           gridSizeStillUnknown = false;
         }

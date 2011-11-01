@@ -561,6 +561,11 @@ namespace LHC_FASER
     }
     std::cout
     << std::endl
+    << "remember that gluino -> (squark ->) chargino sums over both charges";
+    std::cout << std::endl;
+
+    std::cout
+    << std::endl
     << "changing spectrum.";
     std::cout << std::endl;
     basicStuff->getSlha()->read_file( "SPS2_spectrum.out" );
@@ -580,8 +585,8 @@ namespace LHC_FASER
     testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::top) );
     std::cout
     << std::endl
-    << "has " << openCascades->size() << " open cascades. 1 is sx."
-    << " BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
+    << "has " << openCascades->size() << " open cascades. 1 is sx, 3 is"
+      << " sjgx. BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
     << " excludes top & antitop, \"acc\" is for ->getAcceptance("
     << " [particle], &testAcceptanceCutSet, 0, 0, 0, 1, 0 ).";
     for( std::vector< fullCascade* >::iterator
@@ -607,6 +612,11 @@ namespace LHC_FASER
                                             1,
                                             0 );
     }
+    std::cout
+    << std::endl
+    << "remember that squark -> gluino -> (squark ->) chargino sums over both"
+    << " charges";
+    std::cout << std::endl;
     testFullCascadeSetFromFactory
     = testFullCascadeSetFactory.getFullCascadeSet(
                                                testInputHandler->getGluino(),
@@ -619,9 +629,8 @@ namespace LHC_FASER
     std::cout
     << std::endl
     << "has " << openCascades->size() << " open cascades. 2 is gx, 4 is gjsx,"
-    << " 8 is gjsbsx."
-    << " BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
-    << " excludes top & antitop, \"acc\" is for ->getAcceptance("
+    << " 8 is gjsbsx. BR is for ->getBrToEwino( &testSmParticleExclusion ),"
+    << " which excludes top & antitop, \"acc\" is for ->getAcceptance("
     << " [particle], &testAcceptanceCutSet, 0, 0, 0, 1, 0 ).";
     for( std::vector< fullCascade* >::iterator
          cascadeIterator( openCascades->begin() );
@@ -646,6 +655,11 @@ namespace LHC_FASER
                                             1,
                                             0 );
     }
+    std::cout
+    << std::endl
+    << "remember that gluino -> (squark ->) chargino sums over both charges";
+    std::cout << std::endl;
+    std::cout << std::endl;
     basicStuff->getSlha()->read_file( "SPS1a_spectrum.out" );
     basicStuff->getReadier()->readyObserversForNewPoint();
   }

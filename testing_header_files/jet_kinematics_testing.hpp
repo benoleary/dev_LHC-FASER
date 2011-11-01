@@ -73,7 +73,7 @@
 
 #include "basic_testing_stuff.hpp"
 #include "input_testing.hpp"
-#include "LHC-FASER_jet_kinematics_stuff.hpp"
+#include "../LHC-FASER_jet_kinematics_stuff.hpp"
 
 namespace LHC_FASER
 {
@@ -81,7 +81,7 @@ namespace LHC_FASER
   {
   public:
     jetKinematicsTesting( basicStuffTesting* basicStuff,
-                                    inputTesting* inputTester ) :
+                          inputTesting* inputTester ) :
       slhaData( basicStuff->getSlha() ),
       testReadier( basicStuff->getReadier() ),
       testInputHandler( inputTester->getInput() )
@@ -96,13 +96,562 @@ namespace LHC_FASER
     void
     performTest()
     {
+      particlePointer gluinoPointer( testInputHandler->getGluino() );
+      particlePointer sdownLPointer( testInputHandler->getSdownL() );
+      particlePointer sbottomOnePointer( testInputHandler->getSbottomOne() );
+      particlePointer sbottomTwoPointer( testInputHandler->getSbottomTwo() );
+      particlePointer
+      neutralinoTwoPointer( testInputHandler->getNeutralinoTwo() );
+      particlePointer
+      charginoOnePointer( testInputHandler->getCharginoOne() );
+      particlePointer firstPointer( gluinoPointer );
+      particlePointer secondPointer( sdownLPointer );
+      squarkMassForGridDecider*
+      testSquarkMassForGridDecider( new heavierThanGluinoSquarkMassForGrid(
+                                                          testInputHandler ) );
+      std::cout
+      << std::endl
+      << "heavierThanGluinoSquarkMassForGrid( sdown_L, gluino ) = "
+      << (*testSquarkMassForGridDecider)( sdownLPointer,
+                                          gluinoPointer );
+      std::cout
+      << std::endl
+      << "heavierThanGluinoSquarkMassForGrid( gluino, sbottom_1 ) = "
+      << (*testSquarkMassForGridDecider)( gluinoPointer,
+                                          sbottomOnePointer );
+      std::cout
+      << std::endl
+      << "heavierThanGluinoSquarkMassForGrid( sdown_L, sbottom_1 ) = "
+      << (*testSquarkMassForGridDecider)( sdownLPointer,
+                                          sbottomOnePointer );
+      std::cout << std::endl;
+      delete testSquarkMassForGridDecider;
+      testSquarkMassForGridDecider = new firstMassForGrid( testInputHandler );
+      std::cout
+      << std::endl
+      << "firstMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      firstPointer = sdownLPointer;
+      secondPointer = gluinoPointer;
+      std::cout
+      << std::endl
+      << "firstMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      firstPointer = sbottomOnePointer;
+      secondPointer = sbottomOnePointer;
+      std::cout
+      << std::endl
+      << "firstMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      firstPointer = sdownLPointer;
+      std::cout
+      << std::endl
+      << "firstMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      std::cout << std::endl;
+      delete testSquarkMassForGridDecider;
+      testSquarkMassForGridDecider = new secondMassForGrid( testInputHandler );
+      std::cout
+      << std::endl
+      << "secondMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      firstPointer = sdownLPointer;
+      secondPointer = gluinoPointer;
+      std::cout
+      << std::endl
+      << "secondMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      firstPointer = sbottomOnePointer;
+      secondPointer = sbottomOnePointer;
+      std::cout
+      << std::endl
+      << "secondMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      firstPointer = sdownLPointer;
+      std::cout
+      << std::endl
+      << "secondMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      std::cout << std::endl;
+      delete testSquarkMassForGridDecider;
+      testSquarkMassForGridDecider
+      = new averageSquarkMassForGrid( testInputHandler );
+      std::cout
+      << std::endl
+      << "averageSquarkMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      firstPointer = sdownLPointer;
+      secondPointer = gluinoPointer;
+      std::cout
+      << std::endl
+      << "averageSquarkMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      firstPointer = sbottomOnePointer;
+      secondPointer = sbottomOnePointer;
+      std::cout
+      << std::endl
+      << "averageSquarkMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      firstPointer = sdownLPointer;
+      std::cout
+      << std::endl
+      << "averageSquarkMassForGrid( " << *(firstPointer->get_name()) << " ("
+      << firstPointer->get_absolute_mass() << "), "
+      << *(secondPointer->get_name()) << " ("
+      << secondPointer->get_absolute_mass() << ") ) = "
+      << (*testSquarkMassForGridDecider)( firstPointer,
+                                          secondPointer );
+      std::cout << std::endl;
+      delete testSquarkMassForGridDecider;
+
+      std::string
+      pathToGrids( *(testInputHandler->inspectPathToKinematicsGrids()) );
+      pathToGrids.append(
+                        "/7TeV/jets/Atlas4jMET/squark+gluino_acceptance.dat" );
+      jetAcceptanceGrid*
+      testJetAcceptanceGrid( new jetAcceptanceGrid( &pathToGrids,
+                                                    testInputHandler ) );
+      double squarkMass( 123.4 );
+      double gluinoMass( 567.8 );
+      double firstEwinoMass( 32.1 );
+      double secondEwinoMass( 43.2 );
+      int acceptanceColumn( 10 );
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      squarkMass = 987.6;
+      gluinoMass = 876.5;
+      firstEwinoMass = 500.0;
+      secondEwinoMass = 333.1;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      secondEwinoMass = 500.0;
+      firstEwinoMass = 333.1;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      gluinoMass = 2876.5;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      gluinoMass = 876.5;
+      firstEwinoMass = 1500.0;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      secondEwinoMass = 1333.1;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      squarkMass = 500.1;
+      gluinoMass = 600.2;
+      firstEwinoMass = 400.3;
+      secondEwinoMass = 400.4;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      firstEwinoMass = 200.3;
+      secondEwinoMass = 400.4;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      firstEwinoMass = 0.3;
+      secondEwinoMass = 400.4;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      firstEwinoMass = 0.0;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      firstEwinoMass = 200.3;
+      secondEwinoMass = 200.4;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      firstEwinoMass = 0.3;
+      secondEwinoMass = 200.4;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      firstEwinoMass = 0.0;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      firstEwinoMass = 0.3;
+      secondEwinoMass = 0.4;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      firstEwinoMass = 0.0;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      secondEwinoMass = 0.0;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceGrid->getAcceptance( " << squarkMass << ", "
+      << gluinoMass << ", " << firstEwinoMass << ", " << secondEwinoMass
+      << ", " << acceptanceColumn << " ) = "
+      << testJetAcceptanceGrid->getAcceptance( squarkMass,
+                                               gluinoMass,
+                                               firstEwinoMass,
+                                               secondEwinoMass,
+                                               acceptanceColumn );
+      std::cout << std::endl;
+      delete testJetAcceptanceGrid;
+      std::cout
+      << std::endl
+      << "jetAcceptanceGrid class seems OK.";
+      std::cout << std::endl;
+      jetPlusMetAcceptanceHandler
+      testJetPlusMetAcceptanceHandler( testInputHandler,
+                            testInputHandler->inspectPathToKinematicsGrids() );
+      std::string jetCutName( "Atlas4jMET" );
+      jetAcceptanceTable*
+      testJetAcceptanceTable(
+               testJetPlusMetAcceptanceHandler.getJetPlusMetAcceptanceTable( 7,
+                                                                   &jetCutName,
+                                                                        10 ) );
+      jetAcceptanceTable*
+      testJetAcceptanceTable2(
+               testJetPlusMetAcceptanceHandler.getJetPlusMetAcceptanceTable( 7,
+                                                                   &jetCutName,
+                                                                        10 ) );
+      std::cout
+      << std::endl
+      << "testJetAcceptanceTable = " << testJetAcceptanceTable << ", "
+      << "testJetAcceptanceTable2 = " << testJetAcceptanceTable2;
+      std::cout << std::endl;
+
+
+      electroweakCascadeHandler
+      testElectroweakCascadeHandler( testInputHandler,
+                            testInputHandler->inspectPathToKinematicsGrids() );
+      electroweakCascadeSet*
+      testEwinoCascadeSet(
+        testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
+                                                              )->getCascadeSet(
+                                                                 sdownLPointer,
+                                                      neutralinoTwoPointer ) );
+      sxFullCascade testSxFullCascade;
+      testSxFullCascade.setProperties( testInputHandler,
+                                       testInputHandler->getSdownL(),
+                                       7,
+                                       testEwinoCascadeSet );
+      gxFullCascade testGxFullCascade;
+      testGxFullCascade.setProperties( testInputHandler,
+                                       7,
+                                       testEwinoCascadeSet );
+      gjsxFullCascade testGjsxFullCascade;
+      testGjsxFullCascade.setProperties( &testSxFullCascade );
+      testEwinoCascadeSet
+      = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
+                                                              )->getCascadeSet(
+                                                testInputHandler->getStopOne(),
+                                                          charginoOnePointer );
+      sxFullCascade stopOneCharginoOneCascade;
+      stopOneCharginoOneCascade.setProperties( testInputHandler,
+                                               testInputHandler->getStopOne(),
+                                               7,
+                                               testEwinoCascadeSet );
+      electroweakCascadeSet*
+      testBosonCascadeSet(
+        testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
+                                                              )->getCascadeSet(
+                                                             sbottomTwoPointer,
+                                                  testInputHandler->getWPlus(),
+                                            testInputHandler->getStopOne() ) );
+      sbsxFullCascade testSbsxFullCascade;
+      testSbsxFullCascade.setProperties( sbottomTwoPointer,
+                                         testBosonCascadeSet,
+                                         &stopOneCharginoOneCascade );
+      gjsbsxFullCascade testGjsbsxFullCascade;
+      testGjsbsxFullCascade.setProperties( &testSbsxFullCascade );
+      signedParticleShortcutPair gluinoWithSdownL( gluinoPointer,
+                                                   true,
+                                                   sdownLPointer,
+                                                   true );
+      signedParticleShortcutPair sbottomOneWithGluino( gluinoPointer,
+                                                       true,
+                                                       sbottomOnePointer,
+                                                       true );
+      signedParticleShortcutPair gluinoPair( gluinoPointer,
+                                             true,
+                                             gluinoPointer,
+                                             true );
+      signedParticleShortcutPair
+      sbottomTwoWithAntisbottomTwo( sbottomTwoPointer,
+                                    true,
+                                    sbottomTwoPointer,
+                                    false );
+      signedParticleShortcutPair sdownLWithSdownL( sdownLPointer,
+                                                   true,
+                                                   sdownLPointer,
+                                                   true );
+      std::cout
+      << std::endl
+      << "testSxFullCascade is sdown_L -> neutralino_2"
+      << std::endl
+      << "testGxFullCascade is gluino -> neutralino_2"
+      << std::endl
+      << "testGjsxFullCascade is gluino -> sdown_L -> neutralino_2"
+      << std::endl
+      << "testSbsxFullCascade is sbottom_2 -> stop_1 -> chargino_1"
+      << std::endl
+      << "testGjsbsxFullCascade is gluino -> sbottom_2 -> stop_1 ->"
+      << " chargino_1";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceTable->getAcceptance( &gluinoWithSdownL,"
+      << " &testGxFullCascade, &testSxFullCascade ) = "
+      << testJetAcceptanceTable->getAcceptance( &gluinoWithSdownL,
+                                                &testGxFullCascade,
+                                                &testSxFullCascade );
+      std::cout
+      << std::endl
+      << "seems fine.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceTable->getAcceptance( &gluinoWithSdownL,"
+      << " &testGjsxFullCascade, &testSxFullCascade ) = "
+      << testJetAcceptanceTable->getAcceptance( &gluinoWithSdownL,
+                                                &testGjsxFullCascade,
+                                                &testSxFullCascade );
+      std::cout
+      << std::endl
+      << "seems fine.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceTable->getAcceptance( &gluinoPair,"
+      << " &testGxFullCascade, &testGxFullCascade ) = "
+      << testJetAcceptanceTable->getAcceptance( &gluinoPair,
+                                                &testGxFullCascade,
+                                                &testGxFullCascade );
+      std::cout
+      << std::endl
+      << "seems fine.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceTable->getAcceptance( &gluinoPair,"
+      << " &testGjsxFullCascade, &testGjsxFullCascade ) = "
+      << testJetAcceptanceTable->getAcceptance( &gluinoPair,
+                                                &testGjsxFullCascade,
+                                                &testGjsxFullCascade );
+      std::cout
+      << std::endl
+      << "seems fine.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceTable->getAcceptance( &gluinoPair,"
+      << " &testGxFullCascade, &testGjsxFullCascade ) = "
+      << testJetAcceptanceTable->getAcceptance( &gluinoPair,
+                                                &testGxFullCascade,
+                                                &testGjsxFullCascade );
+      std::cout
+      << std::endl
+      << "seems fine.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceTable->getAcceptance( &sdownLWithSdownL,"
+      << " &testSxFullCascade, &testSxFullCascade ) = "
+      << testJetAcceptanceTable->getAcceptance( &sdownLWithSdownL,
+                                                &testSxFullCascade,
+                                                &testSxFullCascade );
+      std::cout
+      << std::endl
+      << "seems fine.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "testJetAcceptanceTable->getAcceptance("
+      << " &sbottomTwoWithAntisbottomTwo, &testSbsxFullCascade,"
+      << " &testSbsxFullCascade ) = "
+      << testJetAcceptanceTable->getAcceptance( &sbottomTwoWithAntisbottomTwo,
+                                                &testSbsxFullCascade,
+                                                &testSbsxFullCascade );
+      std::cout
+      << std::endl
+      << "seems fine.";
+      std::cout << std::endl;
+      std::cout << std::endl;
     }
 
 
   protected:
     CppSLHA::CppSLHA2* slhaData;
     readierForNewPoint* testReadier;
-    inputHandler testInputHandler;
+    inputHandler const* const testInputHandler;
   };
 
 }  // end of LHC_FASER namespace

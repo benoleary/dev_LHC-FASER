@@ -107,11 +107,11 @@
  *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
  *
  *
  * still to test:
- *      LHC-FASER_jet_kinematics_stuff.hpp
- *      LHC-FASER_jet_kinematics_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
@@ -132,9 +132,9 @@
 #include "testing_header_files/base_electroweak_cascade_testing.hpp"
 #include "testing_header_files/full_electroweak_cascade_testing.hpp"
 #include "testing_header_files/full_cascade_testing.hpp"
+#include "testing_header_files/jet_kinematics_testing.hpp"
 
 // future includes:
-//#include "testing_header_files/jet_kinematics_testing.hpp"
 //#include "testing_header_files/signal_testing.hpp"
 //#include "testing_header_files/lhcFaser_testing.hpp"
 
@@ -215,16 +215,21 @@ int main( int argumentCount,
 
 
   /* testing the full cascade stuff:
-   * (works)*//**/
+   * (works)*//**
   LHC_FASER::fullCascadeTesting
   fullCascadeTester( &basicStuffTester,
                      &inputTester );
   fullCascadeTester.performTest();
-  /**/
+  **/
 
 
   /* testing the jet kinematics grid stuff:
-   * (needs work)*//**
+   * (needs work)*//**/
+  LHC_FASER::jetKinematicsTesting
+  jetKinematicsTester( &basicStuffTester,
+                       &inputTester );
+  jetKinematicsTester.performTest();
+  /**//**
   acceptanceGridPath.assign( *(testInputHandler.getPathToKinematicsGrids()) );
   acceptanceGridPath.append( "/7TeV/jets/Atlas4jMET" );
   std::cout
