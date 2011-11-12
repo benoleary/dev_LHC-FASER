@@ -73,8 +73,8 @@
 
 #include "basic_testing_stuff.hpp"
 #include "input_testing.hpp"
-#include "LHC-FASER_signal_data_collection_stuff.hpp"
-#include "LHC-FASER_signal_calculator_stuff.hpp"
+#include "../LHC-FASER_signal_data_collection_stuff.hpp"
+#include "../LHC-FASER_signal_calculator_stuff.hpp"
 
 namespace LHC_FASER
 {
@@ -94,15 +94,141 @@ namespace LHC_FASER
       // does nothing.
     }
 
-    inputHandler const* const
-    getInput()
-    {
-      return &testInputHandler;
-    }
 
     void
     performTest()
     {
+      crossSectionHandler crossSections( testInputHandler );
+      jetPlusMetAcceptanceHandler
+      jetPlusMetAcceptances( testInputHandler,
+                            testInputHandler->inspectPathToKinematicsGrids() );
+      electroweakCascadeHandler
+      electroweakCascadeSource( testInputHandler,
+                            testInputHandler->inspectPathToKinematicsGrids() );
+      fullCascadeSetFactory cascadeSets( testInputHandler,
+                                         &electroweakCascadeSource );
+      signalShortcuts*
+      testSignalShortcutsPointer( new signalShortcuts( testInputHandler,
+                                                       &crossSections,
+                                                       &jetPlusMetAcceptances,
+                                                       &cascadeSets ) );
+      std::cout
+      << std::endl
+      << "testSignalShortcutsPointer->getUncertainty() = "
+      << testSignalShortcutsPointer->getUncertainty();
+      std::cout << std::endl;
+      delete testSignalShortcutsPointer;
+      std::cout
+      << std::endl
+      << "signalShortcuts class seems to be OK.";
+      std::cout << std::endl;
+
+      signalShortcuts
+      testSignalShortcuts( testInputHandler,
+                           &crossSections,
+                           &jetPlusMetAcceptances,
+                           &cascadeSets );
+      signalDefinitionSet*
+      testSignalDefinitionSetPointer( new signalDefinitionSet(
+                                                      &testSignalShortcuts ) );
+      std::cout
+      << std::endl
+      << "testSignalDefinitionSetPointer->getBeamEnergy() = "
+      << testSignalDefinitionSetPointer->getBeamEnergy();
+      std::cout << std::endl;
+      signalDefinitionSet
+      testSignalDefinitionSet( testSignalDefinitionSetPointer );
+      delete testSignalDefinitionSetPointer;
+      std::cout
+      << std::endl
+      << "signalDefinitionSet class seems to be OK.";
+      std::cout << std::endl;
+
+      particlePointer gluinoPointer( testInputHandler->getGluino() );
+      particlePointer sdownLPointer( testInputHandler->getSdownL() );
+      particlePointer sbottomOnePointer( testInputHandler->getSbottomOne() );
+      particlePointer sbottomTwoPointer( testInputHandler->getSbottomTwo() );
+      signedParticleShortcutPair gluinoWithSdownL( gluinoPointer,
+                                                   true,
+                                                   sdownLPointer,
+                                                   true );
+      signedParticleShortcutPair sbottomOneWithGluino( gluinoPointer,
+                                                       true,
+                                                       sbottomOnePointer,
+                                                       true );
+      signedParticleShortcutPair gluinoPair( gluinoPointer,
+                                             true,
+                                             gluinoPointer,
+                                             true );
+      signedParticleShortcutPair
+      sbottomTwoWithAntisbottomTwo( sbottomTwoPointer,
+                                    true,
+                                    sbottomTwoPointer,
+                                    false );
+      signedParticleShortcutPair sdownLWithSdownL( sdownLPointer,
+                                                   true,
+                                                   sdownLPointer,
+                                                   true );
+      productionChannelPointerSet*
+      testProductionChannelPointerSet( new productionChannelPointerSet(
+                                                      &testSignalDefinitionSet,
+                                                         &gluinoWithSdownL ) );
+      std::cout
+      << std::endl
+      << "testProductionChannelPointerSet->getCrossSection() = "
+      << testProductionChannelPointerSet->getCrossSection();
+      std::cout << std::endl;
+      delete testProductionChannelPointerSet;
+      std::cout
+      << std::endl
+      << "deleted testProductionChannelPointerSet without problem.";
+      std::cout << std::endl;
+      productionChannelPointerSet
+      gluinoWithSdownLPointerSet( &testSignalDefinitionSet,
+                                  &gluinoWithSdownL );
+      std::cout
+      << std::endl
+      << "gluinoWithSdownLPointerSet.getCrossSection() = "
+      << gluinoWithSdownLPointerSet.getCrossSection();
+      std::cout << std::endl;
+      productionChannelPointerSet
+      sbottomOneWithGluinoPointerSet( &testSignalDefinitionSet,
+                                      &sbottomOneWithGluino );
+      std::cout
+      << std::endl
+      << "sbottomOneWithGluinoPointerSet.getCrossSection() = "
+      << sbottomOneWithGluinoPointerSet.getCrossSection();
+      std::cout << std::endl;
+      productionChannelPointerSet
+      gluinoPairPointerSet( &testSignalDefinitionSet,
+                            &gluinoPair );
+      std::cout
+      << std::endl
+      << "gluinoPairPointerSet.getCrossSection() = "
+      << gluinoPairPointerSet.getCrossSection();
+      std::cout << std::endl;
+      productionChannelPointerSet
+      sbottomTwoWithAntisbottomTwoPointerSet( &testSignalDefinitionSet,
+                                              &sbottomTwoWithAntisbottomTwo );
+      std::cout
+      << std::endl
+      << "sbottomTwoWithAntisbottomTwoPointerSet.getCrossSection() = "
+      << sbottomTwoWithAntisbottomTwoPointerSet.getCrossSection();
+      std::cout << std::endl;
+      productionChannelPointerSet
+      sdownLWithSdownLPointerSet( &testSignalDefinitionSet,
+                                  &sdownLWithSdownL );
+      std::cout
+      << std::endl
+      << "sdownLWithSdownLPointerSet.getCrossSection() = "
+      << sdownLWithSdownLPointerSet.getCrossSection();
+      std::cout << std::endl;
+
+      std::cout
+      << std::endl
+      << "productionChannelPointerSet class seems to be OK."
+      << " STILL NEED TO CHECK SIGNALS!";
+      std::cout << std::endl;
     }
 
 
