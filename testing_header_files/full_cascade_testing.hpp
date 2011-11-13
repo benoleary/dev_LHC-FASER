@@ -247,6 +247,60 @@ namespace LHC_FASER
       << "testSxFullCascade again seems OK.";
       std::cout << std::endl;
       std::cout << std::endl;
+      testEwinoCascadeSet
+      = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
+                                                              )->getCascadeSet(
+                                                 testInputHandler->getSdownL(),
+                                          testInputHandler->getCharginoTwo() );
+      testSxFullCascade.setProperties( testInputHandler,
+                                       testInputHandler->getSdownL(),
+                                       7,
+                                       testEwinoCascadeSet );
+      std::cout
+      << std::endl
+      << "testSxFullCascade set as sdown_L -> chi^-_2";
+      std::cout << std::endl;
+      if( testSxFullCascade.isOpen() )
+      {
+        std::cout
+        << std::endl
+        << "testSxFullCascade is open.";
+        std::cout << std::endl;
+      }
+      else
+      {
+        std::cout
+        << std::endl
+        << "testSxFullCascade is not open?!";
+        std::cout << std::endl;
+      }
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::up );
+      testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::up) );
+      std::cout
+      << std::endl
+      << "BR excluding ups & antiups in final state = "
+      << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 0, 0, 0, 0 )"
+      << " = " << testSxFullCascade.getAcceptance( true,
+                                                   &testAcceptanceCutSet,
+                                                   0,
+                                                   0,
+                                                   0,
+                                                   0,
+                                                   0 );
+      std::cout
+      << std::endl
+      << "testSxFullCascade again seems OK.";
+      std::cout << std::endl;
+      std::cout << std::endl;
 
 
       testEwinoCascadeSet

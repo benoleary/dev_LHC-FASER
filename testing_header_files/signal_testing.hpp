@@ -143,6 +143,7 @@ namespace LHC_FASER
       << std::endl
       << "signalDefinitionSet class seems to be OK.";
       std::cout << std::endl;
+      testSignalDefinitionSet.setBeamEnergy( 7 );
 
       particlePointer gluinoPointer( testInputHandler->getGluino() );
       particlePointer sdownLPointer( testInputHandler->getSdownL() );
@@ -226,8 +227,104 @@ namespace LHC_FASER
 
       std::cout
       << std::endl
-      << "productionChannelPointerSet class seems to be OK."
-      << " STILL NEED TO CHECK SIGNALS!";
+      << "productionChannelPointerSet class seems to be OK.";
+      std::cout << std::endl;
+
+      signalCalculatorClasses::reallyWrongCalculator*
+      testReallyWrongCalculator(
+                            new signalCalculatorClasses::reallyWrongCalculator(
+                                                  &testSignalDefinitionSet ) );
+      double signalValue;
+      double uncertaintyFactor;
+      std::cout
+      << std::endl
+      << "testReallyWrongCalculator->calculateValue( "
+      << &signalValue << ", " << &uncertaintyFactor << " ) = "
+      << testReallyWrongCalculator->calculateValue( &signalValue,
+                                                    &uncertaintyFactor );
+      std::cout
+      << std::endl
+      << "now signalValue = " << signalValue << ", uncertaintyFactor = "
+      << uncertaintyFactor;
+      std::cout << std::endl;
+
+      std::cout << std::endl;
+      delete testReallyWrongCalculator;
+      std::cout
+      << std::endl
+      << "reallyWrongCalculator class seems to be OK.";
+      std::cout << std::endl;
+
+      testSignalDefinitionSet.setExcludedStandardModelProducts(
+                                           testInputHandler->getNotInJets5() );
+      testSignalDefinitionSet.setJetCut( 40.0 );
+      testSignalDefinitionSet.setPrimaryLeptonCut( 20.0 );
+      testSignalDefinitionSet.setSecondaryLeptonCut( 10.0 );
+      signalHandler*
+      testSignalHandlerPointer( new signalHandler( "sigmaBreakdownTest",
+                                                   1000.0,
+                                                  &testSignalDefinitionSet ) );
+      std::cout
+      << std::endl
+      << "testSignalHandlerPointer->getValue() (in *fb*) = "
+      << testSignalHandlerPointer->getValue();
+      std::cout << std::endl;
+      delete testSignalHandlerPointer;
+      std::cout
+      << std::endl
+      << "sigmaBreakdownTest seems OK.";
+      std::cout << std::endl;
+      signalHandler
+      testAtlasFourJetMetZeroLepton( "Atlas4jMET0l07TeV",
+                                     1.0,
+                                     &testSignalDefinitionSet );
+      std::cout
+      << std::endl
+      << "testAtlasFourJetMetZeroLepton.getValue() (in *pb*) = "
+      << testAtlasFourJetMetZeroLepton.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "atlasFourJetMetZeroLepton seems OK.";
+      std::cout << std::endl;
+      signalHandler
+      testAtlasFourJetMetZeroLeptonHighCut( "Atlas4jMET0l07TeVpTl50.0",
+                                            1.0,
+                                            &testSignalDefinitionSet );
+      std::cout
+      << std::endl
+      << "testAtlasFourJetMetZeroLeptonHighCut.getValue() (in *pb*) = "
+      << testAtlasFourJetMetZeroLeptonHighCut.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "atlasFourJetMetZeroLepton seems OK.";
+      std::cout << std::endl;
+      signalHandler
+      testAtlasThreeJetMetOneLepton( "Atlas3jMET1l07TeV",
+                                     1.0,
+                                     &testSignalDefinitionSet );
+      std::cout
+      << std::endl
+      << "testAtlasThreeJetMetOneLepton.getValue() (in *pb*) = "
+      << testAtlasThreeJetMetOneLepton.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "atlasThreeJetMetOneLepton seems OK.";
+      std::cout << std::endl;
+      signalHandler
+      testAtlasThreeJetMetOneLeptonHighCuts( "Atlas3jMET1l07TeVpTl60.8pTl18.5",
+                                             1.0,
+                                             &testSignalDefinitionSet );
+      std::cout
+      << std::endl
+      << "testAtlasThreeJetMetOneLeptonHighCuts.getValue() (in *pb*) = "
+      << testAtlasThreeJetMetOneLeptonHighCuts.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "atlasThreeJetMetOneLeptonHighCuts seems OK.";
       std::cout << std::endl;
     }
 

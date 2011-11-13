@@ -769,8 +769,6 @@ namespace LHC_FASER
 
 
 
-
-
   jetAcceptanceTable::usedCascades const
   jetAcceptanceTable::lastEnumElement( jetAcceptanceTable::sizeOfEnum );
   int const
@@ -991,6 +989,38 @@ namespace LHC_FASER
                                      fullCascade const* const firstCascade,
                                      fullCascade const* const secondCascade )
   {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "jetAcceptanceTable::getAcceptance( "
+    << *(initialPair->getFirstParticle()->get_name_or_antiname(
+                                       initialPair->firstIsNotAntiparticle() ))
+    << "+"
+    << *(initialPair->getSecondParticle()->get_name_or_antiname(
+                                      initialPair->secondIsNotAntiparticle() ))
+    << ", ";
+    for( std::vector< fullCascade::particleWithInt* >::const_reverse_iterator
+         cascadeParticleIterator(
+                                 firstCascade->getCascadeDefiner()->rbegin() );
+        firstCascade->getCascadeDefiner()->rend()
+        > cascadeParticleIterator;
+        ++cascadeParticleIterator )
+    {
+      std::cout << " => " << *((*cascadeParticleIterator)->first->get_name());
+    }
+    std::cout << ", ";
+    for( std::vector< fullCascade::particleWithInt* >::const_reverse_iterator
+         cascadeParticleIterator(
+                                secondCascade->getCascadeDefiner()->rbegin() );
+        secondCascade->getCascadeDefiner()->rend()
+        > cascadeParticleIterator;
+        ++cascadeParticleIterator )
+    {
+      std::cout << " => " << *((*cascadeParticleIterator)->first->get_name());
+    }
+    std::cout << " ) called.";
+    std::cout << std::endl;**/
+
     gridMatrixRow = gridsMatrix.getPointer( getIntForCascadeType( firstCascade,
                                                        &firstCascadeSquark ) );
     gridMatrixElement = gridMatrixRow->getPointer( getIntForCascadeType(

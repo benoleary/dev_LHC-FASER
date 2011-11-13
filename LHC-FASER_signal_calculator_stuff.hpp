@@ -80,17 +80,15 @@ namespace LHC_FASER
 
   /* this is an abstract base class to do the actual calculation of the value
    * of the event rate for a signal. the main differences in derived classes
-   * are what acceptanceValues they access from the handlers, how they put them
+   * are what acceptances they access from the handlers, how they put them
    * together, & how they estimate the uncertainty factor.
    */
   class signalCalculator
   {
   public:
-    signalCalculator( signalDefinitionSet* signalDefinitions )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    signalCalculator( signalDefinitionSet* signalDefinitions );
     virtual
-    ~signalCalculator()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~signalCalculator();
 
     /* actually, this doesn't work, for various reasons. currently C++ does not
      * allow virtual static functions. I was only going to use it to force me
@@ -99,7 +97,7 @@ namespace LHC_FASER
      */
     /*virtual static
     signalCalculator*
-    getCalculator( std::string const* const arguments,
+    getCalculator( std::string const* const argumentString,
                    signalDefinitionSet* const signalDefinitions )
     = 0;*/
     /* this should be over-written in each derived class to construct a new
@@ -107,17 +105,17 @@ namespace LHC_FASER
      * the new instance of the derived class.
      */
     virtual bool
-    calculate( double* signalValue,
-               double* uncertaintyFactor )
+    calculateValue( double* signalValue,
+                    double* uncertaintyFactor )
     = 0;
     /* this calculates the event rate for the signal & puts its value in
-     * signal_value, & puts an estimate for the uncertainty into
-     * uncertainty_factor, & returns true if it did all this successfully.
+     * signalValue, & puts an estimate for the uncertainty into
+     * uncertaintyFactor, & returns true if it did all this successfully.
      *
      *
-     * the flow for signal_calculator::calculate() is:
-     * sets up a set of channels (once per calculator instance)
-     * - each of these channels associates with a cross-section table
+     * the flow for signalCalculator::calculateValue() is:
+     * sets up a set of productionChannels (once per calculator instance)
+     * - each of these productionChannels associates with a cross-section table
      *
      * once per new point, each channel:
      * - checks its cross-section - if it's high enough, it proceeds
@@ -126,15 +124,15 @@ namespace LHC_FASER
      * - obtains its jet acceptance from its kinematics table, checks
      *   cross-section * scew BRs * jet acceptance, if high enough, proceeds
      * - obtains lepton acceptance from kinematics table, passes it with scew
-     *   pairs to cascade handler, now has lepton & additional jet acceptancesPerCutSet
+     *   pairs to cascade handler, now has lepton & additional jet acceptances
      * - puts it all together
      * then all the channel totals are added together
      */
 
   protected:
     signalDefinitionSet signalDefinitions;
-    inputHandler const* const shortcut;
-    std::vector< productionChannelPointerSet* > channels;
+    inputHandler const* const inputShortcut;
+    std::vector< productionChannelPointerSet* > productionChannels;
     //fullCascade* firstCascade;
     //fullCascade* secondCascade;
     std::vector< fullCascade* >* firstCascades;
@@ -142,14 +140,14 @@ namespace LHC_FASER
     std::list< int > excludedFinalStateParticles;
     double firstCascadeBrToEwino;
     double secondCascadeBrToEwino;
-  };  // end of signal_calculator class.
+  };
 
 
   /* this is a class to handle each individual signal to be calculated.
    * it accesses numbers common to different signals through the
-   * crossSectionHandler, kinematics_handler & cascade_handler classes.
-   * it takes a string encoding what it should calculate, & constructs a
-   * signalCalculator object to actually calculate the signal with the
+   * crossSectionHandler, kinematicsHandler & cascadeHandler classes.
+   * it takes a string encoding what it should calculateValue, & constructs a
+   * signalCalculator object to actually calculateValue the signal with the
    * given handlers. it also takes care of updating the signal & storing its
    * value & estimated uncertainty.
    */
@@ -158,38 +156,29 @@ namespace LHC_FASER
   public:
     signalHandler( std::string const signalName,
                    double const crossSectionUnitFactor,
-                   signalDefinitionSet* const signalPreparationDefinitions )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~signalHandler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                   signalDefinitionSet* const signalPreparationDefinitions );
+    ~signalHandler();
 
     std::string const*
     getName()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
-    getValue()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getValue();
     double
-    getUpperUncertainty()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getUpperUncertainty();
     double
-    getLowerUncertainty()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getLowerUncertainty();
     double
-    getUpperValue()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getUpperValue();
     double
-    getLowerValue()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getLowerValue();
     double
-    getLogUncertainty()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getLogUncertainty();
 
   protected:
     std::string signalName;
     signalCalculator* rateCalculator;
-    signalShortcuts* const shortcut;
+    signalShortcuts* const inputShortcut;
     double signalValue;
     double uncertaintyFactor;
     double crossSectionUnitFactor;
@@ -197,164 +186,157 @@ namespace LHC_FASER
   };  // end of signalHandler class.
 
 
-  /* this is a derived class which just always returns
-   * CppSLHA::CppSLHA_global::really_wrong_value as its value. it is used for
-   * malformed signal names.
-   */
-  class reallyWrongCalculator : public signalCalculator
+  namespace signalCalculatorClasses
   {
-  public:
-    reallyWrongCalculator( signalDefinitionSet* const signalDefinitions )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    virtual
-    ~reallyWrongCalculator()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    bool
-    calculate( double* signalValue,
-               double* uncertaintyFactor )
-    // this always returns false, & always sets signal_value &
-    // uncertainty_factor to CppSLHA::CppSLHA_global::really_wrong_value.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  //protected:
-    //nothing.
-  };
-
-  /* this is a derived class to test whether I break down the production
-   * channels & recombine them correctly. all acceptancesPerCutSet are set to 1.0 so
-   * that I should just recover the total cross-section.
-   */
-  class sigmaBreakdownTestCalculator : public signalCalculator
-  {
-  public:
-    sigmaBreakdownTestCalculator(
-                                 signalDefinitionSet* const signalDefinitions )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~sigmaBreakdownTestCalculator()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    bool
-    calculate( double* const signalValue,
-               double* const uncertaintyFactor )
-    /* this calculates the event rate for the signal & puts its value in
-     * signal_value, & puts an estimate for the uncertainty into
-     * uncertainty_factor, & returns true if it did all this successfully.
+    /* this is a derived class which just always returns
+     * CppSLHA::CppSLHA_global::really_wrong_value as its value. it is used for
+     * malformed signal names.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    class reallyWrongCalculator : public signalCalculator
+    {
+    public:
+      reallyWrongCalculator( signalDefinitionSet* const signalDefinitions );
+      virtual
+      ~reallyWrongCalculator();
 
-  protected:
-    double channelBrTotal;
-  };  // end of sigmaBreakdownTestCalculator class.
+      bool
+      calculateValue( double* signalValue,
+                      double* uncertaintyFactor );
+      // this always returns false, & always sets signalValue &
+      // uncertaintyFactor to CppSLHA::CppSLHA_global::really_wrong_value.
 
-  /* this is a derived class to calculate the "Atlas 4 jets plus missing
-   * transverse momentum plus 0 leptons" signal.
-   * it takes the kinematics from the Atlas4jMET grid & combines them with
-   * cascade decays leading to 0 leptons passing the cut.
-   */
-  class Atlas4jMET0l_calculator : public signalCalculator
-  {
+    //protected:
+      //nothing.
+    };
 
-  public:
-    static int const jetAcceptanceGridTableColumn;
-    // this is dependent on the format of the grids.
-    static double const defaultExtraJetCut;
-    // this is the standard cut for the jets beyond the hardest cut for this
-    // signal as implemented in this code.
-    static double const defaultLeptonCut;
-    // the default Atlas4jMET0l lepton transverse momentum cut is 10.0 GeV.
 
-    static signalCalculator*
-    getCalculator( std::string const* const argumentString,
-                   signalDefinitionSet* const signalDefinitions )
-    // this either returns a pointer to a new Atlas4jMET0l_calculator with cuts
-    // decided by the given string, or a pointer to a really_wrong_calculator.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    ~Atlas4jMET0l_calculator()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    bool
-    calculate( double* const signalValue,
-               double* const uncertaintyFactor )
-    /* this calculates the event rate for the signal & puts its value in
-     * signal_value, & puts an estimate for the uncertainty into
-     * uncertainty_factor, & returns true if it did all this successfully.
+    /* this is a derived class to test whether I break down the production
+     * channels & recombine them correctly. all acceptances are set to 1.0 so
+     * that I should just recover the total cross-section.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    class sigmaBreakdownTest : public signalCalculator
+    {
+    public:
+      sigmaBreakdownTest( signalDefinitionSet* const signalDefinitions );
+      ~sigmaBreakdownTest();
 
-  protected:
-    jetAcceptanceTable* fourJetKinematics;
-    jetAcceptanceTable* threeJetKinematics;
-    /* the 4-jet signal is complicated enough that we also consider only 3 of
-     * the 4 required hard jets coming from (showered) decays to
-     * electroweakinos, with the 4th coming from a cascade decay of the
-     * electroweakinos. hence we need an extra kinematics set (though it is
-     * only used for direct jet acceptance).
+      bool
+      calculateValue( double* const signalValue,
+                      double* const uncertaintyFactor );
+      /* this calculates the event rate for the signal & puts its value in
+       * signalValue, & puts an estimate for the uncertainty into
+       * uncertaintyFactor, & returns true if it did all this successfully.
+       */
+
+    protected:
+      double channelBrTotal;
+    };
+
+
+    /* this is a derived class to calculateValue the "Atlas 4 jets plus missing
+     * transverse momentum plus 0 leptons" signal.
+     * it takes the kinematics from the Atlas4jMET grid & combines them with
+     * cascade decays leading to 0 leptons passing the cut.
      */
-    double fourJetAcceptance;
-    //double threeJetAcceptance;
+    class atlasFourJetMetZeroLepton : public signalCalculator
+    {
+    public:
+      static int const jetAcceptanceGridTableColumn;
+      // this is dependent on the format of the grids.
+      static double const defaultExtraJetCut;
+      // this is the standard cut for the jets beyond the hardest cut for this
+      // signal as implemented in this code.
+      static double const defaultLeptonCut;
+      // the default Atlas4jMET0l lepton transverse momentum cut is 10.0 GeV.
 
-    // these are used as each pairing of cascades from each production channel
-    // is calculated.
-    double subchannelCrossSectionTimesBrToEwinos;
-    double subchannelValue;
-    double subchannelZeroOrMoreJetsZeroLeptons;
-    double subchannelOneOrMoreJetsZeroLeptons;
+      static signalCalculator*
+      getCalculator( std::string const* const argumentString,
+                     signalDefinitionSet* const signalDefinitions );
+      /* this either returns a pointer to a new atlasFourJetMetZeroLepton with
+       * cuts decided by the given string, or a pointer to a
+       * reallyWrongCalculator.
+       */
 
-    Atlas4jMET0l_calculator( signalDefinitionSet* const signalDefinitions )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-  };  // end of Atlas4jMET0l_calculator class.
+      ~atlasFourJetMetZeroLepton();
 
-  /* this is a derived class to calculate the "Atlas 3 jets plus missing
-   * transverse momentum plus exactly 1 lepton" signal.
-   * it takes the kinematics from the Atlas3jMET grid & combines them with
-   * cascade decays leading to 1 lepton passing the cut.
-   */
-  class Atlas3jMET1l_calculator : public signalCalculator
-  {
+      bool
+      calculateValue( double* const signalValue,
+                      double* const uncertaintyFactor );
+      /* this calculates the event rate for the signal & puts its value in
+       * signal_value, & puts an estimate for the uncertainty into
+       * uncertainty_factor, & returns true if it did all this successfully.
+       */
 
-  public:
-    static int const jetAcceptanceGridTableColumn;
-    // this is dependent on the format of the grids.
-    static double const defaultExtraJetCut;
-    // this is the standard cut for the jets beyond the hardest cut for this
-    // signal as implemented in this code.
-    static double const defaultPrimaryLeptonCut;
-    static double const defaultSecondaryLeptonCut;
-    // the default Atlas4jMET0l lepton transverse momentum cuts are 20.0 GeV
-    // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
+    protected:
+      jetAcceptanceTable* fourJetKinematics;
+      jetAcceptanceTable* threeJetKinematics;
+      /* the 4-jet signal is complicated enough that we also consider only 3 of
+       * the 4 required hard jets coming from (showered) decays to
+       * electroweakinos, with the 4th coming from a cascade decay of the
+       * electroweakinos. hence we need an extra kinematics set (though it is
+       * only used for direct jet acceptance).
+       */
+      double fourJetAcceptance;
+      //double threeJetAcceptance;
 
-    static signalCalculator*
-    getCalculator( std::string const* const argumentString,
-                   signalDefinitionSet* const signalDefinitions )
-    // this either returns a pointer to a new Atlas3jMET1l_calculator with cuts
-    // decided by the given string, or a pointer to a really_wrong_calculator.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+      // these are used as each pairing of cascades from each production
+      // channel is calculated.
+      double subchannelCrossSectionTimesBrToEwinos;
+      double subchannelValue;
+      double subchannelZeroOrMoreJetsZeroLeptons;
+      double subchannelOneOrMoreJetsZeroLeptons;
 
-    ~Atlas3jMET1l_calculator()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+      atlasFourJetMetZeroLepton(
+                                signalDefinitionSet* const signalDefinitions );
+    };
 
-    bool
-    calculate( double* const signalValue,
-               double* const uncertaintyFactor )
-    /* this calculates the event rate for the signal & puts its value in
-     * signal_value, & puts an estimate for the uncertainty into
-     * uncertainty_factor, & returns true if it did all this successfully.
+
+    /* this is a derived class to calculateValue the "Atlas 3 jets plus missing
+     * transverse momentum plus exactly 1 lepton" signal.
+     * it takes the kinematics from the Atlas3jMET grid & combines them with
+     * cascade decays leading to 1 lepton passing the cut.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    class atlasThreeJetMetOneLepton : public signalCalculator
+    {
+    public:
+      static int const jetAcceptanceGridTableColumn;
+      // this is dependent on the format of the grids.
+      static double const defaultExtraJetCut;
+      // this is the standard cut for the jets beyond the hardest cut for this
+      // signal as implemented in this code.
+      static double const defaultPrimaryLeptonCut;
+      static double const defaultSecondaryLeptonCut;
+      // the default Atlas4jMET0l lepton transverse momentum cuts are 20.0 GeV
+      // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
+
+      static signalCalculator*
+      getCalculator( std::string const* const argumentString,
+                     signalDefinitionSet* const signalDefinitions );
+      // this either returns a pointer to a new atlasThreeJetMetOneLepton with
+      // cuts decided by the given string, or a reallyWrongCalculator pointer.
+
+      ~atlasThreeJetMetOneLepton();
+
+      bool
+      calculateValue( double* const signalValue,
+                      double* const uncertaintyFactor )
+      /* this calculates the event rate for the signal & puts its value in
+       * signalValue, & puts an estimate for the uncertainty into
+       * uncertaintyFactor, & returns true if it did all this successfully.
+       */;
 
 
-  protected:
-    // these are used as each pairing of cascades from each production channel
-    // is calculated.
-    double subchannelCrossSectionTimesBrToEwinos;
-    double subchannelZeroOrMoreJetsOneLepton;
+    protected:
+      // these are used as each pairing of cascades from each production
+      // channel is calculated.
+      double subchannelCrossSectionTimesBrToEwinos;
+      double subchannelZeroOrMoreJetsOneLepton;
 
-    Atlas3jMET1l_calculator( signalDefinitionSet* const signalDefinitions )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-  };  // end of Atlas3jMET1l_calculator class.
+      atlasThreeJetMetOneLepton(
+                                signalDefinitionSet* const signalDefinitions );
+    };
+
+  }  // end of signalCalculatorClasses namespace.
 
 
 
@@ -382,11 +364,11 @@ namespace LHC_FASER
     std::cout << std::endl;**/
 
     // if the signal has not been calculated for this point, update
-    // signal_value before returning it:
+    // signalValue before returning it:
     if( needsToPrepareForThisPoint() )
       {
-        rateCalculator->calculate( &signalValue,
-                                   &uncertaintyFactor );
+        rateCalculator->calculateValue( &signalValue,
+                                        &uncertaintyFactor );
         signalValue *= crossSectionUnitFactor;
       }
     return signalValue;
@@ -420,11 +402,11 @@ namespace LHC_FASER
   signalHandler::getLogUncertainty()
   {
     // if the signal has not been calculated for this point, update
-    // uncertainty_factor before returning it:
+    // uncertaintyFactor before returning it:
     if( needsToPrepareForThisPoint() )
       {
-        rateCalculator->calculate( &signalValue,
-                                   &uncertaintyFactor );
+        rateCalculator->calculateValue( &signalValue,
+                                        &uncertaintyFactor );
       }
     return log( uncertaintyFactor );
   }
@@ -432,15 +414,16 @@ namespace LHC_FASER
 
 
   inline bool
-  reallyWrongCalculator::calculate( double* signalValue,
-                                    double* uncertaintyFactor )
-  // this always returns false, & always sets signal_value &
-  // uncertainty_factor to CppSLHA::CppSLHA_global::really_wrong_value.
+  signalCalculatorClasses::reallyWrongCalculator::calculateValue(
+                                                           double* signalValue,
+                                                    double* uncertaintyFactor )
+  // this always returns false, & always sets signalValue &
+  // uncertaintyFactor to CppSLHA::CppSLHA_global::really_wrong_value.
   {
     // debugging:
     /**std::cout
     << std::endl
-    << "debugging: reallyWrongCalculator::calculate( "
+    << "debugging: reallyWrongCalculator::calculateValue( "
     << signalValue << ", " << uncertaintyFactor << " ) called.";
     std::cout << std::endl;**/
     *signalValue = CppSLHA::CppSLHA_global::really_wrong_value;

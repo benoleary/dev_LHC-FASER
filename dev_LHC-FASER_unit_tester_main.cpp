@@ -109,13 +109,13 @@
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_jet_kinematics_stuff.hpp
  *      LHC-FASER_jet_kinematics_stuff.cpp
- *
- *
- * still to test:
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
+ *
+ *
+ * still to test:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
  */
@@ -232,148 +232,11 @@ int main( int argumentCount,
 	
 
   /* testing the signal stuff:
-   * (needs work)*//**/
+   * (works)*//**/
   LHC_FASER::signalTesting signalTester( &basicStuffTester,
                                          &inputTester );
   signalTester.performTest();
   /**/
-
-
-
-  /**
-
-
-  LHC_FASER::crossSectionHandler test_cross_section_handler(
-                                                         &testInputHandler );
-
-  LHC_FASER::kinematics_handler test_kinematics_handler( &testInputHandler );
-
-  LHC_FASER::cascade_handler test_cascade_handler( &testInputHandler );
-  LHC_FASER::signalShortcuts test_signal_shortcuts( &testInputHandler,
-                                                   &test_cross_section_handler,
-                                                     &test_kinematics_handler,
-                                                     &test_cascade_handler );
-
-  LHC_FASER::signal_handler test_bad_signal( "testBadSignal",
-                                             &test_signal_shortcuts );
-
-  std::cout
-  << std::endl
-  << *(test_bad_signal.get_name()) << " has signal value "
-  << test_bad_signal.getValue();
-  std::cout << std::endl;
-
-  LHC_FASER::signal_handler
-  cross_section_breakdown_test( "sigmaBreakdownTest",
-                                &test_signal_shortcuts );
-
-  std::cout
-  << std::endl
-  << *(cross_section_breakdown_test.get_name()) << " has signal value "
-  << cross_section_breakdown_test.getValue();
-  std::cout << std::endl;
-
-  LHC_FASER::signal_handler test_Atlas_signal( "Atlas4jMET0l7TeV",
-                                               &test_signal_shortcuts );
-
-  std::cout
-  << std::endl
-  << *(test_Atlas_signal.get_name()) << " constructed without crashing.";
-  std::cout
-  << std::endl;
-  std::cout
-  << std::endl
-  << *(test_Atlas_signal.get_name()) << " has signal value "
-  << test_Atlas_signal.getValue();
-  std::cout << std::endl;
-
-  slhaData.read_file( "SPS2_spectrum.out" );
-  std::cout << std::endl;
-  std::cout
-  << std::endl << "without updating for new point, "
-  << *(cross_section_breakdown_test.get_name()) << " has signal value "
-  << cross_section_breakdown_test.getValue()
-  << std::endl
-  << *(test_Atlas_signal.get_name()) << " has signal value "
-  << test_Atlas_signal.getValue();
-  std::cout << std::endl;
-
-  testReadier.readyObserversForNewPoint();
-  std::cout
-  << std::endl << "after updating for new point, "
-  << *(cross_section_breakdown_test.get_name()) << " has signal value "
-  << cross_section_breakdown_test.getValue()
-  << std::endl
-  << *(test_Atlas_signal.get_name()) << " has signal value "
-  << test_Atlas_signal.getValue();
-  std::cout << std::endl;
-
-
-  std::cout
-  << std::endl
-  << "now trying alternating SPS1a & SPS2 4 times.";
-  std::cout << std::endl;
-
-  timeval starting_time;
-  timeval ending_time;
-  double elapsed_time;
-  for( int reload_count = 1;
-       4 >= reload_count;
-       ++reload_count )
-    {
-
-      gettimeofday( &starting_time,
-                    NULL );
-
-      std::cout
-      << std::endl << "count = " << reload_count;
-
-      slhaData.read_file( "SPS1a_spectrum.out" );
-      testReadier.readyObserversForNewPoint();
-      std::cout
-      << std::endl << "SPS1a: "
-      << *(test_Atlas_signal.get_name()) << " has signal value "
-      << test_Atlas_signal.getValue();
-      std::cout << std::endl;
-
-      slhaData.read_file( "SPS2_spectrum.out" );
-      gettimeofday( &ending_time,
-                    NULL );
-      elapsed_time
-      = ( (double)( ending_time.tv_sec - starting_time.tv_sec )
-          + 0.000001 * (double)( ending_time.tv_usec
-                                 - starting_time.tv_usec ) );
-      std::cout
-      << std::endl
-      << "took " << seconds_taken << " seconds.";
-      std::cout << std::endl;
-
-      gettimeofday( &starting_time,
-                    NULL );
-
-      testReadier.readyObserversForNewPoint();
-      std::cout
-      << std::endl << "SPS2: "
-      << *(test_Atlas_signal.get_name()) << " has signal value "
-      << test_Atlas_signal.getValue();
-      std::cout << std::endl;
-
-      gettimeofday( &ending_time,
-                    NULL );
-      elapsed_time
-      = ( (double)( ending_time.tv_sec - starting_time.tv_sec )
-          + 0.000001 * (double)( ending_time.tv_usec
-                                 - starting_time.tv_usec ) );
-      std::cout
-      << std::endl
-      << "took " << elapsed_time << " seconds.";
-      std::cout << std::endl;
-
-    }
-
-
-   **/
-
 
   /* finally, testing the lhcFaser itself: (not working)*//**
 

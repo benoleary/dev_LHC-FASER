@@ -189,6 +189,7 @@ namespace LHC_FASER
                      numberOfNegativeMuons,
                      numberOfPositiveMuons ) )
     {
+      double returnValue;
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
@@ -216,7 +217,7 @@ namespace LHC_FASER
         // assuming that 2 jets + more than 0 leptons won't pass validSignal...
       {
         // we return the only 2-jet possibility:
-        return currentAcceptance->getTwoJets();
+        returnValue = currentAcceptance->getTwoJets();
       }
       else if( 1 == numberOfAdditionalJets )
         // assuming that 1 jet + more than 1 lepton won't pass validSignal...
@@ -224,23 +225,23 @@ namespace LHC_FASER
         // we return the appropriate 1-jet possibility:
         if( 1 == numberOfNegativeElectrons )
         {
-          return currentAcceptance->getOneJetOneNegativeElectron();
+          returnValue = currentAcceptance->getOneJetOneNegativeElectron();
         }
         else if( 1 == numberOfPositiveElectrons )
         {
-          return currentAcceptance->getOneJetOnePositiveElectron();
+          returnValue = currentAcceptance->getOneJetOnePositiveElectron();
         }
         else if( 1 == numberOfNegativeMuons )
         {
-          return currentAcceptance->getOneJetOneNegativeMuon();
+          returnValue = currentAcceptance->getOneJetOneNegativeMuon();
         }
         else if( 1 == numberOfPositiveMuons )
         {
-          return currentAcceptance->getOneJetOnePositiveMuon();
+          returnValue = currentAcceptance->getOneJetOnePositiveMuon();
         }
         else
         {
-          return currentAcceptance->getOneJetZeroLeptons();
+          returnValue = currentAcceptance->getOneJetZeroLeptons();
         }
       }
       // now we check the 2-lepton possibilities:
@@ -248,25 +249,25 @@ namespace LHC_FASER
                &&
                ( 1 == numberOfPositiveElectrons ) )
       {
-        return currentAcceptance->getElectronPlusAntielectron();
+        returnValue = currentAcceptance->getElectronPlusAntielectron();
       }
       else if( ( 1 == numberOfNegativeElectrons )
                &&
                ( 1 == numberOfPositiveMuons ) )
       {
-        return currentAcceptance->getNegativeElectronPlusPositiveMuon();
+        returnValue = currentAcceptance->getNegativeElectronPlusPositiveMuon();
       }
       else if( ( 1 == numberOfNegativeMuons )
                &&
                ( 1 == numberOfPositiveElectrons ) )
       {
-        return currentAcceptance->getNegativeMuonPlusPositiveElectron();
+        returnValue = currentAcceptance->getNegativeMuonPlusPositiveElectron();
       }
       else if( ( 1 == numberOfNegativeMuons )
                &&
                ( 1 == numberOfPositiveMuons ) )
       {
-        return currentAcceptance->getMuonPlusAntimuon();
+        returnValue = currentAcceptance->getMuonPlusAntimuon();
       }
       /* now we check the remaining possibilities (assuming that validSignal
        * prevents numberOfAdditionalJets > 2, & any possibility with more than
@@ -277,24 +278,36 @@ namespace LHC_FASER
        */
       else if( 1 == numberOfNegativeElectrons )
       {
-        return currentAcceptance->getZeroJetsOneNegativeElectron();
+        returnValue = currentAcceptance->getZeroJetsOneNegativeElectron();
       }
       else if( 1 == numberOfPositiveElectrons )
       {
-        return currentAcceptance->getZeroJetsOnePositiveElectron();
+        returnValue = currentAcceptance->getZeroJetsOnePositiveElectron();
       }
       else if( 1 == numberOfNegativeMuons )
       {
-        return currentAcceptance->getZeroJetsOneNegativeMuon();
+        returnValue = currentAcceptance->getZeroJetsOneNegativeMuon();
       }
       else if( 1 == numberOfPositiveMuons )
       {
-        return currentAcceptance->getZeroJetsOnePositiveMuon();
+        returnValue = currentAcceptance->getZeroJetsOnePositiveMuon();
       }
       else
       {
-        return currentAcceptance->getZeroJetsZeroLeptons();
+        returnValue = currentAcceptance->getZeroJetsZeroLeptons();
       }
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "electroweakCascade::getAcceptance( "
+      << currentCuts << ", " << numberOfAdditionalJets << ", "
+      << numberOfNegativeElectrons << ", " << numberOfPositiveElectrons << ", "
+      << numberOfNegativeMuons << ", " << numberOfPositiveMuons
+      << " ) returning "
+      << returnValue;
+      std::cout << std::endl;**/
+
+      return returnValue;
     }
     else
     {

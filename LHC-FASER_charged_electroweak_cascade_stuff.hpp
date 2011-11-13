@@ -131,7 +131,7 @@ namespace LHC_FASER
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance )
-    // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
+    // this returns the appropriate acceptances multiplied by branching ratios
     // from the electroweakino through the selectron or smuon to the LSP.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
   };

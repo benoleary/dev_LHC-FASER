@@ -142,7 +142,7 @@ namespace LHC_FASER
   charginoToSemuOrEmuSnuCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
+  // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the slepton to the LSP.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
@@ -150,7 +150,9 @@ namespace LHC_FASER
     /**std::cout << std::endl << "debugging:"
     << std::endl
     << "charginoToSemuOrEmuSnuCascade::calculateAcceptance(...) called."
-    << " cascadeBr = " << cascadeBr;
+    << " cascadeBr = " << cascadeBr
+    << ", this->intermediateDecayer->get_name() = "
+    << *(this->intermediateDecayer->get_name());
     std::cout << std::endl;**/
 
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
@@ -395,7 +397,7 @@ namespace LHC_FASER
   charginoToStauOrTauSnuCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
+  // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the slepton to the LSP.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
@@ -412,7 +414,7 @@ namespace LHC_FASER
                                                 coloredDecayer->get_PDG_code(),
                                           electroweakDecayer->get_PDG_code() );
       if( inputShortcut->isIn( coloredDecayer->get_PDG_code(),
-                           inputShortcut->getSdownTypes() ) )
+                               inputShortcut->getSdownTypes() ) )
         /* if we've calculated the wrong handedness, because isIn assumes the
          * correct charge of chargino for a positive-PDG-coded quark, which is
          * the wrong case for down-type quarks since we are assuming that the
@@ -551,7 +553,7 @@ namespace LHC_FASER
       currentAcceptance->setZeroJetsOnePositiveMuon( muonPass
                         * CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR );
 
-      currentAcceptance->setZeroJetsZeroLeptons( ( 1.0 - pionPass )
+      currentAcceptance->setZeroJetsZeroLeptons( ( cascadeBr - pionPass )
                           * CppSLHA::PDG_data::tau_lepton_to_neutrino_hadron_BR
                                                  + muonFail
                      * ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR
@@ -728,6 +730,14 @@ namespace LHC_FASER
                                          CppSLHA::PDG_code::neutralino_one ) );
     // the branching ratios of the W into the various SM fermions are covered
     // by the following code.
+
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "charginoToWCascade::calculateAcceptance(...) called."
+    << " cascadeBr = " << cascadeBr;
+    std::cout << std::endl;**/
+
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
@@ -958,8 +968,15 @@ namespace LHC_FASER
                                         )->get_branching_ratio_for_exact_match(
                                            intermediateDecayer->get_PDG_code(),
                                          CppSLHA::PDG_code::neutralino_one ) );
-    // the branching ratios of the W into the various SM fermions are covered
-    // by the following code.
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "charginoToHiggsCascade::calculateAcceptance(...) called."
+    << " cascadeBr = " << cascadeBr;
+    std::cout << std::endl;**/
+
+    // the branching ratios of the scalar into the various SM fermions are
+    // covered by the following code.
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
