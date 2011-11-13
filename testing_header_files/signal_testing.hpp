@@ -100,11 +100,9 @@ namespace LHC_FASER
     {
       crossSectionHandler crossSections( testInputHandler );
       jetPlusMetAcceptanceHandler
-      jetPlusMetAcceptances( testInputHandler,
-                            testInputHandler->inspectPathToKinematicsGrids() );
+      jetPlusMetAcceptances( testInputHandler );
       electroweakCascadeHandler
-      electroweakCascadeSource( testInputHandler,
-                            testInputHandler->inspectPathToKinematicsGrids() );
+      electroweakCascadeSource( testInputHandler );
       fullCascadeSetFactory cascadeSets( testInputHandler,
                                          &electroweakCascadeSource );
       signalShortcuts*
@@ -266,7 +264,7 @@ namespace LHC_FASER
                                                   &testSignalDefinitionSet ) );
       std::cout
       << std::endl
-      << "testSignalHandlerPointer->getValue() (in *fb*) = "
+      << "SPS1a: testSignalHandlerPointer->getValue() (in *fb*) = "
       << testSignalHandlerPointer->getValue();
       std::cout << std::endl;
       delete testSignalHandlerPointer;
@@ -280,7 +278,7 @@ namespace LHC_FASER
                                      &testSignalDefinitionSet );
       std::cout
       << std::endl
-      << "testAtlasFourJetMetZeroLepton.getValue() (in *pb*) = "
+      << "SPS1a: testAtlasFourJetMetZeroLepton.getValue() (in *pb*) = "
       << testAtlasFourJetMetZeroLepton.getValue();
       std::cout << std::endl;
       std::cout
@@ -293,7 +291,7 @@ namespace LHC_FASER
                                             &testSignalDefinitionSet );
       std::cout
       << std::endl
-      << "testAtlasFourJetMetZeroLeptonHighCut.getValue() (in *pb*) = "
+      << "SPS1a: testAtlasFourJetMetZeroLeptonHighCut.getValue() (in *pb*) = "
       << testAtlasFourJetMetZeroLeptonHighCut.getValue();
       std::cout << std::endl;
       std::cout
@@ -306,7 +304,7 @@ namespace LHC_FASER
                                      &testSignalDefinitionSet );
       std::cout
       << std::endl
-      << "testAtlasThreeJetMetOneLepton.getValue() (in *pb*) = "
+      << "SPS1a: testAtlasThreeJetMetOneLepton.getValue() (in *pb*) = "
       << testAtlasThreeJetMetOneLepton.getValue();
       std::cout << std::endl;
       std::cout
@@ -319,13 +317,73 @@ namespace LHC_FASER
                                              &testSignalDefinitionSet );
       std::cout
       << std::endl
-      << "testAtlasThreeJetMetOneLeptonHighCuts.getValue() (in *pb*) = "
+      << "SPS1a: testAtlasThreeJetMetOneLeptonHighCuts.getValue() (in *pb*) = "
       << testAtlasThreeJetMetOneLeptonHighCuts.getValue();
       std::cout << std::endl;
       std::cout
       << std::endl
       << "atlasThreeJetMetOneLeptonHighCuts seems OK.";
       std::cout << std::endl;
+
+      std::cout
+      << std::endl
+      << "changing spectrum.";
+      std::cout << std::endl;
+      basicStuff->getSlha()->read_file( "SPS2_spectrum.out" );
+      basicStuff->getReadier()->readyObserversForNewPoint();
+
+
+      signalHandler testSigmaBreakdownTest( "sigmaBreakdownTest",
+                                            1000.0,
+                                            &testSignalDefinitionSet );
+      std::cout
+      << std::endl
+      << "SPS2: testSigmaBreakdownTest.getValue() (in *fb*) = "
+      << testSigmaBreakdownTest.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "again sigmaBreakdownTest seems OK.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "SPS2: testAtlasFourJetMetZeroLepton.getValue() (in *pb*) = "
+      << testAtlasFourJetMetZeroLepton.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "again atlasFourJetMetZeroLepton seems OK.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "SPS2: testAtlasFourJetMetZeroLeptonHighCut.getValue() (in *pb*) = "
+      << testAtlasFourJetMetZeroLeptonHighCut.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "again atlasFourJetMetZeroLepton seems OK.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "SPS2: testAtlasThreeJetMetOneLepton.getValue() (in *pb*) = "
+      << testAtlasThreeJetMetOneLepton.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "again atlasThreeJetMetOneLepton seems OK.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "SPS2: testAtlasThreeJetMetOneLeptonHighCuts.getValue() (in *pb*) = "
+      << testAtlasThreeJetMetOneLeptonHighCuts.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "again atlasThreeJetMetOneLeptonHighCuts seems OK.";
+      std::cout << std::endl;
+
+      basicStuff->getSlha()->read_file( "SPS1a_spectrum.out" );
+      basicStuff->getReadier()->readyObserversForNewPoint();
     }
 
 

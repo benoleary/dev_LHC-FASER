@@ -155,6 +155,7 @@ namespace LHC_FASER
       // if the signal is the test to see if the cross-section breakdown works
       // as it should...
     {
+      signalPreparationDefinitions->setBeamEnergy( 7 );
       rateCalculator
       = new signalCalculatorClasses::sigmaBreakdownTest(
                                                 signalPreparationDefinitions );
@@ -176,7 +177,6 @@ namespace LHC_FASER
       = new signalCalculatorClasses::reallyWrongCalculator(
                                                 signalPreparationDefinitions );
     }
-
   }
 
   signalHandler::~signalHandler()
@@ -209,7 +209,7 @@ namespace LHC_FASER
       this->signalDefinitions.setExcludedStandardModelProducts(
                           signalDefinitions->getShortcuts()->getInputShortcuts(
                                                           )->getNotInJets5() );
-      this->signalDefinitions.setBeamEnergy( 7 );
+      //this->signalDefinitions.setBeamEnergy( 7 );
     }
 
     sigmaBreakdownTest::~sigmaBreakdownTest()

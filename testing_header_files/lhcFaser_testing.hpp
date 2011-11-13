@@ -73,7 +73,7 @@
 
 #include "basic_testing_stuff.hpp"
 #include "input_testing.hpp"
-#include "LHC-FASER.hpp"
+#include "../LHC-FASER.hpp"
 
 namespace LHC_FASER
 {
@@ -93,15 +93,111 @@ namespace LHC_FASER
       // does nothing.
     }
 
-    inputHandler const* const
-    getInput()
-    {
-      return &testInputHandler;
-    }
 
     void
     performTest()
     {
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "lhcFaserTesting::performTest() called.";
+      std::cout << std::endl;/**/
+
+      lhcFaser* testLhcFaserPointer( new lhcFaser( "SPS1a_spectrum.out" ) );
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "testLhcFaserPointer constructed without obvious problem.";
+      std::cout << std::endl;/**/
+
+      testLhcFaserPointer->addSignal( "sigmaBreakdownTest" );
+      testLhcFaserPointer->addSignal( "Atlas4jMET0l7TeV" );
+      testLhcFaserPointer->addSignal( "badSignalName" );
+      std::cout
+      << std::endl
+      << "added signals without obvious problem.";
+      std::cout << std::endl;
+      delete testLhcFaserPointer;
+      std::cout
+      << std::endl
+      << "no obvious problems in lhcFaser constructor & destructor.";
+      std::cout << std::endl;
+
+      lhcFaser sps1aLhcFaser( "SPS1a_spectrum.out" );
+      lhcFaser sps2LhcFaser( "SPS2_spectrum.out" );
+      sps1aLhcFaser.addSignal( "sigmaBreakdownTest" );
+      signalHandler*
+      sps1aSigma( sps1aLhcFaser.getSignal( "sigmaBreakdownTest" ) );
+      signalHandler*
+      sps2Sigma( sps2LhcFaser.addSignal( "sigmaBreakdownTest" ) );
+      signalHandler*
+      sps1aAtlas4j0l( sps1aLhcFaser.addSignal( "Atlas4jMET0l7TeV" ) );
+      sps2LhcFaser.addSignal( "Atlas4jMET0l7TeV" );
+      signalHandler*
+      sps2Atlas4j0l( sps2LhcFaser.getSignal( "Atlas4jMET0l7TeV" ) );
+      sps1aLhcFaser.addSignal( "Atlas4jMET0l7TeV" );
+      signalHandler*
+      sps1aAtlas3j1l( sps1aLhcFaser.getSignal( "Atlas3jMET1l7TeV" ) );
+      signalHandler*
+      sps2Atlas3j1l( sps2LhcFaser.addSignal( "Atlas3jMET1l7TeV" ) );
+      signalHandler*
+      sps1aBad( sps1aLhcFaser.addSignal( "badSignalName" ) );
+      sps2LhcFaser.addSignal( "badSignalName" );
+      signalHandler*
+      sps2Bad( sps2LhcFaser.getSignal( "badSignalName" ) );
+
+
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "all 4 test signals from test lhcFasers have pointers.";
+      std::cout << std::endl;
+
+      sps1aLhcFaser.updateForNewSlha();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "sps1aLhcFaser.updateForNewSlha() successful.";
+      std::cout << std::endl;
+      sps2LhcFaser.updateForNewSlha();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "sps2LhcFaser.updateForNewSlha() successful.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl << "after updating for new point, ";
+      std::cout << std::endl
+      << *(sps1aSigma->getName()) << " (sps1aSigma) has signal value "
+      << sps1aSigma->getValue();
+      std::cout << std::endl;
+      std::cout
+      << *(sps1aAtlas4j0l->getName()) << " (sps1aAtlas4j0l) has signal value "
+      << sps1aAtlas4j0l->getValue();
+      std::cout << std::endl;
+      std::cout
+      << *(sps1aAtlas3j1l->getName()) << " (sps1aAtlas3j1l) has signal value "
+      << sps1aAtlas3j1l->getValue();
+      std::cout << std::endl;
+      std::cout
+      << *(sps1aBad->getName()) << " (sps1aBad) has signal value "
+      << sps1aBad->getValue();
+      std::cout << std::endl
+      << *(sps2Sigma->getName()) << " (sps2Sigma) has signal value "
+      << sps2Sigma->getValue();
+      std::cout << std::endl;
+      std::cout
+      << *(sps2Atlas4j0l->getName()) << " (sps2Atlas4j0l) has signal value "
+      << sps2Atlas4j0l->getValue();
+      std::cout << std::endl;
+      std::cout
+      << *(sps2Atlas3j1l->getName()) << " (sps2Atlas3j1l) has signal value "
+      << sps2Atlas3j1l->getValue();
+      std::cout << std::endl;
+      std::cout
+      << *(sps2Bad->getName()) << " (sps2Bad) has signal value "
+      << sps2Bad->getValue();
+      std::cout << std::endl;
     }
 
 

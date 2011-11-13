@@ -481,8 +481,8 @@ namespace LHC_FASER
 
   gxFullCascade::gxFullCascade() :
       fullCascade( gx,
-                 3,
-                 2.0 )
+                   3,
+                   2.0 )
   {
     // just an initialization list.
   }
@@ -1277,6 +1277,5 @@ namespace LHC_FASER
     }
     return returnPointer;
   }
-
 
 }  // end of LHC_FASER namespace.

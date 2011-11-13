@@ -135,6 +135,22 @@ namespace LHC_FASER
     ~lhcFaser()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
+    lhcFaser*
+    overridePathToCrossSectionGrids(
+                                   std::string const pathToCrossSectionGrids );
+    /* this is used when the cross-section grids are not found in
+     * (pathToGrids)/cross-sections/MSTW2008, where the 7TeV & 14TeV (&
+     * possibly others, if such grids are made) directories are. an example
+     * would be to use (pathToGrids)/cross-sections/CTEQ6.6, though ONLY FOR
+     * 14 TeV UNLESS YOU HAVE PRODUCED THE 7 TeV GRIDS YOURSELF!
+     */
+    lhcFaser*
+    overridePathToAcceptanceGrids( std::string const pathToAcceptanceGrids );
+    /* this is used when the acceptance grids are not found in
+     * (pathToGrids)/kinematics/PYTHIA8, where the 7TeV & 14TeV (&
+     * possibly others, if such grids are made) directories are.
+     */
+
     signalHandler*
     addSignal( std::string const signalName )
     // this adds a new signal to the set of signals based on its name.
@@ -169,8 +185,10 @@ namespace LHC_FASER
     // the destructor does NOT delete the CppSLHA).
     std::string pathToGrids;
     // this is where the lookup tables live.
-    std::string pathToJetPlusMetAcceptanceGrids;
-    // this is where the lookup tables for jet+MET acceptancesPerCutSet live.
+    std::string pathToCrossSectionGrids;
+    // this is where the lookup tables for cross-sections live.
+    std::string pathToAcceptanceGrids;
+    // this is where the lookup tables for working out acceptances live.
     double crossSectionUnitFactor;
     // this is to allow for the user to specify event rates in fb, pb or nb.
     bool usingNlo;
@@ -193,10 +211,10 @@ namespace LHC_FASER
     // this tracks the various signals of LHC supersymmetric events & their
     // rates.
 
-    signalShortcuts* shortcut;
+    signalShortcuts* inputShortcut;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
-    readierForNewPoint* readier;
+    readierForNewPoint readierObject;
 
     void
     initialize( CppSLHA::CppSLHA0* const spectrumData,
@@ -213,6 +231,32 @@ namespace LHC_FASER
 
   // inline functions:
 
+
+  inline lhcFaser*
+  lhcFaser::overridePathToCrossSectionGrids(
+                                    std::string const pathToCrossSectionGrids )
+  /* this is used when the cross-section grids are not found in
+   * (pathToGrids)/cross-sections/MSTW2008, where the 7TeV & 14TeV (&
+   * possibly others, if such grids are made) directories are. an example
+   * would be to use (pathToGrids)/cross-sections/CTEQ6.6, though ONLY FOR
+   * 14 TeV UNLESS YOU HAVE PRODUCED THE 7 TeV GRIDS YOURSELF!
+   */
+  {
+    inputSource->setPathToCrossSectionGrids( &pathToCrossSectionGrids );
+    return this;
+  }
+
+  inline lhcFaser*
+  lhcFaser::overridePathToAcceptanceGrids(
+                                      std::string const pathToAcceptanceGrids )
+  /* this is used when the acceptance grids are not found in
+   * (pathToGrids)/kinematics/PYTHIA8, where the 7TeV & 14TeV (&
+   * possibly others, if such grids are made) directories are.
+   */
+  {
+    inputSource->setPathToKinematicsGrids( &pathToAcceptanceGrids );
+    return this;
+  }
 
   inline signalHandler*
   lhcFaser::addSignal( std::string const signalName )
@@ -254,7 +298,7 @@ namespace LHC_FASER
    * another day.
    */
   {
-    readier->readyObserversForNewPoint();
+    readierObject.readyObserversForNewPoint();
   }
 
   inline void

@@ -127,7 +127,7 @@ namespace LHC_FASER
   class signalDefinitionSet : public acceptanceCutSet
   {
   public:
-    signalDefinitionSet( signalShortcuts* const shortcut )
+    signalDefinitionSet( signalShortcuts* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     signalDefinitionSet( signalDefinitionSet* const copySource )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -159,7 +159,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    signalShortcuts* const shortcut;
+    signalShortcuts* const inputShortcut;
 
     // each signal needs to look up specific tables, based on the beam energy:
     crossSectionTableSet* crossSections;
@@ -168,7 +168,7 @@ namespace LHC_FASER
     // signal needs to look up more tables, it should store the extras itself.
     std::list< int > const* exclusionList;
     fullCascadeSetsForOneBeamEnergy* cascadeSets;
-  };  // end of signal_definitions class.
+  };
 
 
   /* this holds each production channel for a combination of colored sparticles
@@ -253,16 +253,17 @@ namespace LHC_FASER
   inline signalShortcuts*
   signalDefinitionSet::getShortcuts()
   {
-    return shortcut;
+    return inputShortcut;
   }
 
   inline void
   signalDefinitionSet::setBeamEnergy( int const inputValue )
   {
     beamEnergy = inputValue;
-    crossSections = shortcut->getCrossSections()->getTableSet( inputValue );
+    crossSections
+    = inputShortcut->getCrossSections()->getTableSet( inputValue );
     cascadeSets
-    = shortcut->getCascadeSets()->getFullCascadeSetsForOneBeamEnergy(
+    = inputShortcut->getCascadeSets()->getFullCascadeSetsForOneBeamEnergy(
                                                                   inputValue );
   }
 

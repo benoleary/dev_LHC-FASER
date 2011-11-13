@@ -103,8 +103,7 @@ namespace LHC_FASER
     performTest()
     {
       electroweakCascadeHandler
-      testElectroweakCascadeHandler( testInputHandler,
-                            testInputHandler->inspectPathToKinematicsGrids() );
+      testElectroweakCascadeHandler( testInputHandler );
       electroweakCascadeSet*
       testEwinoCascadeSet(
         testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7

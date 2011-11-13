@@ -221,8 +221,7 @@ namespace LHC_FASER
   class electroweakCascadeHandler
   {
   public:
-    electroweakCascadeHandler( inputHandler const* const inputShortcut,
-                               std::string const* const gridFileSetLocation )
+    electroweakCascadeHandler( inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~electroweakCascadeHandler()
     /* code after the classes in this .hpp file, or in the .cpp file. */;

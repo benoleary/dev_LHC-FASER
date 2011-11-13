@@ -62,7 +62,7 @@
 namespace LHC_FASER
 {
   /* this class reads in a file in the assumed format, stores it, & gives out
-   * interpolated acceptanceValues. it was written with cross-sections in mind, with data
+   * interpolated values. it was written with cross-sections in mind, with data
    * files in the format
    * squark_mass gluino_mass cross-section newline
    * or K-factors, in a similar format.
@@ -73,7 +73,7 @@ namespace LHC_FASER
     squareGrid( std::string const* const gridFileLocation,
                 std::string const* const gridName,
                 squareGrid const* const scalingGrid,
-                inputHandler const* const shortcut );
+                inputHandler const* const inputShortcut );
     /* this constructor reads in a grid file, assumed to be in the format
      * x_coordinate y_coordinate value
      * in ascending order, y_coordinate varying first
@@ -91,7 +91,7 @@ namespace LHC_FASER
     squareGrid( std::string baseGridFileLocation,
                 std::string gridName,
                 std::string scalingGridFileLocation,
-                inputHandler const* const shortcut );
+                inputHandler const* const inputShortcut );
     // this constructor uses the other constructor to make another squareGrid
     // with the scaling factors, which is then used to construct this instance.
     ~squareGrid();
@@ -124,13 +124,13 @@ namespace LHC_FASER
 
   protected:
     std::string gridName;
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     double gridStepSize;
     double lowestXCoordinate;
     double highestXCoordinate;
     double lowestYCoordinate;
     double highestYCoordinate;
-    std::vector< std::vector< double >* > values;
+    std::vector< std::vector< double >* > gridValues;
 
     void
     readIn( std::string const* const gridFileLocation,
@@ -154,7 +154,7 @@ namespace LHC_FASER
     crossSectionTable( squareGrid const* const lookupTable,
                        signedParticleShortcutPair const* const scoloredPair,
                        double const flavorFactor,
-                       inputHandler const* const shortcut )
+                       inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~crossSectionTable()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -172,7 +172,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     signedParticleShortcutPair const* scoloredPair;
     CppSLHA::particle_property_set const* directlyProducedSquark;
     double storedValue;
@@ -188,14 +188,14 @@ namespace LHC_FASER
 
   /* this class holds several squareGrid instances as cross-section lookup
    * tables for various colored sparticle combinations, & returns their
-   * interpolated acceptanceValues for given signedParticleShortcutPair pointers.
+   * interpolated values for given signedParticleShortcutPair pointers.
    */
   class crossSectionTableSet
   {
   public:
     crossSectionTableSet( std::string const* const gridDirectory,
                           int const beamEnergy,
-                          inputHandler const* const shortcut )
+                          inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~crossSectionTableSet()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -210,7 +210,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     std::string const gridDirectory;
     int const beamEnergy;
     std::vector< squareGrid* > grids;
@@ -237,7 +237,7 @@ namespace LHC_FASER
   class crossSectionHandler
   {
   public:
-    crossSectionHandler( inputHandler const* const shortcut )
+    crossSectionHandler( inputHandler const* const inputShortcut )
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     ~crossSectionHandler()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -251,7 +251,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
-    inputHandler const* const shortcut;
+    inputHandler const* const inputShortcut;
     std::vector< crossSectionTableSet* > tableSets;
     // this is for holding all the cross-sections which are looked up by the
     // signal handlers.

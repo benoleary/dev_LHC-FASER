@@ -802,13 +802,13 @@ namespace LHC_FASER
                                                           double const binSize,
                                            double const transverseMomentumCut )
   /* this looks to see if there is an existing
-   * leptonAcceptancesForOneBeamEnergy with the requested acceptancesPerCutSet, & if
+   * leptonAcceptancesForOneBeamEnergy with the requested acceptances, & if
    * not, makes 1, & returns the pointer.
    */
   {
     leptonAcceptancesForOneBeamEnergy* returnPointer( NULL );
     // we look to see if we already have a leptonAcceptancesForOneBeamEnergy
-    // for these acceptanceValues:
+    // for these acceptances:
     for( std::vector< leptonAcceptancesForOneBeamEnergy* >::iterator
          searchIterator( acceptanceTables.begin() );
          acceptanceTables.end() > searchIterator;

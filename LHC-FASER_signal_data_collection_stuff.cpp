@@ -91,7 +91,7 @@ namespace LHC_FASER
 
   signalDefinitionSet::signalDefinitionSet( signalShortcuts* const shortcut ) :
     acceptanceCutSet(),
-    shortcut( shortcut ),
+    inputShortcut( shortcut ),
     crossSections( NULL ),
     //leptonKinematics( NULL ),
     jetPlusMetAcceptance( NULL )
@@ -102,7 +102,7 @@ namespace LHC_FASER
   signalDefinitionSet::signalDefinitionSet(
                                      signalDefinitionSet* const copySource  ) :
     acceptanceCutSet( (acceptanceCutSet)copySource ),
-    shortcut( copySource->getShortcuts() ),
+    inputShortcut( copySource->getShortcuts() ),
     crossSections( copySource->getCrossSections() ),
     //leptonKinematics( copySource->getLeptonKinematics() ),
     jetPlusMetAcceptance( copySource->getJetPlusMetAcceptance() )

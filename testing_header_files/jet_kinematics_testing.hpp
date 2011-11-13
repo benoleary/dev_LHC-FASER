@@ -469,8 +469,7 @@ namespace LHC_FASER
       << "jetAcceptanceGrid class seems OK.";
       std::cout << std::endl;
       jetPlusMetAcceptanceHandler
-      testJetPlusMetAcceptanceHandler( testInputHandler,
-                            testInputHandler->inspectPathToKinematicsGrids() );
+      testJetPlusMetAcceptanceHandler( testInputHandler );
       std::string jetCutName( "Atlas4jMET" );
       jetAcceptanceTable*
       testJetAcceptanceTable(
@@ -490,8 +489,7 @@ namespace LHC_FASER
 
 
       electroweakCascadeHandler
-      testElectroweakCascadeHandler( testInputHandler,
-                            testInputHandler->inspectPathToKinematicsGrids() );
+      testElectroweakCascadeHandler( testInputHandler );
       electroweakCascadeSet*
       testEwinoCascadeSet(
         testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7

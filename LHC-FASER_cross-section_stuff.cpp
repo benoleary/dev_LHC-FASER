@@ -60,9 +60,9 @@ namespace LHC_FASER
   squareGrid::squareGrid( std::string const* const gridFileLocation,
                           std::string const* const gridName,
                           squareGrid const* const scalingGrid,
-                          inputHandler const* const shortcut ) :
+                          inputHandler const* const inputShortcut ) :
     gridName( *gridName ),
-    shortcut( shortcut )
+    inputShortcut( inputShortcut )
   /* this constructor reads in a grid file, assumed to be in the format
    * x_coordinate y_coordinate value
    * in ascending order, y_coordinate varying first
@@ -93,9 +93,9 @@ namespace LHC_FASER
   squareGrid::squareGrid( std::string baseGridFileLocation,
                           std::string gridName,
                           std::string scalingGridFileLocation,
-                          inputHandler const* const shortcut ) :
+                          inputHandler const* const inputShortcut ) :
     gridName( gridName ),
-    shortcut( shortcut )
+    inputShortcut( inputShortcut )
   // this constructor uses the other constructor to make another squareGrid
   // with the scaling factors, which is then used to construct this instance.
   {
@@ -105,7 +105,7 @@ namespace LHC_FASER
       scalingGrid = new squareGrid( &scalingGridFileLocation,
                                     &gridName,
                                     NULL,
-                                    shortcut );
+                                    inputShortcut );
     }
     readIn( &baseGridFileLocation,
             scalingGrid );
@@ -119,8 +119,8 @@ namespace LHC_FASER
   {
     // delete all the vectors held as pointers by the vector of vectors:
     for( std::vector< std::vector< double >* >::iterator
-         deletionIterator = values.begin();
-         values.end() > deletionIterator;
+         deletionIterator = gridValues.begin();
+         gridValues.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -170,7 +170,7 @@ namespace LHC_FASER
       // this holds all the acceptanceValues for a set of points with the same
       // x co-ordinate.
       unsigned int sizeOfLargestConstantXVector( 0 );
-      // this holds the size of the largest vector that gets added to acceptanceValues.
+      // this holds the size of the largest vector that gets added to values.
 
       while( inputFileReader.read_line( &inputLineAsString ) )
         // the evaluation of the conditional reads in the next line.
@@ -193,16 +193,16 @@ namespace LHC_FASER
           if( NULL != currentVector )
             // if we have a vector to add...
           {
-            values.push_back( currentVector );
+            gridValues.push_back( currentVector );
             if( currentVector->size() > sizeOfLargestConstantXVector )
             {
               sizeOfLargestConstantXVector = currentVector->size();
             }
             // debugging:
             /**std::cout
-                    << std::endl
-                    << "pushed back a vector of size "
-                    << currentVector->size();**/
+            << std::endl
+            << "pushed back a vector of size "
+            << currentVector->size();**/
           }
           // prepare a new vector for the new x co-ordinate:
           currentVector = new std::vector< double >;
@@ -219,7 +219,7 @@ namespace LHC_FASER
           << " ) with value " << currentValue << " by factor "
           << scalingGrid->valueAt( currentXCoordinate,
                                    currentYCoordinate );
-                std::cout << std::endl;**/
+          std::cout << std::endl;**/
 
           currentValue *= scalingGrid->valueAt( currentXCoordinate,
                                                 currentYCoordinate );
@@ -256,9 +256,9 @@ namespace LHC_FASER
         }
       }  // end of while loop going over the lines of the file.
 
-      // we still have to add the last vector of acceptanceValues for the last x
+      // we still have to add the last vector of values for the last x
       // co-ordinate:
-      values.push_back( currentVector );
+      gridValues.push_back( currentVector );
       if( currentVector->size() > sizeOfLargestConstantXVector )
       {
         sizeOfLargestConstantXVector = currentVector->size();
@@ -266,10 +266,10 @@ namespace LHC_FASER
 
       // debugging:
       /**std::cout
-        << std::endl
-        << "pushed back last vector of size "
-        << current_vector->size();
-        std::cout << std::endl;**/
+      << std::endl
+      << "pushed back last vector of size "
+      << current_vector->size();
+      std::cout << std::endl;**/
 
       // the last co-ordinates should be the maximal acceptanceValues:
       highestXCoordinate = currentXCoordinate;
@@ -277,8 +277,8 @@ namespace LHC_FASER
 
       // now we check that the grid is usable:
       for( std::vector< std::vector< double >* >::iterator
-           xIterator( values.begin() );
-           values.end() > xIterator;
+           xIterator( gridValues.begin() );
+           gridValues.end() > xIterator;
            ++xIterator )
       {
         while( (*xIterator)->size() < sizeOfLargestConstantXVector )
@@ -349,9 +349,10 @@ namespace LHC_FASER
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "acceptanceValues.size() = " << acceptanceValues.size()
+      << "gridValues.size() = " << gridValues.size()
       << std::endl
-      << "acceptanceValues.back()->size() = " << acceptanceValues.back()->size();
+      << "gridValues.back()->size() = "
+      << gridValues.back()->size();
       std::cout << std::endl;**/
 
       double xSteps( ( ( xCoordinate - lowestXCoordinate ) / gridStepSize ) );
@@ -359,49 +360,54 @@ namespace LHC_FASER
       double
       ySteps( ( ( yCoordinate - lowestYCoordinate ) / gridStepSize ) );
       unsigned int lowerLeftY( (unsigned int)ySteps );
-      if( values.size() > ( lowerLeftX + 1 ) )
+      if( gridValues.size() > ( lowerLeftX + 1 ) )
         // if the x co-ordinate is less than its maximal grid value...
       {
-        if( values.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
+        if( gridValues.at( lowerLeftX )->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
         {
           return lhcFaserGlobal::squareBilinearInterpolation(
                                                        ( xSteps - lowerLeftX ),
                                                        ( ySteps - lowerLeftY ),
-                                     values.at( lowerLeftX )->at( lowerLeftY ),
-                             values.at( ( lowerLeftX + 1 ) )->at( lowerLeftY ),
-                     values.at( ( lowerLeftX + 1 ) )->at( ( lowerLeftY + 1 ) ),
-                           values.at( lowerLeftX )->at( ( lowerLeftY + 1 ) ) );
+                                 gridValues.at( lowerLeftX )->at( lowerLeftY ),
+                         gridValues.at( ( lowerLeftX + 1 ) )->at( lowerLeftY ),
+                 gridValues.at( ( lowerLeftX + 1 ) )->at( ( lowerLeftY + 1 ) ),
+                       gridValues.at( lowerLeftX )->at( ( lowerLeftY + 1 ) ) );
         }
-        else if( ( values.at( lowerLeftX )->size() == ( lowerLeftY + 1 ) )
+        else if( ( gridValues.at( lowerLeftX )->size() == ( lowerLeftY + 1 ) )
                  &&
                  ( (double)lowerLeftY == ySteps ) )
           // otherwise, if it's on the maximal y edge...
         {
           return lhcFaserGlobal::unitLinearInterpolation(
                                                        ( xSteps - lowerLeftX ),
-                                     values.at( lowerLeftX )->at( lowerLeftY ),
-                           values.at( ( lowerLeftX + 1 ) )->at( lowerLeftY ) );
+                                 gridValues.at( lowerLeftX )->at( lowerLeftY ),
+                       gridValues.at( ( lowerLeftX + 1 ) )->at( lowerLeftY ) );
         }
         else
           // otherwise, it's off the grid:
         {
           //return CppSLHA::CppSLHA_global::really_wrong_value;
           // actually, let's do some extrapolation:
-          if( shortcut->isVerbose() )
+          if( inputShortcut->isVerbose() )
           {
             std::cout
             << std::endl
-            << "LHC-FASER::warning! A cross-section for masses outside the"
-            << " grid was requested. Returning an exponential extrapolation.";
+            << "LHC-FASER::warning! A cross-section for masses ("
+            << xCoordinate << ", " << yCoordinate << ") outside the grid was"
+            << " requested. Returning an exponential extrapolation.";
             std::cout << std::endl;
           }
-          double lowerLeftValue( values.at( lowerLeftX )->at(
-                                       values.at( lowerLeftX )->size() - 2 ) );
-          double upperLeftValue( values.at( lowerLeftX )->back() );
-          double lowerRightValue( values.at( ( lowerLeftX + 1 ) )->at(
-                               values.at( ( lowerLeftX + 1 ) )->size() - 2 ) );
-          double upperRightValue( values.at( ( lowerLeftX + 1 ) )->back() );
+          double
+          lowerLeftValue( gridValues.at( lowerLeftX )->at( gridValues.at(
+                                                  lowerLeftX )->size() - 2 ) );
+          double upperLeftValue( gridValues.at( lowerLeftX )->back() );
+          double
+          lowerRightValue( gridValues.at( ( lowerLeftX + 1 ) )->at(
+                                              gridValues.at( ( lowerLeftX + 1 )
+                                                             )->size() - 2 ) );
+          double
+          upperRightValue( gridValues.at( ( lowerLeftX + 1 ) )->back() );
           double leftRatio( upperLeftValue / lowerLeftValue );
           if( 1.0 < leftRatio )
           {
@@ -426,7 +432,7 @@ namespace LHC_FASER
           << ", leftRatio = " << leftRatio
           << ", rightRatio = " << rightRatio;
           std::cout << std::endl;**/
-          while( values.at( lowerLeftX )->size() <= ( lowerLeftY + 1 ) )
+          while( gridValues.at( lowerLeftX )->size() <= ( lowerLeftY + 1 ) )
           {
             lowerLeftValue *= leftRatio;
             upperLeftValue *= leftRatio;
@@ -458,41 +464,43 @@ namespace LHC_FASER
                                                               upperLeftValue );
         }
       }
-      else if( ( values.size() == ( lowerLeftX + 1 ) )
+      else if( ( gridValues.size() == ( lowerLeftX + 1 ) )
                &&
                ( (double)lowerLeftX == xSteps ) )
         // otherwise, if it's on the maximal x edge...
       {
-        if( values.back()->size() > ( lowerLeftY + 1 ) )
+        if( gridValues.back()->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
         {
           return lhcFaserGlobal::unitLinearInterpolation(
                                                        ( ySteps - lowerLeftY ),
-                                               values.back()->at( lowerLeftY ),
-                                     values.back()->at( ( lowerLeftY + 1 ) ) );
+                                           gridValues.back()->at( lowerLeftY ),
+                                 gridValues.back()->at( ( lowerLeftY + 1 ) ) );
         }
-        else if( ( values.back()->size() == ( lowerLeftY + 1 ) )
+        else if( ( gridValues.back()->size() == ( lowerLeftY + 1 ) )
                  &&
                  ( (double)lowerLeftY == ySteps ) )
           // otherwise, if it's on the maximal x & y corner...
         {
-          return values.back()->back();
+          return gridValues.back()->back();
         }
         else
           // otherwise, it's off the grid:
         {
           //return CppSLHA::CppSLHA_global::really_wrong_value;
           // actually, let's do some extrapolation:
-          if( shortcut->isVerbose() )
+          if( inputShortcut->isVerbose() )
           {
             std::cout
             << std::endl
-            << "LHC-FASER::warning! A cross-section for masses outside the"
-            << " grid was requested. Returning an exponential extrapolation.";
+            << "LHC-FASER::warning! A cross-section for masses ("
+            << xCoordinate << ", " << yCoordinate << ") outside the grid was"
+            << " requested. Returning an exponential extrapolation.";
             std::cout << std::endl;
           }
-          double lowerValue( values.back()->at( values.back()->size() - 2 ) );
-          double upperValue( values.back()->back() );
+          double
+          lowerValue( gridValues.back()->at( gridValues.back()->size() - 2 ) );
+          double upperValue( gridValues.back()->back() );
           double extrapolationRatio( upperValue / lowerValue );
           if( 1.0 < extrapolationRatio )
           {
@@ -509,7 +517,7 @@ namespace LHC_FASER
           << ", upperValue = " << upperValue
           << ", extrapolationRatio = " << extrapolationRatio;
           std::cout << std::endl;**/
-          while( values.back()->size() <= ( lowerLeftY + 1 ) )
+          while( gridValues.back()->size() <= ( lowerLeftY + 1 ) )
           {
             lowerValue *= extrapolationRatio;
             upperValue *= extrapolationRatio;
@@ -537,12 +545,13 @@ namespace LHC_FASER
       {
         //return CppSLHA::CppSLHA_global::really_wrong_value;
         // actually, let's do some extrapolation:
-        if( shortcut->isVerbose() )
+        if( inputShortcut->isVerbose() )
         {
           std::cout
           << std::endl
-          << "LHC-FASER::warning! A cross-section for masses outside the"
-          << " grid was requested. Returning an exponential extrapolation.";
+          << "LHC-FASER::warning! A cross-section for masses ("
+          << xCoordinate << ", " << yCoordinate << ") outside the grid was"
+          << " requested. Returning an exponential extrapolation.";
           std::cout << std::endl;
           // debugging:
           /**std::cout << std::endl << "debugging:"
@@ -551,14 +560,14 @@ namespace LHC_FASER
           << ", lowerLeftY = " << lowerLeftY;
           std::cout << std::endl;**/
         }
-        if( ( values.back()->size() > lowerLeftY )
+        if( ( gridValues.back()->size() > lowerLeftY )
             &&
             ( (double)lowerLeftY == ySteps ) )
           // if we're in line with a row of grid points...
         {
-          double
-          leftValue( values.at( values.size() - 2 )->at( lowerLeftY ) );
-          double rightValue( values.back()->at( lowerLeftY ) );
+          double leftValue( gridValues.at( gridValues.size()
+                                           - 2 )->at( lowerLeftY ) );
+          double rightValue( gridValues.back()->at( lowerLeftY ) );
           double extrapolationRatio( rightValue / leftValue );
           if( 1.0 < extrapolationRatio )
           {
@@ -575,7 +584,7 @@ namespace LHC_FASER
           << ", rightValue = " << rightValue
           << ", extrapolationRatio = " << extrapolationRatio;
           std::cout << std::endl;**/
-          while( values.size() <= ( lowerLeftX + 1 ) )
+          while( gridValues.size() <= ( lowerLeftX + 1 ) )
           {
             leftValue *= extrapolationRatio;
             rightValue *= extrapolationRatio;
@@ -598,15 +607,17 @@ namespace LHC_FASER
                                                           rightValue );
 
         }
-        else if( values.back()->size() > ( lowerLeftY + 1 ) )
+        else if( gridValues.back()->size() > ( lowerLeftY + 1 ) )
           // if the y co-ordinate is less than its maximal grid value...
         {
           double
-          lowerLeftValue( values.at( values.size() - 2 )->at( lowerLeftY ) );
-          double upperLeftValue( values.at( values.size() - 2 )->at(
+          lowerLeftValue( gridValues.at( gridValues.size()
+                                         - 2 )->at( lowerLeftY ) );
+          double
+          upperLeftValue( gridValues.at( gridValues.size() - 2 )->at(
                                                             lowerLeftY + 1 ) );
-          double lowerRightValue( values.back()->at( lowerLeftY ) );
-          double upperRightValue( values.back()->at( lowerLeftY + 1 ) );
+          double lowerRightValue( gridValues.back()->at( lowerLeftY ) );
+          double upperRightValue( gridValues.back()->at( lowerLeftY + 1 ) );
           double lowerRatio( lowerRightValue / lowerLeftValue );
           if( 1.0 < lowerRatio )
           {
@@ -631,7 +642,7 @@ namespace LHC_FASER
           << ", lowerRatio = " << lowerRatio
           << ", upperRatio = " << upperRatio;
           std::cout << std::endl;**/
-          while( values.size() <= ( lowerLeftX + 1 ) )
+          while( gridValues.size() <= ( lowerLeftX + 1 ) )
           {
             lowerLeftValue *= lowerRatio;
             lowerRightValue *= lowerRatio;
@@ -666,12 +677,15 @@ namespace LHC_FASER
           // & we have to do more extraploation:
         {
           double
-          lowerLeftValue( values.at( values.size() - 2 )->at(
-                                values.at( values.size() - 2 )->size() - 2 ) );
-          double upperLeftValue( values.at( values.size() - 2 )->back() );
+          lowerLeftValue( gridValues.at( gridValues.size() - 2 )->at(
+                                           gridValues.at( gridValues.size() - 2
+                                                             )->size() - 2 ) );
           double
-          lowerRightValue( values.back()->at( values.back()->size() - 2 ) );
-          double upperRightValue( values.back()->back() );
+          upperLeftValue( gridValues.at( gridValues.size() - 2 )->back() );
+          double
+          lowerRightValue( gridValues.back()->at( gridValues.back()->size()
+                                                  - 2 ) );
+          double upperRightValue( gridValues.back()->back() );
           double lowerRatio( lowerRightValue / lowerLeftValue );
           if( 1.0 < lowerRatio )
           {
@@ -710,7 +724,7 @@ namespace LHC_FASER
           << ", leftRatio = " << leftRatio
           << ", rightRatio = " << rightRatio;
           std::cout << std::endl;**/
-          while( values.back()->size() <= ( lowerLeftY + 1 ) )
+          while( gridValues.back()->size() <= ( lowerLeftY + 1 ) )
           {
             lowerLeftValue *= leftRatio;
             upperLeftValue *= leftRatio;
@@ -719,7 +733,7 @@ namespace LHC_FASER
             --lowerLeftY;
             // note that we've extrapolated the grid a step.
           }
-          while( values.size() <= ( lowerLeftX + 1 ) )
+          while( gridValues.size() <= ( lowerLeftX + 1 ) )
           {
             lowerLeftValue *= lowerRatio;
             lowerRightValue *= lowerRatio;
@@ -766,9 +780,9 @@ namespace LHC_FASER
   crossSectionTable::crossSectionTable( squareGrid const* const lookupTable,
                        signedParticleShortcutPair const* const scoloredPair,
                                         double const flavorFactor,
-                                        inputHandler const* const shortcut ) :
-    getsReadiedForNewPoint( shortcut->getReadier() ),
-    shortcut( shortcut ),
+                                    inputHandler const* const inputShortcut ) :
+    getsReadiedForNewPoint( inputShortcut->getReadier() ),
+    inputShortcut( inputShortcut ),
     scoloredPair( scoloredPair ),
     lookupTable( lookupTable ),
     flavorFactor( flavorFactor )
@@ -782,19 +796,19 @@ namespace LHC_FASER
     << given_pair->is_first_particle() << "; "
     << given_pair->getSecondParticle()->getName() << ": "
     << given_pair->is_second_particle() << " }, "
-    << given_flavor_factor << ", " << given_shortcuts << " ) called";
+    << given_flavor_factor << ", " << given_inputShortcuts << " ) called";
     std::cout << std::endl;**/
 
     // we take the 1st squark found to ask for its mass in looking up the
     // cross-section. if no squark was provided, we keep the pointer as NULL.
-    if( shortcut->isIn( scoloredPair->getFirstParticle()->get_PDG_code(),
-                         shortcut->getSquarks() ) )
+    if( inputShortcut->isIn( scoloredPair->getFirstParticle()->get_PDG_code(),
+                         inputShortcut->getSquarks() ) )
     {
       directlyProducedSquark = scoloredPair->getFirstParticle();
     }
-    else if( shortcut->isIn(
+    else if( inputShortcut->isIn(
                             scoloredPair->getSecondParticle()->get_PDG_code(),
-                              shortcut->getSquarks() ) )
+                              inputShortcut->getSquarks() ) )
     {
       directlyProducedSquark = scoloredPair->getSecondParticle();
     }
@@ -839,11 +853,11 @@ namespace LHC_FASER
         else
           // otherwise, we use the average squark mass...
         {
-          squarkMassToUse = shortcut->getAverageSquarks4Mass();
+          squarkMassToUse = inputShortcut->getAverageSquarks4Mass();
         }
         if( squarkMassToUse < lookupTable->getLowestX() )
         {
-          if( shortcut->isVerbose() )
+          if( inputShortcut->isVerbose() )
           {
             std::cout
             << std::endl
@@ -857,14 +871,14 @@ namespace LHC_FASER
           }
           squarkMassToUse = lookupTable->getLowestX();
         }
-        if( shortcut->getGluinoMass() < lookupTable->getLowestY() )
+        if( inputShortcut->getGluinoMass() < lookupTable->getLowestY() )
         {
-          if( shortcut->isVerbose() )
+          if( inputShortcut->isVerbose() )
           {
             std::cout
             << std::endl
             << "LHC-FASER::warning! cross-section requested for a gluino"
-            << " mass ( " << shortcut->getGluinoMass()
+            << " mass ( " << inputShortcut->getGluinoMass()
             << " ) lower than the lowest gluino mass of the lookup table ( ";
             std::cout
             << lookupTable->getLowestY()
@@ -877,7 +891,7 @@ namespace LHC_FASER
         else
         {
           storedValue = lookupTable->valueAt( squarkMassToUse,
-                                              shortcut->getGluinoMass() );
+                                              inputShortcut->getGluinoMass() );
         }
         storedValue *= flavorFactor;
       }
@@ -894,8 +908,8 @@ namespace LHC_FASER
   crossSectionTableSet::crossSectionTableSet(
                                         std::string const* const gridDirectory,
                                               int const beamEnergy,
-                                         inputHandler const* const shortcut ) :
-    shortcut( shortcut ),
+                                    inputHandler const* const inputShortcut ) :
+    inputShortcut( inputShortcut ),
     gridDirectory( *gridDirectory ),
     beamEnergy( beamEnergy )
   {
@@ -966,9 +980,9 @@ namespace LHC_FASER
       gridName->assign( "gluino+gluino" );
       return 1.0;
     }
-    else if(
-            shortcut->isIn( scoloredPair->getFirstParticle()->get_PDG_code(),
-                             shortcut->getSquarks() )
+    else if( inputShortcut->isIn(
+                              scoloredPair->getFirstParticle()->get_PDG_code(),
+                                  inputShortcut->getSquarks() )
              &&
              ( CppSLHA::PDG_code::gluino
                == scoloredPair->getSecondParticle()->get_PDG_code() ) )
@@ -999,9 +1013,9 @@ namespace LHC_FASER
         return 0.0;
       }
     }
-    else if(
-           shortcut->isIn( scoloredPair->getSecondParticle()->get_PDG_code(),
-                            shortcut->getSquarks() )
+    else if( inputShortcut->isIn(
+                             scoloredPair->getSecondParticle()->get_PDG_code(),
+                                  inputShortcut->getSquarks() )
              &&
              ( CppSLHA::PDG_code::gluino
                == scoloredPair->getFirstParticle()->get_PDG_code() ) )
@@ -1032,12 +1046,13 @@ namespace LHC_FASER
         return 0.0;
       }
     }
-    else if(
-            shortcut->isIn( scoloredPair->getFirstParticle()->get_PDG_code(),
-                             shortcut->getSquarks() )
-            &&
-           shortcut->isIn( scoloredPair->getSecondParticle()->get_PDG_code(),
-                            shortcut->getSquarks() ) )
+    else if( inputShortcut->isIn(
+                              scoloredPair->getFirstParticle()->get_PDG_code(),
+                                  inputShortcut->getSquarks() )
+             &&
+             inputShortcut->isIn(
+                             scoloredPair->getSecondParticle()->get_PDG_code(),
+                                  inputShortcut->getSquarks() ) )
     {
       if( ( scoloredPair->firstIsNotAntiparticle()
           &&
@@ -1376,7 +1391,7 @@ namespace LHC_FASER
 
       // we check for whether we should use NLO K-factors:
       squareGrid* nloGrid( NULL );
-      if( shortcut->usingNlo() )
+      if( inputShortcut->usingNlo() )
       {
         std::string nloGridFileName( gridDirectory );
         nloGridFileName.append( "/" );
@@ -1392,7 +1407,7 @@ namespace LHC_FASER
         nloGrid = new squareGrid( &nloGridFileName,
                                   gridName,
                                   NULL,
-                                  shortcut );
+                                  inputShortcut );
         // the grid's name isn't important because it is only temporary.
 
         // debugging:
@@ -1408,7 +1423,7 @@ namespace LHC_FASER
       returnPointer = new squareGrid( &loGridFileName,
                                       gridName,
                                       nloGrid,
-                                      shortcut );
+                                      inputShortcut );
       if( NULL != nloGrid )
         // if we needed a K-factor grid...
       {
@@ -1509,14 +1524,14 @@ namespace LHC_FASER
         returnPointer = new crossSectionTable( getGrid( &gridName ),
                                                requestedChannel,
                                                flavorFactor,
-                                               shortcut );
+                                               inputShortcut );
       }
       else
       {
         returnPointer = new crossSectionTable( NULL,
                                                requestedChannel,
                                                0.0,
-                                               shortcut );
+                                               inputShortcut );
         /* a crossSectionTable initialized with a NULL squareGrid
          * pointer *should* be OK if its flavor factor is 0.0, so that it
          * never calls any of the squareGrid's member functions.
@@ -1531,8 +1546,8 @@ namespace LHC_FASER
 
 
   crossSectionHandler::crossSectionHandler(
-                                         inputHandler const* const shortcut ) :
-    shortcut( shortcut )
+                                    inputHandler const* const inputShortcut ) :
+    inputShortcut( inputShortcut )
   {
     // just an initialization list
   }
@@ -1574,13 +1589,13 @@ namespace LHC_FASER
       // it & return a pointer to it:
     {
       std::string
-      energyName( *(shortcut->inspectPathToCrossSectionGrids()) );
+      energyName( *(inputShortcut->inspectPathToCrossSectionGrids()) );
       std::stringstream energyStream( "" );
       energyStream << "/" << beamEnergyInTev << "TeV";
       energyName.append( energyStream.str() );
       returnPointer = new crossSectionTableSet( &energyName,
                                                 beamEnergyInTev,
-                                                shortcut );
+                                                inputShortcut );
       tableSets.push_back( returnPointer );
     }
     return returnPointer;

@@ -207,6 +207,9 @@ namespace LHC_FASER
     inspectPathToCrossSectionGrids()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    setPathToCrossSectionGrids(
+                            std::string const* const pathToCrossSectionGrids );
     std::string*
     getPathToKinematicsGrids()
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -214,6 +217,8 @@ namespace LHC_FASER
     inspectPathToKinematicsGrids()
     const
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    setPathToKinematicsGrids( std::string const* const pathToKinematicsGrids );
     CppSLHA::CppSLHA0 const*
     getCppSlha()
     const
@@ -887,12 +892,6 @@ namespace LHC_FASER
     return &pathToCrossSectionGrids;
   }
 
-  inline std::string*
-  inputHandler::getPathToKinematicsGrids()
-  {
-    return &pathToKinematicsGrids;
-  }
-
   inline std::string const*
   inputHandler::inspectPathToCrossSectionGrids()
   const
@@ -900,11 +899,31 @@ namespace LHC_FASER
     return &pathToCrossSectionGrids;
   }
 
+  inline void
+  inputHandler::setPathToCrossSectionGrids(
+                             std::string const* const pathToCrossSectionGrids )
+  {
+    this->pathToCrossSectionGrids.assign( *pathToCrossSectionGrids );
+  }
+
+  inline std::string*
+  inputHandler::getPathToKinematicsGrids()
+  {
+    return &pathToKinematicsGrids;
+  }
+
   inline std::string const*
   inputHandler::inspectPathToKinematicsGrids()
   const
   {
     return &pathToKinematicsGrids;
+  }
+
+  inline void
+  inputHandler::setPathToKinematicsGrids(
+                               std::string const* const pathToKinematicsGrids )
+  {
+    this->pathToKinematicsGrids.assign( *pathToKinematicsGrids );
   }
 
   inline CppSLHA::CppSLHA0 const*

@@ -291,7 +291,7 @@ namespace LHC_FASER
     coloredDecayer( coloredDecayer ),
     electroweakDecayer( electroweakDecayer ),
     lighterScolored( lighterScolored )
-  // this is the version for vector bosons.
+  // this is the version for bosons.
   {
     effectiveSquarkMassHolder* effectiveSquarkMassPointer;
     if( inputShortcut->getGluino() == coloredDecayer )
@@ -350,7 +350,6 @@ namespace LHC_FASER
     << std::endl
     << "cascades.size() = " << cascades.size();
     std::cout << std::endl;**/
-
   }
 
   electroweakCascadeSet::~electroweakCascadeSet()
@@ -479,10 +478,9 @@ namespace LHC_FASER
 
 
   electroweakCascadeHandler::electroweakCascadeHandler(
-                                       inputHandler const* const inputShortcut,
-                               std::string const* const gridFileSetLocation ) :
+                                    inputHandler const* const inputShortcut ) :
     kinematicsSource( inputShortcut,
-                      gridFileSetLocation ),
+                      inputShortcut->inspectPathToKinematicsGrids() ),
     inputShortcut( inputShortcut )
   {
     // just an initialization list.

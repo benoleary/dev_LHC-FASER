@@ -134,10 +134,10 @@
 #include "testing_header_files/full_cascade_testing.hpp"
 #include "testing_header_files/jet_kinematics_testing.hpp"
 #include "testing_header_files/signal_testing.hpp"
+#include "testing_header_files/lhcFaser_testing.hpp"
 
 // future includes:
-//#include "testing_header_files/lhcFaser_testing.hpp"
-
+// none, since we're done!
 
 // the main program:
 
@@ -232,63 +232,18 @@ int main( int argumentCount,
 	
 
   /* testing the signal stuff:
-   * (works)*//**/
+   * (works)*//**
   LHC_FASER::signalTesting signalTester( &basicStuffTester,
                                          &inputTester );
   signalTester.performTest();
-  /**/
-
-  /* finally, testing the lhcFaser itself: (not working)*//**
-
-  LHC_FASER::lhcFaser SPS1a_UI( "SPS1a_spectrum.out" );
-  LHC_FASER::lhcFaser SPS2_UI( "SPS2_spectrum.out" );
-
-  SPS1a_UI.addSignal( "sigmaBreakdownTest" );
-  SPS1a_UI.addSignal( "Atlas4jMET0l7TeV" );
-  SPS2_UI.addSignal( "badSignalName" );
-  SPS2_UI.addSignal( "Atlas4jMET0l7TeV" );
-
-  LHC_FASER::signal_handler* sigma_SPS1a
-  = SPS1a_UI.getSignal( "sigmaBreakdownTest" );
-  LHC_FASER::signal_handler* Atlas_SPS1a
-  = SPS1a_UI.getSignal( "Atlas4jMET0l7TeV" );
-  LHC_FASER::signal_handler* Atlas_SPS2
-  = SPS2_UI.getSignal( "Atlas4jMET0l7TeV" );
-  LHC_FASER::signal_handler* bad_SPS2
-  = SPS2_UI.getSignal( "badSignalName" );
-
-
-  std::cout << std::endl;
-  std::cout << std::endl << "all 4 test signals from test UIs have pointers.";
-  std::cout << std::endl;
-
-  SPS1a_UI.updateForNewSlha();
-  std::cout << std::endl;
-  std::cout << std::endl << "SPS1a_UI.updateForNewSlha() successful.";
-  std::cout << std::endl;
-  SPS2_UI.updateForNewSlha();
-  std::cout << std::endl;
-  std::cout << std::endl << "SPS2_UI.updateForNewSlha() successful.";
-  std::cout << std::endl;
-  std::cout
-  << std::endl << "after updating for new point, "
-  << *(sigma_SPS1a->get_name()) << " (sigma_SPS1a) has signal value "
-  << sigma_SPS1a->getValue();
-  std::cout << std::endl;
-  std::cout
-  << *(bad_SPS2->get_name()) << " (bad_SPS2) has signal value "
-  << bad_SPS2->getValue();
-  std::cout << std::endl;
-  std::cout
-  << *(Atlas_SPS1a->get_name()) << " (Atlas_SPS1a) has signal value "
-  << Atlas_SPS1a->getValue();
-  std::cout << std::endl;
-  std::cout
-  << *(Atlas_SPS2->get_name()) << " (Atlas_SPS2) has signal value "
-  << Atlas_SPS2->getValue();
-  std::cout << std::endl;
-
   **/
+
+  /* finally, testing the lhcFaser itself:
+   * (not working)*//**/
+  LHC_FASER::lhcFaserTesting lhcFaserTester( &basicStuffTester,
+                                             &inputTester );
+  lhcFaserTester.performTest();
+  /**/
 
 
   /* testing adding new signals & how long it takes to load & calculate: *//**

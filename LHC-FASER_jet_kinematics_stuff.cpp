@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -950,14 +950,63 @@ namespace LHC_FASER
     }
     else if( ( fullCascade::sjgx == givenCascade->getColorfulCascadeType() )
              ||
-             ( fullCascade::sbgx == givenCascade->getColorfulCascadeType() )
-             ||
-            ( fullCascade::sbsjgx == givenCascade->getColorfulCascadeType() ) )
+             ( fullCascade::sbgx == givenCascade->getColorfulCascadeType() ) )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
       << "counts as sgx";
+      std::cout << std::endl;**/
+
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "givenCascade->getCascadeDefiner()->size() = "
+      << givenCascade->getCascadeDefiner()->size()
+      << ", givenCascade = "
+      << *(givenCascade->getInitialScolored()->get_name());
+      for( std::vector< fullCascade::particleWithInt*
+                                                >::const_reverse_iterator
+           cascadeParticleIterator(
+                                 givenCascade->getCascadeDefiner()->rbegin() );
+           givenCascade->getCascadeDefiner()->rend()
+           > cascadeParticleIterator;
+           ++cascadeParticleIterator )
+      {
+        std::cout
+        << " => " << *((*cascadeParticleIterator)->first->get_name());
+      }
+      std::cout << std::endl;**/
+
+      typeToCountAs = sgx;
+      *squarkFromCascade = givenCascade->getInitialScolored();
+    }
+    else if( fullCascade::sbsjgx == givenCascade->getColorfulCascadeType() )
+    {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "counts as sgx";
+      std::cout << std::endl;**/
+
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "givenCascade->getCascadeDefiner()->size() = "
+      << givenCascade->getCascadeDefiner()->size()
+      << ", givenCascade = "
+      << *(givenCascade->getInitialScolored()->get_name());
+      for( std::vector< fullCascade::particleWithInt*
+                                                >::const_reverse_iterator
+           cascadeParticleIterator(
+                                 givenCascade->getCascadeDefiner()->rbegin() );
+           givenCascade->getCascadeDefiner()->rend()
+           > cascadeParticleIterator;
+           ++cascadeParticleIterator )
+      {
+        std::cout
+        << " => " << *((*cascadeParticleIterator)->first->get_name());
+      }
       std::cout << std::endl;**/
 
       typeToCountAs = sgx;
@@ -1023,6 +1072,12 @@ namespace LHC_FASER
 
     gridMatrixRow = gridsMatrix.getPointer( getIntForCascadeType( firstCascade,
                                                        &firstCascadeSquark ) );
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "gridMatrixRow = " << gridMatrixRow;
+    std::cout << std::endl;**/
+
     gridMatrixElement = gridMatrixRow->getPointer( getIntForCascadeType(
                                                                  secondCascade,
                                                       &secondCascadeSquark ) );
@@ -1089,7 +1144,7 @@ namespace LHC_FASER
 
 
   jetAcceptanceTablesForOneBeamEnergy::jetAcceptanceTablesForOneBeamEnergy(
-                                           inputHandler const* const inputShortcut,
+                                       inputHandler const* const inputShortcut,
                                                           int const beamEnergy,
                                std::string const* const gridFileSetLocation ) :
     inputShortcut( inputShortcut ),
@@ -1149,10 +1204,9 @@ namespace LHC_FASER
 
 
   jetPlusMetAcceptanceHandler::jetPlusMetAcceptanceHandler(
-                                           inputHandler const* const inputShortcut,
-                               std::string const* const gridFileSetLocation ) :
+                                    inputHandler const* const inputShortcut ) :
     inputShortcut( inputShortcut ),
-    gridFileSetLocation( *gridFileSetLocation )
+    gridFileSetLocation( *(inputShortcut->inspectPathToKinematicsGrids()) )
   {
     // just an initialization list.
   }

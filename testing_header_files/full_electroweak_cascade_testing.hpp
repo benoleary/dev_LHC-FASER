@@ -212,8 +212,7 @@ namespace LHC_FASER
       << "direct testEwinoCascadeSet & testBosonCascadeSet seem fine.";
       std::cout << std::endl;
       electroweakCascadeHandler
-      testElectroweakCascadeHandler( testInputHandler,
-                            testInputHandler->inspectPathToKinematicsGrids() );
+      testElectroweakCascadeHandler( testInputHandler );
       testBosonCascadeSet
       = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
                                                               )->getCascadeSet(

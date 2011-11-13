@@ -65,7 +65,22 @@ namespace LHC_FASER
                       std::string const pathToGrids,
                       std::string const crossSectionUnit,
                       bool const usingNlo ) :
-    usingOwnCppSlha( false )
+    spectrumData( NULL ),
+    usingOwnCppSlha( false ),
+    pathToGrids( "" ),
+    pathToCrossSectionGrids( "" ),
+    pathToAcceptanceGrids( "" ),
+    crossSectionUnitFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
+    usingNlo( true ),
+    inputSource( NULL ),
+    crossSectionSource( NULL ),
+    jetPlusMetAcceptanceSource( NULL ),
+    electroweakCascadeSource( NULL ),
+    fullCascadeSetSource( NULL ),
+    signalPreparationDefinitions( NULL ),
+    signalSet(),
+    inputShortcut( NULL ),
+    readierObject()
   {
     initialize( spectrumData,
                 pathToGrids,
@@ -81,10 +96,24 @@ namespace LHC_FASER
                       std::string const pathToGrids,
                       std::string const crossSectionUnit,
                       bool const usingNlo ) :
-    spectrumData( new CppSLHA::CppSLHA2( slhaFileName ) ),
-    usingOwnCppSlha( true )
+    spectrumData( NULL ),
+    usingOwnCppSlha( true ),
+    pathToGrids( "" ),
+    pathToCrossSectionGrids( "" ),
+    pathToAcceptanceGrids( "" ),
+    crossSectionUnitFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
+    usingNlo( true ),
+    inputSource( NULL ),
+    crossSectionSource( NULL ),
+    jetPlusMetAcceptanceSource( NULL ),
+    electroweakCascadeSource( NULL ),
+    fullCascadeSetSource( NULL ),
+    signalPreparationDefinitions( NULL ),
+    signalSet(),
+    inputShortcut( NULL ),
+    readierObject()
   {
-    initialize( spectrumData,
+    initialize( new CppSLHA::CppSLHA2( slhaFileName ),
                 pathToGrids,
                 crossSectionUnit,
                 usingNlo );
@@ -104,12 +133,11 @@ namespace LHC_FASER
       delete *deletionIterator;
     }
     delete signalPreparationDefinitions;
-    delete shortcut;
+    delete inputShortcut;
     delete inputSource;
     delete crossSectionSource;
     delete jetPlusMetAcceptanceSource;
     delete electroweakCascadeSource;
-    delete readier;
   }
 
 
@@ -120,8 +148,19 @@ namespace LHC_FASER
                         bool const usingNlo )
   // this is used by the constructors to do most of the construction.
   {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "lhcFaser::initialize( " << spectrumData << ", " << pathToGrids << ", "
+    << crossSectionUnit << ", " << usingNlo << " ) called.";
+    std::cout << std::endl;**/
+
     this->spectrumData = spectrumData;
     this->pathToGrids.assign( pathToGrids );
+    pathToCrossSectionGrids.assign( pathToGrids );
+    pathToCrossSectionGrids.append( "/cross-sections/MSTW2008/" );
+    pathToAcceptanceGrids.assign( pathToGrids );
+    pathToAcceptanceGrids.append( "/kinematics/PYTHIA8/" );
     this->usingNlo = usingNlo;
     if( 0 == crossSectionUnit.compare( "pb" ) )
     {
@@ -144,24 +183,21 @@ namespace LHC_FASER
       crossSectionUnitFactor = 1000.0;
     }
 
-    readier = new readierForNewPoint();
     inputSource = new inputHandler( spectrumData,
                                     spectrumData->get_particle_spectrum(),
                                     pathToGrids,
-                                    readier );
+                                    &readierObject );
     crossSectionSource = new crossSectionHandler( inputSource );
-    jetPlusMetAcceptanceSource = new jetPlusMetAcceptanceHandler( inputSource,
-                                                        &(this->pathToGrids) );
-    electroweakCascadeSource = new electroweakCascadeHandler( inputSource,
-                                                        &(this->pathToGrids) );
-
-    shortcut = new signalShortcuts( inputSource,
-                                    crossSectionSource,
-                                    jetPlusMetAcceptanceSource,
-                                    fullCascadeSetSource );
-
-    signalPreparationDefinitions = new signalDefinitionSet( shortcut );
-
+    jetPlusMetAcceptanceSource
+    = new jetPlusMetAcceptanceHandler( inputSource );
+    electroweakCascadeSource = new electroweakCascadeHandler( inputSource );
+    fullCascadeSetSource = new fullCascadeSetFactory( inputSource,
+                                                    electroweakCascadeSource );
+    inputShortcut = new signalShortcuts( inputSource,
+                                         crossSectionSource,
+                                         jetPlusMetAcceptanceSource,
+                                         fullCascadeSetSource );
+    signalPreparationDefinitions = new signalDefinitionSet( inputShortcut );
   }
 
 }  // end of LHC_FASER namespace.

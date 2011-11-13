@@ -311,8 +311,7 @@ namespace LHC_FASER
   class jetPlusMetAcceptanceHandler
   {
   public:
-    jetPlusMetAcceptanceHandler( inputHandler const* const inputShortcut,
-                                std::string const* const gridFileSetLocation );
+    jetPlusMetAcceptanceHandler( inputHandler const* const inputShortcut );
     ~jetPlusMetAcceptanceHandler();
 
     jetAcceptanceTable*
