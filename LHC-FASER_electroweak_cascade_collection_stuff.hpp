@@ -317,7 +317,7 @@ namespace LHC_FASER
                                         int const numberOfPositiveElectrons,
                                         int const numberOfNegativeMuons,
                                         int const numberOfPositiveMuons )
-  // this adds up the acceptancesPerCutSet from the stored electroweakCascadeSource.
+  // this adds up the acceptances from the stored electroweakCascadeSource.
   {
     double returnValue( 0.0 );
     for( std::vector< electroweakCascade* >::iterator

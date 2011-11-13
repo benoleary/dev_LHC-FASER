@@ -150,7 +150,7 @@ namespace LHC_FASER
   neutralinoToSemuCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
+  // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the selectron or smuon to the LSP.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
@@ -179,19 +179,19 @@ namespace LHC_FASER
       nearSamePass = integrateAcceptance( nearSameDistribution,
                                           currentCuts->getPrimaryLeptonCut() );
       nearSameFail = ( 1.0 - integrateAcceptance( nearSameDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       farSamePass = integrateAcceptance( farSameDistribution,
                                          currentCuts->getPrimaryLeptonCut() );
       farSameFail = ( 1.0 - integrateAcceptance( farSameDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       nearOppositePass = integrateAcceptance( nearOppositeDistribution,
                                           currentCuts->getPrimaryLeptonCut() );
       nearOppositeFail = ( 1.0 - integrateAcceptance( nearOppositeDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       farOppositePass = integrateAcceptance( farOppositeDistribution,
                                          currentCuts->getPrimaryLeptonCut() );
       farOppositeFail = ( 1.0 - integrateAcceptance( farOppositeDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
 
       /* for both ossfMinusOsdf & zeroJetsZeroLeptons, the handed contributions
        * sum up to 1, so there are no factors of
@@ -257,12 +257,16 @@ namespace LHC_FASER
       << std::endl
       << "farOppositeFail = " << farOppositeFail;
       std::cout << std::endl;**/
+
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "neutralinoToSemuCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to "
+      << currentAcceptance->getZeroJetsZeroLeptons();
+      std::cout << std::endl;**/
     }  // end of if cascade branching ratio was large enough to care about.
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
   }
 
 
@@ -369,7 +373,7 @@ namespace LHC_FASER
   chargeSummedNeutralinoToSemuCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
+  // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the selectron or smuon to the LSP.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
@@ -381,11 +385,11 @@ namespace LHC_FASER
       nearPass = integrateAcceptance( nearDistribution,
                                       currentCuts->getPrimaryLeptonCut() );
       nearFail = ( 1.0 - integrateAcceptance( nearDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       farPass = integrateAcceptance( farDistribution,
                                      currentCuts->getPrimaryLeptonCut() );
       farFail = ( 1.0 - integrateAcceptance( farDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       bothPass = ( cascadeBr * ( 2.0 * nearPass * farPass ) );
       currentAcceptance->setOssfMinusOsdf( bothPass );
       // the factor of 2.0 accounts for the charge-conjugate cascade.
@@ -407,12 +411,15 @@ namespace LHC_FASER
         currentAcceptance->setZeroJetsOneNegativeElectron( onePassOneFail );
         currentAcceptance->setZeroJetsOnePositiveElectron( onePassOneFail );
       }
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "chargeSummedNeutralinoToSemuCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to "
+      << " to " << currentAcceptance->getZeroJetsZeroLeptons();
+      std::cout << std::endl;**/
     }  // end of if cascade branching ratio was large enough to care about.
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascade_BR = " << cascade_BR;
-    std::cout << std::endl;**/
   }
 
 
@@ -610,7 +617,7 @@ namespace LHC_FASER
   neutralinoToStauCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
+  // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the stau to the LSP.
   {
     currentAcceptance->setTwoJets( 0.0 );
@@ -792,12 +799,20 @@ namespace LHC_FASER
       // debugging:
       /**std::cout << "LRLbar/RLbarR";**/
       calculateForCurrentConfiguration();
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "neutralinoToStauCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to "
+      << currentAcceptance->getZeroJetsZeroLeptons()
+      << std::endl
+      << "also set 1j0l to "
+      << currentAcceptance->getOneJetZeroLeptons()
+      << " & set 2j0l to "
+      << currentAcceptance->getTwoJets();
+      std::cout << std::endl;**/
     }
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
   }
 
   void
@@ -1077,7 +1092,7 @@ namespace LHC_FASER
   chargeSummedNeutralinoToStauCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
+  // this returns the appropriate acceptances multiplied by branching ratios
   // from the electroweakino through the stau to the LSP.
   {
     currentAcceptance->setTwoJets( 0.0 );
@@ -1167,12 +1182,15 @@ namespace LHC_FASER
       configurationBr = ( cascadeBr * nearNegativeTauRightHandedness
                                     * farNegativeTauLeftHandedness );
       calculateForCurrentConfiguration();
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "chargeSummedNeutralinoToStauCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to "
+      << " to " << currentAcceptance->getZeroJetsZeroLeptons();
+      std::cout << std::endl;**/
     }
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
   }
 
   void
@@ -1212,7 +1230,7 @@ namespace LHC_FASER
      * only be used in situations where overall the charges are even, such as
      * in the case of a gluino decaying, which has equal branching ratio into
      * each charge version, so all the charge asymmetry cancels out, so we
-     * might as well not bother calculating the asymmetry in the 1st place.
+     * might as well not bother calculating the asymmetry in the 1st place).
      */
 
     currentPass = ( 2.0 * configurationBr * nearMuonPass * farMuonPass );
@@ -1434,7 +1452,7 @@ namespace LHC_FASER
   neutralinoToZCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios..
+  // this returns the appropriate acceptances multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -1491,9 +1509,9 @@ namespace LHC_FASER
       std::cout << std::endl;**/
 
       directMuonPass = integrateAcceptance( directMuonDistribution,
-                                            currentCuts->getPrimaryLeptonCut() );
+                                          currentCuts->getPrimaryLeptonCut() );
       directMuonFail = ( 1.0 - integrateAcceptance( directMuonDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       directJetPass = integrateAcceptance( directMuonDistribution,
                                            currentCuts->getJetCut() );
       directJetFail = ( 1.0 - directJetPass );
@@ -1586,7 +1604,7 @@ namespace LHC_FASER
       // right-handed quark, left-handed negative tau lepton:
       configurationBr
       = ( cascadeBr * ( 1.0 - jetLeftHandedness )
-          * negativeTauLeftHandedness );
+                    * negativeTauLeftHandedness );
       currentNegativeMuonDistribution = oppositeHardMuonDistribution;
       currentNegativePionDistribution = oppositeSoftPionDistribution;
       currentPositiveMuonDistribution = sameHardMuonDistribution;
@@ -1602,12 +1620,15 @@ namespace LHC_FASER
       currentPositiveMuonDistribution = oppositeSoftMuonDistribution;
       currentPositivePionDistribution = oppositeHardPionDistribution;
       calculateForCurrentConfiguration();
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "neutralinoToZCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to "
+      << currentAcceptance->getZeroJetsZeroLeptons();
+      std::cout << std::endl;**/
     }
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
   }
 
   void
@@ -1864,7 +1885,7 @@ namespace LHC_FASER
   chargeSummedNeutralinoToZCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
+  // this returns the appropriate acceptances multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -1909,9 +1930,9 @@ namespace LHC_FASER
                                       * CppSLHA::PDG_data::Z_to_invisible_BR );
 
       directMuonPass = integrateAcceptance( directMuonDistribution,
-                                            currentCuts->getPrimaryLeptonCut() );
+                                          currentCuts->getPrimaryLeptonCut() );
       directMuonFail = ( 1.0 - integrateAcceptance( directMuonDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       directJetPass = integrateAcceptance( directMuonDistribution,
                                            currentCuts->getJetCut() );
       directJetFail = ( 1.0 - directJetPass );
@@ -1961,12 +1982,15 @@ namespace LHC_FASER
       currentMuonDistribution = softMuonDistribution;
       currentPionDistribution = hardPionDistribution;
       calculateForCurrentConfiguration();
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "chargeSummedNeutralinoToZCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to "
+      << " to " << currentAcceptance->getZeroJetsZeroLeptons();
+      std::cout << std::endl;**/
     }
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
   }
 
   void
@@ -2140,7 +2164,7 @@ namespace LHC_FASER
   neutralinoToHiggsCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
+  // this returns the appropriate acceptances multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -2281,12 +2305,15 @@ namespace LHC_FASER
       currentPositiveMuonDistribution = hardMuonDistribution;
       currentPositivePionDistribution = softPionDistribution;
       calculateForCurrentConfiguration();
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "neutralinoToHiggsCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to "
+      << currentAcceptance->getZeroJetsZeroLeptons();
+      std::cout << std::endl;**/
     }
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
   }
 
   void
@@ -2576,7 +2603,7 @@ namespace LHC_FASER
   chargeSummedNeutralinoVirtualCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
+  // this returns the appropriate acceptances multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -2594,6 +2621,20 @@ namespace LHC_FASER
     currentAcceptance->setZeroJetsOneNegativeMuon( 0.0 );
     currentAcceptance->setZeroJetsOnePositiveMuon( 0.0 );
     currentAcceptance->setZeroJetsZeroLeptons( 0.0 );
+
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "chargeSummedNeutralinoVirtualCascade::calculateAcceptance(...) for "
+    << *(coloredDecayer->get_name()) << " -> "
+    << *(electroweakDecayer->get_name())
+    << " called. after initial resetting, 0j0l = "
+    << currentAcceptance->getZeroJetsZeroLeptons()
+    << std::endl
+    << "also 1j0l = " << currentAcceptance->getOneJetZeroLeptons()
+    << " & 2j0l = " << currentAcceptance->getTwoJets();
+    std::cout << std::endl;**/
+
     this->currentCuts = currentCuts;
     this->currentAcceptance = currentAcceptance;
     cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
@@ -2603,6 +2644,12 @@ namespace LHC_FASER
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "downs: cascadeBr = " << cascadeBr;
+      std::cout << std::endl;**/
+
       currentJetDistribution = directDownDistribution;
       calculateForCurrentJetConfiguration();
     }
@@ -2613,6 +2660,12 @@ namespace LHC_FASER
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "ups: cascadeBr = " << cascadeBr;
+      std::cout << std::endl;**/
+
       currentJetDistribution = directUpDistribution;
       calculateForCurrentJetConfiguration();
     }
@@ -2623,6 +2676,12 @@ namespace LHC_FASER
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "stranges: cascadeBr = " << cascadeBr;
+      std::cout << std::endl;**/
+
       currentJetDistribution = directStrangeDistribution;
       calculateForCurrentJetConfiguration();
     }
@@ -2633,6 +2692,12 @@ namespace LHC_FASER
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "charms: cascadeBr = " << cascadeBr;
+      std::cout << std::endl;**/
+
       currentJetDistribution = directCharmDistribution;
       calculateForCurrentJetConfiguration();
     }
@@ -2643,6 +2708,12 @@ namespace LHC_FASER
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "bottoms: cascadeBr = " << cascadeBr;
+      std::cout << std::endl;**/
+
       currentJetDistribution = directBottomDistribution;
       calculateForCurrentJetConfiguration();
     }
@@ -2653,10 +2724,16 @@ namespace LHC_FASER
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "electrons: cascadeBr = " << cascadeBr;
+      std::cout << std::endl;**/
+
       directPass = integrateAcceptance( directElectronDistribution,
                                         currentCuts->getPrimaryLeptonCut() );
       directFail = ( 1.0 - integrateAcceptance( directElectronDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       currentPass = ( cascadeBr * directPass * directPass );
       currentAcceptance->addToOssfMinusOsdf( currentPass );
       currentAcceptance->addToElectronPlusAntielectron( currentPass );
@@ -2665,6 +2742,13 @@ namespace LHC_FASER
       currentAcceptance->addToZeroJetsOnePositiveElectron( currentPass );
       currentAcceptance->addToZeroJetsZeroLeptons( cascadeBr
                                                    * directFail * directFail );
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "now 0j0l = " << currentAcceptance->getZeroJetsZeroLeptons()
+      << ", 1j0l = " << currentAcceptance->getOneJetZeroLeptons()
+      << ", & 2j0l = " << currentAcceptance->getTwoJets();
+      std::cout << std::endl;**/
     }
     cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
@@ -2673,10 +2757,16 @@ namespace LHC_FASER
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "muons: cascadeBr = " << cascadeBr;
+      std::cout << std::endl;**/
+
       directPass = integrateAcceptance( directMuonDistribution,
                                         currentCuts->getPrimaryLeptonCut() );
       directFail = ( 1.0 - integrateAcceptance( directMuonDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       currentPass = ( cascadeBr * directPass * directPass );
       currentAcceptance->addToOssfMinusOsdf( currentPass );
       currentAcceptance->addToMuonPlusAntimuon( currentPass );
@@ -2685,6 +2775,13 @@ namespace LHC_FASER
       currentAcceptance->addToZeroJetsOnePositiveMuon( currentPass );
       currentAcceptance->addToZeroJetsZeroLeptons( cascadeBr
                                                    * directFail * directFail );
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "now 0j0l = " << currentAcceptance->getZeroJetsZeroLeptons()
+      << ", 1j0l = " << currentAcceptance->getOneJetZeroLeptons()
+      << ", & 2j0l = " << currentAcceptance->getTwoJets();
+      std::cout << std::endl;**/
     }
     cascadeBr = electroweakDecayerDecays->get_branching_ratio_for_exact_match(
                                              CppSLHA::PDG_code::neutralino_one,
@@ -2693,14 +2790,20 @@ namespace LHC_FASER
     if( lhcFaserGlobal::negligibleBr < cascadeBr )
       // if the branching ratio into this channel is not negligible...
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "taus: cascadeBr = " << cascadeBr;
+      std::cout << std::endl;**/
+
       hardMuonPass = integrateAcceptance( hardMuonDistribution,
                                           currentCuts->getPrimaryLeptonCut() );
       hardMuonFail = ( 1.0 - integrateAcceptance( hardMuonDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       softMuonPass = integrateAcceptance( hardMuonDistribution,
                                           currentCuts->getPrimaryLeptonCut() );
       softMuonFail = ( 1.0 - integrateAcceptance( hardMuonDistribution,
-                                             currentCuts->getSecondaryLeptonCut() ) );
+                                      currentCuts->getSecondaryLeptonCut() ) );
       averageMuonPass = ( 0.5 * ( hardMuonPass + softMuonPass ) );
       averageMuonFail = ( 0.5 * ( hardMuonFail + softMuonFail ) );
       hardPionPass = integrateAcceptance( hardPionDistribution,
@@ -2756,7 +2859,7 @@ namespace LHC_FASER
       currentAcceptance->addToZeroJetsOneNegativeMuon( currentPass );
       currentAcceptance->addToZeroJetsOnePositiveMuon( currentPass );
 
-      currentAcceptance->addToZeroJetsZeroLeptons( configurationBr
+      currentAcceptance->addToZeroJetsZeroLeptons( cascadeBr
                                                    * ( tauPairToPionPairBr
                                                        * averagePionFail
                                                        * averagePionFail
@@ -2769,12 +2872,28 @@ namespace LHC_FASER
                                                        + tauPairToMuonPairBr )
                                                      * averageMuonFail
                                                      * averageMuonFail ) );
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "now 0j0l = " << currentAcceptance->getZeroJetsZeroLeptons()
+      << ", 1j0l = " << currentAcceptance->getOneJetZeroLeptons()
+      << ", & 2j0l = " << currentAcceptance->getTwoJets();
+      std::cout << std::endl;**/
+
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "chargeSummedNeutralinoVirtualCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to the far too large "
+      << currentAcceptance->getZeroJetsZeroLeptons() << ", wtf?"
+      << std::endl
+      << "also set 1j0l to "
+      << currentAcceptance->getOneJetZeroLeptons()
+      << " & set 2j0l to "
+      << currentAcceptance->getTwoJets();
+      std::cout << std::endl;**/
     }
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
   }
 
   void
@@ -2788,6 +2907,16 @@ namespace LHC_FASER
                                                                * directFail );
     currentAcceptance->addToZeroJetsZeroLeptons( cascadeBr * directFail
                                                            * directFail );
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "chargeSummedNeutralinoVirtualCascade::"
+    << "calculateForCurrentJetConfiguration(): directPass was " << directPass
+    << ", directFail was " << directFail << ", cascadeBr was " << cascadeBr
+    << ". now 0j01 = " << currentAcceptance->getZeroJetsZeroLeptons()
+    << ", 1j0l = " << currentAcceptance->getOneJetZeroLeptons()
+    << ", & 2j0l = " << currentAcceptance->getTwoJets();
+    std::cout << std::endl;**/
   }
 
 
@@ -2923,7 +3052,7 @@ namespace LHC_FASER
   scoloredToZPlusScoloredCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
+  // this returns the appropriate acceptances multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -3029,12 +3158,15 @@ namespace LHC_FASER
       currentMuonDistribution = softMuonDistribution;
       currentPionDistribution = hardPionDistribution;
       calculateForCurrentConfiguration();
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "scoloredToZPlusScoloredCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to "
+      << currentAcceptance->getZeroJetsZeroLeptons();
+      std::cout << std::endl;**/
     }
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
   }
 
   void
@@ -3211,7 +3343,7 @@ namespace LHC_FASER
   scoloredToHiggsPlusScoloredCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
+  // this returns the appropriate acceptances multiplied by branching ratios.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetOneNegativeElectron( 0.0 );
@@ -3331,12 +3463,16 @@ namespace LHC_FASER
       currentMuonDistribution = softMuonDistribution;
       currentPionDistribution = hardPionDistribution;
       calculateForCurrentConfiguration();
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "scoloredToHiggsPlusScoloredCascade::calculateAcceptance(...) for "
+      << *(coloredDecayer->get_name()) << " -> "
+      << *(electroweakDecayer->get_name()) << " set 0j0l to "
+      << " to "
+      << currentAcceptance->getZeroJetsZeroLeptons();
+      std::cout << std::endl;**/
     }
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "cascadeBr = " << cascadeBr;
-    std::cout << std::endl;**/
   }
 
   void

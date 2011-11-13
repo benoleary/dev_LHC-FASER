@@ -166,7 +166,7 @@ namespace LHC_FASER
                                      int const numberOfPositiveMuons )
   /* this does the common job of checking to see if the point has been
    * updated before calling the relevant protected virtual function, which
-   * returns the set of acceptanceValues for acceptance * branching ratio FOR THE
+   * returns the set of values for acceptance * branching ratio FOR THE
    * CASCADE FROM electroweakDecayer ONWARDS (does NOT include the BR for
    * coloredDecayer to electroweakDecayer - this is dealt with by the
    * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
@@ -174,7 +174,7 @@ namespace LHC_FASER
    * this function returns 0.0 if the cascade never results in the requested
    * set of jets + leptons.
    * the number of jets is the number produced from the decay of the
-   * decaying *electroweak* particle (neutralino, chargino or vector boson),
+   * decaying *electroweak* particle (neutralino, chargino or boson),
    * NOT from the decay of the colored sparticle to the decaying electroweak
    * particle.
    */

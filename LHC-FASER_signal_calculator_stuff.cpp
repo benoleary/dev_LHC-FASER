@@ -638,6 +638,12 @@ namespace LHC_FASER
                       << *((*cascadeParticleIterator)->first->get_name());
                     }
                     std::cout
+                    << "; 0+j, 0l = "
+                    << (*firstCascadeIterator
+                               )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                           0 );
+                    std::cout
                     << std::endl
                     << "2nd: "
                     << *((*secondCascadeIterator)->getInitialScolored(
@@ -655,6 +661,12 @@ namespace LHC_FASER
                       << " => "
                       << *((*cascadeParticleIterator)->first->get_name());
                     }
+                    std::cout
+                    << "; 0+j, 0l = "
+                    << (*secondCascadeIterator
+                               )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                           0 );
                     std::cout << std::endl;
                     std::cout
                     << std::endl
