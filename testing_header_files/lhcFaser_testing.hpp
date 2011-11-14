@@ -93,23 +93,10 @@ namespace LHC_FASER
       // does nothing.
     }
 
-
     void
     performTest()
     {
-      // debugging:
-      /**/std::cout << std::endl << "debugging:"
-      << std::endl
-      << "lhcFaserTesting::performTest() called.";
-      std::cout << std::endl;/**/
-
       lhcFaser* testLhcFaserPointer( new lhcFaser( "SPS1a_spectrum.out" ) );
-      // debugging:
-      /**/std::cout << std::endl << "debugging:"
-      << std::endl
-      << "testLhcFaserPointer constructed without obvious problem.";
-      std::cout << std::endl;/**/
-
       testLhcFaserPointer->addSignal( "sigmaBreakdownTest" );
       testLhcFaserPointer->addSignal( "Atlas4jMET0l7TeV" );
       testLhcFaserPointer->addSignal( "badSignalName" );
@@ -135,7 +122,7 @@ namespace LHC_FASER
       sps2LhcFaser.addSignal( "Atlas4jMET0l7TeV" );
       signalHandler*
       sps2Atlas4j0l( sps2LhcFaser.getSignal( "Atlas4jMET0l7TeV" ) );
-      sps1aLhcFaser.addSignal( "Atlas4jMET0l7TeV" );
+      sps1aLhcFaser.addSignal( "Atlas3jMET1l7TeV" );
       signalHandler*
       sps1aAtlas3j1l( sps1aLhcFaser.getSignal( "Atlas3jMET1l7TeV" ) );
       signalHandler*
@@ -176,8 +163,9 @@ namespace LHC_FASER
       << sps1aAtlas4j0l->getValue();
       std::cout << std::endl;
       std::cout
-      << *(sps1aAtlas3j1l->getName()) << " (sps1aAtlas3j1l) has signal value "
-      << sps1aAtlas3j1l->getValue();
+      << *(sps1aAtlas3j1l->getName());
+      std::cout << " (sps1aAtlas3j1l) has signal value ";
+      std::cout << sps1aAtlas3j1l->getValue();
       std::cout << std::endl;
       std::cout
       << *(sps1aBad->getName()) << " (sps1aBad) has signal value "

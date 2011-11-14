@@ -3469,7 +3469,6 @@ namespace LHC_FASER
       << "scoloredToHiggsPlusScoloredCascade::calculateAcceptance(...) for "
       << *(coloredDecayer->get_name()) << " -> "
       << *(electroweakDecayer->get_name()) << " set 0j0l to "
-      << " to "
       << currentAcceptance->getZeroJetsZeroLeptons();
       std::cout << std::endl;**/
     }
