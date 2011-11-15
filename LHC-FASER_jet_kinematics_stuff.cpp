@@ -1128,16 +1128,44 @@ namespace LHC_FASER
     << ", " << acceptanceColumn << " ).";
     std::cout << std::endl;**/
 
+    // now we ensure that we'll be asking for results from the grid:
+    double squarkMass( (*(gridMatrixElement->second))( firstCascadeSquark,
+                                                       secondCascadeSquark ) );
+    if( gridToUse->getHighestSquarkMass() < squarkMass )
+    {
+      squarkMass = gridToUse->getHighestSquarkMass();
+    }
+    double gluinoMass( inputShortcut->getGluinoMass() );
+    if( gridToUse->getHighestGluinoMass() < gluinoMass )
+    {
+      gluinoMass = gridToUse->getHighestGluinoMass();
+    }
+    double lighterScoloredMass( squarkMass );
+    if( gluinoMass < lighterScoloredMass )
+    {
+      lighterScoloredMass = gluinoMass;
+    }
+    double firstEwinoMass( firstCascade->getCascadeDefiner()->front(
+                                                )->first->get_absolute_mass());
+    if( lighterScoloredMass < firstEwinoMass )
+    {
+      firstEwinoMass
+      *= ( lighterScoloredMass / firstCascadeSquark->get_absolute_mass() );
+    }
+    double secondEwinoMass( secondCascade->getCascadeDefiner()->front(
+                                               )->first->get_absolute_mass() );
+    if( lighterScoloredMass < secondEwinoMass )
+    {
+      secondEwinoMass
+      *= ( lighterScoloredMass / secondCascadeSquark->get_absolute_mass() );
+    }
+
     // now we just use the general valueAt(...) function of acceptanceGrid:
     return
-    gridToUse->getAcceptance( (*(gridMatrixElement->second))(
-                                                            firstCascadeSquark,
-                                                         secondCascadeSquark ),
-                              inputShortcut->getGluinoMass(),
-                              firstCascade->getCascadeDefiner()->front(
-                                                 )->first->get_absolute_mass(),
-                              secondCascade->getCascadeDefiner()->front(
-                                                 )->first->get_absolute_mass(),
+    gridToUse->getAcceptance( squarkMass,
+                              gluinoMass,
+                              firstEwinoMass,
+                              secondEwinoMass,
                               acceptanceColumn );
   }
 

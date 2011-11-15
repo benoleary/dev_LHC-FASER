@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -64,16 +64,24 @@
 namespace LHC_FASER
 {
   /* new plan:
-   * basic sx, gx, sbx, gbx
-   * gm, sm (m for more) build on above + also on each other
-   * es for intermediate electroweakinos
+   * basic sx, gx => sxCascade, gxCascade, & sups have supxCascade, which has a
+   * sxCascade for decays without a W, & a supwxCascade, for decays with a W.
+   * gjm, sjm, gbm, sbm (m for more) build on above + also on each other.
+   * es for intermediate electroweakinos.
    * put all sq & all unstable ewinos into list, order by mass, pop out
    * ewinos lighter than all sq & all ewinos heavier than all sq.
    * while( m_sq < m_go ), makeSquarksLighterThanGluino, then makeGluino,
    * then makeSquarksHeavierThanGluino, making es objects as encountered.
    *
-   * sx, gx, sbx, & gbx all have basic getAcceptance. sm & gm build on own (if
-   * not NULL) bosonCascades * getAcceptance of subcascadePointer.
+   * sx, gx both have basic getAcceptance. sm & gm build on getAcceptance of
+   * subcascadePointer, sbm & gbm build on own bosonCascades * getAcceptance of
+   * subcascadePointer.
+   *
+   * need to write supDecayToWPlusAndNeutralino class derived from
+   * electroweakCascadeSet class. should just have pointers to 2
+   * electroweakCascades but giving virtualSdown effectiveSquarkMasses.
+   * (reorganize electroweakCascadeSet so that constructor uses initialization
+   * functions that can be used by supDecayToWPlusAndNeutralino.)
    */
 
 
