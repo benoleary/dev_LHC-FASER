@@ -63,6 +63,20 @@
 
 namespace LHC_FASER
 {
+  /* new plan:
+   * basic sx, gx, sbx, gbx
+   * gm, sm (m for more) build on above + also on each other
+   * es for intermediate electroweakinos
+   * put all sq & all unstable ewinos into list, order by mass, pop out
+   * ewinos lighter than all sq & all ewinos heavier than all sq.
+   * while( m_sq < m_go ), makeSquarksLighterThanGluino, then makeGluino,
+   * then makeSquarksHeavierThanGluino, making es objects as encountered.
+   *
+   * sx, gx, sbx, & gbx all have basic getAcceptance. sm & gm build on own (if
+   * not NULL) bosonCascades * getAcceptance of subcascadePointer.
+   */
+
+
   /* this class is for keeping track of a particular cascade decay of a colored
    * sparticle down to the last electroweak decay, such that it keeps track of
    * all the sparticles of a cascade decay. it is an abstract base class.

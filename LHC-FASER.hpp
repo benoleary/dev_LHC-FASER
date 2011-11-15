@@ -176,6 +176,11 @@ namespace LHC_FASER
     updateForNewSlha( std::string const slhaFileName )
     // this reads in the new file & recalculates all required signals.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
+    void
+    setVerbosity( bool const isVerbose )
+    {
+      inputSource->setVerbosity( isVerbose );
+    }
 
   protected:
     CppSLHA::CppSLHA0* spectrumData;

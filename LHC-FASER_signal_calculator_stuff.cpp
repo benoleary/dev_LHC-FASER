@@ -604,81 +604,6 @@ namespace LHC_FASER
                   << subchannelOneOrMoreJetsZeroLeptons;
                   std::cout << std::endl;**/
 
-                  if( !( 1.0 >= subchannelZeroOrMoreJetsZeroLeptons )
-                      ||
-                      !( 1.0 >= subchannelOneOrMoreJetsZeroLeptons ) )
-                  {
-                    std::cout << std::endl << "LHC-FASER::error!"
-                    << std::endl
-                    << *((*channelIterator)->getScoloredPair(
-                                   )->getFirstParticle()->get_name_or_antiname(
-                                           (*channelIterator)->getScoloredPair(
-                                                 )->firstIsNotAntiparticle() ))
-                    << " + "
-                    << *((*channelIterator)->getScoloredPair(
-                                  )->getSecondParticle()->get_name_or_antiname(
-                                           (*channelIterator)->getScoloredPair(
-                                               )->secondIsNotAntiparticle() ));
-                    std::cout
-                    << std::endl
-                    << "1st: "
-                    << *((*firstCascadeIterator)->getInitialScolored(
-                                                                )->get_name());
-                    for( std::vector< fullCascade::particleWithInt*
-                                                      >::const_reverse_iterator
-                         cascadeParticleIterator(
-                                    (*firstCascadeIterator)->getCascadeDefiner(
-                                                                 )->rbegin() );
-                         (*firstCascadeIterator)->getCascadeDefiner()->rend()
-                         > cascadeParticleIterator;
-                         ++cascadeParticleIterator )
-                    {
-                      std::cout
-                      << " => "
-                      << *((*cascadeParticleIterator)->first->get_name());
-                    }
-                    std::cout
-                    << "; 0+j, 0l = "
-                    << (*firstCascadeIterator
-                               )->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                           0 );
-                    std::cout
-                    << std::endl
-                    << "2nd: "
-                    << *((*secondCascadeIterator)->getInitialScolored(
-                                                                )->get_name());
-                    for( std::vector< fullCascade::particleWithInt*
-                                                      >::const_reverse_iterator
-                         cascadeParticleIterator(
-                                   (*secondCascadeIterator)->getCascadeDefiner(
-                                                                 )->rbegin() );
-                         (*secondCascadeIterator)->getCascadeDefiner()->rend()
-                         > cascadeParticleIterator;
-                         ++cascadeParticleIterator )
-                    {
-                      std::cout
-                      << " => "
-                      << *((*cascadeParticleIterator)->first->get_name());
-                    }
-                    std::cout
-                    << "; 0+j, 0l = "
-                    << (*secondCascadeIterator
-                               )->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                           0 );
-                    std::cout << std::endl;
-                    std::cout
-                    << std::endl
-                    << "produced subchannelZeroOrMoreJetsZeroLeptons = "
-                    << subchannelZeroOrMoreJetsZeroLeptons
-                    << " & subchannelOneOrMoreJetsZeroLeptons = "
-                    << subchannelOneOrMoreJetsZeroLeptons
-                    << ", both of which should be >= 0.0 & <= 1.0 for valid"
-                    << " input!";
-                    std::cout << std::endl;
-                  }
-
                   if( lhcFaserGlobal::negligibleBr
                       < subchannelZeroOrMoreJetsZeroLeptons )
                   {
@@ -723,6 +648,94 @@ namespace LHC_FASER
                     << std::endl
                     << "=> adding subchannelValue = " << subchannelValue;
                     std::cout << std::endl;**/
+                    if( !( ( 1.0 >= subchannelZeroOrMoreJetsZeroLeptons )
+                           &&
+                           ( 0.0 <= subchannelZeroOrMoreJetsZeroLeptons )
+                           &&
+                           ( 1.0 >= subchannelOneOrMoreJetsZeroLeptons )
+                           &&
+                           ( 0.0 <= subchannelOneOrMoreJetsZeroLeptons )
+                           &&
+                           ( 1.0 >= fourJetAcceptance )
+                           &&
+                           ( 0.0 <= fourJetAcceptance )
+                           &&
+                           ( 0.0 <= subchannelValue ) ) )
+                    {
+                      std::cout << std::endl << "LHC-FASER::error!"
+                      << std::endl
+                      << *((*channelIterator)->getScoloredPair(
+                                   )->getFirstParticle()->get_name_or_antiname(
+                                           (*channelIterator)->getScoloredPair(
+                                                 )->firstIsNotAntiparticle() ))
+                      << " + "
+                      << *((*channelIterator)->getScoloredPair(
+                                  )->getSecondParticle()->get_name_or_antiname(
+                                           (*channelIterator)->getScoloredPair(
+                                               )->secondIsNotAntiparticle() ));
+                      std::cout
+                      << std::endl
+                      << "1st: "
+                      << *((*firstCascadeIterator)->getInitialScolored(
+                                                                )->get_name());
+                      for( std::vector< fullCascade::particleWithInt*
+                                                      >::const_reverse_iterator
+                           cascadeParticleIterator(
+                                    (*firstCascadeIterator)->getCascadeDefiner(
+                                                                 )->rbegin() );
+                           (*firstCascadeIterator)->getCascadeDefiner()->rend()
+                           > cascadeParticleIterator;
+                           ++cascadeParticleIterator )
+                      {
+                        std::cout
+                        << " => "
+                        << *((*cascadeParticleIterator)->first->get_name());
+                      }
+                      std::cout
+                      << "; 0+j, 0l = "
+                      << (*firstCascadeIterator
+                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                           0 );
+                      std::cout
+                      << std::endl
+                      << "2nd: "
+                      << *((*secondCascadeIterator)->getInitialScolored(
+                                                                )->get_name());
+                      for( std::vector< fullCascade::particleWithInt*
+                                                      >::const_reverse_iterator
+                           cascadeParticleIterator(
+                                   (*secondCascadeIterator)->getCascadeDefiner(
+                                                                 )->rbegin() );
+                           (*secondCascadeIterator)->getCascadeDefiner(
+                                                                      )->rend()
+                           > cascadeParticleIterator;
+                           ++cascadeParticleIterator )
+                      {
+                        std::cout
+                        << " => "
+                        << *((*cascadeParticleIterator)->first->get_name());
+                      }
+                      std::cout
+                      << "; 0+j, 0l = "
+                      << (*secondCascadeIterator
+                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                           0 );
+                      std::cout << std::endl;
+                      std::cout
+                      << std::endl
+                      << "produced subchannelZeroOrMoreJetsZeroLeptons = "
+                      << subchannelZeroOrMoreJetsZeroLeptons
+                      << ", subchannelOneOrMoreJetsZeroLeptons = "
+                      << subchannelOneOrMoreJetsZeroLeptons
+                      << ", & fourJetAcceptance = "
+                      << fourJetAcceptance
+                      << ", all of which should be >= 0.0 & <= 1.0 for valid"
+                      << " input! subchannelValue = " << subchannelValue
+                      << ", which should be >= 0.0 for valid input!";
+                      std::cout << std::endl;
+                    }
                   }
                   // end of if the BR of the subchannel to zero leptons is not
                   // negligible.

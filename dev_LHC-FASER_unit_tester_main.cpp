@@ -418,6 +418,7 @@ int main( int argumentCount,
   LHC_FASER::lhcFaser testLhcFaser( "test_spectrum.out",
                                     gridPath,
                                     "fb" );
+  testLhcFaser.setVerbosity( true );
   gettimeofday( &endTime,
                 NULL );
   secondsTaken = ( (double)( endTime.tv_sec - startTime.tv_sec )
@@ -580,7 +581,9 @@ int main( int argumentCount,
   std::cout << std::endl;
   std::cout
   << std::endl
-  << "it seems that points with light stops are problematic (SPS5, SU4)."
+  << "the problematic points (SPS5, SU4) go wrong when looking up jet+MET"
+  << " grids for different squarks, one of which is decaying into an"
+  << " electroweakino which is heavier than the other squark."
   << std::endl;
   /**/
 
