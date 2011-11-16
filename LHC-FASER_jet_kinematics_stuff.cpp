@@ -915,34 +915,34 @@ namespace LHC_FASER
                                      particlePointer* const squarkFromCascade )
   {
     usedCascades typeToCountAs;
-    if( fullCascade::gx == givenCascade->getColorfulCascadeType() )
+    if( fullCascade::gluinoToEwino == givenCascade->getColorfulCascadeType() )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "counts as gx";
+      << "counts as gluinoToEwino";
       std::cout << std::endl;**/
 
       typeToCountAs = gx;
       *squarkFromCascade = NULL;
     }
-    else if( fullCascade::sx == givenCascade->getColorfulCascadeType() )
+    else if( fullCascade::squarkToEwino == givenCascade->getColorfulCascadeType() )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "counts as sx";
+      << "counts as squarkToEwino";
       std::cout << std::endl;**/
 
       typeToCountAs = sx;
-      *squarkFromCascade = givenCascade->getInitialScolored();
+      *squarkFromCascade = givenCascade->getInitialSparticle();
     }
     else if( fullCascade::sbsx == givenCascade->getColorfulCascadeType() )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "counts as sx";
+      << "counts as squarkToEwino";
       std::cout << std::endl;**/
 
       typeToCountAs = sx;
@@ -964,7 +964,7 @@ namespace LHC_FASER
       << "givenCascade->getCascadeDefiner()->size() = "
       << givenCascade->getCascadeDefiner()->size()
       << ", givenCascade = "
-      << *(givenCascade->getInitialScolored()->get_name());
+      << *(givenCascade->getInitialSparticle()->get_name());
       for( std::vector< fullCascade::particleWithInt*
                                                 >::const_reverse_iterator
            cascadeParticleIterator(
@@ -979,7 +979,7 @@ namespace LHC_FASER
       std::cout << std::endl;**/
 
       typeToCountAs = sgx;
-      *squarkFromCascade = givenCascade->getInitialScolored();
+      *squarkFromCascade = givenCascade->getInitialSparticle();
     }
     else if( fullCascade::sbsjgx == givenCascade->getColorfulCascadeType() )
     {
@@ -995,7 +995,7 @@ namespace LHC_FASER
       << "givenCascade->getCascadeDefiner()->size() = "
       << givenCascade->getCascadeDefiner()->size()
       << ", givenCascade = "
-      << *(givenCascade->getInitialScolored()->get_name());
+      << *(givenCascade->getInitialSparticle()->get_name());
       for( std::vector< fullCascade::particleWithInt*
                                                 >::const_reverse_iterator
            cascadeParticleIterator(

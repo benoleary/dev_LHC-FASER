@@ -557,7 +557,7 @@ namespace LHC_FASER
       {
         std::cout
         << std::endl
-        << *((*cascadeIterator)->getInitialScolored()->get_name())
+        << *((*cascadeIterator)->getInitialSparticle()->get_name())
         << " => " << (*cascadeIterator)->getColorfulCascadeType()
         << " => "
         << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(
@@ -596,7 +596,7 @@ namespace LHC_FASER
     {
       std::cout
       << std::endl
-      << *((*cascadeIterator)->getInitialScolored()->get_name())
+      << *((*cascadeIterator)->getInitialSparticle()->get_name())
       << " => " << (*cascadeIterator)->getColorfulCascadeType()
       << " => "
       << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(
@@ -649,7 +649,7 @@ namespace LHC_FASER
     {
       std::cout
       << std::endl
-      << *((*cascadeIterator)->getInitialScolored()->get_name())
+      << *((*cascadeIterator)->getInitialSparticle()->get_name())
       << " => " << (*cascadeIterator)->getColorfulCascadeType()
       << " => "
       << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(
@@ -692,7 +692,7 @@ namespace LHC_FASER
     {
       std::cout
       << std::endl
-      << *((*cascadeIterator)->getInitialScolored()->get_name())
+      << *((*cascadeIterator)->getInitialSparticle()->get_name())
       << " => " << (*cascadeIterator)->getColorfulCascadeType()
       << " => "
       << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(

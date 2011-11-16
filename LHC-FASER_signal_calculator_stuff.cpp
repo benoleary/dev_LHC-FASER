@@ -504,7 +504,7 @@ namespace LHC_FASER
             /**std::cout << std::endl << "debugging:"
             << std::endl
             << "1st: "
-            << *((*firstCascadeIterator)->getInitialScolored()->get_name());
+            << *((*firstCascadeIterator)->getInitialSparticle()->get_name());
             for( std::vector< fullCascade::particleWithInt*
                                                       >::const_reverse_iterator
                  cascadeParticleIterator(
@@ -535,7 +535,7 @@ namespace LHC_FASER
                 /**std::cout << std::endl << "debugging:"
                 << std::endl
                 << "2nd: "
-                << *((*secondCascadeIterator)->getInitialScolored(
+                << *((*secondCascadeIterator)->getInitialSparticle(
                                                                 )->get_name());
                 for( std::vector< fullCascade::particleWithInt*
                                                       >::const_reverse_iterator
@@ -676,7 +676,7 @@ namespace LHC_FASER
                       std::cout
                       << std::endl
                       << "1st: "
-                      << *((*firstCascadeIterator)->getInitialScolored(
+                      << *((*firstCascadeIterator)->getInitialSparticle(
                                                                 )->get_name());
                       for( std::vector< fullCascade::particleWithInt*
                                                       >::const_reverse_iterator
@@ -700,7 +700,7 @@ namespace LHC_FASER
                       std::cout
                       << std::endl
                       << "2nd: "
-                      << *((*secondCascadeIterator)->getInitialScolored(
+                      << *((*secondCascadeIterator)->getInitialSparticle(
                                                                 )->get_name());
                       for( std::vector< fullCascade::particleWithInt*
                                                       >::const_reverse_iterator

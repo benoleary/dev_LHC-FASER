@@ -64,7 +64,8 @@
 namespace LHC_FASER
 {
   /* new plan:
-   * basic sx, gx => sxFullCascade, gxFullCascade, & sups have supxFullCascade,
+   * basic squarkToEwino, gluinoToEwino
+   * => sxFullCascade, gxFullCascade, & sups have supxFullCascade,
    * which has an electroweakCascadeSet for decays without a W, & a pair of
    * electroweakCascadeSets for decays with a W.
    * gjm, sjm, gbm, sbm (m for more) build on above + also on each other.
@@ -74,7 +75,7 @@ namespace LHC_FASER
    * while( m_sq < m_go ), makeSquarksLighterThanGluino, then makeGluino,
    * then makeSquarksHeavierThanGluino, making es objects as encountered.
    *
-   * sx, gx both have basic getAcceptance. sm & gm build on getAcceptance of
+   * squarkToEwino, gluinoToEwino both have basic getAcceptance. sm & gm build on getAcceptance of
    * subcascadePointer, sbm & gbm build on own bosonCascades * getAcceptance of
    * subcascadePointer.
    *
@@ -132,20 +133,19 @@ namespace LHC_FASER
                        int > particleWithInt;
     enum colorfulCascadeType
     {
-      /* we do not take into account multiple decays to vector or spin-0 bosons
-       * plus other colored sparticles, because the cascades would be too long,
-       * with too low branching ratios, as well as being quite difficult to get
-       * right...
-       */
-      unset /* marked as not yet a proper cascade */,
-      sx /* direct squark to electroweakino */,
-      gx /* direct gluino to electroweakino */,
-      sbsm /* squark to boson plus other squark then shorter cascade */
-      /* treated by jets+MET grid as sx */,
-      sjgm /* squark to gaugino then shorter cascade */
-      /* treated by jets+MET grid as sx or sgx */,
-      gjsm /* gluino to squark then shorter cascade */
-      /* treated by jets+MET grid as gsx*/,
+      // the longer the cascade, the less accurate it is likely to be...
+      notSet /* marked as not yet a proper cascade */,
+      squarkToEwino /* direct squark to electroweakino */,
+      gluinoToEwino /* direct gluino to electroweakino */,
+      squarkToSquarkThenMore
+      /* squark to boson plus other squark then shorter cascade */
+      /* treated by jets+MET grid as squarkToEwino */,
+      squarkToGauginoThenMore /* squark to gaugino then shorter cascade */
+      /* treated by jets+MET grid as squarkToEwino or squarkToGluinoToEwino */,
+      gluinoToSquarkThenMore /* gaugino to squark then shorter cascade */
+      /* treated by jets+MET grid as gluinoToSquarkToEwino */,
+      ewinoToMore /* electroweakino to shorter cascade */
+      /* shouldn't be seen by jets+MET grid */,
       sizeOfEnumPlusOne /* possibly useful */
     };
 
@@ -158,7 +158,7 @@ namespace LHC_FASER
     ~fullCascade();
 
     particlePointer
-    getInitialScolored()
+    getInitialSparticle()
     const;
     virtual particlePointer
     getElectroweakinoAtEndOfScoloredness()
@@ -189,7 +189,7 @@ namespace LHC_FASER
     getColorfulCascadeType()
     const;
     virtual double
-    getAcceptance( bool const scoloredIsNotAntiparticle,
+    getAcceptance( bool const initialSparticleIsNotAntiparticle,
                    acceptanceCutSet* const acceptanceCuts,
                    int const numberOfAdditionalJets,
                    int numberOfNegativeElectrons,
@@ -203,7 +203,7 @@ namespace LHC_FASER
      * false.
      */
     double
-    getAcceptanceWithMinimumJets( bool const scoloredIsNotAntiparticle,
+    getAcceptanceWithMinimumJets( bool const initialSparticleIsNotAntiparticle,
                                   acceptanceCutSet* const acceptanceCuts,
                                   int const minimumNumberOfAdditionalJets,
                                   int const numberOfNegativeElectrons,
@@ -222,8 +222,8 @@ namespace LHC_FASER
     specifiedJetsOneOssfMinusOsdfPair( acceptanceCutSet* const acceptanceCuts,
                                        int const numberOfAdditionalJets );
     /* this calls
-     * ewinoCascades->getOssfMinusOsdf( scoloredIsNotAntiparticle,
-     *                                 acceptanceCuts ),
+     * ewinoCascades->getOssfMinusOsdf( initialSparticleIsNotAntiparticle,
+     *                                  acceptanceCuts ),
      * & if bosonCascades is not NULL, it calls
      * ewinoCascades->getAcceptance( [ { 0, 1, 2 } jets
      *                                 + 0 leptons for acceptanceCuts ] )
@@ -255,18 +255,18 @@ namespace LHC_FASER
     static int const numberOfSmFermionsFromElectroweakDecaysPerFullCascade;
 
     inputHandler const* inputShortcut;
-    particlePointer initialScolored;
+    particlePointer initialSparticle;
     double beamEnergy;
     colorfulCascadeType const typeOfColorfulCascade;
     int const firstDecayBodyNumber;
     // this is the number of particles which are produced by the decay of
-    // initialScolored.
+    // initialSparticle.
     fullCascade* subcascadePointer;
     minimalAllocationVector< particleWithInt > cascadeDefiner;
     particleWithInt* cascadeSegment;
     // this is just used for setting up cascadeDefiner properly.
     std::list< int > soughtDecayProductList;
-    /* by default, there is only 1 particle to be sought in initialScolored's
+    /* by default, there is only 1 particle to be sought in initialSparticle's
      * decays. the constructor sets up soughtDecayProductList to have just a
      * single entry, & setProperties just sets that entry, & nothing else makes
      * any changes to soughtDecayProductList. derived classes involving decays
@@ -279,9 +279,9 @@ namespace LHC_FASER
     buildOn( fullCascade* const copySource );
     /* this copies the basic stuff (inputShortcut, beamEnergy, cascadeDefiner)
      * from copySource, though not typeOfColorfulCascade (which is always set
-     * by constructors) or initialScolored (which depends on the type of
+     * by constructors) or initialSparticle (which depends on the type of
      * derived class), & also it sets up soughtDecayProductList to look for
-     * copySource->initialScolored, & adds copySource->initialScolored at the
+     * copySource->initialSparticle, & adds copySource->initialSparticle at the
      * end of cascadeDefiner, with firstDecayBodyNumber.
      */
   };
@@ -318,7 +318,7 @@ namespace LHC_FASER
       getElectroweakinoAtEndOfScoloredness()
       const;
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -358,16 +358,16 @@ namespace LHC_FASER
        */
       virtual double
       getBrToEwino( std::list< int > const* excludedSmParticles );
-      /* this works out the branching ratio for the decays of colored sparticles
-       * down to the 1st electroweakino in the cascade (including any decays to
-       * bosons + squarks), using the given list of excluded SM particles to
-       * exclude unwanted parts of the BR.
+      /* this works out the branching ratio for the decays of colored
+       * sparticles down to the 1st electroweakino in the cascade (including
+       * any decays to bosons + squarks), using the given list of excluded SM
+       * particles to exclude unwanted parts of the BR.
        */
       virtual particlePointer
       getElectroweakinoAtEndOfScoloredness()
       const;
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -433,7 +433,7 @@ namespace LHC_FASER
       getElectroweakinoAtEndOfScoloredness()
       const;
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -465,7 +465,7 @@ namespace LHC_FASER
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -499,7 +499,7 @@ namespace LHC_FASER
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -532,7 +532,7 @@ namespace LHC_FASER
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -584,7 +584,7 @@ namespace LHC_FASER
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -644,7 +644,7 @@ namespace LHC_FASER
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -663,21 +663,87 @@ namespace LHC_FASER
 
 
     /* this is derived class for compound fullCascades beginning with a
-     * gaugino, which decays to a jet & the initial sparticle of
+     * gluino, which decays to a jet & the initial sparticle of
      * subcascadePointer.
      */
-    class gauginoByJetToCompound : public fullCascade
+    class gluinoByJetToCompound : public fullCascade
     {
     public:
-      gauginoByJetToCompound();
+      gluinoByJetToCompound();
       virtual
-      ~gauginoByJetToCompound();
+      ~gluinoByJetToCompound();
 
       virtual void
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
+                     acceptanceCutSet* const acceptanceCuts,
+                     int const numberOfAdditionalJets,
+                     int numberOfNegativeElectrons,
+                     int numberOfPositiveElectrons,
+                     int numberOfNegativeMuons,
+                     int numberOfPositiveMuons );
+      /* this calls the appropriate functions on ewinoCascades &, if not NULL,
+       * bosonCascades, to build the required acceptance, taking into account
+       * whether the charges should be swapped if scoloredIsNotAntiparticle is
+       * false.
+       */
+
+    //protected:
+      // nothing.
+    };
+
+
+    /* this is derived class for compound fullCascades beginning with a
+     * neutralino, which decays to a boson, a jet, & the initial sparticle of
+     * subcascadePointer.
+     */
+    class neutralinoByBosonToCompound : public fullCascade
+    {
+    public:
+      neutralinoByBosonToCompound();
+      virtual
+      ~neutralinoByBosonToCompound();
+
+      virtual void
+      setProperties( particlePointer const initialSquark,
+                     fullCascade* const subcascadePointer );
+      virtual double
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
+                     acceptanceCutSet* const acceptanceCuts,
+                     int const numberOfAdditionalJets,
+                     int numberOfNegativeElectrons,
+                     int numberOfPositiveElectrons,
+                     int numberOfNegativeMuons,
+                     int numberOfPositiveMuons );
+      /* this calls the appropriate functions on ewinoCascades &, if not NULL,
+       * bosonCascades, to build the required acceptance, taking into account
+       * whether the charges should be swapped if scoloredIsNotAntiparticle is
+       * false.
+       */
+
+    //protected:
+      // nothing.
+    };
+
+
+    /* this is derived class for compound fullCascades beginning with a
+     * chargino, which decays to a boson, a jet, & the initial sparticle of
+     * subcascadePointer.
+     */
+    class charginoByBosonToCompound : public fullCascade
+    {
+    public:
+      charginoByBosonToCompound();
+      virtual
+      ~charginoByBosonToCompound();
+
+      virtual void
+      setProperties( particlePointer const initialSquark,
+                     fullCascade* const subcascadePointer );
+      virtual double
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -710,7 +776,7 @@ namespace LHC_FASER
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
-      getAcceptance( bool const scoloredIsNotAntiparticle,
+      getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
@@ -823,7 +889,7 @@ namespace LHC_FASER
 
 
   // this is derived class for gluino to boson plus squark to electroweakino
-  // fullCascades, treated by jets+MET grid as sx.
+  // fullCascades, treated by jets+MET grid as squarkToEwino.
   class gbsxFullCascade : public fullCascade
   {
   public:
@@ -1023,9 +1089,6 @@ namespace LHC_FASER
   class fullCascadeSet : public getsReadiedForNewPoint
   {
   public:
-    typedef std::pair< std::list< fullCascadeSet* >*,
-                       publicGetsReadiedForNewPoint* > readiableCascadeSetList;
-
     static bool
     massOrdered( fullCascadeSet* firstSet,
                  fullCascadeSet* secondSet );
@@ -1081,7 +1144,7 @@ namespace LHC_FASER
     // this holds pointers to all the open cascades.
 
     // 1 of the sxCascades & gxCascades will be empty, the other has all the
-    // direct decays of initialScolored to electroweakinos:
+    // direct decays of initialSparticle to electroweakinos:
     minimalAllocationVector< sxFullCascade > sxCascades;
     minimalAllocationVector< gxFullCascade > gxCascades;
     std::vector< sxFullCascade* > openSxCascades;
@@ -1104,7 +1167,6 @@ namespace LHC_FASER
     minimalAllocationVector< sjgbsxFullCascade > sjgbsxCascades;
     minimalAllocationVector< sjgjsbsxFullCascade > sjgjsbsxCascades;
 
-    readiableCascadeSetList* const squarkCascadeSetList;
     double const beamEnergy;
     std::list< int > soughtPositivePdgCodeList;
     std::list< int > soughtNegativePdgCodeList;
@@ -1115,7 +1177,7 @@ namespace LHC_FASER
     void
     setUpCascades();
     // this clears openCascades, then sets it to be filled with all open
-    // fullCascades that initialScolored has for this point.
+    // fullCascades that initialSparticle has for this point.
     virtual void
     buildLongerCascades()
     = 0;
@@ -1126,6 +1188,25 @@ namespace LHC_FASER
     // this adds the cascade to openCascades & also resets it so that it'll
     // recalculate its branching ratio when next requested.
   };
+
+
+
+  class fullCascadeSetOrderer : public getsReadiedForNewPoint
+  {
+  public:
+    fullCascadeSetOrderer();
+    ~fullCascadeSetOrderer();
+
+    std::list< fullCascadeSet* > const*
+    getOrderedFullCascadeSets();
+    void
+    addFullCascadeSet( fullCascadeSet* const fullCascadeSetPointer );
+
+  protected:
+    std::list< fullCascadeSet* > allFullCascadeSets;
+    std::list< fullCascadeSet* > orderedAndParedList;
+  };
+
 
 
   // this class specializes fullCascade for the case of cascades beginning with
@@ -1198,7 +1279,7 @@ namespace LHC_FASER
     double const beamEnergy;
     std::vector< squarkFullCascadeSet* > squarkCascadeSets;
     gluinoFullCascadeSet* gluinoCascadeSet;
-    fullCascadeSet::readiableCascadeSetList squarkCascadeSetList;
+    fullCascadeSetOrderer cascadeOrderer;
   };
 
 
@@ -1235,10 +1316,10 @@ namespace LHC_FASER
 
 
   inline particlePointer
-  fullCascade::getInitialScolored()
+  fullCascade::getInitialSparticle()
   const
   {
-    return initialScolored;
+    return initialSparticle;
   }
 
   inline particlePointer
@@ -1278,7 +1359,7 @@ namespace LHC_FASER
 
   inline double
   fullCascade::getAcceptanceWithMinimumJets(
-                                          bool const scoloredIsNotAntiparticle,
+                                  bool const initialSparticleIsNotAntiparticle,
                                         acceptanceCutSet* const acceptanceCuts,
                                        int const minimumNumberOfAdditionalJets,
                                            int const numberOfNegativeElectrons,
@@ -1304,7 +1385,7 @@ namespace LHC_FASER
          minimumNumberOfAdditionalJets <= numberOfJets;
          --numberOfJets )
     {
-      returnDouble += getAcceptance( scoloredIsNotAntiparticle,
+      returnDouble += getAcceptance( initialSparticleIsNotAntiparticle,
                                      acceptanceCuts,
                                      numberOfJets,
                                      numberOfNegativeElectrons,
@@ -1319,9 +1400,9 @@ namespace LHC_FASER
   fullCascade::buildOn( fullCascade* const copySource )
   /* this copies the basic stuff (inputShortcut, beamEnergy, cascadeDefiner)
    * from copySource, though not typeOfColorfulCascade (which is always set by
-   * constructors) or initialScolored (which depends on the type of derived
+   * constructors) or initialSparticle (which depends on the type of derived
    * class), & also it sets up soughtDecayProductList to look for
-   * copySource->initialScolored, & adds copySource->initialScolored at the end
+   * copySource->initialSparticle, & adds copySource->initialSparticle at the end
    * of cascadeDefiner, with firstDecayBodyNumber.
    */
   {
@@ -1329,7 +1410,7 @@ namespace LHC_FASER
     this->beamEnergy = copySource->beamEnergy;
     this->subcascadePointer = copySource;
     this->soughtDecayProductList.front()
-    = copySource->initialScolored->get_PDG_code();
+    = copySource->initialSparticle->get_PDG_code();
     this->cascadeDefiner.clearEntries();
     for( int cascadeFiller( 0 );
          copySource->cascadeDefiner.getSize() > cascadeFiller;
@@ -1342,7 +1423,7 @@ namespace LHC_FASER
       = copySource->cascadeDefiner.getPointer( cascadeFiller )->second;
     }
     this->cascadeSegment = cascadeDefiner.addNewAtEnd();
-    this->cascadeSegment->first = copySource->initialScolored;
+    this->cascadeSegment->first = copySource->initialSparticle;
     this->cascadeSegment->second = firstDecayBodyNumber;
   }
 
@@ -1352,7 +1433,7 @@ namespace LHC_FASER
   sjgxFullCascade::setProperties( particlePointer const initialSquark,
                                   fullCascade* const gxCascade )
   {
-    initialScolored = initialSquark;
+    initialSparticle = initialSquark;
     buildOn( gxCascade );
     resetCachedBranchingRatio();
   }
@@ -1386,7 +1467,7 @@ namespace LHC_FASER
   gjsxFullCascade::setProperties( fullCascade* const sxCascade )
   {
     buildOn( sxCascade );
-    initialScolored = inputShortcut->getGluino();
+    initialSparticle = inputShortcut->getGluino();
     resetCachedBranchingRatio();
   }
 
@@ -1430,7 +1511,7 @@ namespace LHC_FASER
   sjgjsxFullCascade::setProperties( particlePointer const initialSquark,
                                     fullCascade* const gjsxCascade )
   {
-    initialScolored = initialSquark;
+    initialSparticle = initialSquark;
     buildOn( gjsxCascade );
     resetCachedBranchingRatio();
   }
@@ -1463,7 +1544,7 @@ namespace LHC_FASER
   {
     buildOn( sxCascade );
     resetCachedBranchingRatio();
-    initialScolored = inputShortcut->getGluino();
+    initialSparticle = inputShortcut->getGluino();
     this->bosonCascades = bosonCascades;
     if( ( CppSLHA::PDG_code::W_plus
           == bosonCascades->getElectroweakDecayer()->get_PDG_code() )
@@ -1524,7 +1605,7 @@ namespace LHC_FASER
   {
     buildOn( sbsxCascade );
     resetCachedBranchingRatio();
-    initialScolored = inputShortcut->getGluino();
+    initialSparticle = inputShortcut->getGluino();
   }
 
   inline double
@@ -1568,7 +1649,7 @@ namespace LHC_FASER
                                   electroweakCascadeSet* const bosonCascades,
                                   fullCascade* const gxCascade )
   {
-    initialScolored = initialSquark;
+    initialSparticle = initialSquark;
     buildOn( gxCascade );
     resetCachedBranchingRatio();
     this->bosonCascades = bosonCascades;
@@ -1628,7 +1709,7 @@ namespace LHC_FASER
                                     electroweakCascadeSet* const vectorCascade,
                                     fullCascade* const gjsxCascade )
   {
-    initialScolored = initialSquark;
+    initialSparticle = initialSquark;
     buildOn( gjsxCascade );
     resetCachedBranchingRatio();
     this->bosonCascades = vectorCascade;
@@ -1686,7 +1767,7 @@ namespace LHC_FASER
   sjgbsxFullCascade::setProperties( particlePointer const initialSquark,
                                     fullCascade* const gbsxCascade )
   {
-    initialScolored = initialSquark;
+    initialSparticle = initialSquark;
     buildOn( gbsxCascade );
     resetCachedBranchingRatio();
   }
@@ -1722,7 +1803,7 @@ namespace LHC_FASER
   sjgjsbsxFullCascade::setProperties( particlePointer const initialSquark,
                                       fullCascade* const gjsvsxCascade )
   {
-    initialScolored = initialSquark;
+    initialSparticle = initialSquark;
     buildOn( gjsvsxCascade );
     resetCachedBranchingRatio();
   }
@@ -1761,7 +1842,7 @@ namespace LHC_FASER
     // this returns true if the squark is heavy enough to decay into the
     // electroweakino, false otherwise.
     {
-      if( initialScolored->get_absolute_mass()
+      if( initialSparticle->get_absolute_mass()
           > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
       {
         return true;
@@ -1784,7 +1865,7 @@ namespace LHC_FASER
       if( branchingRatioNeedsToBeRecalculated )
       {
         cachedBranchingRatio
-        = initialScolored->inspect_direct_decay_handler(
+        = initialSparticle->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                        &soughtDecayProductList,
                                                          excludedSmParticles );
@@ -1802,7 +1883,7 @@ namespace LHC_FASER
 
     inline double
     sdownDirectlyToElectroweak::getAcceptance(
-                                          bool const scoloredIsNotAntiparticle,
+                                          bool const initialSparticleIsNotAntiparticle,
                                         acceptanceCutSet* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                               int numberOfNegativeElectrons,
@@ -1814,11 +1895,11 @@ namespace LHC_FASER
      * swapped if scoloredIsNotAntiparticle is false.
      */
     {
-      if( ( scoloredIsNotAntiparticle
+      if( ( initialSparticleIsNotAntiparticle
             &&
             ewinoFlipsCharge )
           ||
-          ( !scoloredIsNotAntiparticle
+          ( !initialSparticleIsNotAntiparticle
             &&
             !ewinoFlipsCharge ) )
         // if the electroweakino is an antiparticle, we swap the charges.
@@ -1845,10 +1926,10 @@ namespace LHC_FASER
     // this returns true if the decay involving a W boson is not negligible,
     // also setting up the relevant fractions, false otherwise.
     {
-      wFraction = ( initialScolored->inspect_direct_decay_handler(
+      wFraction = ( initialSparticle->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                   &decayProductListIncludingW )
-                    / initialScolored->inspect_direct_decay_handler(
+                    / initialSparticle->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                    &soughtDecayProductList ) );
       if( lhcFaserGlobal::negligibleBr < wFraction )
@@ -1871,9 +1952,9 @@ namespace LHC_FASER
     {
       ewinoMass
       = directEwinoCascades->getElectroweakDecayer()->get_absolute_mass();
-      if( initialScolored->get_absolute_mass() > ewinoMass )
+      if( initialSparticle->get_absolute_mass() > ewinoMass )
       {
-        if( initialScolored->get_absolute_mass()
+        if( initialSparticle->get_absolute_mass()
             > ( ewinoMass + wBoson->get_absolute_mass() ) )
         {
           shouldUseDecaysWithW = decayWithWIsNotNegligible();
@@ -1902,7 +1983,7 @@ namespace LHC_FASER
       if( branchingRatioNeedsToBeRecalculated )
       {
         cachedBranchingRatio
-        = initialScolored->inspect_direct_decay_handler(
+        = initialSparticle->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                        &soughtDecayProductList,
                                                          excludedSmParticles );
@@ -1932,7 +2013,7 @@ namespace LHC_FASER
       if( branchingRatioNeedsToBeRecalculated )
       {
         cachedBranchingRatio
-        = initialScolored->inspect_direct_decay_handler(
+        = initialSparticle->inspect_direct_decay_handler(
                                            )->get_branching_ratio_for_subset(
                                                        &soughtDecayProductList,
                                                          excludedSmParticles );
@@ -1962,7 +2043,7 @@ namespace LHC_FASER
                                     electroweakCascadeSet* const bosonCascades,
                                          fullCascade* const subcascadePointer )
     {
-      initialScolored = initialSquark;
+      initialSparticle = initialSquark;
       buildOn( subcascadePointer );
       resetCachedBranchingRatio();
       this->bosonCascades = bosonCascades;
@@ -2000,7 +2081,7 @@ namespace LHC_FASER
   inline bool
   fullCascadeSet::massOrdered( fullCascadeSet* firstSet,
                                fullCascadeSet* secondSet )
-  // this returns true if firstSet's initialScolored has equal or lighter mass
+  // this returns true if firstSet's initialSparticle has equal or lighter mass
   // than secondSet, false otherwise.
   {
     if( firstSet->initialScolored->get_absolute_mass()
