@@ -121,14 +121,14 @@ namespace LHC_FASER
 
     void
     includeMe( bool* observerBoolForReadierExistence )
-    // this registers the observer so that the readier's destructor can let
-    // the observer know that the readier is retiring.
+    // this registers the observer so that the readierPointer's destructor can let
+    // the observer know that the readierPointer is retiring.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
     removeMe( bool* observerBoolForReadierExistence,
               bool* observerBoolForReadying )
-    /* this removes the observer from the readier's list of observers which is
-     * used when the readier's destructor is called to let the observers know
+    /* this removes the observer from the readierPointer's list of observers which is
+     * used when the readierPointer's destructor is called to let the observers know
      * to stop asking to be reset.
      */
     /* code after the classes in this .hpp file, or in the .cpp file. */;
@@ -172,7 +172,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~getsReadiedForNewPoint()
-    // the destructor tells readier, if it still exists, to stop modifying its
+    // the destructor tells readierPointer, if it still exists, to stop modifying its
     // bool pointers.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -195,7 +195,7 @@ namespace LHC_FASER
     /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
     ~publicGetsReadiedForNewPoint()
-    // the destructor tells readier, if it still exists, to stop modifying its
+    // the destructor tells readierPointer, if it still exists, to stop modifying its
     // bool pointers.
     /* code after the classes in this .hpp file, or in the .cpp file. */;
 
@@ -227,8 +227,8 @@ namespace LHC_FASER
 
   inline void
   readierForNewPoint::includeMe( bool* observerBoolForReadierExistence )
-  // this registers the observer so that the readier's destructor can let
-  // the observer know that the readier is retiring.
+  // this registers the observer so that the readierPointer's destructor can let
+  // the observer know that the readierPointer is retiring.
   {
     observerBoolsForReadierExistence.push_back(
                                              observerBoolForReadierExistence );
@@ -271,7 +271,7 @@ namespace LHC_FASER
     {
       needsToPrepare = false;
       if( readierStillExists )
-        // if the readier still exists...
+        // if the readierPointer still exists...
       {
         readier->resetMeOnNextUpdate( &needsToPrepare );
       }

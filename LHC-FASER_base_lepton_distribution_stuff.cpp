@@ -73,18 +73,53 @@ namespace LHC_FASER
 
 
 
-  onshellSquarkMassHolder::onshellSquarkMassHolder(
-                  CppSLHA::particle_property_set const* const onshellSquark ) :
-    onshellSquark( onshellSquark )
+  onShellSquarkMassHolder::onShellSquarkMassHolder(
+                  CppSLHA::particle_property_set const* const onShellSquark ) :
+      onShellSquark( onShellSquark )
   {
     // just an initialization list.
   }
 
-  onshellSquarkMassHolder::~onshellSquarkMassHolder()
+  onShellSquarkMassHolder::~onShellSquarkMassHolder()
   {
     // does nothing.
   }
 
+
+
+  squarkMinusBosonMassHolder::squarkMinusBosonMassHolder(
+                     CppSLHA::particle_property_set const* const onShellSquark,
+                      CppSLHA::particle_property_set const* const onShellBoson,
+                   CppSLHA::particle_property_set const* const onShellEwino ) :
+      onShellSquark( onShellSquark ),
+      onShellBoson( onShellBoson ),
+      onShellEwino( onShellEwino )
+  {
+    // just an initialization list.
+  }
+
+  squarkMinusBosonMassHolder::~squarkMinusBosonMassHolder()
+  {
+    // does nothing.
+  }
+
+
+
+  squarkPlusBosonMassHolder::squarkPlusBosonMassHolder(
+                     CppSLHA::particle_property_set const* const virtualSquark,
+                      CppSLHA::particle_property_set const* const onShellBoson,
+                   CppSLHA::particle_property_set const* const onShellEwino ) :
+      virtualSquark( virtualSquark ),
+      onShellBoson( onShellBoson ),
+      onShellEwino( onShellEwino )
+  {
+    // just an initialization list.
+  }
+
+  squarkPlusBosonMassHolder::~squarkPlusBosonMassHolder()
+  {
+    // does nothing.
+  }
 
 
   leptonDistributionExpansionTerm::leptonDistributionExpansionTerm(

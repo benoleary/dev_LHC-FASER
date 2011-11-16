@@ -72,29 +72,21 @@ namespace LHC_FASER
     updateDependentGaugeInputs( CppSLHA::SLHA_BLOCK const* smInputs,
                                 particlePointer const wPlusPointer,
                                 particlePointer const zPointer,
-                                readierForNewPoint* const readier )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~updateDependentGaugeInputs()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                readierForNewPoint* const readierPointer );
+    ~updateDependentGaugeInputs();
 
     double
-    getElectromagneticFineStructureConstant()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getElectromagneticFineStructureConstant();
     double
-    getHyperchargeGaugeCoupling()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getHyperchargeGaugeCoupling();
     double
-    getWeakGaugeCoupling()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getWeakGaugeCoupling();
     double
-    getColorGaugeCoupling()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getColorGaugeCoupling();
     double
-    getWeakSine()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getWeakSine();
     double
-    getWeakCosine()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getWeakCosine();
 
   protected:
     CppSLHA::SLHA_BLOCK const* smInputs;
@@ -114,8 +106,7 @@ namespace LHC_FASER
     // the cosine of the weak mixing angle.
 
     void
-    calculateGaugeCouplings()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateGaugeCouplings();
   };
 
 
@@ -127,14 +118,11 @@ namespace LHC_FASER
   {
   public:
     updateDependentAbsoluteMasses( particlePointer const gluinoPointer,
-                                   readierForNewPoint* const readier )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~updateDependentAbsoluteMasses()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                   readierForNewPoint* const readierPointer );
+    ~updateDependentAbsoluteMasses();
 
     double
-    getGluinoMass()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getGluinoMass();
 
   protected:
     particlePointer const gluinoPointer;
@@ -150,14 +138,11 @@ namespace LHC_FASER
   {
   public:
     updateDependentAverageMass( particleVectorPointer const setPointer,
-                                readierForNewPoint* const readier )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~updateDependentAverageMass()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                readierForNewPoint* const readierPointer );
+    ~updateDependentAverageMass();
 
     double
-    getAverageMass()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getAverageMass();
 
   protected:
     particleVectorPointer const setPointer;
@@ -173,428 +158,322 @@ namespace LHC_FASER
     inputHandler( CppSLHA::CppSLHA0 const* const cppSlhaPointer,
                   CppSLHA::EW_scale_spectrum const* const spectrumPointer,
                   std::string const pathToGrids,
-                  readierForNewPoint* const readier )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~inputHandler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                  readierForNewPoint* const readierPointer );
+    ~inputHandler();
 
     bool
     isVerbose()
-    const
+    const;
     /* if this is true, lots of warnings will be printed. if false, the code
      * should stay quiet without warning of the impending segmentation
      * faults...
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    setVerbosity( bool verbosity )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setVerbosity( bool isVerbose );
     bool
     usingNlo()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setUsingNloFlag( bool usingNloFlag )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setUsingNloFlag( bool usingNloFlag );
     std::string const*
     getPathToGrids()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     std::string*
-    getPathToCrossSectionGrids()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getPathToCrossSectionGrids();
     std::string const*
     inspectPathToCrossSectionGrids()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
     setPathToCrossSectionGrids(
                             std::string const* const pathToCrossSectionGrids );
     std::string*
-    getPathToKinematicsGrids()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getPathToKinematicsGrids();
     std::string const*
     inspectPathToKinematicsGrids()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
     setPathToKinematicsGrids( std::string const* const pathToKinematicsGrids );
     CppSLHA::CppSLHA0 const*
     getCppSlha()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     CppSLHA::EW_scale_spectrum const*
     getSpectrum()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getElectromagneticFineStructureConstant()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getHyperchargeGaugeCoupling()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getWeakGaugeCoupling()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getColorGaugeCoupling()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getWeakSine()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getWeakCosine()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     readierForNewPoint*
     getReadier()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getDown()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getUp()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getStrange()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getCharm()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getBottom()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getTop()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getElectron()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getElectronNeutrino()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getMuon()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getMuonNeutrino()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getTauLepton()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getTauNeutrino()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getGluon()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getPhoton()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getZ()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getWPlus()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getLightNeutralEwsbScalar()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getHeavyNeutralEwsbScalar()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getNeutralEwsbPseudoscalar()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getChargedEwsbScalar()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getGluino()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getGluinoMass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSdownL()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSupL()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSstrangeL()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getScharmL()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSbottomOne()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getStopOne()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSdownR()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSupR()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSstrangeR()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getScharmR()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSbottomTwo()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getStopTwo()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSelectronL()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getElectronSneutrinoL()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSmuonL()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getMuonSneutrinoL()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getStauOne()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getTauSneutrinoL()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSelectronR()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getElectronSneutrinoR()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSmuonR()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getMuonSneutrinoR()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getStauTwo()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getTauSneutrinoR()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getNeutralinoOne()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getNeutralinoTwo()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getNeutralinoThree()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getNeutralinoFour()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getCharginoOne()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getCharginoTwo()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     bool
     isIn( int const pdgCode,
           particleVectorPointer const particleSet )
-    const
+    const;
     /* this checks to see if the particle with the absolute value of the given
      * PDG particle code is in the given collection. (hence it checks to see if
      * the given particle or its antiparticle are in the collection.)
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    /*directDecayChecker*
-    getDirectDecayChecker( particlePointer const decayerParticle,
-                           particleVectorPointer const productSet )
-    const
-    *//* code after the classes in this .hpp file, or in the .cpp file. *///;
     exclusiveBrCalculator*
     getExclusiveBrCalculator( particlePointer const decayerParticle,
                               particlePointer const productParticle,
                               bool const productIsNotAntiparticle,
                               std::list< int > const* const exclusionList )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     std::list< int > const*
     getEmptyList()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     std::list< int > const*
     getJets()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     std::list< int > const*
     getJets5()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     std::list< int > const*
     getJets4()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     std::list< int > const*
     getNotInJets5()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     std::list< int > const*
     getNotInJets4()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getColoredSparticles()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getSquarks()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getSquarks5()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getSquarks4()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getSdownTypes()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getSupTypes()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     std::vector< signedParticleShortcutPair* > const*
     getScoloredProductionCombinations()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getElectroweakinos()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getUnstableElectroweakinos()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getNeutralinos()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getUnstableNeutralinos()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getCharginos()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getChargedSleptons()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getSneutrinos()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getNeutralEwsbScalarsAndPseudoscalars()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particleVectorPointer
     getEwsbBosonsAndMassiveVectorBosons()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     hardMuonFromTau const*
     getHardMuonFromTau()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     softMuonFromTau const*
     getSoftMuonFromTau()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     hardPionFromTau const*
     getHardPionFromTau()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     softPionFromTau const*
     getSoftPionFromTau()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getAverageSquarks4Mass()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     quarkOrLeptonLeftHandedness( int const sfermionCode,
-                                 int const ewinoCode )
+                                 int const ewinoCode );
     const
     /* this returns the square of the coupling associated with the left-handed
      * projection operator of the Feynman rule for the vertex of the given
@@ -604,16 +483,24 @@ namespace LHC_FASER
      * changed if general squark flavor mixing is incorporated. also, it
      * ignores the possibility of right-handed neutrinos.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     effectiveSquarkMassHolder*
-    getOnShellEffectiveSquarkMass( particlePointer onshellSquark )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getOnShellEffectiveSquarkMass( particlePointer const  onShellSquark )
+    const;
+    effectiveSquarkMassHolder*
+    getSquarkMinusBosonEffectiveMass( particlePointer const onShellSquark,
+                                      particlePointer const onShellBoson,
+                                      particlePointer const onShellEwino )
+    const;
+    effectiveSquarkMassHolder*
+    getSquarkPlusBosonEffectiveMass( particlePointer const onShellSquark,
+                                     particlePointer const onShellBoson,
+                                     particlePointer const onShellEwino )
+    const;
 
   protected:
-    bool verbosity;
+    bool isVerbose;
     bool usingNloFlag;
-    readierForNewPoint* const readier;
+    readierForNewPoint* const readierPointer;
     CppSLHA::CppSLHA0 const* const cppSlhaPointer;
     CppSLHA::EW_scale_spectrum const* const spectrumPointer;
     std::string pathToGrids;
@@ -694,47 +581,48 @@ namespace LHC_FASER
      * jets refers to all the particles in the spectrum which return true for
      * counts_as_jet(), as well as their antiparticles, unless they are
      * self-conjugate.
-     * notInJets5 is just top & antitop, & notInJets4 is notInJets5 plus
+     * notInFiveFlavorJets is just top & antitop, & notInFourFlavorJets is notInFiveFlavorJets plus
      * bottom & antibottom.
-     * jets5 is jets minus everything in not_int_jets5, likewise jets4 is jets
+     * fiveFlavorJets is jets minus everything in not_int_jets5, likewise fourFlavorJets is jets
      * minus everything in not_int_jets4.
      * other exotic heavy quarks should either be labelled as not counting as
-     * a jet in the spectrum, or put in notInJets5 in the same manner as top.
-     * hence, without additional light jet particles, jets5 is
+     * a jet in the spectrum, or put in notInFiveFlavorJets in the same manner as top.
+     * hence, without additional light jet particles, fiveFlavorJets is
      * { gluon + the 5 light quarks (down, up, strange, charm, bottom)
-     * + the 5 light antiquarks }, & jets4 is jets5 with bottom & antibottom
+     * + the 5 light antiquarks }, & fourFlavorJets is fiveFlavorJets with bottom & antibottom
      * removed.
      */
-    std::list< int > jets;
-    std::list< int > jets5;
-    std::list< int > jets4;
-    std::list< int > notInJets5;
-    std::list< int > notInJets4;
+    std::list< int > sixFlavorJets;
+    std::list< int > fiveFlavorJets;
+    std::list< int > fourFlavorJets;
+    std::list< int > notInFiveFlavorJets;
+    std::list< int > notInFourFlavorJets;
 
     std::vector< particlePointer > coloredSparticles;
-    // squarks4 refers to { sdown, sup, sstrange, scharm }, while squarks5
-    // is squarks4 plus sbottom, & squarks is squarks5 plus stop.
-    std::vector< particlePointer > squarks;
-    std::vector< particlePointer > squarks5;
-    std::vector< particlePointer > squarks4;
+    // fourFlavorSquarks refers to { sdown, sup, sstrange, scharm }, while fiveFlavorSquarks
+    // is fourFlavorSquarks plus sbottom, & squarks is fiveFlavorSquarks plus stop.
+    std::vector< particlePointer > sixFlavorSquarks;
+    std::vector< particlePointer > fiveFlavorSquarks;
+    std::vector< particlePointer > fourFlavorSquarks;
     std::vector< particlePointer > sdownTypes;
     std::vector< particlePointer > supTypes;
     std::vector< signedParticleShortcutPair* >
     sparticleProductionCombinations;
-    std::vector< onshellSquarkMassHolder* > onshellSquarkEffectiveMasses;
+    std::vector< onShellSquarkMassHolder* > onShellSquarkEffectiveMasses;
+    std::vector< squarkMinusBosonMassHolder* > squarkMinusBosonEffectiveMasses;
+    std::vector< squarkPlusBosonMassHolder* > squarkPlusBosonEffectiveMasses;
 
-    std::vector< particlePointer > electroweakinos;
+    std::vector< particlePointer > allElectroweakinos;
     std::vector< particlePointer > unstableElectroweakinos;
-    std::vector< particlePointer > neutralinos;
+    std::vector< particlePointer > allNeutralinos;
     std::vector< particlePointer > unstableNeutralinos;
-    std::vector< particlePointer > charginos;
-    std::vector< particlePointer > chargedSleptons;
-    std::vector< particlePointer > sneutrinos;
+    std::vector< particlePointer > allCharginos;
+    std::vector< particlePointer > allChargedSleptons;
+    std::vector< particlePointer > allSneutrinos;
 
     std::vector< particlePointer > neutralEwsbScalarsAndPseudoscalars;
     std::vector< particlePointer > ewsbBosonsAndMassiveVectorBosons;
 
-    //decayCheckerHandler* decayCheckers;
     exclusiveBrHandler* exclusiveBrs;
 
     hardMuonFromTau hardMuonFromTauFunction;
@@ -744,13 +632,12 @@ namespace LHC_FASER
 
     void
     addSquarkAsColoredSparticleAndInProduction(
-                                            particlePointer const inputSquark )
+                                           particlePointer const inputSquark );
     /* this adds the given squark to the list of squarks & the list of colored
      * sparticles, & also adds its relevant production combinations (with
      * a gluino, with its antisquark, with itself) to the list.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-  };  // end of inputHandler class.
+  };
 
 
 
@@ -857,13 +744,13 @@ namespace LHC_FASER
   // if this is true, lots of warnings will be printed. if false, the code
   // should stay quiet without warning of the impending segmentation faults...
   {
-    return verbosity;
+    return isVerbose;
   }
 
   inline void
-  inputHandler::setVerbosity( bool verbosity )
+  inputHandler::setVerbosity( bool isVerbose )
   {
-    this->verbosity = verbosity;
+    this->isVerbose = isVerbose;
   }
 
   inline bool
@@ -987,7 +874,7 @@ namespace LHC_FASER
   inputHandler::getReadier()
   const
   {
-    return readier;
+    return readierPointer;
   }
 
   inline particlePointer
@@ -1363,9 +1250,9 @@ namespace LHC_FASER
    * the given particle or its antiparticle are in the collection.)
    */
   {
-    bool returnBool = false;
+    bool returnBool( false );
     for( std::vector< particlePointer >::const_iterator
-         setIterator = particleSet->begin();
+         setIterator( particleSet->begin() );
          particleSet->end() > setIterator;
          ++setIterator )
     {
@@ -1378,15 +1265,6 @@ namespace LHC_FASER
     }
     return returnBool;
   }
-
-  /*inline directDecayChecker*
-  inputHandler:: getDirectDecayChecker( particlePointer const decayingParticle,
-                                       particleVectorPointer const productSet )
-  const
-  {
-    return decayCheckers->getDecayChecker( decayingParticle,
-                                           productSet );
-  }*/
 
   inline exclusiveBrCalculator*
   inputHandler::getExclusiveBrCalculator(
@@ -1413,35 +1291,35 @@ namespace LHC_FASER
   inputHandler::getJets()
   const
   {
-    return &jets;
+    return &sixFlavorJets;
   }
 
   inline std::list< int > const*
   inputHandler::getJets5()
   const
   {
-    return &jets5;
+    return &fiveFlavorJets;
   }
 
   inline std::list< int > const*
   inputHandler::getJets4()
   const
   {
-    return &jets4;
+    return &fourFlavorJets;
   }
 
   inline std::list< int > const*
   inputHandler::getNotInJets5()
   const
   {
-    return &notInJets5;
+    return &notInFiveFlavorJets;
   }
 
   inline std::list< int > const*
   inputHandler::getNotInJets4()
   const
   {
-    return &notInJets4;
+    return &notInFourFlavorJets;
   }
 
   inline particleVectorPointer
@@ -1455,21 +1333,21 @@ namespace LHC_FASER
   inputHandler::getSquarks()
   const
   {
-    return &squarks;
+    return &sixFlavorSquarks;
   }
 
   inline particleVectorPointer
   inputHandler::getSquarks5()
   const
   {
-    return &squarks5;
+    return &fiveFlavorSquarks;
   }
 
   inline particleVectorPointer
   inputHandler::getSquarks4()
   const
   {
-    return &squarks4;
+    return &fourFlavorSquarks;
   }
 
   inline particleVectorPointer
@@ -1497,7 +1375,7 @@ namespace LHC_FASER
   inputHandler::getElectroweakinos()
   const
   {
-    return &electroweakinos;
+    return &allElectroweakinos;
   }
 
   inline particleVectorPointer
@@ -1511,7 +1389,7 @@ namespace LHC_FASER
   inputHandler::getNeutralinos()
   const
   {
-    return &neutralinos;
+    return &allNeutralinos;
   }
 
   inline particleVectorPointer
@@ -1525,21 +1403,21 @@ namespace LHC_FASER
   inputHandler::getCharginos()
   const
   {
-    return &charginos;
+    return &allCharginos;
   }
 
   inline particleVectorPointer
   inputHandler::getChargedSleptons()
   const
   {
-    return &chargedSleptons;
+    return &allChargedSleptons;
   }
 
   inline particleVectorPointer
   inputHandler::getSneutrinos()
   const
   {
-    return &sneutrinos;
+    return &allSneutrinos;
   }
 
   inline particleVectorPointer
@@ -1599,7 +1477,7 @@ namespace LHC_FASER
    * gluino, with its antisquark, with itself) to the list.
    */
   {
-    squarks.push_back( inputSquark );
+    sixFlavorSquarks.push_back( inputSquark );
     coloredSparticles.push_back( inputSquark );
     sparticleProductionCombinations.push_back(
                                    new signedParticleShortcutPair( inputSquark,
@@ -1616,23 +1494,72 @@ namespace LHC_FASER
                                                                    true,
                                                                    inputSquark,
                                                                    true ) );
-    onshellSquarkEffectiveMasses.push_back(
-                                  new onshellSquarkMassHolder( inputSquark ) );
+    onShellSquarkEffectiveMasses.push_back(
+                                  new onShellSquarkMassHolder( inputSquark ) );
   }
 
   inline effectiveSquarkMassHolder*
-  inputHandler::getOnShellEffectiveSquarkMass( particlePointer onshellSquark )
+  inputHandler::getOnShellEffectiveSquarkMass( particlePointer onShellSquark )
   const
   {
     effectiveSquarkMassHolder* returnPointer( NULL );
-    for( std::vector< onshellSquarkMassHolder* >::const_iterator
-         squarkIterator( onshellSquarkEffectiveMasses.begin() );
-         onshellSquarkEffectiveMasses.end() > squarkIterator;
+    for( std::vector< onShellSquarkMassHolder* >::const_iterator
+         squarkIterator( onShellSquarkEffectiveMasses.begin() );
+         onShellSquarkEffectiveMasses.end() > squarkIterator;
          ++squarkIterator )
     {
-      if( (*squarkIterator)->getOnshellSquark() == onshellSquark )
+      if( (*squarkIterator)->getOnShellSquark() == onShellSquark )
       {
         returnPointer = *squarkIterator;
+        squarkIterator = onShellSquarkEffectiveMasses.end();
+      }
+    }
+    return returnPointer;
+  }
+
+  inline effectiveSquarkMassHolder*
+  inputHandler::getSquarkMinusBosonEffectiveMass(
+                                           particlePointer const onShellSquark,
+                                            particlePointer const onShellBoson,
+                                           particlePointer const onShellEwino )
+  const
+  {
+    effectiveSquarkMassHolder* returnPointer( NULL );
+    for( std::vector< squarkMinusBosonMassHolder* >::const_iterator
+         massIterator( squarkMinusBosonEffectiveMasses.begin() );
+         squarkMinusBosonEffectiveMasses.end() > massIterator;
+         ++massIterator )
+    {
+      if( (*massIterator)->isEquivalent( onShellSquark,
+                                         onShellBoson,
+                                         onShellEwino ) )
+      {
+        returnPointer = *massIterator;
+        massIterator = squarkMinusBosonEffectiveMasses.end();
+      }
+    }
+    return returnPointer;
+  }
+
+  inline effectiveSquarkMassHolder*
+  inputHandler::getSquarkPlusBosonEffectiveMass(
+                                           particlePointer const onShellSquark,
+                                            particlePointer const onShellBoson,
+                                           particlePointer const onShellEwino )
+  const
+  {
+    effectiveSquarkMassHolder* returnPointer( NULL );
+    for( std::vector< squarkPlusBosonMassHolder* >::const_iterator
+         massIterator( squarkPlusBosonEffectiveMasses.begin() );
+         squarkPlusBosonEffectiveMasses.end() > massIterator;
+         ++massIterator )
+    {
+      if( (*massIterator)->isEquivalent( onShellSquark,
+                                         onShellBoson,
+                                         onShellEwino ) )
+      {
+        returnPointer = *massIterator;
+        massIterator = squarkMinusBosonEffectiveMasses.end();
       }
     }
     return returnPointer;

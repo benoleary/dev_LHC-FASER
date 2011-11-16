@@ -61,7 +61,8 @@ namespace LHC_FASER
                                 leptonAcceptanceParameterSet* const kinematics,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
-                                    inputHandler const* const inputShortcut ) :
+                                       inputHandler const* const inputShortcut,
+                      effectiveSquarkMassHolder* effectiveSquarkMassPointer ) :
     kinematics( kinematics ),
     inputShortcut( inputShortcut ),
     coloredDecayer( coloredDecayer ),
@@ -69,15 +70,17 @@ namespace LHC_FASER
     lighterScolored( NULL )
   // this is the version for electroweakinos.
   {
-    effectiveSquarkMassHolder* effectiveSquarkMassPointer;
-    if( inputShortcut->getGluino() == coloredDecayer )
+    if( NULL == effectiveSquarkMassPointer )
     {
-      effectiveSquarkMassPointer = kinematics;
-    }
-    else
-    {
-      effectiveSquarkMassPointer
-      = inputShortcut->getOnShellEffectiveSquarkMass( coloredDecayer );
+      if( coloredDecayer == inputShortcut->getGluino() )
+      {
+        effectiveSquarkMassPointer = kinematics;
+      }
+      else
+      {
+        effectiveSquarkMassPointer
+        = inputShortcut->getOnShellEffectiveSquarkMass( coloredDecayer );
+      }
     }
 
     if( CppSLHA::PDG_code::neutralino_one
@@ -160,7 +163,7 @@ namespace LHC_FASER
       cascades.push_back( currentCascade );
     }
     else if( inputShortcut->isIn( electroweakDecayer->get_PDG_code(),
-                             inputShortcut->getCharginos() ) )
+                                  inputShortcut->getCharginos() ) )
     {
       currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
                                                     effectiveSquarkMassPointer,
@@ -285,7 +288,8 @@ namespace LHC_FASER
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                          particlePointer const lighterScolored,
-                                    inputHandler const* const inputShortcut ) :
+                                       inputHandler const* const inputShortcut,
+                      effectiveSquarkMassHolder* effectiveSquarkMassPointer ) :
     kinematics( kinematics ),
     inputShortcut( inputShortcut ),
     coloredDecayer( coloredDecayer ),
@@ -293,15 +297,17 @@ namespace LHC_FASER
     lighterScolored( lighterScolored )
   // this is the version for bosons.
   {
-    effectiveSquarkMassHolder* effectiveSquarkMassPointer;
-    if( inputShortcut->getGluino() == coloredDecayer )
+    if( NULL == effectiveSquarkMassPointer )
     {
-      effectiveSquarkMassPointer = kinematics;
-    }
-    else
-    {
-      effectiveSquarkMassPointer
-      = inputShortcut->getOnShellEffectiveSquarkMass( coloredDecayer );
+      if( coloredDecayer == inputShortcut->getGluino() )
+      {
+        effectiveSquarkMassPointer = kinematics;
+      }
+      else
+      {
+        effectiveSquarkMassPointer
+        = inputShortcut->getOnShellEffectiveSquarkMass( coloredDecayer );
+      }
     }
 
     if( CppSLHA::PDG_code::W_plus == electroweakDecayer->get_PDG_code() )
@@ -393,6 +399,20 @@ namespace LHC_FASER
     {
       delete *deletionIterator;
     }
+    for( std::vector< electroweakCascadeSet* >::iterator
+         deletionIterator( virtualSdownCascadeSets.begin() );
+         virtualSdownCascadeSets.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+    for( std::vector< electroweakCascadeSet* >::iterator
+         deletionIterator( virtualTopCascadeSets.begin() );
+         virtualTopCascadeSets.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
   }
 
 
@@ -472,6 +492,90 @@ namespace LHC_FASER
                                    lighterScolored,
                                    inputShortcut );
       bosonCascadeSets.push_back( returnPointer );
+    }
+    return returnPointer;
+  }
+
+  electroweakCascadeSet*
+  electroweakCascadesForOneBeamEnergy::getCascadeSet(
+                                          particlePointer const coloredDecayer,
+                                      particlePointer const electroweakDecayer,
+                         effectiveSquarkMassHolder* const effectiveSquarkMass )
+  /* this looks to see if it already has an electroweakCascadeSet
+   * corresponding to the requested pairing, & if it does, it returns a
+   * pointer to it, & if it doesn't, it constructs a new
+   * electroweakCascadeSet & returns a pointer to that.
+   */
+  {
+    electroweakCascadeSet* returnPointer( NULL );
+    for( std::vector< electroweakCascadeSet* >::iterator
+         cascadeIterator( virtualSdownCascadeSets.begin() );
+         virtualSdownCascadeSets.end() > cascadeIterator;
+         ++cascadeIterator )
+    {
+      if( (*cascadeIterator)->isEquivalent( coloredDecayer,
+                                            electroweakDecayer ) )
+      {
+        returnPointer = *cascadeIterator;
+        cascadeIterator = virtualSdownCascadeSets.end();
+      }
+    }
+    if( NULL == returnPointer )
+    {
+      returnPointer
+      = new electroweakCascadeSet( kinematicsTable->getParameterSets(
+                                             coloredDecayer )->getParameterSet(
+                                                          electroweakDecayer ),
+                                   coloredDecayer,
+                                   electroweakDecayer,
+                                   inputShortcut,
+                                   effectiveSquarkMass );
+      virtualSdownCascadeSets.push_back( returnPointer );
+    }
+    return returnPointer;
+  }
+
+  electroweakCascadeSet*
+  electroweakCascadesForOneBeamEnergy::getCascadeSet(
+                                          particlePointer const coloredDecayer,
+                                        particlePointer const electroweakBoson,
+                                         particlePointer const lighterScolored,
+                         effectiveSquarkMassHolder* const effectiveSquarkMass )
+  /* this looks to see if it already has an electroweakCascadeSet
+   * corresponding to the requested pairing, & if it does, it returns a
+   * pointer to it, & if it doesn't, it constructs a new
+   * electroweakCascadeSet & returns a pointer to that.
+   */
+  {
+    electroweakCascadeSet* returnPointer( NULL );
+    for( std::vector< electroweakCascadeSet* >::iterator
+         cascadeIterator( virtualTopCascadeSets.begin() );
+         virtualTopCascadeSets.end() > cascadeIterator;
+         ++cascadeIterator )
+    {
+      if( (*cascadeIterator)->isEquivalent( coloredDecayer,
+                                            electroweakBoson,
+                                            lighterScolored ) )
+      {
+        returnPointer = *cascadeIterator;
+        cascadeIterator = virtualTopCascadeSets.end();
+      }
+    }
+    if( NULL == returnPointer )
+    {
+      returnPointer
+      = new electroweakCascadeSet( kinematicsTable->getParameterSets(
+                                             coloredDecayer )->getParameterSet(
+                                              inputShortcut->getNeutralinoOne()
+                                   /* it shouldn't really matter which
+                                    *  neutralino is used here, just as long as
+                                    *   it's lighter than coloredDecayer */ ),
+                                   coloredDecayer,
+                                   electroweakBoson,
+                                   lighterScolored,
+                                   inputShortcut,
+                                   effectiveSquarkMass );
+      virtualTopCascadeSets.push_back( returnPointer );
     }
     return returnPointer;
   }

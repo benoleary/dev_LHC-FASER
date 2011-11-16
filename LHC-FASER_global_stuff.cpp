@@ -149,8 +149,8 @@ namespace LHC_FASER
   void
   readierForNewPoint::removeMe( bool* observerBoolForReadierExistence,
                                 bool* observerBoolForReadying )
-  /* this removes the observer from the readier's list of observers which is
-   * used when the readier's destructor is called to let the observers know
+  /* this removes the observer from the readierPointer's list of observers which is
+   * used when the readierPointer's destructor is called to let the observers know
    * to stop asking to be reset.
    */
   {
@@ -161,7 +161,7 @@ namespace LHC_FASER
            &&
            notFoundRequested );
          ++boolIterator )
-      // look through the list for observer knowledge of readier existence...
+      // look through the list for observer knowledge of readierPointer existence...
       {
         if( observerBoolForReadierExistence == *boolIterator )
           // if we find the requested pointer...
@@ -210,11 +210,11 @@ namespace LHC_FASER
   }
 
   getsReadiedForNewPoint::~getsReadiedForNewPoint()
-  // the destructor tells readier, if it still exists, to stop modifying its
+  // the destructor tells readierPointer, if it still exists, to stop modifying its
   // bools.
   {
     if( readierStillExists )
-      // if the readier still exists...
+      // if the readierPointer still exists...
       {
         readier->removeMe( &readierStillExists,
                            &needsToPrepare );

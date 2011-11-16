@@ -71,12 +71,9 @@ namespace LHC_FASER
   class effectiveSquarkMassHolder
   {
   public:
-    effectiveSquarkMassHolder()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
+    effectiveSquarkMassHolder();
     virtual
-    ~effectiveSquarkMassHolder()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~effectiveSquarkMassHolder();
 
     virtual double
     getEffectiveSquarkMass()
@@ -86,27 +83,83 @@ namespace LHC_FASER
     // nothing
   };
 
+
   // this derived class is for the case of on-shell squarks:
-  class onshellSquarkMassHolder : public effectiveSquarkMassHolder
+  class onShellSquarkMassHolder : public effectiveSquarkMassHolder
   {
   public:
-    onshellSquarkMassHolder(
-                    CppSLHA::particle_property_set const* const onshellSquark )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    onShellSquarkMassHolder(
+                   CppSLHA::particle_property_set const* const onShellSquark );
     virtual
-    ~onshellSquarkMassHolder()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~onShellSquarkMassHolder();
 
     virtual double
-    getEffectiveSquarkMass()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getEffectiveSquarkMass();
     CppSLHA::particle_property_set const*
-    getOnshellSquark()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getOnShellSquark()
+    const;
 
   protected:
-    CppSLHA::particle_property_set const* onshellSquark;
+    CppSLHA::particle_property_set const* onShellSquark;
+  };
+
+
+  // this derived class is for the case of splitting an on-shell squark's mass
+  // between an on-shell boson and a virtual squark:
+  class squarkMinusBosonMassHolder : public effectiveSquarkMassHolder
+  {
+  public:
+    squarkMinusBosonMassHolder(
+                     CppSLHA::particle_property_set const* const onShellSquark,
+                      CppSLHA::particle_property_set const* const onShellBoson,
+                    CppSLHA::particle_property_set const* const onShellEwino );
+    virtual
+    ~squarkMinusBosonMassHolder();
+
+    virtual double
+    getEffectiveSquarkMass();
+    bool
+    isEquivalent( CppSLHA::particle_property_set const* const onShellSquark,
+                  CppSLHA::particle_property_set const* const onShellBoson,
+                  CppSLHA::particle_property_set const* const onShellEwino )
+    const;
+
+  protected:
+    CppSLHA::particle_property_set const* onShellSquark;
+    CppSLHA::particle_property_set const* onShellBoson;
+    CppSLHA::particle_property_set const* onShellEwino;
+  };
+
+
+  /* this derived class is for the case of fudging splitting an on-shell
+   * squark's mass between an on-shell boson and a virtual squark, using
+   * instead the mass it should have to have approximately the right energy for
+   * the boson for the case of the virtual squark being on-shell (meant to be
+   * used along with giving the on-shell squark in place of the virtual squark
+   * for the decay to an electroweakino, so that the masses work out):
+   */
+  class squarkPlusBosonMassHolder : public effectiveSquarkMassHolder
+  {
+  public:
+    squarkPlusBosonMassHolder(
+                     CppSLHA::particle_property_set const* const onShellSquark,
+                      CppSLHA::particle_property_set const* const onShellBoson,
+                    CppSLHA::particle_property_set const* const onShellEwino );
+    virtual
+    ~squarkPlusBosonMassHolder();
+
+    virtual double
+    getEffectiveSquarkMass();
+    bool
+    isEquivalent( CppSLHA::particle_property_set const* const onShellSquark,
+                  CppSLHA::particle_property_set const* const onShellBoson,
+                  CppSLHA::particle_property_set const* const onShellEwino )
+    const;
+
+  protected:
+    CppSLHA::particle_property_set const* onShellSquark;
+    CppSLHA::particle_property_set const* onShellBoson;
+    CppSLHA::particle_property_set const* onShellEwino;
   };
 
 
@@ -676,16 +729,80 @@ namespace LHC_FASER
 
 
   inline double
-  onshellSquarkMassHolder::getEffectiveSquarkMass()
+  onShellSquarkMassHolder::getEffectiveSquarkMass()
   {
-    return onshellSquark->get_absolute_mass();
+    return onShellSquark->get_absolute_mass();
   }
 
   inline CppSLHA::particle_property_set const*
-  onshellSquarkMassHolder::getOnshellSquark()
+  onShellSquarkMassHolder::getOnShellSquark()
   const
   {
-    return onshellSquark;
+    return onShellSquark;
+  }
+
+
+  inline double
+  squarkMinusBosonMassHolder::getEffectiveSquarkMass()
+  {
+    // return the on-shell squark's mass, minus the boson's mass, plus a third
+    // of the energy from the rest of the squark's mass.
+    return ( ( 4.0 * onShellSquark->get_absolute_mass()
+               - 4.0 * onShellBoson->get_absolute_mass()
+               - onShellEwino->get_absolute_mass() ) / 3.0 );
+  }
+
+  inline bool
+  squarkMinusBosonMassHolder::isEquivalent(
+                     CppSLHA::particle_property_set const* const onShellSquark,
+                      CppSLHA::particle_property_set const* const onShellBoson,
+                     CppSLHA::particle_property_set const* const onShellEwino )
+  const
+  {
+    if( ( onShellSquark == this->onShellSquark )
+        &&
+        ( onShellBoson == this->onShellBoson )
+        &&
+        ( onShellEwino == this->onShellEwino ) )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+
+  inline double
+  squarkPlusBosonMassHolder::getEffectiveSquarkMass()
+  {
+    // return the on-shell squark's mass, plus the boson's mass, plus a third
+    // of the energy from the rest of the squark's mass.
+    return ( ( 4.0 * onShellSquark->get_absolute_mass()
+               - 2.0 * onShellBoson->get_absolute_mass()
+               - onShellEwino->get_absolute_mass() ) / 3.0 );
+  }
+
+  inline bool
+  squarkPlusBosonMassHolder::isEquivalent(
+                     CppSLHA::particle_property_set const* const onShellSquark,
+                      CppSLHA::particle_property_set const* const onShellBoson,
+                     CppSLHA::particle_property_set const* const onShellEwino )
+  const
+  {
+    if( ( onShellSquark == this->onShellSquark )
+        &&
+        ( onShellBoson == this->onShellBoson )
+        &&
+        ( onShellEwino == this->onShellEwino ) )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
 

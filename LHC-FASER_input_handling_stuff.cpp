@@ -61,8 +61,8 @@ namespace LHC_FASER
                                            CppSLHA::SLHA_BLOCK const* smInputs,
                                             particlePointer const wPlusPointer,
                                                 particlePointer const zPointer,
-                                          readierForNewPoint* const readier ) :
-    getsReadiedForNewPoint( readier ),
+                                   readierForNewPoint* const readierPointer ) :
+    getsReadiedForNewPoint( readierPointer ),
     smInputs( smInputs ),
     wPlusPointer( wPlusPointer ),
     zPointer( zPointer )
@@ -115,8 +115,8 @@ namespace LHC_FASER
 
   updateDependentAbsoluteMasses::updateDependentAbsoluteMasses(
                                            particlePointer const gluinoPointer,
-                                          readierForNewPoint* const readier ) :
-    getsReadiedForNewPoint( readier ),
+                                   readierForNewPoint* const readierPointer ) :
+    getsReadiedForNewPoint( readierPointer ),
     gluinoPointer( gluinoPointer )
   {
     // just an initialization list.
@@ -131,8 +131,8 @@ namespace LHC_FASER
 
   updateDependentAverageMass::updateDependentAverageMass(
                                         particleVectorPointer const setPointer,
-                                          readierForNewPoint* const readier ) :
-    getsReadiedForNewPoint( readier ),
+                                   readierForNewPoint* const readierPointer ) :
+    getsReadiedForNewPoint( readierPointer ),
     setPointer( setPointer )
   {
     // just an initialization list.
@@ -148,10 +148,10 @@ namespace LHC_FASER
   inputHandler::inputHandler( CppSLHA::CppSLHA0 const* const cppSlhaPointer,
                        CppSLHA::EW_scale_spectrum const* const spectrumPointer,
                               std::string const pathToGrids,
-                              readierForNewPoint* const readier ) :
-    verbosity( false ),
+                              readierForNewPoint* const readierPointer ) :
+    isVerbose( false ),
     usingNloFlag( true ),
-    readier( readier ),
+    readierPointer( readierPointer ),
     cppSlhaPointer( cppSlhaPointer ),
     spectrumPointer( spectrumPointer ),
     pathToGrids( pathToGrids ),
@@ -271,7 +271,6 @@ namespace LHC_FASER
     ydPointer( cppSlhaPointer->inspect_BLOCK( "YD" ) ),
     yuPointer( cppSlhaPointer->inspect_BLOCK( "YU" ) ),
     yePointer( cppSlhaPointer->inspect_BLOCK( "YE" ) ),
-    //decayCheckers( new decayCheckerHandler( readier ) ),
     hardMuonFromTauFunction(),
     softMuonFromTauFunction(),
     hardPionFromTauFunction(),
@@ -282,13 +281,13 @@ namespace LHC_FASER
                                                                   "SMINPUTS" ),
                                       wPlusPointer,
                                       zPointer,
-                                      readier );
+                                      readierPointer );
 
     updateDependentMasses = new updateDependentAbsoluteMasses( gluinoPointer,
-                                                               readier );
+                                                               readierPointer );
     updateDependentAverageSquarks4Mass
-    = new updateDependentAverageMass( &squarks4,
-                                      readier );
+    = new updateDependentAverageMass( &fourFlavorSquarks,
+                                      readierPointer );
 
     // the default cross-sections are those generated with the MSTW2008 PDF
     // set, & the default kinematics grids are those from PYTHIA 8.0:
@@ -305,42 +304,42 @@ namespace LHC_FASER
                                                                  gluinoPointer,
                                                                       true ) );
     addSquarkAsColoredSparticleAndInProduction( sdownLPointer );
-    squarks4.push_back( sdownLPointer );
-    squarks5.push_back( sdownLPointer );
+    fourFlavorSquarks.push_back( sdownLPointer );
+    fiveFlavorSquarks.push_back( sdownLPointer );
     sdownTypes.push_back( sdownLPointer );
     addSquarkAsColoredSparticleAndInProduction( sdownRPointer );
-    squarks4.push_back( sdownRPointer );
-    squarks5.push_back( sdownRPointer );
+    fourFlavorSquarks.push_back( sdownRPointer );
+    fiveFlavorSquarks.push_back( sdownRPointer );
     sdownTypes.push_back( sdownRPointer );
     addSquarkAsColoredSparticleAndInProduction( supLPointer );
-    squarks4.push_back( supLPointer );
-    squarks5.push_back( supLPointer );
+    fourFlavorSquarks.push_back( supLPointer );
+    fiveFlavorSquarks.push_back( supLPointer );
     supTypes.push_back( supLPointer );
     addSquarkAsColoredSparticleAndInProduction( supRPointer );
-    squarks4.push_back( supRPointer );
-    squarks5.push_back( supRPointer );
+    fourFlavorSquarks.push_back( supRPointer );
+    fiveFlavorSquarks.push_back( supRPointer );
     supTypes.push_back( supRPointer );
     addSquarkAsColoredSparticleAndInProduction( sstrangeLPointer );
-    squarks4.push_back( sstrangeLPointer );
-    squarks5.push_back( sstrangeLPointer );
+    fourFlavorSquarks.push_back( sstrangeLPointer );
+    fiveFlavorSquarks.push_back( sstrangeLPointer );
     sdownTypes.push_back( sstrangeLPointer );
     addSquarkAsColoredSparticleAndInProduction( sstrangeRPointer );
-    squarks4.push_back( sstrangeRPointer );
-    squarks5.push_back( sstrangeRPointer );
+    fourFlavorSquarks.push_back( sstrangeRPointer );
+    fiveFlavorSquarks.push_back( sstrangeRPointer );
     sdownTypes.push_back( sstrangeRPointer );
     addSquarkAsColoredSparticleAndInProduction( scharmLPointer );
-    squarks4.push_back( scharmLPointer );
-    squarks5.push_back( scharmLPointer );
+    fourFlavorSquarks.push_back( scharmLPointer );
+    fiveFlavorSquarks.push_back( scharmLPointer );
     supTypes.push_back( scharmLPointer );
     addSquarkAsColoredSparticleAndInProduction( scharmRPointer );
-    squarks4.push_back( scharmRPointer );
-    squarks5.push_back( scharmRPointer );
+    fourFlavorSquarks.push_back( scharmRPointer );
+    fiveFlavorSquarks.push_back( scharmRPointer );
     supTypes.push_back( scharmRPointer );
     addSquarkAsColoredSparticleAndInProduction( sbottomOnePointer );
-    squarks5.push_back( sbottomOnePointer );
+    fiveFlavorSquarks.push_back( sbottomOnePointer );
     sdownTypes.push_back( sbottomOnePointer );
     addSquarkAsColoredSparticleAndInProduction( sbottomTwoPointer );
-    squarks5.push_back( sbottomTwoPointer );
+    fiveFlavorSquarks.push_back( sbottomTwoPointer );
     sdownTypes.push_back( sbottomTwoPointer );
     addSquarkAsColoredSparticleAndInProduction( stopOnePointer );
     supTypes.push_back( stopOnePointer );
@@ -400,45 +399,45 @@ namespace LHC_FASER
 
     exclusiveBrs = new exclusiveBrHandler( &sdownTypes,
                                            &supTypes,
-                                           readier );
+                                           readierPointer );
 
 
     // make all the inputShortcut sparticle lists:
 
-    electroweakinos.push_back( neutralinoOnePointer );
-    neutralinos.push_back( neutralinoOnePointer );
-    electroweakinos.push_back( neutralinoTwoPointer );
+    allElectroweakinos.push_back( neutralinoOnePointer );
+    allNeutralinos.push_back( neutralinoOnePointer );
+    allElectroweakinos.push_back( neutralinoTwoPointer );
     unstableElectroweakinos.push_back( neutralinoTwoPointer );
-    neutralinos.push_back( neutralinoTwoPointer );
+    allNeutralinos.push_back( neutralinoTwoPointer );
     unstableNeutralinos.push_back( neutralinoTwoPointer );
-    electroweakinos.push_back( neutralinoThreePointer );
+    allElectroweakinos.push_back( neutralinoThreePointer );
     unstableElectroweakinos.push_back( neutralinoThreePointer );
-    neutralinos.push_back( neutralinoThreePointer );
+    allNeutralinos.push_back( neutralinoThreePointer );
     unstableNeutralinos.push_back( neutralinoThreePointer );
-    electroweakinos.push_back( neutralinoFourPointer );
+    allElectroweakinos.push_back( neutralinoFourPointer );
     unstableElectroweakinos.push_back( neutralinoFourPointer );
-    neutralinos.push_back( neutralinoFourPointer );
+    allNeutralinos.push_back( neutralinoFourPointer );
     unstableNeutralinos.push_back( neutralinoFourPointer );
-    electroweakinos.push_back( charginoOnePointer );
+    allElectroweakinos.push_back( charginoOnePointer );
     unstableElectroweakinos.push_back( charginoOnePointer );
-    charginos.push_back( charginoOnePointer );
-    electroweakinos.push_back( charginoTwoPointer );
+    allCharginos.push_back( charginoOnePointer );
+    allElectroweakinos.push_back( charginoTwoPointer );
     unstableElectroweakinos.push_back( charginoTwoPointer );
-    charginos.push_back( charginoTwoPointer );
+    allCharginos.push_back( charginoTwoPointer );
 
-    chargedSleptons.push_back( selectronLPointer );
-    chargedSleptons.push_back( selectronRPointer );
-    chargedSleptons.push_back( smuonLPointer );
-    chargedSleptons.push_back( smuonRPointer );
-    chargedSleptons.push_back( stauOnePointer );
-    chargedSleptons.push_back( stauTwoPointer );
+    allChargedSleptons.push_back( selectronLPointer );
+    allChargedSleptons.push_back( selectronRPointer );
+    allChargedSleptons.push_back( smuonLPointer );
+    allChargedSleptons.push_back( smuonRPointer );
+    allChargedSleptons.push_back( stauOnePointer );
+    allChargedSleptons.push_back( stauTwoPointer );
 
-    sneutrinos.push_back( electronSneutrinoLPointer );
-    sneutrinos.push_back( electronSneutrinoRPointer );
-    sneutrinos.push_back( muonSneutrinoLPointer );
-    sneutrinos.push_back( muonSneutrinoRPointer );
-    sneutrinos.push_back( tauSneutrinoLPointer );
-    sneutrinos.push_back( tauSneutrinoRPointer );
+    allSneutrinos.push_back( electronSneutrinoLPointer );
+    allSneutrinos.push_back( electronSneutrinoRPointer );
+    allSneutrinos.push_back( muonSneutrinoLPointer );
+    allSneutrinos.push_back( muonSneutrinoRPointer );
+    allSneutrinos.push_back( tauSneutrinoLPointer );
+    allSneutrinos.push_back( tauSneutrinoRPointer );
 
     neutralEwsbScalarsAndPseudoscalars.push_back(
                                                lightNeutralEwsbScalarPointer );
@@ -459,8 +458,8 @@ namespace LHC_FASER
 
     // make the jet particle code lists:
     for( std::vector< CppSLHA::particle_property_set* >::const_iterator
-         particleIterator
-         = spectrumPointer->get_particle_property_sets()->begin();
+         particleIterator(
+                      spectrumPointer->get_particle_property_sets()->begin() );
          spectrumPointer->get_particle_property_sets()->end()
          > particleIterator;
          ++particleIterator )
@@ -469,32 +468,32 @@ namespace LHC_FASER
       if( (*particleIterator)->counts_as_jet() )
         // if we find a jet...
       {
-        jets.push_back( (*particleIterator)->get_PDG_code() );
+        sixFlavorJets.push_back( (*particleIterator)->get_PDG_code() );
         // note the jet particle.
         if( !((*particleIterator)->counts_as_self_conjugate()) )
         {
-          jets.push_back( -((*particleIterator)->get_PDG_code()) );
+          sixFlavorJets.push_back( -((*particleIterator)->get_PDG_code()) );
         }
       }
     }
 
-    notInJets5.push_back( CppSLHA::PDG_code::top );
-    notInJets5.push_back( -(CppSLHA::PDG_code::top) );
-    notInJets4.assign( notInJets5.begin(),
-                       notInJets5.end() );
-    notInJets4.push_back( CppSLHA::PDG_code::bottom );
-    notInJets4.push_back( -(CppSLHA::PDG_code::bottom) );
+    notInFiveFlavorJets.push_back( CppSLHA::PDG_code::top );
+    notInFiveFlavorJets.push_back( -(CppSLHA::PDG_code::top) );
+    notInFourFlavorJets.assign( notInFiveFlavorJets.begin(),
+                                notInFiveFlavorJets.end() );
+    notInFourFlavorJets.push_back( CppSLHA::PDG_code::bottom );
+    notInFourFlavorJets.push_back( -(CppSLHA::PDG_code::bottom) );
 
     bool notInNotInJets;
-    for( std::list< int >::iterator jetIterator = jets.begin();
-         jets.end() != jetIterator;
+    for( std::list< int >::iterator jetIterator( sixFlavorJets.begin() );
+         sixFlavorJets.end() != jetIterator;
          ++jetIterator )
     {
-      // assume that this jet is not in notInJets5:
+      // assume that this jet is not in notInFiveFlavorJets:
       notInNotInJets = true;
       for( std::list< int >::const_iterator
-           notInJetsIterator = notInJets5.begin();
-           ( ( notInJets5.end() != notInJetsIterator )
+           notInJetsIterator( notInFiveFlavorJets.begin() );
+           ( ( notInFiveFlavorJets.end() != notInJetsIterator )
              &&
              notInNotInJets );
            ++notInJetsIterator )
@@ -506,13 +505,13 @@ namespace LHC_FASER
       }
       if( notInNotInJets )
       {
-        jets5.push_back( *jetIterator );
+        fiveFlavorJets.push_back( *jetIterator );
       }
-      // assume that this jet is not in notInJets4:
+      // assume that this jet is not in notInFourFlavorJets:
       notInNotInJets = true;
       for( std::list< int >::const_iterator
-           notInJetsIterator = notInJets4.begin();
-           ( ( notInJets4.end() != notInJetsIterator )
+           notInJetsIterator( notInFourFlavorJets.begin() );
+           ( ( notInFourFlavorJets.end() != notInJetsIterator )
              &&
              notInNotInJets );
            ++notInJetsIterator )
@@ -524,29 +523,64 @@ namespace LHC_FASER
       }
       if( notInNotInJets )
       {
-        jets4.push_back( *jetIterator );
+        fourFlavorJets.push_back( *jetIterator );
       }
     }
+
+    for( std::vector< particlePointer >::iterator
+         supIterator( supTypes.begin() );
+         supTypes.end() > supIterator;
+         ++supIterator )
+    {
+      for( std::vector< particlePointer >::iterator
+           ewinoIterator( allElectroweakinos.begin() );
+           allElectroweakinos.end() > ewinoIterator;
+           ++ewinoIterator )
+      {
+        squarkMinusBosonEffectiveMasses.push_back(
+                                  new squarkMinusBosonMassHolder( *supIterator,
+                                                                  wPlusPointer,
+                                                            *ewinoIterator ) );
+        squarkPlusBosonEffectiveMasses.push_back(
+                                   new squarkPlusBosonMassHolder( *supIterator,
+                                                                  wPlusPointer,
+                                                            *ewinoIterator ) );
+      }
+    }
+
   }
 
   inputHandler::~inputHandler()
   {
     for( std::vector< signedParticleShortcutPair* >::iterator
-         deletionIterator = sparticleProductionCombinations.begin();
+         deletionIterator( sparticleProductionCombinations.begin() );
          sparticleProductionCombinations.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
     }
-    for( std::vector< onshellSquarkMassHolder* >::iterator
-         deletionIterator = onshellSquarkEffectiveMasses.begin();
-         onshellSquarkEffectiveMasses.end() > deletionIterator;
+    for( std::vector< onShellSquarkMassHolder* >::iterator
+         deletionIterator( onShellSquarkEffectiveMasses.begin() );
+         onShellSquarkEffectiveMasses.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+    for( std::vector< squarkMinusBosonMassHolder* >::iterator
+         deletionIterator( squarkMinusBosonEffectiveMasses.begin() );
+         squarkMinusBosonEffectiveMasses.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+    for( std::vector< squarkPlusBosonMassHolder* >::iterator
+         deletionIterator( squarkPlusBosonEffectiveMasses.begin() );
+         squarkPlusBosonEffectiveMasses.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
     }
 
-    //delete decayCheckers;
     delete exclusiveBrs;
     delete updateDependentInputValues;
     delete updateDependentMasses;

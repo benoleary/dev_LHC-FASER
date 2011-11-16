@@ -64,8 +64,9 @@
 namespace LHC_FASER
 {
   /* new plan:
-   * basic sx, gx => sxCascade, gxCascade, & sups have supxCascade, which has a
-   * sxCascade for decays without a W, & a supwxCascade, for decays with a W.
+   * basic sx, gx => sxFullCascade, gxFullCascade, & sups have supxFullCascade,
+   * which has an electroweakCascadeSet for decays without a W, & a pair of
+   * electroweakCascadeSets for decays with a W.
    * gjm, sjm, gbm, sbm (m for more) build on above + also on each other.
    * es for intermediate electroweakinos.
    * put all sq & all unstable ewinos into list, order by mass, pop out
@@ -294,7 +295,6 @@ namespace LHC_FASER
     minimalAllocationVector< particleWithInt > cascadeDefiner;
     particleWithInt* cascadeSegment;
     // this is just used for setting up cascadeDefiner properly.
-    electroweakCascadeSet* ewinoCascades;
     electroweakCascadeSet* bosonCascades;
     std::list< int > soughtDecayProductList;
     /* by default, there is only 1 particle to be sought in initialScolored's
@@ -308,13 +308,12 @@ namespace LHC_FASER
 
     void
     buildOn( fullCascade* const copySource );
-    /* this copies the basic stuff (inputShortcut, beamEnergy, cascadeDefiner,
-     * ewinoCascade, bosonCascade) from copySource, though not
-     * typeOfColorfulCascade (which is always set by constructors) or
-     * initialScolored (which depends on the type of derived class), & also it
-     * sets up soughtDecayProductList to look for copySource->initialScolored,
-     * & adds copySource->initialScolored at the end of cascadeDefiner, with
-     * firstDecayBodyNumber.
+    /* this copies the basic stuff (inputShortcut, beamEnergy, cascadeDefiner)
+     * from copySource, though not typeOfColorfulCascade (which is always set
+     * by constructors) or initialScolored (which depends on the type of
+     * derived class), & also it sets up soughtDecayProductList to look for
+     * copySource->initialScolored, & adds copySource->initialScolored at the
+     * end of cascadeDefiner, with firstDecayBodyNumber.
      */
     double
     getCombinedAcceptance( bool const bosonChargeNotFlipped,
@@ -325,7 +324,7 @@ namespace LHC_FASER
                            int const numberOfPositiveElectrons,
                            int const numberOfNegativeMuons,
                            int const numberOfPositiveMuons );
-    /* this combines the acceptancesPerCutSet from ewinoCascades &
+    /* this combines the acceptances from ewinoCascades &
      * bosonCascades. Whether the relevant scoloreds are particles or
      * antiparticles should be decided by the derived class using this
      * function.
@@ -341,7 +340,7 @@ namespace LHC_FASER
     virtual
     ~sxFullCascade();
 
-    virtual void
+    void
     setProperties( inputHandler const* const inputShortcut,
                    particlePointer const initialSquark,
                    double const beamEnergy,
@@ -371,8 +370,8 @@ namespace LHC_FASER
      * false.
      */
 
-  //protected:
-    //nothing.
+  protected:
+    electroweakCascadeSet* ewinoCascades;
   };
 
 
@@ -384,7 +383,7 @@ namespace LHC_FASER
     virtual
     ~gxFullCascade();
 
-    virtual void
+    void
     setProperties( inputHandler const* const inputShortcut,
                    double const beamEnergy,
                    electroweakCascadeSet* const ewinoCascades );
@@ -412,8 +411,57 @@ namespace LHC_FASER
      * value of scoloredIsNotAntiparticle.
      */
 
-  //protected:
-    // nothing.
+  protected:
+    electroweakCascadeSet* ewinoCascades;
+  };
+
+
+  // this is derived class for direct sup-type to electroweakino fullCascades if
+  // the squark decays to an additional W.
+  class supxFullCascade : public fullCascade
+  {
+  public:
+    supxFullCascade();
+    virtual
+    ~supxFullCascade();
+
+    virtual void
+    setProperties( inputHandler const* const inputShortcut,
+                   particlePointer const initialSquark,
+                   double const beamEnergy,
+                   electroweakCascadeSet* const directEwinoCascades,
+                   electroweakCascadeSet* const ewinoWithWCascades,
+                   electroweakCascadeSet* const bosonCascades );
+    bool
+    isOpen();
+    /* this returns true if the squark is heavy enough to decay into the
+     * electroweakino, false otherwise. it also sorts out whether it should be
+     * using the decays involving a W boson.
+     */
+    virtual double
+    getBrToEwino( std::list< int > const* excludedSmParticles );
+    /* this works out the branching ratio for the decays of colored sparticles
+     * down to the 1st electroweakino in the cascade (including any decays to
+     * bosons + squarks), using the given list of excluded SM particles to
+     * exclude unwanted parts of the BR.
+     */
+    virtual double
+    getAcceptance( bool const scoloredIsNotAntiparticle,
+                   acceptanceCutSet* const acceptanceCuts,
+                   int const numberOfAdditionalJets,
+                   int const numberOfNegativeElectrons,
+                   int const numberOfPositiveElectrons,
+                   int const numberOfNegativeMuons,
+                   int const numberOfPositiveMuons );
+    /* this calls the appropriate functions on ewinoCascades &, if not NULL,
+     * bosonCascades, to build the required acceptance, taking into account
+     * whether the charges should be swapped if scoloredIsNotAntiparticle is
+     * false.
+     */
+
+  protected:
+    electroweakCascadeSet* directEwinoCascades;
+    electroweakCascadeSet* ewinoWithWCascades;
   };
 
 
@@ -1126,28 +1174,27 @@ namespace LHC_FASER
 
   inline void
   fullCascade::buildOn( fullCascade* const copySource )
-  /* this copies the basic stuff (inputShortcut, beamEnergy, cascadeDefiner,
-   * ewinoCascade, vectorCascade) from copySource, though not
-   * typeOfColorfulCascade (which is always set by constructors) or
-   * initialScolored (which depends on the type of derived class), & also it
-   * sets up soughtDecayProductList to look for copySource->initialScolored,
-   * & adds copySource->initialScolored at the end of cascadeDefiner, with
-   * firstDecayBodyNumber.
+  /* this copies the basic stuff (inputShortcut, beamEnergy, cascadeDefiner)
+   * from copySource, though not typeOfColorfulCascade (which is always set by
+   * constructors) or initialScolored (which depends on the type of derived
+   * class), & also it sets up soughtDecayProductList to look for
+   * copySource->initialScolored, & adds copySource->initialScolored at the end
+   * of cascadeDefiner, with firstDecayBodyNumber.
    */
   {
     inputShortcut = copySource->inputShortcut;
     beamEnergy = copySource->beamEnergy;
-    ewinoCascades = copySource->ewinoCascades;
-    bosonCascades = copySource->bosonCascades;
+    //ewinoCascades = copySource->ewinoCascades;
+    //bosonCascades = copySource->bosonCascades;
     subcascadePointer = copySource;
     soughtDecayProductList.front()
     = copySource->initialScolored->get_PDG_code();
-    cascadeDefiner.clearEntries();
+    this->cascadeDefiner.clearEntries();
     for( int cascadeFiller( 0 );
          copySource->cascadeDefiner.getSize() > cascadeFiller;
          ++cascadeFiller )
     {
-      cascadeSegment = cascadeDefiner.addNewAtEnd();
+      cascadeSegment = this->cascadeDefiner.addNewAtEnd();
       cascadeSegment->first
       = copySource->cascadeDefiner.getPointer( cascadeFiller )->first;
       cascadeSegment->second
@@ -1245,12 +1292,12 @@ namespace LHC_FASER
   inline void
   gxFullCascade::setProperties( inputHandler const* const inputShortcut,
                                 double const beamEnergy,
-                                electroweakCascadeSet* const ewinoCascade )
+                                electroweakCascadeSet* const ewinoCascades )
   {
     this->inputShortcut = inputShortcut;
     this->initialScolored = inputShortcut->getGluino();
     this->beamEnergy = beamEnergy;
-    this->ewinoCascades = ewinoCascade;
+    this->ewinoCascades = ewinoCascades;
     soughtDecayProductList.front() =
                          ewinoCascade->getElectroweakDecayer()->get_PDG_code();
     resetCachedBranchingRatio();
@@ -1479,8 +1526,8 @@ namespace LHC_FASER
                                   numberOfPositiveElectrons,
                                   numberOfNegativeMuons,
                                   numberOfPositiveMuons );
-    // in the used conventions, an incoming squark decays to a vector boson
-    // plus a squark, hence the same bool is used for both.
+    // in the used conventions, an incoming squark decays to a boson plus a
+    // squark, hence the same bool is used for both.
   }
 
 

@@ -445,12 +445,12 @@ namespace LHC_FASER
   sxFullCascade::setProperties( inputHandler const* const inputShortcut,
                                 particlePointer const initialSquark,
                                 double const beamEnergy,
-                                electroweakCascadeSet* const ewinoCascade )
+                                electroweakCascadeSet* const ewinoCascades )
   {
     this->inputShortcut = inputShortcut;
     this->initialScolored = initialSquark;
     this->beamEnergy = beamEnergy;
-    this->ewinoCascades = ewinoCascade;
+    this->ewinoCascades = ewinoCascades;
     int ewinoPdgCode( ewinoCascade->getElectroweakDecayer()->get_PDG_code() );
     if( ( inputShortcut->isIn( ewinoPdgCode,
                                inputShortcut->getCharginos() ) )
@@ -535,6 +535,60 @@ namespace LHC_FASER
       // the summing over charge-conjugate decays is already included in the BR
       // to the electroweakino.
     }
+  }
+
+
+  supxFullCascade::supxFullCascade() :
+      fullCascade( sx,
+                   3,
+                   1.0 )
+  {
+    // just an initialization list.
+  }
+
+  supxFullCascade::~sbxFullCascade()
+  {
+    // does nothing.
+  }
+
+
+  void
+  supxFullCascade::setProperties( inputHandler const* const inputShortcut,
+                                  particlePointer const initialSquark,
+                                  double const beamEnergy,
+                              electroweakCascadeSet* const directEwinoCascades,
+                               electroweakCascadeSet* const ewinoWithWCascades,
+                                  electroweakCascadeSet* const bosonCascades )
+  {
+    this->inputShortcut = inputShortcut;
+    this->initialScolored = initialSquark;
+    this->beamEnergy = beamEnergy;
+    this->directEwinoCascades = directEwinoCascades;
+    this->ewinoWithWCascades = ewinoWithWCascades;
+    int ewinoPdgCode( ewinoCascade->getElectroweakDecayer()->get_PDG_code() );
+    if( ( inputShortcut->isIn( ewinoPdgCode,
+                               inputShortcut->getCharginos() ) )
+        &&
+        ( inputShortcut->isIn( initialSquark->get_PDG_code(),
+                               inputShortcut->getSdownTypes() ) ) )
+      // if we have to worry about which sign of PDG code to use...
+    {
+      ewinoFlipsCharge = true;
+      soughtDecayProductList.front() = -(ewinoPdgCode);
+    }
+    else
+    {
+      ewinoFlipsCharge = false;
+      soughtDecayProductList.front() = ewinoPdgCode;
+    }
+    resetCachedBranchingRatio();
+    cascadeDefiner.clearEntries();
+    // reset cascadeDefiner.
+    cascadeSegment = cascadeDefiner.addNewAtEnd();
+    cascadeSegment->first = ewinoCascade->getElectroweakDecayer();
+    // sx means only 1 decay to be recorded.
+    cascadeSegment->second = firstDecayBodyNumber;
+    // sx also means that the decay is 2-body.
   }
 
 

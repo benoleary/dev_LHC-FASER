@@ -71,7 +71,7 @@ namespace LHC_FASER
    * another example an instance could be for a negatively-charged down squark,
    * which decays into a positively-charged up quark & a negatively-charged
    * chargino (which has negative PDG code!). the charge-conjugate process,
-   * which is assumed to have the same branching ratios & acceptancesPerCutSet, though
+   * which is assumed to have the same branching ratios & acceptances, though
    * for opposite-charge SM fermions, must be taken care of by whatever objects
    * are using this class.
    *
@@ -85,50 +85,45 @@ namespace LHC_FASER
     electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
                            particlePointer const coloredDecayer,
                            particlePointer const electroweakDecayer,
-                           inputHandler const* const inputShortcut )
+                           inputHandler const* const inputShortcut,
+                effectiveSquarkMassHolder* effectiveSquarkMassPointer = NULL );
     // this is the version for electroweakinos.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
                            particlePointer const coloredDecayer,
                            particlePointer const electroweakDecayer,
                            particlePointer const lighterScolored,
-                           inputHandler const* const inputShortcut )
+                           inputHandler const* const inputShortcut,
+                effectiveSquarkMassHolder* effectiveSquarkMassPointer = NULL );
     // this is the version for EWSB bosons.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~electroweakCascadeSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    virtual
+    ~electroweakCascadeSet();
 
     bool
     isEquivalent( particlePointer const coloredDecayer,
-                  particlePointer const electroweakDecayer )
+                  particlePointer const electroweakDecayer );
     // this returns true if the coloredDecayers & electroweakDecayers match.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     bool
     isEquivalent( particlePointer const coloredDecayer,
                   particlePointer const electroweakDecayer,
-                  particlePointer const lighterScolored )
+                  particlePointer const lighterScolored );
     // this returns true if the coloredDecayers, electroweakDecayers, &
     // lighterScoloreds match.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     particlePointer
     getColoredDecayer()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getElectroweakDecayer()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getLighterScolored()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getAcceptance( acceptanceCutSet const* const acceptanceCuts,
                    int const numberOfAdditionalJets,
                    int const numberOfNegativeElectrons,
                    int const numberOfPositiveElectrons,
                    int const numberOfNegativeMuons,
-                   int const numberOfPositiveMuons )
+                   int const numberOfPositiveMuons );
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the set of values for acceptance * branching ratio FOR THE
@@ -143,9 +138,8 @@ namespace LHC_FASER
      * NOT from the decay of the colored sparticle to the decaying electroweak
      * particle.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
-    getOssfMinusOsdf( acceptanceCutSet* const acceptanceCuts )
+    getOssfMinusOsdf( acceptanceCutSet* const acceptanceCuts );
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the value for acceptance * branching ratio FOR THE
@@ -156,7 +150,6 @@ namespace LHC_FASER
      * this function returns 0.0 if the cascades never result in an OSSF - OSDF
      * signal.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     leptonAcceptanceParameterSet* const kinematics;
@@ -168,6 +161,7 @@ namespace LHC_FASER
     electroweakCascade* currentCascade; // this is used for filling cascades.
   };
 
+
   // this gives out pointers to electroweakCascadeSets at a fixed beam energy
   // based on the requested colored sparticle & electroweakino or vector boson.
   class electroweakCascadesForOneBeamEnergy
@@ -176,34 +170,48 @@ namespace LHC_FASER
     electroweakCascadesForOneBeamEnergy(
                                leptonAcceptanceHandler* const kinematicsSource,
                                          int const beamEnergy,
-                                      inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~electroweakCascadesForOneBeamEnergy()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                     inputHandler const* const inputShortcut );
+    ~electroweakCascadesForOneBeamEnergy();
 
     int
     getBeamEnergy()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     electroweakCascadeSet*
     getCascadeSet( particlePointer const coloredDecayer,
-                   particlePointer const electroweakino )
+                   particlePointer const electroweakino );
     /* this looks to see if it already has an electroweakCascadeSet
      * corresponding to the requested pairing, & if it does, it returns a
      * pointer to it, & if it doesn't, it constructs a new
      * electroweakCascadeSet & returns a pointer to that.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     electroweakCascadeSet*
     getCascadeSet( particlePointer const coloredDecayer,
                    particlePointer const electroweakBoson,
-                   particlePointer const lighterScolored )
+                   particlePointer const lighterScolored );
     /* this looks to see if it already has an electroweakCascadeSet
      * corresponding to the requested particles, & if it does, it returns a
      * pointer to it, & if it doesn't, it constructs a new
      * electroweakCascadeSet & returns a pointer to that.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    electroweakCascadeSet*
+    getCascadeSet( particlePointer const coloredDecayer,
+                   particlePointer const electroweakino,
+                   effectiveSquarkMassHolder* const effectiveSquarkMass );
+    /* this looks to see if it already has an electroweakCascadeSet
+     * corresponding to the requested particles, & if it does, it returns a
+     * pointer to it, & if it doesn't, it constructs a new
+     * electroweakCascadeSet & returns a pointer to that.
+     */
+    electroweakCascadeSet*
+    getCascadeSet( particlePointer const coloredDecayer,
+                   particlePointer const electroweakBoson,
+                   particlePointer const lighterScolored,
+                   effectiveSquarkMassHolder* const effectiveSquarkMass );
+    /* this looks to see if it already has an electroweakCascadeSet
+     * corresponding to the requested particles, & if it does, it returns a
+     * pointer to it, & if it doesn't, it constructs a new
+     * electroweakCascadeSet & returns a pointer to that.
+     */
 
   protected:
     leptonAcceptancesForOneBeamEnergy* const kinematicsTable;
@@ -211,6 +219,8 @@ namespace LHC_FASER
     inputHandler const* const inputShortcut;
     std::vector< electroweakCascadeSet* > electroweakinoCascadeSets;
     std::vector< electroweakCascadeSet* > bosonCascadeSets;
+    std::vector< electroweakCascadeSet* > virtualSdownCascadeSets;
+    std::vector< electroweakCascadeSet* > virtualTopCascadeSets;
     electroweakCascadeSet* currentCascadeSet;
     // this is used for filling electroweakinoCascadeSets.
   };
@@ -221,18 +231,15 @@ namespace LHC_FASER
   class electroweakCascadeHandler
   {
   public:
-    electroweakCascadeHandler( inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~electroweakCascadeHandler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    electroweakCascadeHandler( inputHandler const* const inputShortcut );
+    ~electroweakCascadeHandler();
 
     electroweakCascadesForOneBeamEnergy*
-    getElectroweakCascadesForOneBeamEnergy( int const beamEnergy )
+    getElectroweakCascadesForOneBeamEnergy( int const beamEnergy );
     /* this looks to see if there is an existing
      * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
      * makes 1, & returns the pointer.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     leptonAcceptanceHandler kinematicsSource;
