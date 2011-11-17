@@ -746,13 +746,17 @@ namespace LHC_FASER
      */
     {
       return
-      subcascadePointer->getAcceptance( initialSparticleIsNotAntiparticle,
+      subcascadePointer->getAcceptance( !initialSparticleIsNotAntiparticle,
                                         acceptanceCuts,
                                         numberOfAdditionalJets,
                                         numberOfNegativeElectrons,
                                         numberOfPositiveElectrons,
                                         numberOfNegativeMuons,
                                         numberOfPositiveMuons );
+      /* !initialSparticleIsNotAntiparticle is used because a subsequent gluino
+       * or neutralino doesn't care, while a subsquent chargino needs to know
+       * that we want the case of a negatively-charged chargino.
+       */
     }
 
 

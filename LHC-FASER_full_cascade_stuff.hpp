@@ -518,8 +518,8 @@ namespace LHC_FASER
 
 
     /* this is derived class for compound fullCascades beginning with a
-     * sup-type, which decays to a jet & the initial sparticle of
-     * subcascadePointer.
+     * sup-type, which decays to a jet, maybe a boson, & the initial sparticle
+     * of subcascadePointer.
      */
     class supByJetToCompound : public fullCascade
     {
@@ -569,19 +569,34 @@ namespace LHC_FASER
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /* this is derived class for compound fullCascades beginning with a
-     * gluino, which decays to a jet & the initial sparticle of
-     * subcascadePointer.
+     * gluino or neutralino, which decays to a jet, maybe a boson & the initial
+     * sparticle of subcascadePointer.
      */
-    class gluinoByJetToCompound : public fullCascade
+    class gluinoOrNeutralinoToCompound : public fullCascade
     {
     public:
-      gluinoByJetToCompound();
+      gluinoOrNeutralinoToCompound();
       virtual
-      ~gluinoByJetToCompound();
+      ~gluinoOrNeutralinoToCompound();
 
       virtual void
-      setProperties( particlePointer const initialSquark,
+      setProperties( particlePointer const initialSparticle,
                      fullCascade* const subcascadePointer );
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
@@ -620,61 +635,19 @@ namespace LHC_FASER
     };
 
 
-
-
-
-
-
-
-
-
-
-
-
-    // this is derived class for compound fullCascades beginning with a squark,
-    // which decays to a jet & the initial sparticle of subcascadePointer.
-    class squarkByJetToCompound : public fullCascade
-    {
-    public:
-      squarkByJetToCompound();
-      virtual
-      ~squarkByJetToCompound();
-
-      virtual void
-      setProperties( particlePointer const initialSquark,
-                     fullCascade* const subcascadePointer );
-      virtual double
-      getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
-                     int const numberOfAdditionalJets,
-                     int numberOfNegativeElectrons,
-                     int numberOfPositiveElectrons,
-                     int numberOfNegativeMuons,
-                     int numberOfPositiveMuons );
-      /* this calls the appropriate functions on ewinoCascades &, if not NULL,
-       * bosonCascades, to build the required acceptance, taking into account
-       * whether the charges should be swapped if scoloredIsNotAntiparticle is
-       * false.
-       */
-
-    //protected:
-      // nothing.
-    };
-
-
     /* this is derived class for compound fullCascades beginning with a
-     * gluino, which decays to a jet & the initial sparticle of
-     * subcascadePointer.
+     * chargino, which decays to a jet, maybe a boson & the initial sparticle
+     * of subcascadePointer.
      */
-    class gluinoByJetToCompound : public fullCascade
+    class charginoToCompound : public fullCascade
     {
     public:
-      gluinoByJetToCompound();
+      charginoToCompound();
       virtual
-      ~gluinoByJetToCompound();
+      ~charginoToCompound();
 
       virtual void
-      setProperties( particlePointer const initialSquark,
+      setProperties( particlePointer const initialSparticle,
                      fullCascade* const subcascadePointer );
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
@@ -690,107 +663,26 @@ namespace LHC_FASER
        * false.
        */
 
-    //protected:
-      // nothing.
-    };
+    protected:
+      electroweakCascadeSet* const bosonCascades;
+      particlePointer wBoson;
+      double ewinoMass;
+      bool shouldUseDecaysWithW;
+      double directFraction;
+      double wFraction;
+      std::list< int > decayProductListIncludingW;
 
-
-    /* this is derived class for compound fullCascades beginning with a
-     * neutralino, which decays to a boson, a jet, & the initial sparticle of
-     * subcascadePointer.
-     */
-    class neutralinoByBosonToCompound : public fullCascade
-    {
-    public:
-      neutralinoByBosonToCompound();
-      virtual
-      ~neutralinoByBosonToCompound();
-
-      virtual void
-      setProperties( particlePointer const initialSquark,
-                     fullCascade* const subcascadePointer );
-      virtual double
-      getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
-                     int const numberOfAdditionalJets,
-                     int numberOfNegativeElectrons,
-                     int numberOfPositiveElectrons,
-                     int numberOfNegativeMuons,
-                     int numberOfPositiveMuons );
-      /* this calls the appropriate functions on ewinoCascades &, if not NULL,
-       * bosonCascades, to build the required acceptance, taking into account
-       * whether the charges should be swapped if scoloredIsNotAntiparticle is
-       * false.
-       */
-
-    //protected:
-      // nothing.
-    };
-
-
-    /* this is derived class for compound fullCascades beginning with a
-     * chargino, which decays to a boson, a jet, & the initial sparticle of
-     * subcascadePointer.
-     */
-    class charginoByBosonToCompound : public fullCascade
-    {
-    public:
-      charginoByBosonToCompound();
-      virtual
-      ~charginoByBosonToCompound();
-
-      virtual void
-      setProperties( particlePointer const initialSquark,
-                     fullCascade* const subcascadePointer );
-      virtual double
-      getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
-                     int const numberOfAdditionalJets,
-                     int numberOfNegativeElectrons,
-                     int numberOfPositiveElectrons,
-                     int numberOfNegativeMuons,
-                     int numberOfPositiveMuons );
-      /* this calls the appropriate functions on ewinoCascades &, if not NULL,
-       * bosonCascades, to build the required acceptance, taking into account
-       * whether the charges should be swapped if scoloredIsNotAntiparticle is
-       * false.
-       */
-
-    //protected:
-      // nothing.
-    };
-
-
-    /* this is derived class for compound fullCascades beginning with a
-     * gaugino, which decays to a boson, a jet, & the initial sparticle of
-     * subcascadePointer.
-     */
-    class gauginoByBosonToCompound : public fullCascade
-    {
-    public:
-      gauginoByBosonToCompound();
-      virtual
-      ~gauginoByBosonToCompound();
-
-      virtual void
-      setProperties( particlePointer const initialSquark,
-                     fullCascade* const subcascadePointer );
-      virtual double
-      getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
-                     int const numberOfAdditionalJets,
-                     int numberOfNegativeElectrons,
-                     int numberOfPositiveElectrons,
-                     int numberOfNegativeMuons,
-                     int numberOfPositiveMuons );
-      /* this calls the appropriate functions on ewinoCascades &, if not NULL,
-       * bosonCascades, to build the required acceptance, taking into account
-       * whether the charges should be swapped if scoloredIsNotAntiparticle is
-       * false.
-       */
-
-    //protected:
-      // nothing.
+      bool
+      decayWithWIsNotNegligible();
+      // this returns true if the decay involving a W boson is not negligible,
+      // also setting up the relevant fractions, false otherwise.
+      double
+      getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+                             int const numberOfAdditionalJets,
+                             int const numberOfNegativeElectrons,
+                             int const numberOfPositiveElectrons,
+                             int const numberOfNegativeMuons,
+                             int const numberOfPositiveMuons );
     };
 
   }
