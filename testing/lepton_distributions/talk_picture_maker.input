@@ -1,0 +1,9 @@
+set term postscript enhanced color solid
+set output "flat_far_tau_full_comparisons.eps"
+set style line 1 lt rgb "red" lw 3
+set style line 2 lt rgb "orange" lw 3
+set style line 3 lt rgb "blue" lw 3
+set style line 4 lt rgb "black" lw 3
+plot 'flat_far_ll.dat' index 0 title 'far tau lepton itself' with lines ls 3, 'flat_far_tLm.dat' index 0 title 'muon from tau_L' with lines ls 2, 'flat_near_tRm.dat' index 0 title 'muon from tau_R' with lines ls 1, '../SPS1a_sdownR_neu2_lepton_acceptance.txt' index 0 title 'SPS1a sd_L->neu_2 acceptance / 100' with lines ls 4
+set output "flat_far_tau_naive_comparisons.eps"
+plot 'flat_far_ll.dat' index 0 title 'far muon' with lines ls 3, '../SPS1a_sdownR_neu2_lepton_acceptance.txt' index 0 title 'SPS1a sd_L->neu_2 acceptance / 100' with lines ls 4

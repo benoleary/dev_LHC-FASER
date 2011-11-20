@@ -75,9 +75,9 @@ namespace LHC_FASER
    * while( m_sq < m_go ), makeSquarksLighterThanGluino, then makeGluino,
    * then makeSquarksHeavierThanGluino, making es objects as encountered.
    *
-   * squarkToEwino, gluinoToEwino both have basic getAcceptance. sm & gm build on getAcceptance of
-   * subcascadePointer, sbm & gbm build on own bosonCascades * getAcceptance of
-   * subcascadePointer.
+   * squarkToEwino, gluinoToEwino both have basic getAcceptance. sm & gm build
+   * on getAcceptance of subcascadePointer, sbm & gbm build on own
+   * bosonCascades * getAcceptance of subcascadePointer.
    *
    * need to write supDecayToWPlusAndNeutralino class derived from
    * electroweakCascadeSet class. should just have pointers to 2
@@ -181,6 +181,12 @@ namespace LHC_FASER
      * EWSB bosons + squarks), using the given list of excluded SM particles
      * to exclude unwanted parts of the BR. by default, it multiplies the BR
      * for the initial decay by subcascadePointer->getBrToEwino.
+     */
+    double
+    getTotalBrToEwino();
+    /* this works out the branching ratio for the decays of colored
+     * sparticles down to the 1st electroweakino in the cascade (including
+     * any decays to bosons + squarks), without excluding any particles.
      */
     std::vector< particleWithInt* > const*
     getCascadeDefiner()
@@ -1235,6 +1241,29 @@ namespace LHC_FASER
     branchingRatioNeedsToBeRecalculated = true;
   }
 
+  inline double
+  fullCascade::getTotalBrToEwino()
+  /* this works out the branching ratio for the decays of colored
+   * sparticles down to the 1st electroweakino in the cascade (including
+   * any decays to bosons + squarks), without excluding any particles.
+   */
+  {
+    if( branchingRatioNeedsToBeRecalculated )
+    {
+      cachedBranchingRatio
+      = initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                               inputShortcut->getEmptyList() );
+      if( NULL != subcascadePointer )
+      {
+        cachedBranchingRatio *= subcascadePointer->getTotalBrToEwino();
+      }
+      branchingRatioNeedsToBeRecalculated = false;
+    }
+    return cachedBranchingRatio;
+  }
+
   inline std::vector< fullCascade::particleWithInt* > const*
   fullCascade::getCascadeDefiner()
   const
@@ -1294,8 +1323,8 @@ namespace LHC_FASER
    * from copySource, though not typeOfColorfulCascade (which is always set by
    * constructors) or initialSparticle (which depends on the type of derived
    * class), & also it sets up soughtDecayProductList to look for
-   * copySource->initialSparticle, & adds copySource->initialSparticle at the end
-   * of cascadeDefiner, with firstDecayBodyNumber.
+   * copySource->initialSparticle, & adds copySource->initialSparticle at the
+   * end of cascadeDefiner, with firstDecayBodyNumber.
    */
   {
     this->inputShortcut = copySource->inputShortcut;
@@ -1734,8 +1763,10 @@ namespace LHC_FASER
     // this returns true if the squark is heavy enough to decay into the
     // electroweakino, false otherwise.
     {
-      if( initialSparticle->get_absolute_mass()
-          > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
+      if( ( initialSparticle->get_absolute_mass()
+            > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
+          &&
+          ( lhcFaserGlobal::negligibleBr < getTotalBrToEwino() ) )
       {
         return true;
       }
@@ -1754,16 +1785,10 @@ namespace LHC_FASER
      * particles to exclude unwanted parts of the BR.
      */
     {
-      if( branchingRatioNeedsToBeRecalculated )
-      {
-        cachedBranchingRatio
-        = initialSparticle->inspect_direct_decay_handler(
+      return initialSparticle->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                        &soughtDecayProductList,
                                                          excludedSmParticles );
-        branchingRatioNeedsToBeRecalculated = false;
-      }
-      return cachedBranchingRatio;
     }
 
     inline particlePointer
@@ -1844,7 +1869,10 @@ namespace LHC_FASER
     {
       ewinoMass
       = directEwinoCascades->getElectroweakDecayer()->get_absolute_mass();
-      if( initialSparticle->get_absolute_mass() > ewinoMass )
+      if( ( initialSparticle->get_absolute_mass()
+            > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
+          &&
+          ( lhcFaserGlobal::negligibleBr < getTotalBrToEwino() ) )
       {
         if( initialSparticle->get_absolute_mass()
             > ( ewinoMass + wBoson->get_absolute_mass() ) )
@@ -1872,16 +1900,10 @@ namespace LHC_FASER
      * particles to exclude unwanted parts of the BR.
      */
     {
-      if( branchingRatioNeedsToBeRecalculated )
-      {
-        cachedBranchingRatio
-        = initialSparticle->inspect_direct_decay_handler(
+      return initialSparticle->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                        &soughtDecayProductList,
                                                          excludedSmParticles );
-        branchingRatioNeedsToBeRecalculated = false;
-      }
-      return cachedBranchingRatio;
     }
 
     inline particlePointer
@@ -1902,22 +1924,18 @@ namespace LHC_FASER
      * particles to exclude unwanted parts of the BR.
      */
     {
-      if( branchingRatioNeedsToBeRecalculated )
-      {
-        cachedBranchingRatio
-        = initialSparticle->inspect_direct_decay_handler(
-                                           )->get_branching_ratio_for_subset(
+      double
+      returnValue( initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
                                                        &soughtDecayProductList,
-                                                         excludedSmParticles );
-        if( !(ewinoCascades->getElectroweakDecayer(
+                                                       excludedSmParticles ) );
+      if( !(ewinoCascades->getElectroweakDecayer(
                                                )->counts_as_self_conjugate()) )
-          // if we need to add the charge-conjugate BR too...
-        {
-          cachedBranchingRatio += cachedBranchingRatio;
-        }
-        branchingRatioNeedsToBeRecalculated = false;
+        // if we need to add the charge-conjugate BR too...
+      {
+        returnValue += returnValue;
       }
-      return cachedBranchingRatio;
+      return returnValue;
     }
 
     inline particlePointer
