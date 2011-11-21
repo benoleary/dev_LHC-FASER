@@ -402,9 +402,10 @@ namespace LHC_FASER
                                            int const numberOfPositiveElectrons,
                                              int const numberOfNegativeMuons,
                                              int const numberOfPositiveMuons )
-    /* this calls the appropriate functions on ewinoCascades to build the
-     * required acceptance, taking into account whether the charges should be
-     * swapped if scoloredIsNotAntiparticle is false.
+    /* this calls the appropriate functions on directEwinoCascades to build the
+     * required acceptance or ewinoWithWCascades & bosonCascades if the decay
+     * with a boson is not negligible, taking into account whether the charges
+     * should be swapped if scoloredIsNotAntiparticle is false.
      */
     {
       if( !initialSparticleIsNotAntiparticle )
@@ -421,7 +422,7 @@ namespace LHC_FASER
       {
         return getCombinedAcceptance( acceptanceCuts,
                                       numberOfAdditionalJets,
-                                      umberOfNegativeElectrons,
+                                      numberOfNegativeElectrons,
                                       numberOfPositiveElectrons,
                                       numberOfNegativeMuons,
                                       numberOfPositiveMuons );
@@ -512,7 +513,7 @@ namespace LHC_FASER
                                                      numberOfPositiveElectrons,
                                                          numberOfNegativeMuons,
                                                      numberOfPositiveMuons ) );
-      }  // end of if numberOfLeptons was in the allowed range.
+      }  // end of if number of SM fermions was in the allowed range.
     }
 
 
@@ -616,8 +617,8 @@ namespace LHC_FASER
                                             int numberOfPositiveElectrons,
                                             int numberOfNegativeMuons,
                                             int numberOfPositiveMuons )
-    /* this calls the appropriate functions on ewinoCascades &, if not NULL,
-     * bosonCascades, to build the required acceptance, taking into account
+    /* this calls the appropriate functions on subcascadePointer &
+     * bosonCascades to build the required acceptance, taking into account
      * whether the charges should be swapped if scoloredIsNotAntiparticle is
      * false.
      */
@@ -686,7 +687,7 @@ namespace LHC_FASER
                                 ( numberOfNegativeMuons - ewinoNegativeMuons ),
                                ( numberOfPositiveMuons - ewinoPositiveMuons ) )
                      * subcascadePointer->getAcceptance(
-                                                     initialSparticleIsNotAntiparticle,
+                                             initialSparticleIsNotAntiparticle,
                                                          acceptanceCuts,
                                                          ewinoJets,
                                                         ewinoNegativeElectrons,
@@ -701,9 +702,8 @@ namespace LHC_FASER
           }  // end of loop over negative electrons.
         }  // end of loop over jets.
         return returnDouble;
-      }  // end of if numberOfLeptons was in the allowed range.
+      }  // end of if number of SM fermions was in the allowed range.
     }
-
 
 
 
@@ -720,44 +720,6 @@ namespace LHC_FASER
       // does nothing.
     }
 
-
-    void
-    sdownByJetToCompound::setProperties( particlePointer const initialSquark,
-                                         fullCascade* const subcascadePointer )
-    {
-      initialSparticle = initialSquark;
-      buildOn( subcascadePointer );
-      resetCachedBranchingRatio();
-    }
-
-    double
-    sdownByJetToCompound::getAcceptance(
-                                  bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
-                                         int const numberOfAdditionalJets,
-                                         int numberOfNegativeElectrons,
-                                         int numberOfPositiveElectrons,
-                                         int numberOfNegativeMuons,
-                                         int numberOfPositiveMuons )
-    /* this calls the appropriate functions on ewinoCascades &, if not NULL,
-     * bosonCascades, to build the required acceptance, taking into account
-     * whether the charges should be swapped if scoloredIsNotAntiparticle is
-     * false.
-     */
-    {
-      return
-      subcascadePointer->getAcceptance( !initialSparticleIsNotAntiparticle,
-                                        acceptanceCuts,
-                                        numberOfAdditionalJets,
-                                        numberOfNegativeElectrons,
-                                        numberOfPositiveElectrons,
-                                        numberOfNegativeMuons,
-                                        numberOfPositiveMuons );
-      /* !initialSparticleIsNotAntiparticle is used because a subsequent gluino
-       * or neutralino doesn't care, while a subsquent chargino needs to know
-       * that we want the case of a negatively-charged chargino.
-       */
-    }
 
 
     supByJetToCompound::supByJetToCompound() :
@@ -777,22 +739,6 @@ namespace LHC_FASER
     }
 
 
-    void
-    supByJetToCompound::setProperties( particlePointer const initialSquark,
-                                       fullCascade* const subcascadePointer,
-                                   electroweakCascadeSet* const bosonCascades )
-    {
-      initialSparticle = initialSquark;
-      this->bosonCascades = bosonCascades;
-      buildOn( subcascadePointer );
-      resetCachedBranchingRatio();
-      decayProductListIncludingW.front()
-      = subcascadePointer->getInitialSparticle()->get_PDG_code();
-      decayProductListIncludingW.back()
-      = bosonCascades->getElectroweakDecayer()->get_PDG_code();
-      shouldUseDecaysWithW = decayWithWIsNotNegligible();
-    }
-
     double
     supByJetToCompound::getAcceptance(
                                   bool const initialSparticleIsNotAntiparticle,
@@ -802,10 +748,10 @@ namespace LHC_FASER
                                        int numberOfPositiveElectrons,
                                        int numberOfNegativeMuons,
                                        int numberOfPositiveMuons )
-    /* this calls the appropriate functions on ewinoCascades &, if not NULL,
-     * bosonCascades, to build the required acceptance, taking into account
-     * whether the charges should be swapped if scoloredIsNotAntiparticle is
-     * false.
+    /* this calls the appropriate functions on subcascadePointer to build the
+     * required acceptance, & also with bosonCascades if the decay with a boson
+     * is not negligible, taking into account whether the charges should be
+     * swapped if scoloredIsNotAntiparticle is false.
      */
     {
       if( !initialSparticleIsNotAntiparticle )
@@ -822,7 +768,7 @@ namespace LHC_FASER
       {
         return getCombinedAcceptance( acceptanceCuts,
                                       numberOfAdditionalJets,
-                                      umberOfNegativeElectrons,
+                                      numberOfNegativeElectrons,
                                       numberOfPositiveElectrons,
                                       numberOfNegativeMuons,
                                       numberOfPositiveMuons );
@@ -916,162 +862,347 @@ namespace LHC_FASER
                                                      numberOfPositiveElectrons,
                                                          numberOfNegativeMuons,
                                                      numberOfPositiveMuons ) );
-      }  // end of if numberOfLeptons was in the allowed range.
+      }  // end of if number of SM fermions was in the allowed range.
     }
 
 
 
 
+    gluinoOrNeutralinoToCompound::gluinoOrNeutralinoToCompound() :
+        fullCascade( gjm,
+                     2 ),
+        bosonCascades( NULL ),
+        decayProductListIncludingW( 2,
+                                  CppSLHA::CppSLHA_global::really_wrong_value )
+        // gjm also means that the initial decay is 2-body.
+    {
+      // just an initialization list.
+    }
+
+    gluinoOrNeutralinoToCompound::~gluinoOrNeutralinoToCompound()
+    {
+      // does nothing.
+    }
+
+
+    double
+    gluinoOrNeutralinoToCompound::getAcceptance(
+                                  bool const initialSparticleIsNotAntiparticle,
+                                        acceptanceCutSet* const acceptanceCuts,
+                                              int const numberOfAdditionalJets,
+                                                 int numberOfNegativeElectrons,
+                                                 int numberOfPositiveElectrons,
+                                                 int numberOfNegativeMuons,
+                                                 int numberOfPositiveMuons )
+    /* this calls the appropriate functions on subcascadePointer to build the
+     * required acceptance, & also with bosonCascades if the decay with a boson
+     * is not negligible, taking into account whether the charges should be
+     * swapped if scoloredIsNotAntiparticle is false.
+     */
+    {
+      if( shouldUseDecaysWithW )
+      {
+        return getCombinedAcceptance( acceptanceCuts,
+                                      numberOfAdditionalJets,
+                                      numberOfNegativeElectrons,
+                                      numberOfPositiveElectrons,
+                                      numberOfNegativeMuons,
+                                      numberOfPositiveMuons );
+      }
+      else
+      {
+        return
+        ( 0.5 * ( subcascadePointer->getAcceptance(
+                                             initialSparticleIsNotAntiparticle,
+                                                    acceptanceCuts,
+                                                    numberOfAdditionalJets,
+                                                    numberOfNegativeElectrons,
+                                                    numberOfPositiveElectrons,
+                                                    numberOfNegativeMuons,
+                                                    numberOfPositiveMuons )
+                  + subcascadePointer->getAcceptance(
+                                             initialSparticleIsNotAntiparticle,
+                                                      acceptanceCuts,
+                                                      numberOfAdditionalJets,
+                                                     numberOfNegativeElectrons,
+                                                     numberOfPositiveElectrons,
+                                                      numberOfNegativeMuons,
+                                                   numberOfPositiveMuons ) ) );
+      }
+    }
+
+    double
+    gluinoOrNeutralinoToCompound::getCombinedAcceptance(
+                                        acceptanceCutSet* const acceptanceCuts,
+                                              int const numberOfAdditionalJets,
+                                           int const numberOfNegativeElectrons,
+                                           int const numberOfPositiveElectrons,
+                                               int const numberOfNegativeMuons,
+                                              int const numberOfPositiveMuons )
+    {
+      if( ( 0 > numberOfAdditionalJets )
+          ||
+          ( 0 > numberOfNegativeElectrons )
+          ||
+          ( 0 > numberOfPositiveElectrons )
+          ||
+          ( 0 > numberOfNegativeMuons )
+          ||
+          ( 0 > numberOfPositiveMuons )
+          ||
+          ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+            < ( numberOfAdditionalJets
+                + numberOfNegativeElectrons + numberOfPositiveElectrons
+                + numberOfNegativeMuons + numberOfPositiveMuons ) ) )
+      {
+        return 0.0;
+      }
+      else
+      {
+        double returnDouble( 0.0 );
+        for( int ewinoJets( numberOfAdditionalJets );
+             0 <= ewinoJets;
+             --ewinoJets )
+        {
+          for( int ewinoNegativeElectrons( numberOfNegativeElectrons );
+               0 <= ewinoNegativeElectrons;
+               --ewinoNegativeElectrons )
+          {
+            for( int ewinoPositiveElectrons( numberOfPositiveElectrons );
+                 0 <= ewinoPositiveElectrons;
+                 --ewinoPositiveElectrons )
+            {
+              for( int ewinoNegativeMuons( numberOfNegativeMuons );
+                   0 <= ewinoNegativeMuons;
+                   --ewinoNegativeMuons )
+              {
+                for( int ewinoPositiveMuons( numberOfPositiveMuons );
+                     0 <= ewinoPositiveMuons;
+                     --ewinoPositiveMuons )
+                {
+                  /* we average over the configurations with opposite charges
+                   * (could use false for initialSparticleIsNotAntiparticle
+                   * for subcascadePointer & appropriate negative/positive
+                   * numbers, but this way seems simpler):
+                   */
+                  returnDouble
+                  += ( 0.5 * ( subcascadePointer->getAcceptance( true,
+                                                                acceptanceCuts,
+                                                                ewinoJets,
+                                                        ewinoNegativeElectrons,
+                                                        ewinoPositiveElectrons,
+                                                            ewinoNegativeMuons,
+                                                           ewinoPositiveMuons )
+                               * bosonCascades->getAcceptance( acceptanceCuts,
+                                        ( numberOfAdditionalJets - ewinoJets ),
+                        ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
+                        ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
+                                ( numberOfNegativeMuons - ewinoNegativeMuons ),
+                               ( numberOfPositiveMuons - ewinoPositiveMuons ) )
+                               + subcascadePointer->getAcceptance( true,
+                                                                acceptanceCuts,
+                                                                   ewinoJets,
+                                                        ewinoPositiveElectrons,
+                                                        ewinoNegativeElectrons,
+                                                            ewinoPositiveMuons,
+                                                           ewinoNegativeMuons )
+                                 * bosonCascades->getAcceptance(
+                                                                acceptanceCuts,
+                                        ( numberOfAdditionalJets - ewinoJets ),
+                        ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
+                        ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
+                                ( numberOfPositiveMuons - ewinoPositiveMuons ),
+                          ( numberOfNegativeMuons - ewinoNegativeMuons ) ) ) );
+                }  // end of loop over positive electrons.
+              }  // end of loop over negative muons.
+            }  // end of loop over positive electrons.
+          }  // end of loop over negative electrons.
+        }  // end of loop over jets.
+        return ( wFraction * returnDouble
+                 + directFraction * 0.5
+                   * ( subcascadePointer->getAcceptance( true,
+                                                         acceptanceCuts,
+                                                        numberOfAdditionalJets,
+                                                     numberOfNegativeElectrons,
+                                                     numberOfPositiveElectrons,
+                                                         numberOfNegativeMuons,
+                                                        numberOfPositiveMuons )
+                       + subcascadePointer->getAcceptance( true,
+                                                           acceptanceCuts,
+                                                        numberOfAdditionalJets,
+                                                     numberOfPositiveElectrons,
+                                                     numberOfNegativeElectrons,
+                                                         numberOfPositiveMuons,
+                                                   numberOfNegativeMuons ) ) );
+      }  // end of if number of SM fermions was in the allowed range.
+    }
+
+
+
+
+    charginoToCompound::charginoToCompound() :
+        fullCascade( gjm,
+                     2 ),
+        bosonCascades( NULL ),
+        decayProductListForWWithSdownType( 2,
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+        decayProductListForWWithSupType( 2,
+                                  CppSLHA::CppSLHA_global::really_wrong_value )
+        // gjm also means that the initial decay is 2-body.
+    {
+      // just an initialization list.
+    }
+
+    charginoToCompound::~charginoToCompound()
+    {
+      // does nothing.
+    }
+
+
+    double
+    charginoToCompound::getAcceptance(
+                                  bool const initialSparticleIsNotAntiparticle,
+                                       acceptanceCutSet* const acceptanceCuts,
+                                       int const numberOfAdditionalJets,
+                                       int numberOfNegativeElectrons,
+                                       int numberOfPositiveElectrons,
+                                       int numberOfNegativeMuons,
+                                       int numberOfPositiveMuons )
+    /* this calls the appropriate functions on subcascadePointer to build the
+     * required acceptance, & also with bosonCascades if the decay with a boson
+     * is not negligible, taking into account whether the charges should be
+     * swapped if scoloredIsNotAntiparticle is false.
+     */
+    {
+      if( shouldUseDecaysWithW )
+      {
+        if( initialSparticleIsNotAntiparticle )
+        {
+          return getCombinedAcceptance( acceptanceCuts,
+                                        numberOfAdditionalJets,
+                                        numberOfNegativeElectrons,
+                                        numberOfPositiveElectrons,
+                                        numberOfNegativeMuons,
+                                        numberOfPositiveMuons );
+        }
+        else
+        {
+          return getCombinedAcceptance( acceptanceCuts,
+                                        numberOfAdditionalJets,
+                                        numberOfPositiveElectrons,
+                                        numberOfNegativeElectrons,
+                                        numberOfPositiveMuons,
+                                        numberOfNegativeMuons );
+        }
+      }
+      else
+      {
+        bool askForSquarkNotAntisquark( !decayingToSupType );
+        if( initialSparticleIsNotAntiparticle )
+        {
+          askForSquarkNotAntisquark = decayingToSupType;
+        }
+        return subcascadePointer->getAcceptance( askForSquarkNotAntisquark,
+                                                 acceptanceCuts,
+                                                 numberOfAdditionalJets,
+                                                 numberOfNegativeElectrons,
+                                                 numberOfPositiveElectrons,
+                                                 numberOfNegativeMuons,
+                                                 numberOfPositiveMuons );
+      }
+    }
+
+    double
+    charginoToCompound::getCombinedAcceptance(
+                                        acceptanceCutSet* const acceptanceCuts,
+                                              int const numberOfAdditionalJets,
+                                           int const numberOfNegativeElectrons,
+                                           int const numberOfPositiveElectrons,
+                                               int const numberOfNegativeMuons,
+                                              int const numberOfPositiveMuons )
+    // if this is called, it is the decay of a positive chargino.
+    {
+      if( ( 0 > numberOfAdditionalJets )
+          ||
+          ( 0 > numberOfNegativeElectrons )
+          ||
+          ( 0 > numberOfPositiveElectrons )
+          ||
+          ( 0 > numberOfNegativeMuons )
+          ||
+          ( 0 > numberOfPositiveMuons )
+          ||
+          ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+            < ( numberOfAdditionalJets
+                + numberOfNegativeElectrons + numberOfPositiveElectrons
+                + numberOfNegativeMuons + numberOfPositiveMuons ) ) )
+      {
+        return 0.0;
+      }
+      else
+      {
+        double returnDouble( 0.0 );
+        for( int ewinoJets( numberOfAdditionalJets );
+             0 <= ewinoJets;
+             --ewinoJets )
+        {
+          for( int ewinoNegativeElectrons( numberOfNegativeElectrons );
+               0 <= ewinoNegativeElectrons;
+               --ewinoNegativeElectrons )
+          {
+            for( int ewinoPositiveElectrons( numberOfPositiveElectrons );
+                 0 <= ewinoPositiveElectrons;
+                 --ewinoPositiveElectrons )
+            {
+              for( int ewinoNegativeMuons( numberOfNegativeMuons );
+                   0 <= ewinoNegativeMuons;
+                   --ewinoNegativeMuons )
+              {
+                for( int ewinoPositiveMuons( numberOfPositiveMuons );
+                     0 <= ewinoPositiveMuons;
+                     --ewinoPositiveMuons )
+                {
+                  returnDouble
+                  += ( ( squarkWithWFraction
+                         * subcascadePointer->getAcceptance( false,
+                                                             acceptanceCuts,
+                                                             ewinoJets,
+                                                        ewinoNegativeElectrons,
+                                                        ewinoPositiveElectrons,
+                                                            ewinoNegativeMuons,
+                                                           ewinoPositiveMuons )
+                         + antisquarkWithWFraction
+                           * subcascadePointer->getAcceptance( false,
+                                                               acceptanceCuts,
+                                                               ewinoJets,
+                                                        ewinoNegativeElectrons,
+                                                        ewinoPositiveElectrons,
+                                                            ewinoNegativeMuons,
+                                                         ewinoPositiveMuons ) )
+                       * bosonCascades->getAcceptance( acceptanceCuts,
+                                        ( numberOfAdditionalJets - ewinoJets ),
+                        ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
+                        ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
+                                ( numberOfNegativeMuons - ewinoNegativeMuons ),
+                            ( numberOfPositiveMuons - ewinoPositiveMuons ) ) );
+                }  // end of loop over positive electrons.
+              }  // end of loop over negative muons.
+            }  // end of loop over positive electrons.
+          }  // end of loop over negative electrons.
+        }  // end of loop over jets.
+        return ( returnDouble
+                 + directFraction
+                   * subcascadePointer->getAcceptance( decayingToSupType,
+                                                       acceptanceCuts,
+                                                       numberOfAdditionalJets,
+                                                     numberOfNegativeElectrons,
+                                                     numberOfPositiveElectrons,
+                                                         numberOfNegativeMuons,
+                                                     numberOfPositiveMuons ) );
+      }  // end of if number of SM fermions was in the allowed range.
+    }
 
   }  // end of fullCascadeType namespace
-
-
-  sjgxFullCascade::sjgxFullCascade() :
-    fullCascade( sjgx,
-                 2,
-                 1.0 )
-  // sjgx also means that the initial decay is 2-body.
-  {
-    // just an initialization list.
-  }
-
-  sjgxFullCascade::~sjgxFullCascade()
-  {
-    // does nothing.
-  }
-
-
-
-  gjsxFullCascade::gjsxFullCascade() :
-    fullCascade( gjsx,
-                 2,
-                 2.0 )
-  // gjsx also means that the initial decay is 2-body.
-  {
-    // just an initialization list.
-  }
-
-  gjsxFullCascade::~gjsxFullCascade()
-  {
-    // does nothing.
-  }
-
-
-
-  sjgjsxFullCascade::sjgjsxFullCascade() :
-    fullCascade( sjgjsx,
-                 2,
-                 1.0 )
-  // sjgjsx also means that the initial decay is 2-body.
-  {
-    // just an initialization list.
-  }
-
-  sjgjsxFullCascade::~sjgjsxFullCascade()
-  {
-    // does nothing.
-  }
-
-
-
-
-  gbsxFullCascade::gbsxFullCascade() :
-    fullCascade( gbsx,
-                 3,
-                 2.0 )
-  // gbsx also means that the initial decay is 3-body.
-  {
-    soughtDecayProductList.push_back(
-                                 CppSLHA::CppSLHA_global::really_wrong_value );
-    // a cascade beginning with gv needs to look for 2 specific decay products.
-  }
-
-  gbsxFullCascade::~gbsxFullCascade()
-  {
-    // does nothing.
-  }
-
-
-
-  gjsbsxFullCascade::gjsbsxFullCascade() :
-    fullCascade( gjsbsx,
-                 2,
-                 2.0 )
-  // gjsbsx also means that the initial decay is 2-body.
-  {
-    // just an initialization list.
-  }
-
-  gjsbsxFullCascade::~gjsbsxFullCascade()
-  {
-    // does nothing.
-  }
-
-
-
-  sbgxFullCascade::sbgxFullCascade() :
-    fullCascade( sbgx,
-                 3,
-                 1.0 )
-  // sbgx also means that the initial decay is 3-body.
-  {
-    // just an initialization list.
-  }
-
-  sbgxFullCascade::~sbgxFullCascade()
-  {
-    // does nothing.
-  }
-
-
-
-
-
-  sbgjsxFullCascade::sbgjsxFullCascade() :
-    fullCascade( sbgjsx,
-                 3,
-                 1.0 )
-  // sbgjsx also means that the initial decay is 3-body.
-  {
-    // just an initialization list.
-  }
-
-  sbgjsxFullCascade::~sbgjsxFullCascade()
-  {
-    // does nothing.
-  }
-
-
-
-  sjgbsxFullCascade::sjgbsxFullCascade() :
-    fullCascade( sjgbsx,
-                 2,
-                 1.0 )
-  // sjgbsx also means that the initial decay is 2-body.
-  {
-    // just an initialization list.
-  }
-
-  sjgbsxFullCascade::~sjgbsxFullCascade()
-  {
-    // does nothing.
-  }
-
-
-
-  sjgjsbsxFullCascade::sjgjsbsxFullCascade() :
-    fullCascade( sjgjsbsx,
-                 2,
-                 1.0 )
-  // sjgjsbsx also means that the initial decay is 2-body.
-  {
-    // just an initialization list.
-  }
-
-  sjgjsbsxFullCascade::~sjgjsbsxFullCascade()
-  {
-    // does nothing.
-  }
 
 
 

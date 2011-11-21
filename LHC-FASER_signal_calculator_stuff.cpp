@@ -676,22 +676,7 @@ namespace LHC_FASER
                       std::cout
                       << std::endl
                       << "1st: "
-                      << *((*firstCascadeIterator)->getInitialSparticle(
-                                                                )->get_name());
-                      for( std::vector< fullCascade::particleWithInt*
-                                                      >::const_reverse_iterator
-                           cascadeParticleIterator(
-                                    (*firstCascadeIterator)->getCascadeDefiner(
-                                                                 )->rbegin() );
-                           (*firstCascadeIterator)->getCascadeDefiner()->rend()
-                           > cascadeParticleIterator;
-                           ++cascadeParticleIterator )
-                      {
-                        std::cout
-                        << " => "
-                        << *((*cascadeParticleIterator)->first->get_name());
-                      }
-                      std::cout
+                      << (*firstCascadeIterator)->getAsString()
                       << "; 0+j, 0l = "
                       << (*firstCascadeIterator
                                 )->unspecifiedJetsSpecifiedChargeSummedLeptons(
@@ -700,23 +685,7 @@ namespace LHC_FASER
                       std::cout
                       << std::endl
                       << "2nd: "
-                      << *((*secondCascadeIterator)->getInitialSparticle(
-                                                                )->get_name());
-                      for( std::vector< fullCascade::particleWithInt*
-                                                      >::const_reverse_iterator
-                           cascadeParticleIterator(
-                                   (*secondCascadeIterator)->getCascadeDefiner(
-                                                                 )->rbegin() );
-                           (*secondCascadeIterator)->getCascadeDefiner(
-                                                                      )->rend()
-                           > cascadeParticleIterator;
-                           ++cascadeParticleIterator )
-                      {
-                        std::cout
-                        << " => "
-                        << *((*cascadeParticleIterator)->first->get_name());
-                      }
-                      std::cout
+                      << (*secondCascadeIterator)->getAsString()
                       << "; 0+j, 0l = "
                       << (*secondCascadeIterator
                                 )->unspecifiedJetsSpecifiedChargeSummedLeptons(

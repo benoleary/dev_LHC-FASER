@@ -639,7 +639,7 @@ namespace LHC_FASER
     std::cout
     << std::endl
     << "has " << openCascades->size() << " open cascades. 1 is sx, 3 is"
-      << " sjgx. BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
+    << " sjgx. BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
     << " excludes top & antitop, \"acc\" is for ->getAcceptance("
     << " [particle], &testAcceptanceCutSet, 0, 0, 0, 1, 0 ).";
     for( std::vector< fullCascade* >::iterator
