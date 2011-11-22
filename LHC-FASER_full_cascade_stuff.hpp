@@ -471,7 +471,7 @@ namespace LHC_FASER
       virtual
       ~squarkByBosonToCompound();
 
-      virtual void
+      virtual fullCascade*
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
@@ -505,7 +505,7 @@ namespace LHC_FASER
       virtual
       ~sdownByJetToCompound();
 
-      virtual void
+      virtual fullCascade*
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
@@ -537,7 +537,7 @@ namespace LHC_FASER
       virtual
       ~supByJetToCompound();
 
-      virtual void
+      virtual fullCascade*
       setProperties( particlePointer const initialSquark,
                      fullCascade* const subcascadePointer );
       virtual double
@@ -588,7 +588,7 @@ namespace LHC_FASER
       virtual
       ~gluinoOrNeutralinoToCompound();
 
-      virtual void
+      virtual fullCascade*
       setProperties( particlePointer const initialSparticle,
                      fullCascade* const subcascadePointer );
       virtual double
@@ -639,7 +639,7 @@ namespace LHC_FASER
       virtual
       ~charginoToCompound();
 
-      virtual void
+      virtual fullCascade*
       setProperties( particlePointer const initialSparticle,
                      fullCascade* const subcascadePointer );
       virtual double
@@ -698,9 +698,8 @@ namespace LHC_FASER
                  fullCascadeSet* secondSet );
 
     fullCascadeSet( inputHandler const* const inputShortcut,
-                    particlePointer const initialScolored,
+                    particlePointer const initialSparticle,
                 electroweakCascadesForOneBeamEnergy* const electroweakCascades,
-                    readiableCascadeSetList* const squarkCascadeSetList,
                     double const beamEnergy );
     virtual
     ~fullCascadeSet();
@@ -708,72 +707,27 @@ namespace LHC_FASER
     std::vector< fullCascade* >*
     getOpenCascades();
     // this calls setUpCascades() if it needs to be readied for this point.
-    std::vector< sxFullCascade* > const*
-    getSxCascades();
-    std::vector< gxFullCascade* > const*
-    getGxCascades();
-    std::vector< sjgxFullCascade* > const*
-    getSjgxCascades();
-    std::vector< gjsxFullCascade* > const*
-    getGjsxCascades();
-    std::vector< sjgjsxFullCascade* > const*
-    getSjgjsxCascades();
-    std::vector< sbsxFullCascade* > const*
-    getSbsxCascades();
-    std::vector< gbsxFullCascade* > const*
-    getGbsxCascades();
-    std::vector< gjsbsxFullCascade* > const*
-    getGjsbsxCascades();
-    std::vector< sbgxFullCascade* > const*
-    getSbgxCascades();
-    std::vector< sbsjgxFullCascade* > const*
-    getSbsjgxCascades();
-    std::vector< sbsjgjsxFullCascade* > const*
-    getSbsjgjsxCascades();
-    std::vector< sbgjsxFullCascade* > const*
-    getSbgjsxCascades();
-    std::vector< sjgbsxFullCascade* > const*
-    getSjgbsxCascades();
-    std::vector< sjgjsbsxFullCascade* > const*
-    getSjgjsbsxCascades();
     particlePointer
-    getInitialScolored()
+    getInitialSparticle()
     const;
 
   protected:
     inputHandler const* const inputShortcut;
-    particlePointer const initialScolored;
+    particlePointer const initialSparticle;
+    double initialSparticleMass;
     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource;
     std::vector< fullCascade* > openCascades;
     // this holds pointers to all the open cascades.
-
-    // 1 of the sxCascades & gxCascades will be empty, the other has all the
-    // direct decays of initialSparticle to electroweakinos:
-    minimalAllocationVector< sxFullCascade > sxCascades;
-    minimalAllocationVector< gxFullCascade > gxCascades;
-    std::vector< sxFullCascade* > openSxCascades;
-    std::vector< gxFullCascade* > openGxCascades;
-
-    /* all of these minimalAllocationVectors hold the cascades built upon
-     * cascades from the other fullCascadeSets, & the bools note if they have
-     * been worked out for this point or not:
-     */
-    minimalAllocationVector< sjgxFullCascade > sjgxCascades;
-    minimalAllocationVector< gjsxFullCascade > gjsxCascades;
-    minimalAllocationVector< sjgjsxFullCascade > sjgjsxCascades;
-    minimalAllocationVector< sbsxFullCascade > sbsxCascades;
-    minimalAllocationVector< gbsxFullCascade > gbsxCascades;
-    minimalAllocationVector< gjsbsxFullCascade > gjsbsxCascades;
-    minimalAllocationVector< sbgxFullCascade > sbgxCascades;
-    minimalAllocationVector< sbsjgxFullCascade > sbsjgxCascades;
-    minimalAllocationVector< sbsjgjsxFullCascade > sbsjgjsxCascades;
-    minimalAllocationVector< sbgjsxFullCascade > sbgjsxCascades;
-    minimalAllocationVector< sjgbsxFullCascade > sjgbsxCascades;
-    minimalAllocationVector< sjgjsbsxFullCascade > sjgjsbsxCascades;
+    fullCascadeSet* const gluinoFullCascade;
+    std::list< fullCascadeSet* >* orderedCascadeSets;
+    std::vector< fullCascade* >* potentialSubcascades;
+    double subcascadeBranchingRatio;
 
     double const beamEnergy;
-    std::list< int > soughtPositivePdgCodeList;
-    std::list< int > soughtNegativePdgCodeList;
+    std::list< int > singleSpecifiedDecayProductList;
+    std::list< int > twoSpecifiedDecayProductsList;
+    int singleSpecifiedDecayProduct;
+    std::vector< particlePointer >* potentialDecayProducts;
 
     void
     ensureCascadesAreUpToDate();
@@ -812,49 +766,88 @@ namespace LHC_FASER
   };
 
 
-
-  // this class specializes fullCascade for the case of cascades beginning with
-  // a squark.
-  class squarkFullCascadeSet : public fullCascadeSet
+  namespace fullCascadeSetType
   {
-  public:
-    squarkFullCascadeSet( inputHandler const* const inputShortcut,
+    // this class specializes fullCascade for the case of cascades beginning
+    // with a down-type squark.
+    class sdownTypeSet : public fullCascadeSet
+    {
+    public:
+      sdownTypeSet( inputHandler const* const inputShortcut,
                    electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
-                          particlePointer const initialScolored,
-                          readiableCascadeSetList* const squarkCascadeSetList,
-                          fullCascadeSet* const gluinoCascadeSet,
-                          double const beamEnergy );
-    virtual
-    ~squarkFullCascadeSet();
+                    particlePointer const initialScolored,
+                    fullCascadeSetOrderer* const setOrderer,
+                    double const beamEnergy );
+      virtual
+      ~sdownTypeSet();
 
-  protected:
-    fullCascadeSet* const gluinoCascadeSet;
+    protected:
+      fullCascadeSetOrderer* const setOrderer;
+      std::vector< fullCascadeType::sdownDirectlyToElectroweak* >
+      directToEwinoCascades;
+      minimalAllocationVector< fullCascadeType::squarkByBosonToCompound >
+      compoundByBosonCascades;
+      minimalAllocationVector< fullCascadeType::sdownByJetToCompound >
+      compoundByJetCascades;
 
-    virtual void
-    buildLongerCascades();
-    // this should set up all the cascades that involve taking subcascades from
-    // the other fullCascadeSets.
-  };
+      virtual void
+      buildLongerCascades();
+      // this should set up all the cascades that involve taking subcascades
+      // from the other fullCascadeSets.
+    };
 
 
-  // this class specializes fullCascade for the case of cascades beginning with
-  // a gluino.
-  class gluinoFullCascadeSet : public fullCascadeSet
-  {
-  public:
-    gluinoFullCascadeSet( inputHandler const* const inputShortcut,
-                   electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
-                          readiableCascadeSetList* const squarkCascadeSetList,
-                          double const beamEnergy );
-    virtual
-    ~gluinoFullCascadeSet();
+    // this class specializes fullCascade for the case of cascades beginning
+    // with an up-type squark.
+    class supTypeSet : public fullCascadeSet
+    {
+    public:
+      supTypeSet( inputHandler const* const inputShortcut,
+                 electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
+                 particlePointer const initialScolored,
+                 readiableCascadeSetList* const squarkCascadeSetList,
+                 fullCascadeSet* const gluinoCascadeSet,
+                 double const beamEnergy );
+      virtual
+      ~supTypeSet();
 
-  protected:
-    virtual void
-    buildLongerCascades();
-    // this should set up all the cascades that involve taking subcascades from
-    // the other fullCascadeSets.
-  };
+    protected:
+      fullCascadeSetOrderer* const setOrderer;
+      std::vector< fullCascadeType::supDirectlyToElectroweak* >
+      directToEwinoCascades;
+      minimalAllocationVector< fullCascadeType::squarkByBosonToCompound >
+      compoundByBosonCascades;
+      minimalAllocationVector< fullCascadeType::supByJetToCompound >
+      compoundByJetCascades;
+
+      virtual void
+      buildLongerCascades();
+      // this should set up all the cascades that involve taking subcascades
+      // from the other fullCascadeSets.
+    };
+
+
+    // this class specializes fullCascade for the case of cascades beginning
+    // with a gluino.
+    class gluinoSet : public fullCascadeSet
+    {
+    public:
+      gluinoSet( inputHandler const* const inputShortcut,
+                 electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
+                 readiableCascadeSetList* const squarkCascadeSetList,
+                 double const beamEnergy );
+      virtual
+      ~gluinoSet();
+
+    protected:
+      virtual void
+      buildLongerCascades();
+      // this should set up all the cascades that involve taking subcascades
+      // from the other fullCascadeSets.
+    };
+
+  }  // end of fullCascadeSetType namespace
+
 
 
   // this class holds all the fullCascadeSets for a given beam energy & gives
@@ -881,8 +874,8 @@ namespace LHC_FASER
     inputHandler const* const inputShortcut;
     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource;
     double const beamEnergy;
-    std::vector< squarkFullCascadeSet* > squarkCascadeSets;
-    gluinoFullCascadeSet* gluinoCascadeSet;
+    std::vector< sdownTypeSet* > squarkCascadeSets;
+    gluinoSet* gluinoCascadeSet;
     fullCascadeSetOrderer cascadeOrderer;
   };
 
@@ -1267,7 +1260,7 @@ namespace LHC_FASER
 
 
 
-    inline void
+    inline fullCascade*
     squarkByBosonToCompound::setProperties(
                                            particlePointer const initialSquark,
                                     electroweakCascadeSet* const bosonCascades,
@@ -1293,6 +1286,7 @@ namespace LHC_FASER
         soughtDecayProductList.back()
         = bosonCascades->getElectroweakDecayer()->get_PDG_code();
       }
+      return this;
     }
 
 
@@ -1336,7 +1330,7 @@ namespace LHC_FASER
 
 
 
-    inline void
+    inline fullCascade*
     supByJetToCompound::setProperties( particlePointer const initialSquark,
                                        fullCascade* const subcascadePointer,
                                    electroweakCascadeSet* const bosonCascades )
@@ -1350,6 +1344,7 @@ namespace LHC_FASER
       decayProductListIncludingW.back()
       = bosonCascades->getElectroweakDecayer()->get_PDG_code();
       shouldUseDecaysWithW = decayWithWIsNotNegligible();
+      return this;
     }
 
 
@@ -1376,7 +1371,7 @@ namespace LHC_FASER
       }
     }
 
-    inline void
+    inline fullCascade*
     gluinoOrNeutralinoToCompound::setProperties(
                                         particlePointer const initialSparticle,
                                           fullCascade* const subcascadePointer,
@@ -1401,6 +1396,7 @@ namespace LHC_FASER
       {
         shouldUseDecaysWithW = false;
       }
+      return this;
     }
 
 
@@ -1439,7 +1435,7 @@ namespace LHC_FASER
       }
     }
 
-    inline void
+    inline fullCascade*
     charginoToCompound::setProperties( particlePointer const initialSparticle,
                                        fullCascade* const subcascadePointer,
                                    electroweakCascadeSet* const bosonCascades )
@@ -1465,6 +1461,7 @@ namespace LHC_FASER
         decayingToSupType = true;
       }
       shouldUseDecaysWithW = decayWithWIsNotNegligible();
+      return this;
     }
 
   }  // end of fullCascadeType namespace
@@ -1477,8 +1474,8 @@ namespace LHC_FASER
   // this returns true if firstSet's initialSparticle has equal or lighter mass
   // than secondSet, false otherwise.
   {
-    if( firstSet->initialScolored->get_absolute_mass()
-        <= secondSet->initialScolored->get_absolute_mass() )
+    if( firstSet->initialSparticle->get_absolute_mass()
+        <= secondSet->initialSparticle->get_absolute_mass() )
     {
       return true;
     }
@@ -1595,10 +1592,10 @@ namespace LHC_FASER
   }
 
   inline particlePointer
-  fullCascadeSet::getInitialScolored()
+  fullCascadeSet::getInitialSparticle()
   const
   {
-    return initialScolored;
+    return initialSparticle;
   }
 
   inline void

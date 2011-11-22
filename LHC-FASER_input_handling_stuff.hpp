@@ -49,7 +49,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -456,6 +456,12 @@ namespace LHC_FASER
     particleVectorPointer
     getEwsbBosonsAndMassiveVectorBosons()
     const;
+    particleVectorPointer
+    getNeutralEwsbBosonsAndMassiveVectorBosons()
+    const;
+    particleVectorPointer
+    getChargedEwsbBosonsAndMassiveVectorBosons()
+    const;
     hardMuonFromTau const*
     getHardMuonFromTau()
     const;
@@ -581,16 +587,17 @@ namespace LHC_FASER
      * jets refers to all the particles in the spectrum which return true for
      * counts_as_jet(), as well as their antiparticles, unless they are
      * self-conjugate.
-     * notInFiveFlavorJets is just top & antitop, & notInFourFlavorJets is notInFiveFlavorJets plus
-     * bottom & antibottom.
-     * fiveFlavorJets is jets minus everything in not_int_jets5, likewise fourFlavorJets is jets
-     * minus everything in not_int_jets4.
+     * notInFiveFlavorJets is just top & antitop, & notInFourFlavorJets is
+     * notInFiveFlavorJets plus bottom & antibottom.
+     * fiveFlavorJets is jets minus everything in notInFiveFlavorJets, likewise
+     * fourFlavorJets is jets minus everything in fourFlavorJets.
      * other exotic heavy quarks should either be labelled as not counting as
-     * a jet in the spectrum, or put in notInFiveFlavorJets in the same manner as top.
+     * a jet in the spectrum, or put in notInFiveFlavorJets in the same manner
+     * as top.
      * hence, without additional light jet particles, fiveFlavorJets is
      * { gluon + the 5 light quarks (down, up, strange, charm, bottom)
-     * + the 5 light antiquarks }, & fourFlavorJets is fiveFlavorJets with bottom & antibottom
-     * removed.
+     * + the 5 light antiquarks }, & fourFlavorJets is fiveFlavorJets with
+     * bottom & antibottom removed.
      */
     std::list< int > sixFlavorJets;
     std::list< int > fiveFlavorJets;
@@ -599,8 +606,10 @@ namespace LHC_FASER
     std::list< int > notInFourFlavorJets;
 
     std::vector< particlePointer > coloredSparticles;
-    // fourFlavorSquarks refers to { sdown, sup, sstrange, scharm }, while fiveFlavorSquarks
-    // is fourFlavorSquarks plus sbottom, & squarks is fiveFlavorSquarks plus stop.
+    /* fourFlavorSquarks refers to { sdown, sup, sstrange, scharm }, while
+     * fiveFlavorSquarks is fourFlavorSquarks plus sbottom, & squarks is
+     * fiveFlavorSquarks plus stop.
+     */
     std::vector< particlePointer > sixFlavorSquarks;
     std::vector< particlePointer > fiveFlavorSquarks;
     std::vector< particlePointer > fourFlavorSquarks;
@@ -622,6 +631,8 @@ namespace LHC_FASER
 
     std::vector< particlePointer > neutralEwsbScalarsAndPseudoscalars;
     std::vector< particlePointer > ewsbBosonsAndMassiveVectorBosons;
+    std::vector< particlePointer > neutralEwsbBosonsAndMassiveVectorBosons;
+    std::vector< particlePointer > chargedEwsbBosonsAndMassiveVectorBosons;
 
     exclusiveBrHandler* exclusiveBrs;
 
@@ -1432,6 +1443,20 @@ namespace LHC_FASER
   const
   {
     return &ewsbBosonsAndMassiveVectorBosons;
+  }
+
+  inline particleVectorPointer
+  inputHandler::getNeutralEwsbBosonsAndMassiveVectorBosons()
+  const
+  {
+    return &neutralEwsbBosonsAndMassiveVectorBosons;
+  }
+
+  inline particleVectorPointer
+  inputHandler::getChargedEwsbBosonsAndMassiveVectorBosons()
+  const
+  {
+    return &chargedEwsbBosonsAndMassiveVectorBosons;
   }
 
   inline hardMuonFromTau const*
