@@ -330,6 +330,7 @@ namespace LHC_FASER
                      inputShortcut,
                      initialSquark,
                      beamEnergy ),
+        ewinoFlipsCharge( false ),
         ewinoCascades( ewinoCascades )
     {
       cascadeSegment = cascadeDefiner.addNewAtEnd();
@@ -374,7 +375,12 @@ namespace LHC_FASER
         directEwinoCascades( directEwinoCascades ),
         ewinoWithWCascades( ewinoWithWCascades ),
         bosonCascades( bosonCascades ),
-        wBoson( inputShortcut->getWPlus() )
+        wBoson( inputShortcut->getWPlus() ),
+        ewinoMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+        shouldUseDecaysWithW( false ),
+        directFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+        wFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+        decayProductListIncludingW()
     {
       cascadeSegment = cascadeDefiner.addNewAtEnd();
       cascadeSegment->first = ewinoCascade->getElectroweakDecayer();
@@ -592,8 +598,10 @@ namespace LHC_FASER
 
 
     squarkByBosonToCompound::squarkByBosonToCompound() :
-      fullCascade( squarkToSquarkThenMore,
-                   2 )
+        fullCascade( squarkToSquarkThenMore,
+                     2 ),
+        bosonCascades( NULL ),
+        bosonFlipsCharge(false )
     // squarkToSquarkThenMore also means that the initial decay is 2-body.
     {
       soughtDecayProductList.push_back(
@@ -726,6 +734,11 @@ namespace LHC_FASER
         fullCascade( sjm,
                      2 ),
         bosonCascades( NULL ),
+        wBoson( NULL ),
+        ewinoMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+        shouldUseDecaysWithW( false ),
+        directFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+        wFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
         decayProductListIncludingW( 2,
                                   CppSLHA::CppSLHA_global::really_wrong_value )
         // sjm also means that the initial decay is 2-body.
@@ -867,11 +880,15 @@ namespace LHC_FASER
 
 
 
-
     gluinoOrNeutralinoToCompound::gluinoOrNeutralinoToCompound() :
         fullCascade( gjm,
                      2 ),
         bosonCascades( NULL ),
+        wBoson( NULL ),
+        ewinoMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+        shouldUseDecaysWithW( false ),
+        directFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+        wFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
         decayProductListIncludingW( 2,
                                   CppSLHA::CppSLHA_global::really_wrong_value )
         // gjm also means that the initial decay is 2-body.
@@ -1039,15 +1056,20 @@ namespace LHC_FASER
 
 
 
-
     charginoToCompound::charginoToCompound() :
         fullCascade( gjm,
                      2 ),
         bosonCascades( NULL ),
-        decayProductListForWWithSdownType( 2,
+        wBoson( NULL ),
+        ewinoMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+        shouldUseDecaysWithW( false ),
+        directFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+        wFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+        decayProductListIncludingW( 2,
                                  CppSLHA::CppSLHA_global::really_wrong_value ),
-        decayProductListForWWithSupType( 2,
-                                  CppSLHA::CppSLHA_global::really_wrong_value )
+        squarkWithWFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+        antisquarkWithWFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+        decayingToSupType( false )
         // gjm also means that the initial decay is 2-body.
     {
       // just an initialization list.
@@ -1209,12 +1231,22 @@ namespace LHC_FASER
   fullCascadeSet::fullCascadeSet( inputHandler const* const inputShortcut,
                                   particlePointer const initialScolored,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
-                                  double const beamEnergy ) :
+                                  double const beamEnergy,
+                                  fullCascadeSet* const gluinoFullCascade ) :
     getsReadiedForNewPoint( inputShortcut->getReadier() ),
     inputShortcut( inputShortcut ),
     initialSparticle( initialScolored ),
     electroweakCascadeSource( electroweakCascadeSource ),
-    beamEnergy( beamEnergy )
+    openCascades(),
+    gluinoFullCascade( gluinoFullCascade ),
+    orderedCascadeSets( NULL ),
+    potentialSubcascades( NULL ),
+    subcascadeBranchingRatio( CppSLHA::CppSLHA_global::really_wrong_value ),
+    beamEnergy( beamEnergy ),
+    singleSpecifiedDecayProductList( 1,
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    singleSpecifiedDecayProduct( CppSLHA::CppSLHA_global::really_wrong_value ),
+    potentialDecayProducts( NULL )
   {
     // just an initialization list.
   }
@@ -1235,17 +1267,91 @@ namespace LHC_FASER
   }
 
 
+
+  fullCascadeSetOrderer::fullCascadeSetOrderer(
+                                       inputHandler const* const inputShortcut,
+                                    fullCascadeSet* const gluinoFullCascade ) :
+      getsReadiedForNewPoint( inputShortcut->getReadier() ),
+      inputShortcut( inputShortcut ),
+      gluinoFullCascade( gluinoFullCascade ),
+      sdownTypeColoredCascades(),
+      supTypeColoredCascades(),
+      allNeutralinoColoredCascades(),
+      allCharginoColoredCascades(),
+      relevantNeutralinoColoredCascades(),
+      relevantCharginoColoredCascades(),
+      lightestSquarkMass( CppSLHA::CppSLHA_global::really_wrong_value )
+  {
+    // just an initialization list.
+  }
+
+  fullCascadeSetOrderer::~fullCascadeSetOrderer()
+  {
+    // does nothing.
+  }
+
+
+  void
+  fullCascadeSetOrderer::orderCascades()
+  {
+    sdownTypeColoredCascades.sort( &(fullCascadeSet::massOrdered) );
+    lightestSquarkMass
+    = sdownTypeColoredCascades.front()->getInitialSparticle(
+                                                        )->get_absolute_mass();
+    supTypeColoredCascades.sort( &(fullCascadeSet::massOrdered) );
+    if( supTypeColoredCascades.front()->getInitialSparticle(
+                                                         )->get_absolute_mass()
+        < lightestSquarkMass )
+    {
+      lightestSquarkMass
+      = supTypeColoredCascades.front()->getInitialSparticle(
+                                                        )->get_absolute_mass();
+    }
+    allNeutralinoColoredCascades.sort( &(fullCascadeSet::massOrdered) );
+    relevantNeutralinoColoredCascades.clear();
+    for( std::list< fullCascadeSet* >::reverse_iterator
+         setIterator( allNeutralinoColoredCascades.rbegin() );
+         allNeutralinoColoredCascades.rend() != setIterator;
+         ++setIterator )
+    {
+      if( (*setIterator)->getInitialSparticle()->get_absolute_mass()
+          > lightestSquarkMass )
+      {
+        relevantNeutralinoColoredCascades.push_front( *setIterator );
+      }
+    }
+    allCharginoColoredCascades.sort( &(fullCascadeSet::massOrdered) );
+    relevantCharginoColoredCascades.clear();
+    for( std::list< fullCascadeSet* >::reverse_iterator
+         setIterator( allCharginoColoredCascades.rbegin() );
+         allCharginoColoredCascades.rend() != setIterator;
+         ++setIterator )
+    {
+      if( (*setIterator)->getInitialSparticle()->get_absolute_mass()
+          > lightestSquarkMass )
+      {
+        relevantCharginoColoredCascades.push_front( *setIterator );
+      }
+    }
+  }
+
+
   namespace fullCascadeSetType
   {
     sdownTypeSet::sdownTypeSet( inputHandler const* const inputShortcut,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                 particlePointer const initialScolored,
                                 fullCascadeSetOrderer* const setOrderer,
-                                double const beamEnergy ) :
+                                double const beamEnergy,
+                                fullCascadeSet* const gluinoFullCascade ) :
     fullCascadeSet( inputShortcut,
                     initialScolored,
                     electroweakCascadeSource,
-                    beamEnergy )
+                    beamEnergy ),
+    setOrderer( setOrderer ),
+    directToEwinoCascades(),
+    compoundByBosonCascades(),
+    compoundByJetCascades()
     {
       // we have to set up the cascades directly to electroweakinos now:
       for( std::vector< particlePointer >::const_iterator
@@ -1524,20 +1630,63 @@ namespace LHC_FASER
 
     supTypeSet::supTypeSet( inputHandler const* const inputShortcut,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
-                                particlePointer const initialScolored,
-                                fullCascadeSetOrderer* const setOrderer,
-                                double const beamEnergy ) :
+                            particlePointer const initialScolored,
+                            fullCascadeSetOrderer* const setOrderer,
+                            double const beamEnergy,
+                            fullCascadeSet* const gluinoFullCascade ) :
     fullCascadeSet( inputShortcut,
                     initialScolored,
                     electroweakCascadeSource,
-                    beamEnergy )
+                    beamEnergy ),
+    setOrderer( setOrderer ),
+    directToEwinoCascades(),
+    compoundByBosonCascades(),
+    compoundByJetCascades(),
+    twoSpecifiedDecayProductsList( 2,
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    appropriateSdownForWDecay( NULL ),
+    effectiveSdownMass( NULL ),
+    effectiveSupMass( NULL )
     {
+      if( inputShortcut->getSupL() == initialScolored )
+      {
+        appropriateSdownForWDecay = inputShortcut->getSdownL();
+      }
+      else if( inputShortcut->getSupR() == initialScolored )
+      {
+        appropriateSdownForWDecay = inputShortcut->getSdownR();
+      }
+      else if( inputShortcut->getScharmL() == initialScolored )
+      {
+        appropriateSdownForWDecay = inputShortcut->getSstrangeL();
+      }
+      else if( inputShortcut->getScharmR() == initialScolored )
+      {
+        appropriateSdownForWDecay = inputShortcut->getSstrangeR();
+      }
+      else if( inputShortcut->getStopTwo() == initialScolored )
+      {
+        appropriateSdownForWDecay = inputShortcut->getSbottomTwo();
+      }
+      else
+      {
+        appropriateSdownForWDecay = inputShortcut->getSbottomOne();
+      }
       // we have to set up the cascades directly to electroweakinos now:
       for( std::vector< particlePointer >::const_iterator
            ewinoIterator( inputShortcut->getElectroweakinos()->begin() );
            inputShortcut->getElectroweakinos()->end() > ewinoIterator;
            ++ewinoIterator )
       {
+        effectiveSdownMass
+        = inputShortcut->getSquarkMinusBosonEffectiveMass( initialScolored,
+                                                     inputShortcut->getWPlus(),
+                                                           *ewinoIterator );
+        effectiveSupMass
+        = inputShortcut->getSquarkPlusBosonEffectiveMass(
+                                                     appropriateSdownForWDecay,
+                                                     inputShortcut->getWPlus(),
+                                                          *ewinoIterator );
         directToEwinoCascades.push_back(
                                 new fullCascadeType::supDirectlyToElectroweak(
                                                                  inputShortcut,
@@ -1812,6 +1961,7 @@ namespace LHC_FASER
       }
     }
 
+
   gluinoSet::gluinoSet(
                                        inputHandler const* const inputShortcut,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
@@ -2065,5 +2215,6 @@ namespace LHC_FASER
     }
     return returnPointer;
   }
+
 
 }  // end of LHC_FASER namespace.

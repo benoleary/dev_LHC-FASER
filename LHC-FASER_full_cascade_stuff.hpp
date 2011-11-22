@@ -700,7 +700,8 @@ namespace LHC_FASER
     fullCascadeSet( inputHandler const* const inputShortcut,
                     particlePointer const initialSparticle,
                 electroweakCascadesForOneBeamEnergy* const electroweakCascades,
-                    double const beamEnergy );
+                    double const beamEnergy,
+                    fullCascadeSet* const gluinoFullCascade );
     virtual
     ~fullCascadeSet();
 
@@ -722,10 +723,8 @@ namespace LHC_FASER
     std::list< fullCascadeSet* >* orderedCascadeSets;
     std::vector< fullCascade* >* potentialSubcascades;
     double subcascadeBranchingRatio;
-
     double const beamEnergy;
     std::list< int > singleSpecifiedDecayProductList;
-    std::list< int > twoSpecifiedDecayProductsList;
     int singleSpecifiedDecayProduct;
     std::vector< particlePointer >* potentialDecayProducts;
 
@@ -748,21 +747,37 @@ namespace LHC_FASER
   };
 
 
-
   class fullCascadeSetOrderer : public getsReadiedForNewPoint
   {
   public:
-    fullCascadeSetOrderer();
+    fullCascadeSetOrderer( inputHandler const* const inputShortcut,
+                           fullCascadeSet* const gluinoFullCascade );
     ~fullCascadeSetOrderer();
 
-    std::list< fullCascadeSet* > const*
-    getOrderedFullCascadeSets();
-    void
-    addFullCascadeSet( fullCascadeSet* const fullCascadeSetPointer );
+    fullCascadeSet*
+    getGluinoFullCascade();
+    std::list< fullCascadeSet* >*
+    getNeutralinoColoredCascades();
+    std::list< fullCascadeSet* >*
+    getCharginoColoredCascades();
+    std::list< fullCascadeSet* >*
+    getSdownTypeCascades();
+    std::list< fullCascadeSet* >*
+    getSupTypeCascades();
 
   protected:
-    std::list< fullCascadeSet* > allFullCascadeSets;
-    std::list< fullCascadeSet* > orderedAndParedList;
+    inputHandler const* const inputShortcut;
+    fullCascadeSet* const gluinoFullCascade;
+    std::list< fullCascadeSet* > sdownTypeColoredCascades;
+    std::list< fullCascadeSet* > supTypeColoredCascades;
+    std::list< fullCascadeSet* > allNeutralinoColoredCascades;
+    std::list< fullCascadeSet* > allCharginoColoredCascades;
+    std::list< fullCascadeSet* > relevantNeutralinoColoredCascades;
+    std::list< fullCascadeSet* > relevantCharginoColoredCascades;
+    double lightestSquarkMass;
+
+    void
+    orderCascades();
   };
 
 
@@ -803,11 +818,10 @@ namespace LHC_FASER
     {
     public:
       supTypeSet( inputHandler const* const inputShortcut,
-                 electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
-                 particlePointer const initialScolored,
-                 readiableCascadeSetList* const squarkCascadeSetList,
-                 fullCascadeSet* const gluinoCascadeSet,
-                 double const beamEnergy );
+                  electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
+                  particlePointer const initialScolored,
+                  fullCascadeSetOrderer* const setOrderer,
+                  double const beamEnergy );
       virtual
       ~supTypeSet();
 
@@ -819,6 +833,10 @@ namespace LHC_FASER
       compoundByBosonCascades;
       minimalAllocationVector< fullCascadeType::supByJetToCompound >
       compoundByJetCascades;
+      std::list< int > twoSpecifiedDecayProductsList;
+      particlePointer appropriateSdownForWDecay;
+      effectiveSquarkMassHolder* effectiveSdownMass;
+      effectiveSquarkMassHolder* effectiveSupMass;
 
       virtual void
       buildLongerCascades();
@@ -1618,6 +1636,53 @@ namespace LHC_FASER
   }
 
 
+
+
+  inline fullCascadeSet*
+  fullCascadeSetOrderer::getGluinoFullCascade()
+  {
+    return gluinoFullCascade;
+  }
+
+  inline std::list< fullCascadeSet* > const*
+  fullCascadeSetOrderer::getNeutralinoColoredCascades()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      orderCascades();
+    }
+    return &relevantNeutralinoColoredCascades;
+  }
+
+  inline std::list< fullCascadeSet* > const*
+  fullCascadeSetOrderer::getCharginoColoredCascades()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      orderCascades();
+    }
+    return &relevantCharginoColoredCascades;
+  }
+
+  inline std::list< fullCascadeSet* > const*
+  fullCascadeSetOrderer::getSdownTypeCascades()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      orderCascades();
+    }
+    return &sdownTypeColoredCascades;
+  }
+
+  inline std::list< fullCascadeSet* > const*
+  fullCascadeSetOrderer::getSupTypeCascades()
+  {
+    if( needsToPrepareForThisPoint() )
+    {
+      orderCascades();
+    }
+    return &supTypeColoredCascades;
+  }
 
   inline int
   fullCascadeSetsForOneBeamEnergy::getBeamEnergy()
