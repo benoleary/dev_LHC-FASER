@@ -63,30 +63,6 @@
 
 namespace LHC_FASER
 {
-  /* new plan:
-   * basic squarkToEwino, gluinoToEwino
-   * => sxFullCascade, gxFullCascade, & sups have supxFullCascade,
-   * which has an electroweakCascadeSet for decays without a W, & a pair of
-   * electroweakCascadeSets for decays with a W.
-   * gjm, sjm, gbm, sbm (m for more) build on above + also on each other.
-   * es for intermediate electroweakinos.
-   * put all sq & all unstable ewinos into list, order by mass, pop out
-   * ewinos lighter than all sq & all ewinos heavier than all sq.
-   * while( m_sq < m_go ), makeSquarksLighterThanGluino, then makeGluino,
-   * then makeSquarksHeavierThanGluino, making es objects as encountered.
-   *
-   * squarkToEwino, gluinoToEwino both have basic getAcceptance. sm & gm build
-   * on getAcceptance of subcascadePointer, sbm & gbm build on own
-   * bosonCascades * getAcceptance of subcascadePointer.
-   *
-   * need to write supDecayToWPlusAndNeutralino class derived from
-   * electroweakCascadeSet class. should just have pointers to 2
-   * electroweakCascades but giving virtualSdown effectiveSquarkMasses.
-   * (reorganize electroweakCascadeSet so that constructor uses initialization
-   * functions that can be used by supDecayToWPlusAndNeutralino.)
-   */
-
-
   /* this class is for keeping track of a particular cascade decay of a colored
    * sparticle down to the last electroweak decay, such that it keeps track of
    * all the sparticles of a cascade decay. it is an abstract base class.
@@ -299,121 +275,145 @@ namespace LHC_FASER
 
   namespace fullCascadeType
   {
-    // this is derived class for direct sdown-type to electroweakino
-    // fullCascades.
-    class sdownDirectlyToElectroweak : public fullCascade
+    // this is derived class for direct squark to electroweakino fullCascades.
+    // it should be further specified to be sdown-type or sup-type.
+    class squarkDirectlyToElectroweak : public fullCascade
     {
     public:
-      sdownDirectlyToElectroweak( inputHandler const* const inputShortcut,
-                                  particlePointer const initialSquark,
-                                  double const beamEnergy,
-                                  electroweakCascadeSet* const ewinoCascades );
+      squarkDirectlyToElectroweak( inputHandler const* const inputShortcut,
+                                   particlePointer const initialSquark,
+                                   double const beamEnergy,
+                            electroweakCascadeSet* const directEwinoCascades );
       virtual
-      ~sdownDirectlyToElectroweak();
+      ~squarkDirectlyToElectroweak();
 
-      bool
+      virtual bool
       isOpen();
       /* this returns true if the squark is heavy enough to decay into the
        * electroweakino, false otherwise. it also sorts out whether it should
        * be using the decays involving a W boson.
        */
-      virtual double
-      getBrToEwino( std::list< int > const* excludedSmParticles );
-      /* this works out the branching ratio for the decays of colored
-       * sparticles down to the 1st electroweakino in the cascade (including
-       * any decays to bosons + squarks), using the given list of excluded SM
-       * particles to exclude unwanted parts of the BR.
-       */
       virtual particlePointer
       getElectroweakinoAtEndOfScoloredness()
       const;
-      virtual double
-      getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
-                     int const numberOfAdditionalJets,
-                     int numberOfNegativeElectrons,
-                     int numberOfPositiveElectrons,
-                     int numberOfNegativeMuons,
-                     int numberOfPositiveMuons );
-      /* this calls the appropriate functions on ewinoCascades to build the
-       * required acceptance, taking into account whether the charges should be
-       * swapped if scoloredIsNotAntiparticle is false.
-       */
-
-    protected:
-      bool ewinoFlipsCharge;
-      electroweakCascadeSet* ewinoCascades;
-    };
-
-
-    // this is derived class for direct sup-type to electroweakino
-    // fullCascades, which also covers if the squark decays to an additional W.
-    class supDirectlyToElectroweak : public fullCascade
-    {
-    public:
-      supDirectlyToElectroweak( inputHandler const* const inputShortcut,
-                                particlePointer const initialSquark,
-                                double const beamEnergy,
-                              electroweakCascadeSet* const directEwinoCascades,
-                               electroweakCascadeSet* const ewinoWithWCascades,
-                                electroweakCascadeSet* const bosonCascades );
-      virtual
-      ~supDirectlyToElectroweak();
-
-      bool
-      isOpen();
-      /* this returns true if the squark is heavy enough to decay into the
-       * electroweakino, false otherwise. it also sorts out whether it should
-       * be using the decays involving a W boson.
-       */
-      virtual double
-      getBrToEwino( std::list< int > const* excludedSmParticles );
-      /* this works out the branching ratio for the decays of colored
-       * sparticles down to the 1st electroweakino in the cascade (including
-       * any decays to bosons + squarks), using the given list of excluded SM
-       * particles to exclude unwanted parts of the BR.
-       */
-      virtual particlePointer
-      getElectroweakinoAtEndOfScoloredness()
-      const;
-      virtual double
-      getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
-                     int const numberOfAdditionalJets,
-                     int numberOfNegativeElectrons,
-                     int numberOfPositiveElectrons,
-                     int numberOfNegativeMuons,
-                     int numberOfPositiveMuons );
-      /* this calls the appropriate functions on directEwinoCascades to build
-       * the required acceptance or ewinoWithWCascades & bosonCascades if the
-       * decay with a boson is not negligible, taking into account whether the
-       * charges should be swapped if scoloredIsNotAntiparticle is false.
-       */
 
     protected:
       electroweakCascadeSet* directEwinoCascades;
-      electroweakCascadeSet* ewinoWithWCascades;
-      electroweakCascadeSet* bosonCascades;
-      particlePointer wBoson;
-      double ewinoMass;
-      bool shouldUseDecaysWithW;
-      double directFraction;
-      double wFraction;
-      std::list< int > decayProductListIncludingW;
-
-      bool
-      decayWithWIsNotNegligible();
-      // this returns true if the decay involving a W boson is not negligible,
-      // also setting up the relevant fractions, false otherwise.
-      double
-      getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
-                             int const numberOfAdditionalJets,
-                             int const numberOfNegativeElectrons,
-                             int const numberOfPositiveElectrons,
-                             int const numberOfNegativeMuons,
-                             int const numberOfPositiveMuons );
     };
 
+
+    namespace squarkDirectlyToElectroweakType
+    {
+      // this is derived class for direct sdown-type to electroweakino
+      // fullCascades.
+      class sdownType : public squarkDirectlyToElectroweak
+      {
+      public:
+        sdownType( inputHandler const* const inputShortcut,
+                   particlePointer const initialSquark,
+                   double const beamEnergy,
+                   electroweakCascadeSet* const directEwinoCascades );
+        virtual
+        ~sdownType();
+
+        virtual bool
+        isOpen();
+        /* this returns true if the squark is heavy enough to decay into the
+         * electroweakino, false otherwise. it also sorts out whether it should
+         * be using the decays involving a W boson.
+         */
+        virtual double
+        getBrToEwino( std::list< int > const* excludedSmParticles );
+        /* this works out the branching ratio for the decays of colored
+         * sparticles down to the 1st electroweakino in the cascade (including
+         * any decays to bosons + squarks), using the given list of excluded SM
+         * particles to exclude unwanted parts of the BR.
+         */
+        virtual double
+        getAcceptance( bool const initialSparticleIsNotAntiparticle,
+                       acceptanceCutSet* const acceptanceCuts,
+                       int const numberOfAdditionalJets,
+                       int numberOfNegativeElectrons,
+                       int numberOfPositiveElectrons,
+                       int numberOfNegativeMuons,
+                       int numberOfPositiveMuons );
+        /* this calls the appropriate functions on ewinoCascades to build the
+         * required acceptance, taking into account whether the charges should
+         * be swapped if scoloredIsNotAntiparticle is false.
+         */
+
+      protected:
+        bool ewinoFlipsCharge;
+      };
+
+
+      /* this is derived class for direct sup-type to electroweakino
+       * fullCascades, which also covers if the squark decays to an additional
+       * W.
+       */
+      class supType : public squarkDirectlyToElectroweak
+      {
+      public:
+        supType( inputHandler const* const inputShortcut,
+                 particlePointer const initialSquark,
+                 double const beamEnergy,
+                 electroweakCascadeSet* const directEwinoCascades,
+                 electroweakCascadeSet* const ewinoWithWCascades,
+                 electroweakCascadeSet* const bosonCascades );
+        virtual
+        ~supType();
+
+        virtual bool
+        isOpen();
+        /* this returns true if the squark is heavy enough to decay into the
+         * electroweakino, false otherwise. it also sorts out whether it should
+         * be using the decays involving a W boson.
+         */
+        virtual double
+        getBrToEwino( std::list< int > const* excludedSmParticles );
+        /* this works out the branching ratio for the decays of colored
+         * sparticles down to the 1st electroweakino in the cascade (including
+         * any decays to bosons + squarks), using the given list of excluded SM
+         * particles to exclude unwanted parts of the BR.
+         */
+        virtual double
+        getAcceptance( bool const initialSparticleIsNotAntiparticle,
+                       acceptanceCutSet* const acceptanceCuts,
+                       int const numberOfAdditionalJets,
+                       int numberOfNegativeElectrons,
+                       int numberOfPositiveElectrons,
+                       int numberOfNegativeMuons,
+                       int numberOfPositiveMuons );
+        /* this calls the appropriate functions on directEwinoCascades to build
+         * the required acceptance or ewinoWithWCascades & bosonCascades if the
+         * decay with a boson is not negligible, taking into account whether
+         * the charges should be swapped if scoloredIsNotAntiparticle is false.
+         */
+
+      protected:
+        electroweakCascadeSet* ewinoWithWCascades;
+        electroweakCascadeSet* bosonCascades;
+        particlePointer wBoson;
+        double ewinoMass;
+        bool shouldUseDecaysWithW;
+        double directFraction;
+        double wFraction;
+        std::list< int > decayProductListIncludingW;
+
+        bool
+        decayWithWIsNotNegligible();
+        // this returns true if the decay involving a W boson is not
+        // negligible, also setting up the relevant fractions, false otherwise.
+        double
+        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+                               int const numberOfAdditionalJets,
+                               int const numberOfNegativeElectrons,
+                               int const numberOfPositiveElectrons,
+                               int const numberOfNegativeMuons,
+                               int const numberOfPositiveMuons );
+      };
+
+    }  // end of squarkDirectlyToElectroweakType namespace
 
     // this is derived class for direct gluino to electroweakino
     // fullCascades..
@@ -494,20 +494,22 @@ namespace LHC_FASER
     };
 
 
-    /* this is derived class for compound fullCascades beginning with a
-     * sdown-type, which decays to a jet & the initial sparticle of
-     * subcascadePointer.
+    /* this is derived class for compound fullCascades beginning with a squark,
+     * which decays to a jet & the initial sparticle of subcascadePointer. it
+     * still needs specializing to either a sdown-type or sup-type.
      */
-    class sdownByJetToCompound : public fullCascade
+    class squarkByJetToCompound : public fullCascade
     {
     public:
-      sdownByJetToCompound();
+      squarkByJetToCompound();
       virtual
-      ~sdownByJetToCompound();
+      ~squarkByJetToCompound();
 
       virtual fullCascade*
       setProperties( particlePointer const initialSquark,
-                     fullCascade* const subcascadePointer );
+                     fullCascade* const subcascadePointer,
+          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource )
+      = 0;
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
@@ -515,7 +517,8 @@ namespace LHC_FASER
                      int numberOfNegativeElectrons,
                      int numberOfPositiveElectrons,
                      int numberOfNegativeMuons,
-                     int numberOfPositiveMuons );
+                     int numberOfPositiveMuons )
+      = 0;
       /* this calls the appropriate functions on subcascadePointer to build the
        * required acceptance, taking into account whether the charges should be
        * swapped if scoloredIsNotAntiparticle is false.
@@ -526,55 +529,95 @@ namespace LHC_FASER
     };
 
 
-    /* this is derived class for compound fullCascades beginning with a
-     * sup-type, which decays to a jet, maybe a boson, & the initial sparticle
-     * of subcascadePointer.
-     */
-    class supByJetToCompound : public fullCascade
+    namespace squarkByJetToCompoundType
     {
-    public:
-      supByJetToCompound();
-      virtual
-      ~supByJetToCompound();
-
-      virtual fullCascade*
-      setProperties( particlePointer const initialSquark,
-                     fullCascade* const subcascadePointer );
-      virtual double
-      getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
-                     int const numberOfAdditionalJets,
-                     int numberOfNegativeElectrons,
-                     int numberOfPositiveElectrons,
-                     int numberOfNegativeMuons,
-                     int numberOfPositiveMuons );
-      /* this calls the appropriate functions on subcascadePointer to build the
-       * required acceptance, & also with bosonCascades if the decay with a
-       * boson is not negligible, taking into account whether the charges
-       * should be swapped if scoloredIsNotAntiparticle is false.
+      /* this is derived class for compound fullCascades beginning with a
+       * sdown-type, which decays to a jet & the initial sparticle of
+       * subcascadePointer.
        */
+      class sdownByJetToCompound : public squarkByJetToCompound
+      {
+      public:
+        sdownByJetToCompound();
+        virtual
+        ~sdownByJetToCompound();
 
-    protected:
-      electroweakCascadeSet* const bosonCascades;
-      particlePointer wBoson;
-      double ewinoMass;
-      bool shouldUseDecaysWithW;
-      double directFraction;
-      double wFraction;
-      std::list< int > decayProductListIncludingW;
+        virtual fullCascade*
+        setProperties( particlePointer const initialSquark,
+                       fullCascade* const subcascadePointer,
+                       electroweakCascadesForOneBeamEnergy* const
+                       electroweakCascadeSource = NULL );
+        virtual double
+        getAcceptance( bool const initialSparticleIsNotAntiparticle,
+                       acceptanceCutSet* const acceptanceCuts,
+                       int const numberOfAdditionalJets,
+                       int numberOfNegativeElectrons,
+                       int numberOfPositiveElectrons,
+                       int numberOfNegativeMuons,
+                       int numberOfPositiveMuons );
+        /* this calls the appropriate functions on subcascadePointer to build
+         * the required acceptance, taking into account whether the charges
+         * should be swapped if scoloredIsNotAntiparticle is false.
+         */
 
-      bool
-      decayWithWIsNotNegligible();
-      // this returns true if the decay involving a W boson is not negligible,
-      // also setting up the relevant fractions, false otherwise.
-      double
-      getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
-                             int const numberOfAdditionalJets,
-                             int const numberOfNegativeElectrons,
-                             int const numberOfPositiveElectrons,
-                             int const numberOfNegativeMuons,
-                             int const numberOfPositiveMuons );
-    };
+        //protected:
+        // nothing.
+      };
+
+
+      /* this is derived class for compound fullCascades beginning with a
+       * sup-type, which decays to a jet, maybe a boson, & the initial
+       * sparticle of subcascadePointer.
+       */
+      class supByJetToCompound : public squarkByJetToCompound
+      {
+      public:
+        supByJetToCompound();
+        virtual
+        ~supByJetToCompound();
+
+        virtual fullCascade*
+        setProperties( particlePointer const initialSquark,
+                       fullCascade* const subcascadePointer,
+         electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
+        virtual double
+        getAcceptance( bool const initialSparticleIsNotAntiparticle,
+                       acceptanceCutSet* const acceptanceCuts,
+                       int const numberOfAdditionalJets,
+                       int numberOfNegativeElectrons,
+                       int numberOfPositiveElectrons,
+                       int numberOfNegativeMuons,
+                       int numberOfPositiveMuons );
+        /* this calls the appropriate functions on subcascadePointer to build
+         * the required acceptance, & also with bosonCascades if the decay with
+         * a boson is not negligible, taking into account whether the charges
+         * should be swapped if scoloredIsNotAntiparticle is false.
+         */
+
+      protected:
+        electroweakCascadesForOneBeamEnergy* electroweakCascadeSource;
+        electroweakCascadeSet* bosonCascades;
+        particlePointer wBoson;
+        double ewinoMass;
+        bool shouldUseDecaysWithW;
+        double directFraction;
+        double wFraction;
+        std::list< int > decayProductListIncludingW;
+
+        bool
+        decayWithWIsNotNegligible();
+        // this returns true if the decay involving a W boson is not
+        // negligible, also setting up the relevant fractions, false otherwise.
+        double
+        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+                               int const numberOfAdditionalJets,
+                               int const numberOfNegativeElectrons,
+                               int const numberOfPositiveElectrons,
+                               int const numberOfNegativeMuons,
+                               int const numberOfPositiveMuons );
+      };
+
+    }  // end of squarkByJetToCompoundType namespace
 
 
     /* this is derived class for compound fullCascades beginning with a
@@ -590,7 +633,8 @@ namespace LHC_FASER
 
       virtual fullCascade*
       setProperties( particlePointer const initialSparticle,
-                     fullCascade* const subcascadePointer );
+                     fullCascade* const subcascadePointer,
+         electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
@@ -606,7 +650,7 @@ namespace LHC_FASER
        */
 
     protected:
-      electroweakCascadeSet* const bosonCascades;
+      electroweakCascadeSet* bosonCascades;
       particlePointer wBoson;
       double ewinoMass;
       bool shouldUseDecaysWithW;
@@ -641,7 +685,8 @@ namespace LHC_FASER
 
       virtual fullCascade*
       setProperties( particlePointer const initialSparticle,
-                     fullCascade* const subcascadePointer );
+                     fullCascade* const subcascadePointer,
+         electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
                      acceptanceCutSet* const acceptanceCuts,
@@ -721,29 +766,19 @@ namespace LHC_FASER
     // this holds pointers to all the open cascades.
     fullCascadeSet* const gluinoFullCascade;
     std::list< fullCascadeSet* >* orderedCascadeSets;
+    std::list< fullCascadeSet* >::iterator setIterator;
     std::vector< fullCascade* >* potentialSubcascades;
     double subcascadeBranchingRatio;
     double const beamEnergy;
     std::list< int > singleSpecifiedDecayProductList;
     int singleSpecifiedDecayProduct;
     std::vector< particlePointer >* potentialDecayProducts;
+    fullCascadeSet* potentialSubcascadeSet;
 
-    void
-    ensureCascadesAreUpToDate();
-    // this calls setUpCascades() if needsToPrepareForThisPoint() is true.
-    void
-    setUpCascades();
-    // this clears openCascades, then sets it to be filled with all open
-    // fullCascades that initialSparticle has for this point.
     virtual void
-    buildLongerCascades()
+    setUpCascades()
     = 0;
-    // this should set up all the cascades that involve taking subcascades from
-    // the other fullCascadeSets.
-    void
-    addOpenCascade( fullCascade* cascadeToAdd );
-    // this adds the cascade to openCascades & also resets it so that it'll
-    // recalculate its branching ratio when next requested.
+    // this should set up all the open cascades.
   };
 
 
@@ -754,8 +789,6 @@ namespace LHC_FASER
                            fullCascadeSet* const gluinoFullCascade );
     ~fullCascadeSetOrderer();
 
-    fullCascadeSet*
-    getGluinoFullCascade();
     std::list< fullCascadeSet* >*
     getNeutralinoColoredCascades();
     std::list< fullCascadeSet* >*
@@ -767,7 +800,6 @@ namespace LHC_FASER
 
   protected:
     inputHandler const* const inputShortcut;
-    fullCascadeSet* const gluinoFullCascade;
     std::list< fullCascadeSet* > sdownTypeColoredCascades;
     std::list< fullCascadeSet* > supTypeColoredCascades;
     std::list< fullCascadeSet* > allNeutralinoColoredCascades;
@@ -783,47 +815,161 @@ namespace LHC_FASER
 
   namespace fullCascadeSetType
   {
-    // this class specializes fullCascade for the case of cascades beginning
-    // with a down-type squark.
-    class sdownTypeSet : public fullCascadeSet
+    /* this class specializes fullCascade for the case of cascades beginning
+     * with a squark, but is still abstract, since it has to be further
+     * specialized to sdown-type or sup-type.
+     */
+    class squarkSet : public fullCascadeSet
     {
     public:
-      sdownTypeSet( inputHandler const* const inputShortcut,
-                   electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
-                    particlePointer const initialScolored,
-                    fullCascadeSetOrderer* const setOrderer,
-                    double const beamEnergy );
+      squarkSet( inputHandler const* const inputShortcut,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
+                 particlePointer const initialScolored,
+                 fullCascadeSetOrderer* const setOrderer,
+                 fullCascadeSet* const gluinoFullCascade,
+                 double const beamEnergy,
+                 bool const ewinoCodeIsAlwaysPositive = true,
+                 bool const bosonCodeIsAlwaysPositive = true );
       virtual
-      ~sdownTypeSet();
+      ~squarkSet();
 
     protected:
       fullCascadeSetOrderer* const setOrderer;
-      std::vector< fullCascadeType::sdownDirectlyToElectroweak* >
+      fullCascadeSet* const gluinoFullCascade;
+      std::vector< fullCascadeType::squarkDirectlyToElectroweak* >
       directToEwinoCascades;
       minimalAllocationVector< fullCascadeType::squarkByBosonToCompound >
       compoundByBosonCascades;
-      minimalAllocationVector< fullCascadeType::sdownByJetToCompound >
+      minimalAllocationVector< fullCascadeType::squarkByJetToCompound >
       compoundByJetCascades;
+      bool ewinoCodeIsAlwaysPositive;
+      bool bosonCodeIsAlwaysPositive;
 
       virtual void
-      buildLongerCascades();
-      // this should set up all the cascades that involve taking subcascades
-      // from the other fullCascadeSets.
+      setUpCascades();
+      // this should set up all the open cascades.
+      virtual void
+      buildSquarkCompoundCascades()
+      = 0;
+      // this does the job of finding the right squark + EW boson combinations.
+      void
+      addEwinoCompoundCascade( bool ewinoCodeIsPositive );
+      // this relies on orderedCascadeSets having already been set correctly.
+      void
+      addByJetCascade();
+      // this relies on singleSpecifiedDecayProductList.front() &
+      // potentialSubcascadeSet having already been set correctly.
+      void
+      addSquarkCompoundCascade( bool bosonCodeIsPositive );
+      // this relies on orderedCascadeSets & potentialDecayProducts having
+      // already been set correctly.
+    };
+
+
+    namespace squarkSetType
+    {
+      // this class specializes fullCascade for the case of cascades beginning
+      // with a down-type squark.
+      class sdownType : public squarkSet
+      {
+      public:
+        sdownType( inputHandler const* const inputShortcut,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
+                   particlePointer const initialScolored,
+                   fullCascadeSetOrderer* const setOrderer,
+                   fullCascadeSet* const gluinoFullCascade,
+                   double const beamEnergy );
+        virtual
+        ~sdownType();
+
+      protected:
+        virtual void
+        findOpenDirectCascades();
+        // this puts all open direct cascades into openCascades.
+        virtual void
+        buildSquarkCompoundCascades();
+        // this does the job of finding the right squark + EW boson
+        // combinations.
+      };
+
+
+      // this class specializes fullCascade for the case of cascades beginning
+      // with an up-type squark.
+      class supType : public squarkSet
+      {
+      public:
+        supType( inputHandler const* const inputShortcut,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
+                    particlePointer const initialScolored,
+                    fullCascadeSetOrderer* const setOrderer,
+                    fullCascadeSet* const gluinoFullCascade,
+                    double const beamEnergy );
+        virtual
+        ~supType();
+
+      protected:
+        std::list< int > twoSpecifiedDecayProductsList;
+        particlePointer appropriateSdownForWDecay;
+        effectiveSquarkMassHolder* effectiveSdownMass;
+        effectiveSquarkMassHolder* effectiveSupMass;
+
+        virtual void
+        findOpenDirectCascades();
+        // this puts all open direct cascades into openCascades.
+        virtual void
+        buildSquarkCompoundCascades();
+        // this does the job of finding the right squark + EW boson
+        // combinations.
+      };
+
+    }  // end of squarkSetType namespace
+
+
+    // this class specializes fullCascade for the case of cascades beginning
+    // with a gluino.
+    class gluinoSet : public fullCascadeSet
+    {
+    public:
+      gluinoSet( inputHandler const* const inputShortcut,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
+                 particlePointer const initialScolored,
+                 fullCascadeSetOrderer* const setOrderer,
+                 double const beamEnergy );
+      virtual
+      ~gluinoSet();
+
+    protected:
+      fullCascadeSetOrderer* const setOrderer;
+      std::vector< fullCascadeType::gluinoDirectlyToElectroweak* >
+      directToEwinoCascades;
+      minimalAllocationVector< fullCascadeType::gluinoOrNeutralinoToCompound >
+      compoundCascades;
+      std::list< int > twoSpecifiedDecayProductsList;
+      particlePointer appropriateSquarkForWDecay;
+      effectiveSquarkMassHolder* effectiveSdownMass;
+      effectiveSquarkMassHolder* effectiveSupMass;
+
+      virtual void
+      setUpCascades();
+      // this should set up all the open cascades.
+      void
+      buildSquarkCompoundCascades();
+      // this does the job of finding the right squark subcascades.
     };
 
 
     // this class specializes fullCascade for the case of cascades beginning
-    // with an up-type squark.
-    class supTypeSet : public fullCascadeSet
+    // with a neutralino.
+    class neutralinoSet : public fullCascadeSet
     {
     public:
-      supTypeSet( inputHandler const* const inputShortcut,
-                  electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
-                  particlePointer const initialScolored,
-                  fullCascadeSetOrderer* const setOrderer,
-                  double const beamEnergy );
+      neutralinoSet( inputHandler const* const inputShortcut,
+                 electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
+                 particlePointer const initialScolored,
+                 fullCascadeSetOrderer* const setOrderer,
+                 double const beamEnergy );
       virtual
-      ~supTypeSet();
+      ~neutralinoSet();
 
     protected:
       fullCascadeSetOrderer* const setOrderer;
@@ -839,29 +985,40 @@ namespace LHC_FASER
       effectiveSquarkMassHolder* effectiveSupMass;
 
       virtual void
-      buildLongerCascades();
-      // this should set up all the cascades that involve taking subcascades
-      // from the other fullCascadeSets.
+      setUpCascades();
+      // this should set up all the open cascades.
     };
 
 
     // this class specializes fullCascade for the case of cascades beginning
-    // with a gluino.
-    class gluinoSet : public fullCascadeSet
+    // with a chargino.
+    class charginoSet : public fullCascadeSet
     {
     public:
-      gluinoSet( inputHandler const* const inputShortcut,
+      charginoSet( inputHandler const* const inputShortcut,
                  electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
-                 readiableCascadeSetList* const squarkCascadeSetList,
+                 particlePointer const initialScolored,
+                 fullCascadeSetOrderer* const setOrderer,
                  double const beamEnergy );
       virtual
-      ~gluinoSet();
+      ~charginoSet();
 
     protected:
+      fullCascadeSetOrderer* const setOrderer;
+      std::vector< fullCascadeType::supDirectlyToElectroweak* >
+      directToEwinoCascades;
+      minimalAllocationVector< fullCascadeType::squarkByBosonToCompound >
+      compoundByBosonCascades;
+      minimalAllocationVector< fullCascadeType::supByJetToCompound >
+      compoundByJetCascades;
+      std::list< int > twoSpecifiedDecayProductsList;
+      particlePointer appropriateSdownForWDecay;
+      effectiveSquarkMassHolder* effectiveSdownMass;
+      effectiveSquarkMassHolder* effectiveSupMass;
+
       virtual void
-      buildLongerCascades();
-      // this should set up all the cascades that involve taking subcascades
-      // from the other fullCascadeSets.
+      setUpCascades();
+      // this should set up all the open cascades.
     };
 
   }  // end of fullCascadeSetType namespace
@@ -892,7 +1049,7 @@ namespace LHC_FASER
     inputHandler const* const inputShortcut;
     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource;
     double const beamEnergy;
-    std::vector< sdownTypeSet* > squarkCascadeSets;
+    std::vector< sdownType* > squarkCascadeSets;
     gluinoSet* gluinoCascadeSet;
     fullCascadeSetOrderer cascadeOrderer;
   };
@@ -1089,26 +1246,8 @@ namespace LHC_FASER
 
   namespace fullCascadeType
   {
-    inline bool
-    sdownDirectlyToElectroweak::isOpen()
-    // this returns true if the squark is heavy enough to decay into the
-    // electroweakino, false otherwise.
-    {
-      if( ( initialSparticle->get_absolute_mass()
-            > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
-          &&
-          ( lhcFaserGlobal::negligibleBr < getTotalBrToEwino() ) )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-
     inline double
-    sdownDirectlyToElectroweak::getBrToEwino(
+    squarkDirectlyToElectroweak::getBrToEwino(
                                   std::list< int > const* excludedSmParticles )
     /* this works out the branching ratio for the decays of colored
      * sparticles down to the 1st electroweakino in the cascade (including
@@ -1123,126 +1262,60 @@ namespace LHC_FASER
     }
 
     inline particlePointer
-    sdownDirectlyToElectroweak::getElectroweakinoAtEndOfScoloredness()
+    squarkDirectlyToElectroweak::getElectroweakinoAtEndOfScoloredness()
     const
     {
-      return ewinoCascades->getElectroweakDecayer();
+      return directEwinoCascades->getElectroweakDecayer();
     }
 
-    inline double
-    sdownDirectlyToElectroweak::getAcceptance(
-                                          bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
-                                              int const numberOfAdditionalJets,
-                                              int numberOfNegativeElectrons,
-                                              int numberOfPositiveElectrons,
-                                              int numberOfNegativeMuons,
-                                              int numberOfPositiveMuons )
-    /* this calls the appropriate functions on ewinoCascades to build the
-     * required acceptance, taking into account whether the charges should be
-     * swapped if scoloredIsNotAntiparticle is false.
-     */
+
+
+    namespace squarkDirectlyToElectroweakType
     {
-      if( ( initialSparticleIsNotAntiparticle
+      inline bool
+      sdownType::isOpen()
+      // this returns true if the squark is heavy enough to decay into the
+      // electroweakino, false otherwise.
+      {
+        if( ( initialSparticle->get_absolute_mass()
+              > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
             &&
-            ewinoFlipsCharge )
-          ||
-          ( !initialSparticleIsNotAntiparticle
-            &&
-            !ewinoFlipsCharge ) )
-        // if the electroweakino is an antiparticle, we swap the charges.
-      {
-        int swappingInt( numberOfPositiveElectrons );
-        numberOfPositiveElectrons = numberOfNegativeElectrons;
-        numberOfNegativeElectrons = swappingInt;
-        swappingInt = numberOfPositiveMuons;
-        numberOfPositiveMuons = numberOfNegativeMuons;
-        numberOfNegativeMuons = swappingInt;
-      }
-      return ewinoCascades->getAcceptance( acceptanceCuts,
-                                           numberOfAdditionalJets,
-                                           numberOfNegativeElectrons,
-                                           numberOfPositiveElectrons,
-                                           numberOfNegativeMuons,
-                                           numberOfPositiveMuons );
-    }
-
-
-
-    inline bool
-    supDirectlyToElectroweak::decayWithWIsNotNegligible()
-    // this returns true if the decay involving a W boson is not negligible,
-    // also setting up the relevant fractions, false otherwise.
-    {
-      wFraction = ( initialSparticle->inspect_direct_decay_handler(
-                                             )->get_branching_ratio_for_subset(
-                                                  &decayProductListIncludingW )
-                    / initialSparticle->inspect_direct_decay_handler(
-                                             )->get_branching_ratio_for_subset(
-                                                   &soughtDecayProductList ) );
-      if( lhcFaserGlobal::negligibleBr < wFraction )
-      {
-        directFraction = ( 1.0 - wFraction );
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-
-    inline bool
-    supDirectlyToElectroweak::isOpen()
-    /* this returns true if the squark is heavy enough to decay into the
-     * electroweakino, false otherwise. it also sorts out whether it should
-     * be using the decays involving a W boson.
-     */
-    {
-      ewinoMass
-      = directEwinoCascades->getElectroweakDecayer()->get_absolute_mass();
-      if( ( initialSparticle->get_absolute_mass()
-            > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
-          &&
-          ( lhcFaserGlobal::negligibleBr < getTotalBrToEwino() ) )
-      {
-        if( initialSparticle->get_absolute_mass()
-            > ( ewinoMass + wBoson->get_absolute_mass() ) )
+            ( lhcFaserGlobal::negligibleBr < getTotalBrToEwino() ) )
         {
-          shouldUseDecaysWithW = decayWithWIsNotNegligible();
+          return true;
         }
         else
         {
-          shouldUseDecaysWithW = false;
+          return false;
         }
-        return true;
       }
-      else
+
+
+
+      inline bool
+      supType::decayWithWIsNotNegligible()
+      // this returns true if the decay involving a W boson is not negligible,
+      // also setting up the relevant fractions, false otherwise.
       {
-        return false;
-      }
-    }
-
-    inline double
-    supDirectlyToElectroweak::getBrToEwino(
-                                  std::list< int > const* excludedSmParticles )
-    /* this works out the branching ratio for the decays of colored
-     * sparticles down to the 1st electroweakino in the cascade (including
-     * any decays to bosons + squarks), using the given list of excluded SM
-     * particles to exclude unwanted parts of the BR.
-     */
-    {
-      return initialSparticle->inspect_direct_decay_handler(
+        wFraction
+        = ( initialSparticle->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
-                                                       &soughtDecayProductList,
-                                                         excludedSmParticles );
-    }
+                                                  &decayProductListIncludingW )
+            / initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                   &soughtDecayProductList ) );
+        if( lhcFaserGlobal::negligibleBr < wFraction )
+        {
+          directFraction = ( 1.0 - wFraction );
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
 
-    inline particlePointer
-    supDirectlyToElectroweak::getElectroweakinoAtEndOfScoloredness()
-    const
-    {
-      return ewinoCascades->getElectroweakDecayer();
-    }
+  }  // end of squarkDirectlyToElectroweakType namespace
 
 
 
@@ -1309,94 +1382,88 @@ namespace LHC_FASER
 
 
 
-    inline void
-    sdownByJetToCompound::setProperties( particlePointer const initialSquark,
-                                         fullCascade* const subcascadePointer )
+    namespace squarkByJetToCompoundType
     {
-      initialSparticle = initialSquark;
-      buildOn( subcascadePointer );
-      resetCachedBranchingRatio();
-    }
+      inline void
+      sdownByJetToCompound::setProperties( particlePointer const initialSquark,
+                                          fullCascade* const subcascadePointer,
+          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource )
+      {
+        initialSparticle = initialSquark;
+        buildOn( subcascadePointer );
+        resetCachedBranchingRatio();
+      }
 
-    inline double
-    sdownByJetToCompound::getAcceptance(
+      inline double
+      sdownByJetToCompound::getAcceptance(
                                   bool const initialSparticleIsNotAntiparticle,
                                         acceptanceCutSet* const acceptanceCuts,
-                                         int const numberOfAdditionalJets,
-                                         int numberOfNegativeElectrons,
-                                         int numberOfPositiveElectrons,
-                                         int numberOfNegativeMuons,
-                                         int numberOfPositiveMuons )
-    /* this calls the appropriate functions on subcascadePointer to build the
-     * required acceptance, taking into account whether the charges should be
-     * swapped if scoloredIsNotAntiparticle is false.
-     */
-    {
-      return
-      subcascadePointer->getAcceptance( !initialSparticleIsNotAntiparticle,
-                                        acceptanceCuts,
-                                        numberOfAdditionalJets,
-                                        numberOfNegativeElectrons,
-                                        numberOfPositiveElectrons,
-                                        numberOfNegativeMuons,
-                                        numberOfPositiveMuons );
-      /* !initialSparticleIsNotAntiparticle is used because a subsequent gluino
-       * or neutralino doesn't care, while a subsquent chargino needs to know
-       * that we want the case of a negatively-charged chargino.
+                                           int const numberOfAdditionalJets,
+                                           int numberOfNegativeElectrons,
+                                           int numberOfPositiveElectrons,
+                                           int numberOfNegativeMuons,
+                                           int numberOfPositiveMuons )
+      /* this calls the appropriate functions on subcascadePointer to build the
+       * required acceptance, taking into account whether the charges should be
+       * swapped if scoloredIsNotAntiparticle is false.
        */
-    }
-
-
-
-    inline fullCascade*
-    supByJetToCompound::setProperties( particlePointer const initialSquark,
-                                       fullCascade* const subcascadePointer,
-                                   electroweakCascadeSet* const bosonCascades )
-    {
-      initialSparticle = initialSquark;
-      this->bosonCascades = bosonCascades;
-      buildOn( subcascadePointer );
-      resetCachedBranchingRatio();
-      decayProductListIncludingW.front()
-      = subcascadePointer->getInitialSparticle()->get_PDG_code();
-      decayProductListIncludingW.back()
-      = bosonCascades->getElectroweakDecayer()->get_PDG_code();
-      shouldUseDecaysWithW = decayWithWIsNotNegligible();
-      return this;
-    }
-
-
-
-    inline bool
-    gluinoOrNeutralinoToCompound::decayWithWIsNotNegligible()
-    // this returns true if the decay involving a W boson is not negligible,
-    // also setting up the relevant fractions, false otherwise.
-    {
-      wFraction = ( initialSparticle->inspect_direct_decay_handler(
-                                             )->get_branching_ratio_for_subset(
-                                                  &decayProductListIncludingW )
-                    / initialSparticle->inspect_direct_decay_handler(
-                                             )->get_branching_ratio_for_subset(
-                                                   &soughtDecayProductList ) );
-      if( lhcFaserGlobal::negligibleBr < wFraction )
       {
-        directFraction = ( 1.0 - wFraction );
-        return true;
+        return
+        subcascadePointer->getAcceptance( !initialSparticleIsNotAntiparticle,
+                                          acceptanceCuts,
+                                          numberOfAdditionalJets,
+                                          numberOfNegativeElectrons,
+                                          numberOfPositiveElectrons,
+                                          numberOfNegativeMuons,
+                                          numberOfPositiveMuons );
+        /* !initialSparticleIsNotAntiparticle is used because a subsequent
+         * gluino or neutralino doesn't care, while a subsquent chargino needs
+         * to know that we want the case of a negatively-charged chargino.
+         */
       }
-      else
+
+
+
+      inline fullCascade*
+      supByJetToCompound::setProperties( particlePointer const initialSquark,
+                                         fullCascade* const subcascadePointer,
+          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource )
       {
-        return false;
+        initialSparticle = initialSquark;
+        this->electroweakCascadeSource = electroweakCascadeSource;
+        buildOn( subcascadePointer );
+        resetCachedBranchingRatio();
+        decayProductListIncludingW.front()
+        = subcascadePointer->getInitialSparticle()->get_PDG_code();
+        decayProductListIncludingW.back() = CppSLHA::PDG_code::W_plus;
+        shouldUseDecaysWithW = decayWithWIsNotNegligible();
+        return this;
       }
-    }
+
+      inline electroweakCascadeSet*
+      supByJetToCompound::getAppropriateBosonCascadeSet(
+                                         fullCascade* const currentSubcascade )
+      {
+        return electroweakCascadeSource->getCascadeSet( appropriateSdown,
+                                                        *ewinoIterator,
+                               inputShortcut->getSquarkMinusBosonEffectiveMass(
+                                                              initialSparticle,
+                                                     inputShortcut->getWPlus(),
+                                  currentSubcascade->getInitialSparticle() ) );
+      }
+
+    }  // end of squarkByJetToCompoundType namespace
+
+
 
     inline fullCascade*
     gluinoOrNeutralinoToCompound::setProperties(
                                         particlePointer const initialSparticle,
                                           fullCascade* const subcascadePointer,
-                                   electroweakCascadeSet* const bosonCascades )
+          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource )
     {
       this->initialSparticle = initialSparticle;
-      this->bosonCascades = bosonCascades;
+      this->electroweakCascadeSource = electroweakCascadeSource;
       buildOn( subcascadePointer );
       resetCachedBranchingRatio();
       decayProductListIncludingW.front()
@@ -1414,71 +1481,6 @@ namespace LHC_FASER
       {
         shouldUseDecaysWithW = false;
       }
-      return this;
-    }
-
-
-
-    inline bool
-    charginoToCompound::decayWithWIsNotNegligible()
-    // this returns true if the decay involving a W boson is not negligible,
-    // also setting up the relevant fractions, false otherwise.
-    {
-      // 1st we look for chargino -> squark + antiquark + W:
-      wFraction = ( initialSparticle->inspect_direct_decay_handler(
-                                             )->get_branching_ratio_for_subset(
-                                                  &decayProductListIncludingW )
-                    / initialSparticle->inspect_direct_decay_handler(
-                                             )->get_branching_ratio_for_subset(
-                                                   &soughtDecayProductList ) );
-      squarkWithWFraction = wFraction;
-      // now we look for chargino -> antisquark + quark + W:
-      decayProductListIncludingW.front()
-      = -(decayProductListIncludingW.front());
-      wFraction += ( initialSparticle->inspect_direct_decay_handler(
-                                             )->get_branching_ratio_for_subset(
-                                                  &decayProductListIncludingW )
-                    / initialSparticle->inspect_direct_decay_handler(
-                                             )->get_branching_ratio_for_subset(
-                                                   &soughtDecayProductList ) );
-      if( lhcFaserGlobal::negligibleBr < wFraction )
-      {
-        directFraction = ( 1.0 - wFraction );
-        antisquarkWithWFraction = ( wFraction - squarkWithWFraction );
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-
-    inline fullCascade*
-    charginoToCompound::setProperties( particlePointer const initialSparticle,
-                                       fullCascade* const subcascadePointer,
-                                   electroweakCascadeSet* const bosonCascades )
-    {
-      this->initialSparticle = initialSparticle;
-      this->bosonCascades = bosonCascades;
-      buildOn( subcascadePointer );
-      resetCachedBranchingRatio();
-      decayProductListIncludingW.front()
-      = subcascadePointer->getInitialSparticle()->get_PDG_code();
-      decayProductListIncludingW.back()
-      = bosonCascades->getElectroweakDecayer()->get_PDG_code();
-      // positive charginos decay to positive W bosons.
-      if( inputShortcut->isIn( decayProductListIncludingW.front(),
-                               inputShortcut->getSdownTypes() ) )
-      {
-        decayingToSupType = false;
-      }
-      else
-      {
-        decayProductListIncludingW.front()
-        = subcascadePointer->getInitialSparticle()->get_PDG_code();
-        decayingToSupType = true;
-      }
-      shouldUseDecaysWithW = decayWithWIsNotNegligible();
       return this;
     }
 
@@ -1507,106 +1509,13 @@ namespace LHC_FASER
   fullCascadeSet::getOpenCascades()
   // this calls setUpCascades() if it needs to be readied for this point.
   {
-    ensureCascadesAreUpToDate();
+    if( needsToPrepareForThisPoint() )
+    {
+      openCascades.clear();
+      initialSparticleMass = initialSparticle->get_absolute_mass();
+      setUpCascades();
+    }
     return &openCascades;
-  }
-
-  inline std::vector< sxFullCascade* > const*
-  fullCascadeSet::getSxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return &openSxCascades;
-  }
-
-  inline std::vector< gxFullCascade* > const*
-  fullCascadeSet::getGxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return &openGxCascades;
-  }
-
-  inline std::vector< sjgxFullCascade* > const*
-  fullCascadeSet::getSjgxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return sjgxCascades.inspectVector();
-  }
-
-  inline std::vector< gjsxFullCascade* > const*
-  fullCascadeSet::getGjsxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return gjsxCascades.inspectVector();
-  }
-
-  inline std::vector< sjgjsxFullCascade* > const*
-  fullCascadeSet::getSjgjsxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return sjgjsxCascades.inspectVector();
-  }
-
-  inline std::vector< sbsxFullCascade* > const*
-  fullCascadeSet::getSbsxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return sbsxCascades.inspectVector();
-  }
-
-  inline std::vector< gbsxFullCascade* > const*
-  fullCascadeSet::getGbsxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return gbsxCascades.inspectVector();
-  }
-
-  inline std::vector< gjsbsxFullCascade* > const*
-  fullCascadeSet::getGjsbsxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return gjsbsxCascades.inspectVector();
-  }
-
-  inline std::vector< sbgxFullCascade* > const*
-  fullCascadeSet::getSbgxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return sbgxCascades.inspectVector();
-  }
-
-  inline std::vector< sbsjgxFullCascade* > const*
-  fullCascadeSet::getSbsjgxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return sbsjgxCascades.inspectVector();
-  }
-
-  inline std::vector< sbsjgjsxFullCascade* > const*
-  fullCascadeSet::getSbsjgjsxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return sbsjgjsxCascades.inspectVector();
-  }
-
-  inline std::vector< sbgjsxFullCascade* > const*
-  fullCascadeSet::getSbgjsxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return sbgjsxCascades.inspectVector();
-  }
-
-  inline std::vector< sjgbsxFullCascade* > const*
-  fullCascadeSet::getSjgbsxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return sjgbsxCascades.inspectVector();
-  }
-
-  inline std::vector< sjgjsbsxFullCascade* > const*
-  fullCascadeSet::getSjgjsbsxCascades()
-  {
-    ensureCascadesAreUpToDate();
-    return sjgjsbsxCascades.inspectVector();
   }
 
   inline particlePointer
@@ -1616,33 +1525,7 @@ namespace LHC_FASER
     return initialSparticle;
   }
 
-  inline void
-  fullCascadeSet::ensureCascadesAreUpToDate()
-  // this calls setUpCascades() if needsToPrepareForThisPoint() is true.
-  {
-    if( needsToPrepareForThisPoint() )
-    {
-      setUpCascades();
-    }
-  }
 
-  inline void
-  fullCascadeSet::addOpenCascade( fullCascade* cascadeToAdd )
-  // this adds the cascade to openCascades & also resets it so that it'll
-  // recalculate its branching ratio when next requested.
-  {
-    openCascades.push_back( cascadeToAdd );
-    cascadeToAdd->resetCachedBranchingRatio();
-  }
-
-
-
-
-  inline fullCascadeSet*
-  fullCascadeSetOrderer::getGluinoFullCascade()
-  {
-    return gluinoFullCascade;
-  }
 
   inline std::list< fullCascadeSet* > const*
   fullCascadeSetOrderer::getNeutralinoColoredCascades()
@@ -1683,6 +1566,67 @@ namespace LHC_FASER
     }
     return &supTypeColoredCascades;
   }
+
+
+
+  namespace fullCascadeSetType
+  {
+    inline void
+    squarkSet::addEwinoCompoundCascade( bool ewinoCodeIsPositive )
+    // this relies on orderedCascadeSets having already been set correctly.
+    {
+      setIterator = orderedCascadeSets->begin();
+      while( ( setIterator != orderedCascadeSets->end() )
+             &&
+             ( initialSparticleMass
+               > (*setIterator)->getInitialSparticle()->get_absolute_mass() ) )
+        /* we go through the list of given electroweakinos heavier than the
+         * lightest squark until we get to either the end of the list or a
+         * neutralino heavier than this down-type squark:
+         */
+      {
+        if( ewinoCodeIsPositive )
+        {
+          singleSpecifiedDecayProductList.front()
+          = (*setIterator)->getInitialSparticle()->get_PDG_code();
+        }
+        else
+        {
+          singleSpecifiedDecayProductList.front()
+          = -((*setIterator)->getInitialSparticle()->get_PDG_code());
+        }
+        potentialSubcascadeSet = *setIterator;
+        addByJetCascade();
+        // now we move on to the next potential electroweakino cascade:
+        ++setIterator;
+      }
+    }
+
+
+
+    namespace squarkSetType
+    {
+      inline void
+      sdownType::buildSquarkCompoundCascades()
+      {
+        // now we look at compound cascades from down-type squarks:
+        orderedCascadeSets = setOrderer->getSdownTypeCascades();
+        potentialDecayProducts
+        = inputShortcut->getNeutralEwsbBosonsAndMassiveVectorBosons();
+        addSquarkCompoundCascade( true );
+
+        // now we look at compound cascades from up-type squarks:
+        orderedCascadeSets = setOrderer->getSupTypeCascades();
+        potentialDecayProducts
+        = inputShortcut->getChargedEwsbBosonsAndMassiveVectorBosons();
+        addSquarkCompoundCascade( false );
+      }
+
+    }  // end of squarkSetType namespace
+
+  }  // end of fullCascadeSetType namespace
+
+
 
   inline int
   fullCascadeSetsForOneBeamEnergy::getBeamEnergy()
