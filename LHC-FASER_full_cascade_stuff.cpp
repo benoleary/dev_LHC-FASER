@@ -1892,7 +1892,7 @@ namespace LHC_FASER
 
 
 
-    gluinoOrElectroweakinoSet::gluinoOrElectroweakinoSet(
+    gluinoOrNeutralinoSet::gluinoOrNeutralinoSet(
                                        inputHandler const* const inputShortcut,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                         particlePointer const initialSparticle,
@@ -1902,19 +1902,20 @@ namespace LHC_FASER
                     initialSparticle,
                     electroweakCascadeSource,
                     beamEnergy ),
-    setOrderer( setOrderer )
+    setOrderer( setOrderer ),
+    compoundCascades()
     {
       // just an initialization list.
     }
 
-    gluinoOrElectroweakinoSet::~gluinoOrElectroweakinoSet()
+    gluinoOrNeutralinoSet::~gluinoOrNeutralinoSet()
     {
       // does nothing.
     }
 
 
     void
-    gluinoOrElectroweakinoSet::buildLongerCascades()
+    gluinoOrNeutralinoSet::buildLongerCascades()
     {
       // 1st we clear the compound cascades:
       compoundCascades.clearEntries();
@@ -1927,7 +1928,7 @@ namespace LHC_FASER
     }
 
     void
-    gluinoOrElectroweakinoSet::buildSquarkCompoundCascades()
+    gluinoOrNeutralinoSet::buildSquarkCompoundCascades()
     // this does the job of finding the right squark subcascades.
     {
       setIterator = orderedCascadeSets->begin();
@@ -1973,7 +1974,7 @@ namespace LHC_FASER
 
 
 
-    namespace gluinoOrElectroweakinoSetType
+    namespace gluinoOrNeutralinoSetType
     {
       gluinoSet::gluinoSet( inputHandler const* const inputShortcut,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,

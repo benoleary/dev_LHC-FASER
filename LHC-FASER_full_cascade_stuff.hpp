@@ -954,25 +954,22 @@ namespace LHC_FASER
 
     // this class specializes fullCascade for the case of cascades beginning
     // with a gluino or an electroweakino.
-    class gluinoOrElectroweakinoSet : public fullCascadeSet
+    class gluinoOrNeutralinoSet : public fullCascadeSet
     {
     public:
-      gluinoOrElectroweakinoSet( inputHandler const* const inputShortcut,
+      gluinoOrNeutralinoSet( inputHandler const* const inputShortcut,
                    electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
                                  particlePointer const initialSparticle,
                                  fullCascadeSetOrderer* const setOrderer,
                                  double const beamEnergy );
       virtual
-      ~gluinoOrElectroweakinoSet();
+      ~gluinoOrNeutralinoSet();
 
     protected:
       fullCascadeSetOrderer* const setOrderer;
+      minimalAllocationVector< fullCascadeType::gluinoOrNeutralinoToCompound >
+      compoundCascades;
 
-      virtual fullCascade*
-      addNewCompoundCascade()
-      = 0;
-      // this should get the minimalAllocationVector of the derived class to
-      // addNewAtEnd, then return its return value as a fullCascade pointer.
       virtual void
       setUpCascades();
       // this should set up all the open cascades.
@@ -982,11 +979,11 @@ namespace LHC_FASER
     };
 
 
-    namespace gluinoOrElectroweakinoSetType
+    namespace gluinoOrNeutralinoSetType
     {
       // this class specializes fullCascade for the case of cascades beginning
       // with a gluino.
-      class gluinoSet : public gluinoOrElectroweakinoSet
+      class gluinoSet : public gluinoOrNeutralinoSet
       {
       public:
         gluinoSet( inputHandler const* const inputShortcut,
@@ -1000,65 +997,9 @@ namespace LHC_FASER
       protected:
         std::vector< fullCascadeType::gluinoDirectlyToElectroweak* >
         directToEwinoCascades;
-        minimalAllocationVector<
-                                fullCascadeType::gluinoOrNeutralinoToCompound >
-        compoundCascades;
-
-        virtual fullCascade*
-        addNewCompoundCascade();
-        // this should get the minimalAllocationVector of the derived class to
-        // addNewAtEnd, then return its return value as a fullCascade pointer.
       };
 
-
-      // this class specializes fullCascade for the case of cascades beginning
-      // with a neutralino.
-      class neutralinoSet : public gluinoOrElectroweakinoSet
-      {
-      public:
-        neutralinoSet( inputHandler const* const inputShortcut,
-           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
-                       fullCascadeSetOrderer* const setOrderer,
-                       double const beamEnergy );
-        virtual
-        ~neutralinoSet();
-
-      protected:
-        minimalAllocationVector<
-                                fullCascadeType::gluinoOrNeutralinoToCompound >
-        compoundCascades;
-
-        virtual fullCascade*
-        addNewCompoundCascade();
-        // this should get the minimalAllocationVector of the derived class to
-        // addNewAtEnd, then return its return value as a fullCascade pointer.
-      };
-
-
-      // this class specializes fullCascade for the case of cascades beginning
-      // with a chargino.
-      class charginoSet : public gluinoOrElectroweakinoSet
-      {
-      public:
-        charginoSet( inputHandler const* const inputShortcut,
-           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
-                     fullCascadeSetOrderer* const setOrderer,
-                     double const beamEnergy );
-        virtual
-        ~charginoSet();
-
-
-      protected:
-        minimalAllocationVector< fullCascadeType::charginoToCompound >
-        compoundCascades;
-
-        virtual fullCascade*
-        addNewCompoundCascade();
-        // this should get the minimalAllocationVector of the derived class to
-        // addNewAtEnd, then return its return value as a fullCascade pointer.
-      };
-
-    }  // end of gluinoOrElectroweakinoSetType namespace
+    }  // end of gluinoOrNeutralinoSetType namespace
 
     // this class specializes fullCascade for the case of cascades beginning
     // with a chargino.
