@@ -458,8 +458,7 @@ namespace LHC_FASER
       {
         ewinoMass
         = directEwinoCascades->getElectroweakDecayer()->get_absolute_mass();
-        if( ( initialSparticle->get_absolute_mass()
-              > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
+        if( ( initialSparticle->get_absolute_mass() > ewinoMass )
             &&
             ( lhcFaserGlobal::negligibleBr < getTotalBrToEwino() ) )
         {
@@ -602,6 +601,8 @@ namespace LHC_FASER
       }
 
     }  // end of squarkDirectlyToElectroweakType namespace
+
+
 
     gluinoDirectlyToElectroweak::gluinoDirectlyToElectroweak() :
         fullCascade( gluinoToEwino,
@@ -1559,8 +1560,8 @@ namespace LHC_FASER
   namespace fullCascadeSetType
   {
     squarkSet::squarkSet( inputHandler const* const inputShortcut,
-           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                           particlePointer const initialScolored,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                           fullCascadeSetOrderer* const setOrderer,
                           fullCascadeSet* const gluinoFullCascade,
                           double const beamEnergy,
@@ -1752,14 +1753,14 @@ namespace LHC_FASER
     namespace squarkSetType
     {
       sdownType::sdownType( inputHandler const* const inputShortcut,
-           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                             particlePointer const initialScolored,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                             fullCascadeSetOrderer* const setOrderer,
                             fullCascadeSet* const gluinoFullCascade,
                             double const beamEnergy ) :
           squarkSet( inputShortcut,
-                     electroweakCascadeSource,
                      initialScolored,
+                     electroweakCascadeSource,
                      setOrderer,
                      gluinoFullCascade,
                      beamEnergy,
@@ -1791,22 +1792,20 @@ namespace LHC_FASER
 
 
       supType::supType( inputHandler const* const inputShortcut,
-           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                         particlePointer const initialScolored,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                         fullCascadeSetOrderer* const setOrderer,
                         fullCascadeSet* const gluinoFullCascade,
                         double const beamEnergy ) :
           squarkSet( inputShortcut,
-                     electroweakCascadeSource,
                      initialScolored,
+                     electroweakCascadeSource,
                      setOrderer,
                      gluinoFullCascade,
                      beamEnergy ),
           twoSpecifiedDecayProductsList( 2,
                                  CppSLHA::CppSLHA_global::really_wrong_value ),
-          appropriateSdownForWDecay( NULL ),
-          effectiveSdownMass( NULL ),
-          effectiveSupMass( NULL )
+          appropriateSdownForWDecay( NULL )
       {
         if( inputShortcut->getSupL() == initialScolored )
         {
@@ -1892,7 +1891,7 @@ namespace LHC_FASER
 
 
 
-    gluinoOrNeutralinoSet::gluinoOrNeutralinoSet(
+    gluinoOrElectroweakinoSet::gluinoOrElectroweakinoSet(
                                        inputHandler const* const inputShortcut,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                         particlePointer const initialSparticle,
@@ -1902,33 +1901,19 @@ namespace LHC_FASER
                     initialSparticle,
                     electroweakCascadeSource,
                     beamEnergy ),
-    setOrderer( setOrderer ),
-    compoundCascades()
+    setOrderer( setOrderer )
     {
       // just an initialization list.
     }
 
-    gluinoOrNeutralinoSet::~gluinoOrNeutralinoSet()
+    gluinoOrElectroweakinoSet::~gluinoOrElectroweakinoSet()
     {
       // does nothing.
     }
 
 
     void
-    gluinoOrNeutralinoSet::buildLongerCascades()
-    {
-      // 1st we clear the compound cascades:
-      compoundCascades.clearEntries();
-
-      // now we look at compound cascades from squarks:
-      orderedCascadeSets = setOrderer->getSdownTypeCascades();
-      buildSquarkCompoundCascades();
-      orderedCascadeSets = setOrderer->getSupTypeCascades();
-      buildSquarkCompoundCascades();
-    }
-
-    void
-    gluinoOrNeutralinoSet::buildSquarkCompoundCascades()
+    gluinoOrElectroweakinoSet::buildSquarkCompoundCascades()
     // this does the job of finding the right squark subcascades.
     {
       setIterator = orderedCascadeSets->begin();
@@ -1937,7 +1922,7 @@ namespace LHC_FASER
              ( initialSparticleMass
                > (*setIterator)->getInitialSparticle()->get_absolute_mass() ) )
         // we go through the list of squarks until we get to either the end of
-        // the list or run out of squarks lighter than the gluino:
+        // the list or run out of squarks lighter than this particle:
       {
         singleSpecifiedDecayProductList.front()
         = (*setIterator)->getInitialSparticle()->get_PDG_code();
@@ -1959,11 +1944,8 @@ namespace LHC_FASER
                     * (*cascadeIterator)->getBrToEwino() ) )
             {
               // we add each cascade with an overall BR that is not negligible:
-              openCascades.push_back(
-                                 compoundCascades.addNewAtEnd()->setProperties(
-                                                              initialSparticle,
-                                                              *cascadeIterator,
-                                                  electroweakCascadeSource ) );
+              openCascades.push_back( getNewCompoundCascade(
+                                                          *cascadeIterator ) );
             }
           }
         }
@@ -1974,17 +1956,18 @@ namespace LHC_FASER
 
 
 
-    namespace gluinoOrNeutralinoSetType
+    namespace gluinoOrElectroweakinoSetType
     {
       gluinoSet::gluinoSet( inputHandler const* const inputShortcut,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                             fullCascadeSetOrderer* const setOrderer,
                             double const beamEnergy ) :
-          gluinoOrNeutralinoSet( inputShortcut,
+          gluinoOrElectroweakinoSet( inputShortcut,
                                  inputShortcut->getGluino(),
                                  electroweakCascadeSource,
                                  beamEnergy ),
-      directToEwinoCascades()
+      directToEwinoCascades(),
+      compoundCascades()
       {
         // we have to set up the cascades directly to electroweakinos now:
         for( std::vector< particlePointer >::const_iterator
@@ -2014,7 +1997,75 @@ namespace LHC_FASER
         }
       }
 
-    }  // end of gluinoOrNeutralinoSetType namespace
+      void
+      gluinoSet::setUpCascades()
+      {
+        // 1st we add the direct cascades:
+        for( std::vector< fullCascadeType::gluinoDirectlyToElectroweak*
+                                                                    >::iterator
+             cascadeIterator( directToEwinoCascades.begin() );
+             directToEwinoCascades.end() > cascadeIterator;
+             ++cascadeIterator )
+        {
+          if( (*cascadeIterator)->isOpen() )
+          {
+            openCascades.push_back( *cascadeIterator );
+          }
+        }
+
+        // then we clear the compound cascades:
+        compoundCascades.clearEntries();
+
+        // now we look at compound cascades from squarks:
+        orderedCascadeSets = setOrderer->getSdownTypeCascades();
+        buildSquarkCompoundCascades();
+        orderedCascadeSets = setOrderer->getSupTypeCascades();
+        buildSquarkCompoundCascades();
+      }
+
+
+
+      neutralinoSet::neutralinoSet( inputHandler const* const inputShortcut,
+                                    particlePointer const initialSparticle,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
+                                    fullCascadeSetOrderer* const setOrderer,
+                                    double const beamEnergy ) :
+          gluinoOrElectroweakinoSet( inputShortcut,
+                                     initialSparticle,
+                                     electroweakCascadeSource,
+                                     beamEnergy ),
+      compoundCascades()
+      {
+        // just an initialization list.
+      }
+
+      neutralinoSet::~neutralinoSet()
+      {
+        // does nothing.
+      }
+
+
+
+      charginoSet::charginoSet( inputHandler const* const inputShortcut,
+                                particlePointer const initialSparticle,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
+                                fullCascadeSetOrderer* const setOrderer,
+                                double const beamEnergy ) :
+          gluinoOrElectroweakinoSet( inputShortcut,
+                                     initialSparticle,
+                                     electroweakCascadeSource,
+                                     beamEnergy ),
+      compoundCascades()
+      {
+        // just an initialization list.
+      }
+
+      charginoSet::~charginoSet()
+      {
+        // does nothing.
+      }
+
+    }  // end of gluinoOrElectroweakinoSetType namespace
 
   }  // end of fullCascadeSetType namespace
 
@@ -2024,43 +2075,76 @@ namespace LHC_FASER
                                        inputHandler const* const inputShortcut,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                                     double const beamEnergy ) :
-    inputShortcut( inputShortcut ),
-    electroweakCascadeSource( electroweakCascadeSource ),
-    beamEnergy( beamEnergy ),
-    squarkCascadeSetList( new std::list< fullCascadeSet* >,
-              new publicGetsReadiedForNewPoint( inputShortcut->getReadier() ) )
+      inputShortcut( inputShortcut ),
+      electroweakCascadeSource( electroweakCascadeSource ),
+      beamEnergy( beamEnergy ),
+      cascadeOrderer( inputShortcut ),
+      gluinoCascadeSet( inputShortcut,
+                        electroweakCascadeSource,
+                        &cascadeOrderer,
+                        beamEnergy ),
+      cascadeSetList( cascadeOrderer.getSdownTypeCascades() )
   {
-    gluinoCascadeSet = new gluinoSet( inputShortcut,
-                                                 electroweakCascadeSource,
-                                                 &squarkCascadeSetList,
-                                                 beamEnergy );
     for( std::vector< particlePointer >::const_iterator
-         squarkIterator( inputShortcut->getSquarks()->begin() );
+         squarkIterator( inputShortcut->getSdownTypes()->begin() );
          inputShortcut->getSquarks()->end() > squarkIterator;
          ++squarkIterator )
     {
-      squarkCascadeSets.push_back( new sdownType( inputShortcut,
+      cascadeSetList.push_back(
+               new fullCascadeSetType::squarkSetType::sdownType( inputShortcut,
+                                                               *squarkIterator,
                                                       electroweakCascadeSource,
-                                                             *squarkIterator,
-                                                         &squarkCascadeSetList,
-                                                             gluinoCascadeSet,
-                                                             beamEnergy ) );
-      squarkCascadeSetList.first->push_back( squarkCascadeSets.back() );
+                                                               &cascadeOrderer,
+                                                             &gluinoCascadeSet,
+                                                                beamEnergy ) );
+    }
+    cascadeSetList = cascadeOrderer.getSupTypeCascades();
+    for( std::vector< particlePointer >::const_iterator
+         squarkIterator( inputShortcut->getSupTypes()->begin() );
+         inputShortcut->getSquarks()->end() > squarkIterator;
+         ++squarkIterator )
+    {
+      cascadeSetList.push_back(
+               new fullCascadeSetType::squarkSetType::supType( inputShortcut,
+                                                               *squarkIterator,
+                                                      electroweakCascadeSource,
+                                                               &cascadeOrderer,
+                                                             &gluinoCascadeSet,
+                                                                beamEnergy ) );
+    }
+    cascadeSetList = cascadeOrderer.getNeutralinoColoredCascades();
+    for( std::vector< particlePointer >::const_iterator
+         sparticleIterator( inputShortcut->getUnstableNeutralinos()->begin() );
+         inputShortcut->getSquarks()->end() > sparticleIterator;
+         ++sparticleIterator )
+    {
+      cascadeSetList.push_back(
+          new fullCascadeSetType::gluinoOrElectroweakinoSetType::neutralinoSet(
+                                                                 inputShortcut,
+                                                            *sparticleIterator,
+                                                      electroweakCascadeSource,
+                                                               &cascadeOrderer,
+                                                                beamEnergy ) );
+    }
+    cascadeSetList = cascadeOrderer.getCharginoColoredCascades();
+    for( std::vector< particlePointer >::const_iterator
+         sparticleIterator( inputShortcut->getSupTypes()->begin() );
+         inputShortcut->getSquarks()->end() > sparticleIterator;
+         ++sparticleIterator )
+    {
+      cascadeSetList.push_back(
+            new fullCascadeSetType::gluinoOrElectroweakinoSetType::charginoSet(
+                                                                 inputShortcut,
+                                                            *sparticleIterator,
+                                                      electroweakCascadeSource,
+                                                               &cascadeOrderer,
+                                                                beamEnergy ) );
     }
   }
 
   fullCascadeSetsForOneBeamEnergy::~fullCascadeSetsForOneBeamEnergy()
   {
-    for( std::vector< sdownType* >::iterator
-         deletionIterator( squarkCascadeSets.begin() );
-         squarkCascadeSets.end() > deletionIterator;
-         ++deletionIterator )
-    {
-      delete *deletionIterator;
-    }
-    delete gluinoCascadeSet;
-    delete squarkCascadeSetList.first;
-    delete squarkCascadeSetList.second;
+    // does nothing.
   }
 
 
@@ -2069,26 +2153,85 @@ namespace LHC_FASER
                                         particlePointer const initialScolored )
   /* this returns the fullCascadeSet for the requested colored sparticle, or
    * NULL if we were asked for a sparticle that is not the gluino or in
-   * inputShortcut->getSquarks().
+   * inputShortcut->getSquarks() or ->getElectroweakinos() (though not set up
+   * for using compound decays of electroweakinos directly (used just by the
+   * cascades themselves for building compound cascades, with the intention
+   * of only cascades beginning with colored sparticles being requested,
+   * there seems to be no problem in letting them be given out).
    */
   {
     if( CppSLHA::PDG_code::gluino == initialScolored->get_PDG_code() )
     {
-      return gluinoCascadeSet;
+      return &gluinoCascadeSet;
     }
     else
     {
+      bool notFoundYet( true );
       fullCascadeSet* returnPointer( NULL );
-      // we look to see if we already have a fullCascadeSet for this squark:
-      for( std::vector< sdownType* >::iterator
-           searchIterator( squarkCascadeSets.begin() );
-           squarkCascadeSets.end() > searchIterator;
-           ++searchIterator )
+      // we look to see if we already have a fullCascadeSet for this sparticle:
+      cascadeSetList = cascadeOrderer.getSdownTypeCascades();
+      for( std::list< fullCascadeSet* >::iterator
+           setIterator( cascadeSetList->begin() );
+           ( notFoundYet
+             &&
+             ( cascadeSetList->end() != setIterator ) );
+           ++setIterator )
       {
-        if( initialScolored == (*searchIterator)->getInitialSparticle() )
+        if( initialScolored == (*setIterator)->getInitialSparticle() )
         {
-          returnPointer = *searchIterator;
-          searchIterator = squarkCascadeSets.end();
+          returnPointer = *setIterator;
+          notFoundYet = false;
+        }
+      }
+      if( notFoundYet )
+      {
+        cascadeSetList = cascadeOrderer.getSupTypeCascades();
+        for( std::list< fullCascadeSet* >::iterator
+             setIterator( cascadeSetList->begin() );
+             ( notFoundYet
+               &&
+               ( cascadeSetList->end() != setIterator ) );
+             ++setIterator )
+        {
+          if( initialScolored == (*setIterator)->getInitialSparticle() )
+          {
+            returnPointer = *setIterator;
+            notFoundYet = false;
+          }
+        }
+      }
+      if( notFoundYet )
+      {
+        cascadeSetList = cascadeOrderer.getNeutralinoColoredCascades();
+        for( std::list< fullCascadeSet* >::iterator
+             setIterator( cascadeSetList->begin() );
+             ( notFoundYet
+               &&
+               ( cascadeSetList->end() != setIterator ) );
+             ++setIterator )
+        {
+          if( initialScolored == (*setIterator)->getInitialSparticle() )
+          {
+            returnPointer = *setIterator;
+            notFoundYet = false;
+          }
+        }
+      }
+      if( notFoundYet )
+      {
+        cascadeSetList = cascadeOrderer.getCharginoColoredCascades();
+        for( std::list< fullCascadeSet* >::iterator
+             setIterator( cascadeSetList->begin() );
+             ( notFoundYet
+               &&
+               ( cascadeSetList->end() != setIterator ) );
+             ++setIterator )
+        {
+          if( initialScolored == (*setIterator)->getInitialSparticle() )
+          {
+            returnPointer = *setIterator;
+            notFoundYet = false;
+          }
         }
       }
       return returnPointer;

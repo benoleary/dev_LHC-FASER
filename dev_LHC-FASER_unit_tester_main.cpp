@@ -105,19 +105,21 @@
  *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
  *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
  *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
- *      LHC-FASER_full_cascade_stuff.hpp
- *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_jet_kinematics_stuff.hpp
  *      LHC-FASER_jet_kinematics_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
+ *
+ *
+ * still to test:
+ *      LHC-FASER_full_cascade_stuff.hpp
+ *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
  *
  *
- * still to test:
  *      nothing! we're done. well, the accuracy of the approximations has to be
  *      tested...
  */
@@ -365,11 +367,11 @@ int main( int argumentCount,
 
 
   /* testing the full cascade stuff:
-   * (works)*//**
+   * (needs checking for new version)*//**/
   LHC_FASER::fullCascadeTesting fullCascadeTester( &basicStuffTester,
                                                    &inputTester );
   fullCascadeTester.performTest();
-  **/
+  /**/
 
 
   /* testing the jet kinematics grid stuff:
@@ -397,7 +399,7 @@ int main( int argumentCount,
 
 
   /* testing adding new signals & how long it takes to load & calculate:
-   * (works, but showed up problems) *//**/
+   * (works, but showed up problems) *//**
   timeval startTime;
   timeval endTime;
   double secondsTaken;
@@ -475,7 +477,7 @@ int main( int argumentCount,
                                              &signalVector ) );
   /*signalTimers.push_back( new lhcFaserTimer( "SPS4_spectrum.out",
                                              &testLhcFaser,
-                                             &signalVector ) );*/
+                                             &signalVector ) );*//*
   // SPS4 is borked.
   signalTimers.push_back( new lhcFaserTimer( "SPS5_spectrum.out",
                                              &testLhcFaser,
@@ -585,7 +587,7 @@ int main( int argumentCount,
   << " grids for different squarks, one of which is decaying into an"
   << " electroweakino which is heavier than the other squark."
   << std::endl;
-  /**/
+  **/
 
 
   std::cout << std::endl;

@@ -479,8 +479,8 @@ namespace LHC_FASER
     const;
     double
     quarkOrLeptonLeftHandedness( int const sfermionCode,
-                                 int const ewinoCode );
-    const
+                                 int const ewinoCode )
+    const;
     /* this returns the square of the coupling associated with the left-handed
      * projection operator of the Feynman rule for the vertex of the given
      * sfermion with the given electroweakino & the appropriate quark, divided
@@ -490,7 +490,7 @@ namespace LHC_FASER
      * ignores the possibility of right-handed neutrinos.
      */
     effectiveSquarkMassHolder*
-    getOnShellEffectiveSquarkMass( particlePointer const  onShellSquark )
+    getOnShellEffectiveSquarkMass( particlePointer const onShellSquark )
     const;
     effectiveSquarkMassHolder*
     getSquarkMinusBosonEffectiveMass( particlePointer const onShellSquark,
@@ -504,7 +504,7 @@ namespace LHC_FASER
     const;
 
   protected:
-    bool isVerbose;
+    bool isVerboseFlag;
     bool usingNloFlag;
     readierForNewPoint* const readierPointer;
     CppSLHA::CppSLHA0 const* const cppSlhaPointer;
@@ -755,13 +755,13 @@ namespace LHC_FASER
   // if this is true, lots of warnings will be printed. if false, the code
   // should stay quiet without warning of the impending segmentation faults...
   {
-    return isVerbose;
+    return isVerboseFlag;
   }
 
   inline void
-  inputHandler::setVerbosity( bool isVerbose )
+  inputHandler::setVerbosity( bool isVerboseFlag )
   {
-    this->isVerbose = isVerbose;
+    this->isVerboseFlag = isVerboseFlag;
   }
 
   inline bool
@@ -1524,7 +1524,8 @@ namespace LHC_FASER
   }
 
   inline effectiveSquarkMassHolder*
-  inputHandler::getOnShellEffectiveSquarkMass( particlePointer onShellSquark )
+  inputHandler::getOnShellEffectiveSquarkMass(
+                                          particlePointer const onShellSquark )
   const
   {
     effectiveSquarkMassHolder* returnPointer( NULL );
@@ -1533,7 +1534,7 @@ namespace LHC_FASER
          onShellSquarkEffectiveMasses.end() > squarkIterator;
          ++squarkIterator )
     {
-      if( (*squarkIterator)->getOnShellSquark() == onShellSquark )
+      if( onShellSquark == (*squarkIterator)->getOnShellSquark() )
       {
         returnPointer = *squarkIterator;
         squarkIterator = onShellSquarkEffectiveMasses.end();
@@ -1584,7 +1585,7 @@ namespace LHC_FASER
                                          onShellEwino ) )
       {
         returnPointer = *massIterator;
-        massIterator = squarkMinusBosonEffectiveMasses.end();
+        massIterator = squarkPlusBosonEffectiveMasses.end();
       }
     }
     return returnPointer;

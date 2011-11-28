@@ -1007,3 +1007,19 @@ Debug/LHC-FASER_base_electroweak_cascade_stuff.o
 Debug/LHC-FASER.o
 
 Debug/LHC-FASER.o
+
+Debug/LHC-FASER.o
+
+LHC-FASER_full_cascade_stuff.hpp
+
+Debug/LHC-FASER_base_electroweak_cascade_stuff.o
+
+Debug/LHC-FASER_base_kinematics_stuff.o
+
+LHC-FASER_base_lepton_distribution_stuff.hpp
+
+Debug/LHC-FASER_charged_electroweak_cascade_stuff.o
+
+Debug/LHC-FASER_cross-section_stuff.o
+
+Debug/LHC-FASER_charged_electroweak_cascade_stuff.o

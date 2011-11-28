@@ -142,7 +142,7 @@ namespace LHC_FASER
   {
   public:
     squarkPlusBosonMassHolder(
-                     CppSLHA::particle_property_set const* const onShellSquark,
+                     CppSLHA::particle_property_set const* const virtualSquark,
                       CppSLHA::particle_property_set const* const onShellBoson,
                     CppSLHA::particle_property_set const* const onShellEwino );
     virtual
@@ -151,13 +151,13 @@ namespace LHC_FASER
     virtual double
     getEffectiveSquarkMass();
     bool
-    isEquivalent( CppSLHA::particle_property_set const* const onShellSquark,
+    isEquivalent( CppSLHA::particle_property_set const* const virtualSquark,
                   CppSLHA::particle_property_set const* const onShellBoson,
                   CppSLHA::particle_property_set const* const onShellEwino )
     const;
 
   protected:
-    CppSLHA::particle_property_set const* onShellSquark;
+    CppSLHA::particle_property_set const* virtualSquark;
     CppSLHA::particle_property_set const* onShellBoson;
     CppSLHA::particle_property_set const* onShellEwino;
   };
@@ -779,19 +779,19 @@ namespace LHC_FASER
   {
     // return the on-shell squark's mass, plus the boson's mass, plus a third
     // of the energy from the rest of the squark's mass.
-    return ( ( 4.0 * onShellSquark->get_absolute_mass()
+    return ( ( 4.0 * virtualSquark->get_absolute_mass()
                - 2.0 * onShellBoson->get_absolute_mass()
                - onShellEwino->get_absolute_mass() ) / 3.0 );
   }
 
   inline bool
   squarkPlusBosonMassHolder::isEquivalent(
-                     CppSLHA::particle_property_set const* const onShellSquark,
+                     CppSLHA::particle_property_set const* const virtualSquark,
                       CppSLHA::particle_property_set const* const onShellBoson,
                      CppSLHA::particle_property_set const* const onShellEwino )
   const
   {
-    if( ( onShellSquark == this->onShellSquark )
+    if( ( virtualSquark == this->virtualSquark )
         &&
         ( onShellBoson == this->onShellBoson )
         &&
