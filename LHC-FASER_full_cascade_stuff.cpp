@@ -57,13 +57,9 @@
 
 namespace LHC_FASER
 {
-  int const
-  fullCascade::numberOfSmFermionsFromElectroweakDecaysPerPartialCascade( 2 );
-  int const
-  fullCascade::numberOfSmFermionsFromElectroweakDecaysPerFullCascade( 4 );
-
   fullCascade::fullCascade( colorfulCascadeType const typeOfColorfulCascade,
                             int const firstDecayBodyNumber,
+                            int const maximumSmFermionsFromElectroweakCascades,
                             inputHandler const* const inputShortcut,
                             particlePointer const initialSparticle,
                             double const beamEnergy ) :
@@ -71,6 +67,8 @@ namespace LHC_FASER
     initialSparticle( initialSparticle ),
     beamEnergy( beamEnergy ),
     typeOfColorfulCascade( typeOfColorfulCascade ),
+    maximumSmFermionsFromElectroweakCascades(
+                                     maximumSmFermionsFromElectroweakCascades ),
     firstDecayBodyNumber( firstDecayBodyNumber ),
     subcascadePointer( NULL ),
     cascadeDefiner(),
@@ -90,152 +88,6 @@ namespace LHC_FASER
 
 
   double
-  fullCascade::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
-                                             int const numberOfAdditionalJets )
-  /* this calls
-   * ewinoCascades->getOssfMinusOsdf( scoloredIsNotAntiparticle,
-   *                                 acceptanceCuts ),
-   * & if bosonCascades is not NULL, it calls
-   * ewinoCascades->getAcceptance( [ { 0, 1, 2 } jets
-   *                                 + 0 leptons for acceptanceCuts ] )
-   * & the same for bosonCascades, as well as
-   * ->getOssfMinusOsdf( acceptanceCuts ).
-   */
-  {
-    // we should really check that ewinoCascade is not NULL, but this function
-    // should never be called on a fullCascade which has a NULL ewinoCascade.
-    if( NULL == bosonCascades )
-    {
-      /* if there is no possibility of extra jets from a vector decay, we can
-       * only get a single OSSF-OSDF pair from an electroweakino decay, which
-       * cannot produce additional jets.
-       */
-      if( 0 == numberOfAdditionalJets )
-      {
-        return ewinoCascades->getOssfMinusOsdf( acceptanceCuts );
-      }
-      else
-      {
-        return 0.0;
-      }
-    }
-    else
-    {
-      return ( ewinoCascades->getOssfMinusOsdf( acceptanceCuts )
-               * bosonCascades->getAcceptance( acceptanceCuts,
-                                               numberOfAdditionalJets,
-                                               0,
-                                               0,
-                                               0,
-                                               0 )
-               + bosonCascades->getOssfMinusOsdf( acceptanceCuts )
-                 * ewinoCascades->getAcceptance( acceptanceCuts,
-                                                 numberOfAdditionalJets,
-                                                 0,
-                                                 0,
-                                                 0,
-                                                 0 ) );
-    }
-  }
-
-  double
-  fullCascade::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
-                                                int const numberOfLeptonPairs )
-  /* this only calls ewinoCascades->getOssfMinusOsdf( acceptanceCuts ),
-   * & if bosonCascades is not NULL,
-   * bosonCascades->getOssfMinusOsdf( acceptanceCuts ).
-   */
-  {
-    if( 0 == numberOfLeptonPairs )
-    {
-      return unspecifiedJetsSpecifiedChargeSummedLeptons( acceptanceCuts,
-                                                          0 );
-    }
-    else
-    {
-      // we should check that ewinoCascade is not NULL, but this function
-      // should never be called on a fullCascade which has a NULL ewinoCascade.
-      if( NULL == bosonCascades )
-      {
-        /* if there is no possibility of extra jets from a vector decay, we can
-         * only get a single OSSF-OSDF pair from an electroweakino decay, which
-         * cannot produce additional jets.
-         */
-        if( 1 == numberOfLeptonPairs )
-        {
-          return ewinoCascades->getOssfMinusOsdf( acceptanceCuts );
-        }
-        else
-          // if there's no vector cascade, the only possibilities for non-zero
-          // results are 0 pairs or 1 pair.
-        {
-          return 0.0;
-        }
-      }
-      else
-      {
-        if( 2 == numberOfLeptonPairs )
-        {
-          return ( ewinoCascades->getOssfMinusOsdf( acceptanceCuts )
-                   * bosonCascades->getOssfMinusOsdf( acceptanceCuts ) );
-        }
-        else if( 1 == numberOfLeptonPairs )
-        {
-        return ( ewinoCascades->getOssfMinusOsdf( acceptanceCuts )
-                 * ( bosonCascades->getAcceptance( acceptanceCuts,
-                                                   0,
-                                                   0,
-                                                   0,
-                                                   0,
-                                                   0 )
-                     + bosonCascades->getAcceptance( acceptanceCuts,
-                                                     1,
-                                                     0,
-                                                     0,
-                                                     0,
-                                                     0 )
-                     + bosonCascades->getAcceptance( acceptanceCuts,
-                                                     2,
-                                                     0,
-                                                     0,
-                                                     0,
-                                                     0 ) )
-                 + bosonCascades->getOssfMinusOsdf( acceptanceCuts )
-                   * ( ewinoCascades->getAcceptance( acceptanceCuts,
-                                                     0,
-                                                     0,
-                                                     0,
-                                                     0,
-                                                     0 )
-                       + ewinoCascades->getAcceptance( acceptanceCuts,
-                                                       1,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0 )
-                       + ewinoCascades->getAcceptance( acceptanceCuts,
-                                                       2,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0 ) ) );
-        }
-        else
-          /* the case of 0 pairs has already been checked for, so by this
-           * point, we've discovered that we were asked for a number of pairs
-           * that is not 0, 1, or 2. thus we return 0.0 because we assume that
-           * any cascades which could result in so many leptons are negligible.
-           */
-        {
-          return 0.0;
-        }
-      }  // end of if vectorCascade is NULL or not.
-    }  // end of if numberOfLeptonPairs == 0 or not.
-  }
-
-  double
   fullCascade::specifiedJetsSpecifiedChargeSummedLeptons(
                                         acceptanceCutSet* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
@@ -245,7 +97,7 @@ namespace LHC_FASER
         ||
         ( 0 > numberOfLeptons )
         ||
-        ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+        ( maximumSmFermionsFromElectroweakCascades
           < ( numberOfLeptons + numberOfAdditionalJets ) ) )
     {
       return 0.0;
@@ -293,7 +145,7 @@ namespace LHC_FASER
   {
     if( ( 0 > numberOfLeptons )
         ||
-        ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+        ( maximumSmFermionsFromElectroweakCascades
           < numberOfLeptons ) )
     {
       return 0.0;
@@ -301,9 +153,8 @@ namespace LHC_FASER
     else
     {
       double returnDouble( 0.0 );
-      for( int numberOfJets(
-                        ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
-                          - numberOfLeptons ) );
+      for( int numberOfJets( ( maximumSmFermionsFromElectroweakCascades
+                               - numberOfLeptons ) );
            0 <= numberOfJets;
            --numberOfJets )
       {
@@ -324,9 +175,11 @@ namespace LHC_FASER
                                        inputHandler const* const inputShortcut,
                                            particlePointer const initialSquark,
                                                        double const beamEnergy,
-                           electroweakCascadeSet* const directEwinoCascades ) :
+                              electroweakCascadeSet* const directEwinoCascades,
+                         int const maximumSmFermionsFromElectroweakCascades ) :
         fullCascade( squarkToEwino,
                      2,
+                     maximumSmFermionsFromElectroweakCascades,
                      inputShortcut,
                      initialSquark,
                      beamEnergy ),
@@ -355,7 +208,8 @@ namespace LHC_FASER
           squarkDirectlyToElectroweak( inputShortcut,
                                        initialSquark,
                                        beamEnergy,
-                                       directEwinoCascades ),
+                                       directEwinoCascades,
+                                       2 ),
           ewinoFlipsCharge( false )
       {
         if( inputShortcut->isIn( cascadeSegment->first->get_PDG_code(),
@@ -408,12 +262,12 @@ namespace LHC_FASER
           numberOfPositiveMuons = numberOfNegativeMuons;
           numberOfNegativeMuons = swappingInt;
         }
-        return ewinoCascades->getAcceptance( acceptanceCuts,
-                                             numberOfAdditionalJets,
-                                             numberOfNegativeElectrons,
-                                             numberOfPositiveElectrons,
-                                             numberOfNegativeMuons,
-                                             numberOfPositiveMuons );
+        return directEwinoCascades->getAcceptance( acceptanceCuts,
+                                                   numberOfAdditionalJets,
+                                                   numberOfNegativeElectrons,
+                                                   numberOfPositiveElectrons,
+                                                   numberOfNegativeMuons,
+                                                   numberOfPositiveMuons );
       }
 
 
@@ -427,7 +281,8 @@ namespace LHC_FASER
           squarkDirectlyToElectroweak( inputShortcut,
                                        initialSquark,
                                        beamEnergy,
-                                       directEwinoCascades ),
+                                       directEwinoCascades,
+                                       4 ),
           ewinoWithWCascades( ewinoWithWCascades ),
           bosonCascades( bosonCascades ),
           wBoson( inputShortcut->getWPlus() ),
@@ -483,10 +338,10 @@ namespace LHC_FASER
       supType::getAcceptance( bool const initialSparticleIsNotAntiparticle,
                               acceptanceCutSet* const acceptanceCuts,
                               int const numberOfAdditionalJets,
-                              int const numberOfNegativeElectrons,
-                              int const numberOfPositiveElectrons,
-                              int const numberOfNegativeMuons,
-                              int const numberOfPositiveMuons )
+                              int numberOfNegativeElectrons,
+                              int numberOfPositiveElectrons,
+                              int numberOfNegativeMuons,
+                              int numberOfPositiveMuons )
       /* this calls the appropriate functions on directEwinoCascades to build
        * the required acceptance or ewinoWithWCascades & bosonCascades if the
        * decay with a boson is not negligible, taking into account whether the
@@ -524,6 +379,45 @@ namespace LHC_FASER
       }
 
       double
+      supType::specifiedJetsOneOssfMinusOsdfPair(
+                                        acceptanceCutSet* const acceptanceCuts,
+                                             int const numberOfAdditionalJets )
+      // this should add up all combinations of jets while looking only for
+      // one OSSF-OSDF pair.
+      {
+        /* if there is no possibility of extra jets from a boson decay, we can
+         * only get a single OSSF-OSDF pair from an electroweakino decay, which
+         * cannot produce additional jets.
+         */
+        if( shouldUseDecaysWithW )
+        {
+          double
+          returnValue( wFraction
+                       * bosonCascades->getAcceptance( acceptanceCuts,
+                                                       numberOfAdditionalJets,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0 ) );
+          if( 0 <= numberOfAdditionalJets )
+          {
+            returnValue += directFraction;
+          }
+          return ( returnValue
+                   * directEwinoCascades->getOssfMinusOsdf( acceptanceCuts ) );
+
+        }
+        else if( 0 <= numberOfAdditionalJets )
+        {
+          return directEwinoCascades->getOssfMinusOsdf( acceptanceCuts );
+        }
+        else
+        {
+          return 0.0;
+        }
+      }
+
+      double
       supType::getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
                                       int const numberOfAdditionalJets,
                                       int const numberOfNegativeElectrons,
@@ -541,7 +435,7 @@ namespace LHC_FASER
             ||
             ( 0 > numberOfPositiveMuons )
             ||
-            ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+            ( maximumSmFermionsFromElectroweakCascades
               < ( numberOfAdditionalJets
                   + numberOfNegativeElectrons + numberOfPositiveElectrons
                   + numberOfNegativeMuons + numberOfPositiveMuons ) ) )
@@ -604,16 +498,20 @@ namespace LHC_FASER
 
 
 
-    gluinoDirectlyToElectroweak::gluinoDirectlyToElectroweak() :
+    gluinoDirectlyToElectroweak::gluinoDirectlyToElectroweak(
+                                       inputHandler const* const inputShortcut,
+                                                       double const beamEnergy,
+                                 electroweakCascadeSet* const ewinoCascades ) :
         fullCascade( gluinoToEwino,
                      3,
+                     2,
                      inputShortcut,
                      inputShortcut->getGluino(),
                      beamEnergy ),
         ewinoCascades( ewinoCascades )
     {
       cascadeSegment = cascadeDefiner.addNewAtEnd();
-      cascadeSegment->first = ewinoCascade->getElectroweakDecayer();
+      cascadeSegment->first = ewinoCascades->getElectroweakDecayer();
       // gluinoToEwino means only 1 decay to be recorded.
       cascadeSegment->second = firstDecayBodyNumber;
       // gluinoToEwino also means that the decay is 3-body.
@@ -696,6 +594,38 @@ namespace LHC_FASER
     }
 
 
+    fullCascade*
+    squarkByBosonToCompound::setProperties(
+                                           particlePointer const initialSquark,
+                                    electroweakCascadeSet* const bosonCascades,
+                                         fullCascade* const subcascadePointer )
+    {
+      initialSparticle = initialSquark;
+      buildOn( subcascadePointer );
+      maximumSmFermionsFromElectroweakCascades
+      = ( subcascadePointer->getMaximumSmFermionsFromElectroweakCascades()
+          + 2 );
+      resetCachedBranchingRatio();
+      this->bosonCascades = bosonCascades;
+      if( ( CppSLHA::PDG_code::W_plus
+            == bosonCascades->getElectroweakDecayer()->get_PDG_code() )
+          &&
+          ( inputShortcut->isIn( initialSquark->get_PDG_code(),
+                                 inputShortcut->getSdownTypes() ) ) )
+        // if we have to worry about which sign of PDG code to use...
+      {
+        bosonFlipsCharge = true;
+        soughtDecayProductList.back() = -(CppSLHA::PDG_code::W_plus);
+      }
+      else
+      {
+        bosonFlipsCharge = false;
+        soughtDecayProductList.back()
+        = bosonCascades->getElectroweakDecayer()->get_PDG_code();
+      }
+      return this;
+    }
+
     double
     squarkByBosonToCompound::getAcceptance(
                                   bool const initialSparticleIsNotAntiparticle,
@@ -721,7 +651,7 @@ namespace LHC_FASER
           ||
           ( 0 > numberOfPositiveMuons )
           ||
-          ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+          ( maximumSmFermionsFromElectroweakCascades
             < ( numberOfAdditionalJets
                 + numberOfNegativeElectrons + numberOfPositiveElectrons
                 + numberOfNegativeMuons + numberOfPositiveMuons ) ) )
@@ -793,10 +723,93 @@ namespace LHC_FASER
       }  // end of if number of SM fermions was in the allowed range.
     }
 
+    double
+    squarkByBosonToCompound::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
+                                        acceptanceCutSet* const acceptanceCuts,
+                                                int const numberOfLeptonPairs )
+    // this should add up all appropriate OSSF-OSDF pair combinations.
+    {
+      if( 0 <= numberOfLeptonPairs )
+      {
+        return 1.0;
+      }
+      else
+      {
+        return
+        ( ( bosonCascades->getOssfMinusOsdf()
+            * subcascadePointer->unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
+                                                                acceptanceCuts,
+                                                ( numberOfLeptonPairs - 1 ) ) )
+          + ( ( bosonCascades->getAcceptance( acceptanceCuts,
+                                              0,
+                                              0,
+                                              0,
+                                              0,
+                                              0 )
+                + bosonCascades->getAcceptance( acceptanceCuts,
+                                                1,
+                                                0,
+                                                0,
+                                                0,
+                                                0 )
+                + bosonCascades->getAcceptance( acceptanceCuts,
+                                                2,
+                                                0,
+                                                0,
+                                                0,
+                                                0 ) )
+               * subcascadePointer->unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
+                                                                acceptanceCuts,
+                                                     numberOfLeptonPairs ) ) );
+      }
+    }
+
+    double
+    squarkByBosonToCompound::specifiedJetsOneOssfMinusOsdfPair(
+                                        acceptanceCutSet* const acceptanceCuts,
+                                             int const numberOfAdditionalJets )
+    // this should add up all combinations of jets while looking only for
+    // one OSSF-OSDF pair.
+    {
+      return
+      ( ( bosonCascades->getOssfMinusOsdf( acceptanceCuts )
+          * subcascadePointer->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                                acceptanceCuts,
+                                                        numberOfAdditionalJets,
+                                                                          0 ) )
+          + ( bosonCascades->getAcceptance( acceptanceCuts,
+                                            2,
+                                            0,
+                                            0,
+                                            0,
+                                            0 )
+              * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                             ( numberOfAdditionalJets - 2 ) ) )
+              + ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                1,
+                                                0,
+                                                0,
+                                                0,
+                                                0 )
+                  * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                             ( numberOfAdditionalJets - 1 ) ) )
+              + ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0 )
+                  * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                                  numberOfAdditionalJets ) ) );
+    }
+
 
 
     squarkByJetToCompound::squarkByJetToCompound() :
-        fullCascade( sjm,
+        fullCascade( squarkToGauginoThenMore,
                      2 )
     // sjm also means that the initial decay is 2-body.
     {
@@ -809,23 +822,22 @@ namespace LHC_FASER
     }
 
 
-
     namespace squarkByJetToCompoundType
     {
-      sdownByJetToCompound::sdownByJetToCompound() :
+      sdownType::sdownType() :
           squarkByJetToCompound()
       {
         // just an initialization list.
       }
 
-      sdownByJetToCompound::~sdownByJetToCompound()
+      sdownType::~sdownType()
       {
         // does nothing.
       }
 
 
 
-      supByJetToCompound::supByJetToCompound() :
+      supType::supType() :
           squarkByJetToCompound(),
           bosonCascades( NULL ),
           wBoson( NULL ),
@@ -839,21 +851,20 @@ namespace LHC_FASER
         // just an initialization list.
       }
 
-      supByJetToCompound::~supByJetToCompound()
+      supType::~supType()
       {
         // does nothing.
       }
 
 
       double
-      supByJetToCompound::getAcceptance(
-                                  bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
-                                         int const numberOfAdditionalJets,
-                                         int numberOfNegativeElectrons,
-                                         int numberOfPositiveElectrons,
-                                         int numberOfNegativeMuons,
-                                         int numberOfPositiveMuons )
+      supType::getAcceptance( bool const initialSparticleIsNotAntiparticle,
+                              acceptanceCutSet* const acceptanceCuts,
+                              int const numberOfAdditionalJets,
+                              int numberOfNegativeElectrons,
+                              int numberOfPositiveElectrons,
+                              int numberOfNegativeMuons,
+                              int numberOfPositiveMuons )
       /* this calls the appropriate functions on subcascadePointer to build the
        * required acceptance, & also with bosonCascades if the decay with a
        * boson is not negligible, taking into account whether the charges
@@ -892,8 +903,72 @@ namespace LHC_FASER
         }
       }
 
+      double
+      supType::specifiedJetsOneOssfMinusOsdfPair(
+                                        acceptanceCutSet* const acceptanceCuts,
+                                             int const numberOfAdditionalJets )
+      // this should add up all combinations of jets while looking only for
+      // one OSSF-OSDF pair.
+      {
+        /* if there is no possibility of extra jets from a boson decay, we can
+         * only get a single OSSF-OSDF pair from an electroweakino decay, which
+         * cannot produce additional jets.
+         */
+        if( shouldUseDecaysWithW )
+        {
+          return ( ( wFraction
+                     * ( ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                         0,
+                                                         0,
+                                                         0,
+                                                         0,
+                                                         0 )
+                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                                     numberOfAdditionalJets ) )
+                         + ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                           1,
+                                                           0,
+                                                           0,
+                                                           0,
+                                                           0 )
+                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                             ( numberOfAdditionalJets - 1 ) ) )
+                         + ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                           2,
+                                                           0,
+                                                           0,
+                                                           0,
+                                                           0 )
+                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                         ( numberOfAdditionalJets - 2 ) ) ) ) )
+                   + ( directFraction
+                       * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                                  numberOfAdditionalJets ) ) );
+          if( 0 <= numberOfAdditionalJets )
+          {
+            returnValue += directFraction;
+          }
+          returnValue *= subcascadePointer->getOssfMinusOsdf( acceptanceCuts );
+
+        }
+        else if( 0 <= numberOfAdditionalJets )
+        {
+          return subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                                      numberOfAdditionalJets );
+        }
+        else
+        {
+          return 0.0;
+        }
+      }
+
       bool
-      supByJetToCompound::decayWithWIsNotNegligible()
+      supType::decayWithWIsNotNegligible()
       // this returns true if the decay involving a W boson is not negligible,
       // also setting up the relevant fractions, false otherwise.
       {
@@ -923,13 +998,12 @@ namespace LHC_FASER
       }
 
       double
-      supByJetToCompound::getCombinedAcceptance(
-                                        acceptanceCutSet* const acceptanceCuts,
-                                              int const numberOfAdditionalJets,
-                                           int const numberOfNegativeElectrons,
-                                           int const numberOfPositiveElectrons,
-                                               int const numberOfNegativeMuons,
-                                              int const numberOfPositiveMuons )
+      supType::getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+                                      int const numberOfAdditionalJets,
+                                      int const numberOfNegativeElectrons,
+                                      int const numberOfPositiveElectrons,
+                                      int const numberOfNegativeMuons,
+                                      int const numberOfPositiveMuons )
       {
         if( ( 0 > numberOfAdditionalJets )
             ||
@@ -941,7 +1015,7 @@ namespace LHC_FASER
             ||
             ( 0 > numberOfPositiveMuons )
             ||
-            ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+            ( maximumSmFermionsFromElectroweakCascades
               < ( numberOfAdditionalJets
                   + numberOfNegativeElectrons + numberOfPositiveElectrons
                   + numberOfNegativeMuons + numberOfPositiveMuons ) ) )
@@ -992,7 +1066,8 @@ namespace LHC_FASER
           }  // end of loop over jets.
           return ( wFraction * returnDouble
                    + directFraction
-                     * directEwinoCascades->getAcceptance( acceptanceCuts,
+                     * subcascadePointer->getAcceptance( true,
+                                                         acceptanceCuts,
                                                         numberOfAdditionalJets,
                                                      numberOfNegativeElectrons,
                                                      numberOfPositiveElectrons,
@@ -1006,7 +1081,7 @@ namespace LHC_FASER
 
 
     gluinoOrElectroweakinoToCompound::gluinoOrElectroweakinoToCompound() :
-        fullCascade( gjm,
+        fullCascade( gluinoOrElectroweakinoToSquarkThenMore,
                      2 ),
         bosonCascades( NULL ),
         wBoson( NULL ),
@@ -1027,6 +1102,71 @@ namespace LHC_FASER
     }
 
 
+    double
+    gluinoOrElectroweakinoToCompound::specifiedJetsOneOssfMinusOsdfPair(
+                                        acceptanceCutSet* const acceptanceCuts,
+                                             int const numberOfAdditionalJets )
+    // this should add up all combinations of jets while looking only for
+    // one OSSF-OSDF pair.
+    {
+      /* if there is no possibility of extra jets from a boson decay, we can
+       * only get a single OSSF-OSDF pair from an electroweakino decay, which
+       * cannot produce additional jets.
+       */
+      if( shouldUseDecaysWithW )
+      {
+        return ( ( wFraction
+                   * ( ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0 )
+                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                                     numberOfAdditionalJets ) )
+                       + ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                         1,
+                                                         0,
+                                                         0,
+                                                         0,
+                                                         0 )
+                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                             ( numberOfAdditionalJets - 1 ) ) )
+                       + ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                         2,
+                                                         0,
+                                                         0,
+                                                         0,
+                                                         0 )
+                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                         ( numberOfAdditionalJets - 2 ) ) ) ) )
+                 + ( directFraction
+                     * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                                  numberOfAdditionalJets ) ) );
+        if( 0 <= numberOfAdditionalJets )
+        {
+          returnValue += directFraction;
+        }
+        returnValue *= subcascadePointer->getOssfMinusOsdf( acceptanceCuts );
+
+      }
+      else if( 0 <= numberOfAdditionalJets )
+      {
+        return subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                              acceptanceCuts,
+                                                    numberOfAdditionalJets );
+      }
+      else
+      {
+        return 0.0;
+      }
+    }
+
+
 
     namespace gluinoOrElectroweakinoToCompoundType
     {
@@ -1041,6 +1181,37 @@ namespace LHC_FASER
         // does nothing.
       }
 
+
+      fullCascade*
+      gluinoOrNeutralinoSet::setProperties(
+                                        particlePointer const initialSparticle,
+                                          fullCascade* const subcascadePointer,
+          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource )
+      {
+        this->initialSparticle = initialSparticle;
+        this->electroweakCascadeSource = electroweakCascadeSource;
+        buildOn( subcascadePointer );
+        maximumSmFermionsFromElectroweakCascades
+        = ( subcascadePointer->getMaximumSmFermionsFromElectroweakCascades()
+            + 2 );
+        resetCachedBranchingRatio();
+        decayProductListIncludingW.front()
+        = subcascadePointer->getInitialSparticle()->get_PDG_code();
+        // only sup-types are going to be produced with virtual antitops by
+        // gluinos or neutralinos:
+        if( inputShortcut->isIn( decayProductListIncludingW.front(),
+                                 inputShortcut->getSupTypes() ) )
+        {
+          decayProductListIncludingW.back()
+          = -(bosonCascades->getElectroweakDecayer()->get_PDG_code());
+          shouldUseDecaysWithW = decayWithWIsNotNegligible();
+        }
+        else
+        {
+          shouldUseDecaysWithW = false;
+        }
+        return this;
+      }
 
       double
       gluinoOrNeutralinoSet::getAcceptance(
@@ -1137,7 +1308,7 @@ namespace LHC_FASER
             ||
             ( 0 > numberOfPositiveMuons )
             ||
-            ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+            ( maximumSmFermionsFromElectroweakCascades
               < ( numberOfAdditionalJets
                   + numberOfNegativeElectrons + numberOfPositiveElectrons
                   + numberOfNegativeMuons + numberOfPositiveMuons ) ) )
@@ -1247,6 +1418,9 @@ namespace LHC_FASER
         this->initialSparticle = initialSparticle;
         this->electroweakCascadeSource = electroweakCascadeSource;
         buildOn( subcascadePointer );
+        maximumSmFermionsFromElectroweakCascades
+        = ( subcascadePointer->getMaximumSmFermionsFromElectroweakCascades()
+            + 2 );
         resetCachedBranchingRatio();
         decayProductListIncludingW.front()
         = subcascadePointer->getInitialSparticle()->get_PDG_code();
@@ -1382,7 +1556,7 @@ namespace LHC_FASER
             ||
             ( 0 > numberOfPositiveMuons )
             ||
-            ( numberOfSmFermionsFromElectroweakDecaysPerFullCascade
+            ( maximumSmFermionsFromElectroweakCascades
               < ( numberOfAdditionalJets
                   + numberOfNegativeElectrons + numberOfPositiveElectrons
                   + numberOfNegativeMuons + numberOfPositiveMuons ) ) )
