@@ -828,8 +828,9 @@ namespace LHC_FASER
     fullCascadeSet( inputHandler const* const inputShortcut,
                     particlePointer const initialSparticle,
                 electroweakCascadesForOneBeamEnergy* const electroweakCascades,
-                    double const beamEnergy,
-                    fullCascadeSet* const gluinoFullCascade );
+                    double const beamEnergy//,
+                    //fullCascadeSet* const gluinoFullCascade
+                    );
     virtual
     ~fullCascadeSet();
 
@@ -848,10 +849,10 @@ namespace LHC_FASER
     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource;
     std::vector< fullCascade* > openCascades;
     // this holds pointers to all the open cascades.
-    fullCascadeSet* const gluinoFullCascade;
+    //fullCascadeSet* const gluinoFullCascade;
     std::list< fullCascadeSet* >* orderedCascadeSets;
     std::list< fullCascadeSet* >::iterator setIterator;
-    std::vector< fullCascade* > const* potentialSubcascades;
+    std::vector< fullCascade* >* potentialSubcascades;
     double subcascadeBranchingRatio;
     double const beamEnergy;
     std::list< int > singleSpecifiedDecayProductList;
@@ -925,8 +926,6 @@ namespace LHC_FASER
       directToEwinoCascades;
       minimalAllocationVector< fullCascadeType::squarkByBosonToCompound >
       compoundByBosonCascades;
-      minimalAllocationVector< fullCascadeType::squarkByJetToCompound >
-      compoundByJetCascades;
       bool ewinoCodeIsAlwaysPositive;
       bool bosonCodeIsAlwaysPositive;
 
@@ -948,6 +947,15 @@ namespace LHC_FASER
       addSquarkCompoundCascade( bool bosonCodeIsPositive );
       // this relies on orderedCascadeSets & potentialDecayProducts having
       // already been set correctly.
+      virtual void
+      clearCompoundByJetCascades()
+      = 0;
+      // this should clear the minimalAllocationVector in the derived class.
+      virtual fullCascade*
+      getNewCompoundByJetCascade( fullCascade* const subcascadePointer )
+      = 0;
+      // this should add the appropriate new cascade to the
+      // minimalAllocationVector in the derived class.
     };
 
 
@@ -969,6 +977,10 @@ namespace LHC_FASER
 
 
       protected:
+        minimalAllocationVector<
+                        fullCascadeType::squarkByJetToCompoundType::sdownType >
+        compoundByJetCascades;
+
         virtual void
         findOpenDirectCascades();
         // this puts all open direct cascades into openCascades.
@@ -976,6 +988,13 @@ namespace LHC_FASER
         buildSquarkCompoundCascades();
         // this does the job of finding the right squark + EW boson
         // combinations.
+        virtual void
+        clearCompoundByJetCascades();
+        // this should clear the minimalAllocationVector in the derived class.
+        virtual fullCascade*
+        getNewCompoundByJetCascade( fullCascade* const subcascadePointer );
+        // this should add the appropriate new cascade to the
+        // minimalAllocationVector in the derived class.
       };
 
 
@@ -995,6 +1014,9 @@ namespace LHC_FASER
 
 
       protected:
+        minimalAllocationVector<
+                          fullCascadeType::squarkByJetToCompoundType::supType >
+        compoundByJetCascades;
         std::list< int > twoSpecifiedDecayProductsList;
         particlePointer appropriateSdownForWDecay;
 
@@ -1005,6 +1027,13 @@ namespace LHC_FASER
         buildSquarkCompoundCascades();
         // this does the job of finding the right squark + EW boson
         // combinations.
+        virtual void
+        clearCompoundByJetCascades();
+        // this should clear the minimalAllocationVector in the derived class.
+        virtual fullCascade*
+        getNewCompoundByJetCascade( fullCascade* const subcascadePointer );
+        // this should add the appropriate new cascade to the
+        // minimalAllocationVector in the derived class.
       };
 
     }  // end of squarkSetType namespace
@@ -1016,8 +1045,8 @@ namespace LHC_FASER
     {
     public:
       gluinoOrElectroweakinoSet( inputHandler const* const inputShortcut,
-                   electroweakCascadesForOneBeamEnergy* const ewCascadeHandler,
                                  particlePointer const initialSparticle,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                  fullCascadeSetOrderer* const setOrderer,
                                  double const beamEnergy );
       virtual
@@ -1834,6 +1863,46 @@ namespace LHC_FASER
         potentialDecayProducts
         = inputShortcut->getChargedEwsbBosonsAndMassiveVectorBosons();
         addSquarkCompoundCascade( false );
+      }
+
+      inline void
+      sdownType::clearCompoundByJetCascades()
+      // this should clear the minimalAllocationVector in the derived class.
+      {
+        compoundByJetCascades.clearEntries();
+      }
+
+      inline fullCascade*
+      sdownType::getNewCompoundByJetCascade(
+                                         fullCascade* const subcascadePointer )
+      // this should add the appropriate new cascade to the
+      // minimalAllocationVector in the derived class.
+      {
+        return
+        compoundByJetCascades.addNewAtEnd()->setProperties( initialSparticle,
+                                                            subcascadePointer,
+                                                    electroweakCascadeSource );
+      }
+
+
+
+      inline void
+      supType::clearCompoundByJetCascades()
+      // this should clear the minimalAllocationVector in the derived class.
+      {
+        compoundByJetCascades.clearEntries();
+      }
+
+      inline fullCascade*
+      supType::getNewCompoundByJetCascade(
+                                         fullCascade* const subcascadePointer )
+      // this should add the appropriate new cascade to the
+      // minimalAllocationVector in the derived class.
+      {
+        return
+        compoundByJetCascades.addNewAtEnd()->setProperties( initialSparticle,
+                                                            subcascadePointer,
+                                                    electroweakCascadeSource );
       }
 
     }  // end of squarkSetType namespace

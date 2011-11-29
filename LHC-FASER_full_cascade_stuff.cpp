@@ -516,9 +516,6 @@ namespace LHC_FASER
       cascadeSegment->second = firstDecayBodyNumber;
       // gluinoToEwino also means that the decay is 3-body.
       soughtDecayProductList.front() = cascadeSegment->first->get_PDG_code();
-      decayProductListIncludingW.push_back( soughtDecayProductList.front() );
-      decayProductListIncludingW.push_back(
-                 ewinoWithWCascades->getElectroweakDecayer()->get_PDG_code() );
     }
 
     gluinoDirectlyToElectroweak::~gluinoDirectlyToElectroweak()
@@ -736,7 +733,7 @@ namespace LHC_FASER
       else
       {
         return
-        ( ( bosonCascades->getOssfMinusOsdf()
+        ( ( bosonCascades->getOssfMinusOsdf( acceptanceCuts )
             * subcascadePointer->unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
                                                                 acceptanceCuts,
                                                 ( numberOfLeptonPairs - 1 ) ) )
@@ -948,12 +945,6 @@ namespace LHC_FASER
                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
                                                                 acceptanceCuts,
                                                   numberOfAdditionalJets ) ) );
-          if( 0 <= numberOfAdditionalJets )
-          {
-            returnValue += directFraction;
-          }
-          returnValue *= subcascadePointer->getOssfMinusOsdf( acceptanceCuts );
-
         }
         else if( 0 <= numberOfAdditionalJets )
         {
@@ -1147,12 +1138,6 @@ namespace LHC_FASER
                      * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
                                                                 acceptanceCuts,
                                                   numberOfAdditionalJets ) ) );
-        if( 0 <= numberOfAdditionalJets )
-        {
-          returnValue += directFraction;
-        }
-        returnValue *= subcascadePointer->getOssfMinusOsdf( acceptanceCuts );
-
       }
       else if( 0 <= numberOfAdditionalJets )
       {
@@ -1635,14 +1620,14 @@ namespace LHC_FASER
   fullCascadeSet::fullCascadeSet( inputHandler const* const inputShortcut,
                                   particlePointer const initialScolored,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
-                                  double const beamEnergy,
-                                  fullCascadeSet* const gluinoFullCascade ) :
+                                  double const beamEnergy/*,
+                                  fullCascadeSet* const gluinoFullCascade*/ ) :
     getsReadiedForNewPoint( inputShortcut->getReadier() ),
     inputShortcut( inputShortcut ),
     initialSparticle( initialScolored ),
     electroweakCascadeSource( electroweakCascadeSource ),
     openCascades(),
-    gluinoFullCascade( gluinoFullCascade ),
+    //gluinoFullCascade( gluinoFullCascade ),
     orderedCascadeSets( NULL ),
     setIterator(),
     potentialSubcascades( NULL ),
@@ -1744,12 +1729,12 @@ namespace LHC_FASER
         fullCascadeSet( inputShortcut,
                         initialScolored,
                         electroweakCascadeSource,
-                        beamEnergy ),
+                        beamEnergy/*,
+                        gluinoFullCascade*/ ),
         setOrderer( setOrderer ),
         gluinoFullCascade( gluinoFullCascade ),
         directToEwinoCascades(),
         compoundByBosonCascades(),
-        compoundByJetCascades(),
         ewinoCodeIsAlwaysPositive( ewinoCodeIsAlwaysPositive ),
         bosonCodeIsAlwaysPositive( bosonCodeIsAlwaysPositive )
     {
@@ -1787,7 +1772,7 @@ namespace LHC_FASER
 
       // now we clear the compound cascades:
       compoundByBosonCascades.clearEntries();
-      compoundByJetCascades.clearEntries();
+      clearCompoundByJetCascades();
 
       // next we check to see if we should add compound cascades from the
       // gluino:
@@ -1843,14 +1828,11 @@ namespace LHC_FASER
         {
           if( lhcFaserGlobal::negligibleBr
               < ( subcascadeBranchingRatio
-                  * (*cascadeIterator)->getBrToEwino() ) )
+                  * (*cascadeIterator)->getTotalBrToEwino() ) )
           {
             // we add each cascade with an overall BR that is not negligible:
-            openCascades.push_back(
-                            compoundByJetCascades.addNewAtEnd()->setProperties(
-                                                              initialSparticle,
-                                                              *cascadeIterator,
-                                                  electroweakCascadeSource ) );
+            openCascades.push_back( getNewCompoundByJetCascade(
+                                                          *cascadeIterator ) );
           }
         }
       }
@@ -1901,12 +1883,12 @@ namespace LHC_FASER
             {
               if( lhcFaserGlobal::negligibleBr
                   < ( subcascadeBranchingRatio
-                      * (*cascadeIterator)->getBrToEwino() ) )
+                      * (*cascadeIterator)->getTotalBrToEwino() ) )
               {
                 // we add each cascade with an overall BR that is not
                 // negligible:
                 openCascades.push_back(
-                          squarkByBosonToCompound.addNewAtEnd()->setProperties(
+                          compoundByBosonCascades.addNewAtEnd()->setProperties(
                                                               initialSparticle,
                                        electroweakCascadeSource->getCascadeSet(
                                                               initialSparticle,
@@ -1939,7 +1921,8 @@ namespace LHC_FASER
                      gluinoFullCascade,
                      beamEnergy,
                      false,
-                     false )
+                     false ),
+          compoundByJetCascades()
       {
         // we have to set up the cascades directly to electroweakinos now:
         for( std::vector< particlePointer >::const_iterator
@@ -1948,7 +1931,7 @@ namespace LHC_FASER
              ++ewinoIterator )
         {
           directToEwinoCascades.push_back(
-                               new fullCascadeType::sdownDirectlyToElectroweak(
+               new fullCascadeType::squarkDirectlyToElectroweakType::sdownType(
                                                                  inputShortcut,
                                                                initialScolored,
                                                                     beamEnergy,
@@ -1977,6 +1960,7 @@ namespace LHC_FASER
                      setOrderer,
                      gluinoFullCascade,
                      beamEnergy ),
+          compoundByJetCascades(),
           twoSpecifiedDecayProductsList( 2,
                                  CppSLHA::CppSLHA_global::really_wrong_value ),
           appropriateSdownForWDecay( NULL )
@@ -2011,17 +1995,8 @@ namespace LHC_FASER
              inputShortcut->getElectroweakinos()->end() > ewinoIterator;
              ++ewinoIterator )
         {
-          effectiveSdownMass
-          = inputShortcut->getSquarkMinusBosonEffectiveMass( initialScolored,
-                                                     inputShortcut->getWPlus(),
-                                                              *ewinoIterator );
-          effectiveSupMass
-          = inputShortcut->getSquarkPlusBosonEffectiveMass(
-                                                     appropriateSdownForWDecay,
-                                                     inputShortcut->getWPlus(),
-                                                            *ewinoIterator );
           directToEwinoCascades.push_back(
-                                 new fullCascadeType::supDirectlyToElectroweak(
+                 new fullCascadeType::squarkDirectlyToElectroweakType::supType(
                                                                  inputShortcut,
                                                                initialScolored,
                                                                     beamEnergy,
@@ -2029,13 +2004,19 @@ namespace LHC_FASER
                                                                initialScolored,
                                                               *ewinoIterator ),
                                        electroweakCascadeSource->getCascadeSet(
-                                                              appropriateSdown,
+                                                     appropriateSdownForWDecay,
                                                                 *ewinoIterator,
-                                                          effectiveSdownMass ),
+                               inputShortcut->getSquarkMinusBosonEffectiveMass(
+                                                               initialScolored,
+                                                     inputShortcut->getWPlus(),
+                                                            *ewinoIterator ) ),
                                        electroweakCascadeSource->getCascadeSet(
                                                                initialScolored,
                                                                 *ewinoIterator,
-                                                        effectiveSupMass ) ) );
+                                inputShortcut->getSquarkPlusBosonEffectiveMass(
+                                                     appropriateSdownForWDecay,
+                                                     inputShortcut->getWPlus(),
+                                                        *ewinoIterator ) ) ) );
         }
       }
 
@@ -2048,7 +2029,7 @@ namespace LHC_FASER
       supType::findOpenDirectCascades()
       // this puts all open direct cascades into openCascades.
       {
-        for( std::vector< fullCascadeType::sdownDirectlyToElectroweak*
+        for( std::vector< fullCascadeType::squarkDirectlyToElectroweak*
                                                                     >::iterator
              cascadeIterator( directToEwinoCascades.begin() );
              directToEwinoCascades.end() > cascadeIterator;
@@ -2067,10 +2048,10 @@ namespace LHC_FASER
 
     gluinoOrElectroweakinoSet::gluinoOrElectroweakinoSet(
                                        inputHandler const* const inputShortcut,
-           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                         particlePointer const initialSparticle,
+           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
                                        fullCascadeSetOrderer* const setOrderer,
-                                                  double const beamEnergy ) :
+                                                    double const beamEnergy ) :
     fullCascadeSet( inputShortcut,
                     initialSparticle,
                     electroweakCascadeSource,
@@ -2115,7 +2096,7 @@ namespace LHC_FASER
           {
             if( lhcFaserGlobal::negligibleBr
                 < ( subcascadeBranchingRatio
-                    * (*cascadeIterator)->getBrToEwino() ) )
+                    * (*cascadeIterator)->getTotalBrToEwino() ) )
             {
               // we add each cascade with an overall BR that is not negligible:
               openCascades.push_back( getNewCompoundCascade(
@@ -2137,9 +2118,10 @@ namespace LHC_FASER
                             fullCascadeSetOrderer* const setOrderer,
                             double const beamEnergy ) :
           gluinoOrElectroweakinoSet( inputShortcut,
-                                 inputShortcut->getGluino(),
-                                 electroweakCascadeSource,
-                                 beamEnergy ),
+                                     inputShortcut->getGluino(),
+                                     electroweakCascadeSource,
+                                     setOrderer,
+                                     beamEnergy ),
       directToEwinoCascades(),
       compoundCascades()
       {
@@ -2207,6 +2189,7 @@ namespace LHC_FASER
           gluinoOrElectroweakinoSet( inputShortcut,
                                      initialSparticle,
                                      electroweakCascadeSource,
+                                     setOrderer,
                                      beamEnergy ),
       compoundCascades()
       {
@@ -2228,6 +2211,7 @@ namespace LHC_FASER
           gluinoOrElectroweakinoSet( inputShortcut,
                                      initialSparticle,
                                      electroweakCascadeSource,
+                                     setOrderer,
                                      beamEnergy ),
       compoundCascades()
       {
@@ -2264,7 +2248,7 @@ namespace LHC_FASER
          inputShortcut->getSquarks()->end() > squarkIterator;
          ++squarkIterator )
     {
-      cascadeSetList.push_back(
+      cascadeSetList->push_back(
                new fullCascadeSetType::squarkSetType::sdownType( inputShortcut,
                                                                *squarkIterator,
                                                       electroweakCascadeSource,
@@ -2278,7 +2262,7 @@ namespace LHC_FASER
          inputShortcut->getSquarks()->end() > squarkIterator;
          ++squarkIterator )
     {
-      cascadeSetList.push_back(
+      cascadeSetList->push_back(
                new fullCascadeSetType::squarkSetType::supType( inputShortcut,
                                                                *squarkIterator,
                                                       electroweakCascadeSource,
@@ -2292,7 +2276,7 @@ namespace LHC_FASER
          inputShortcut->getSquarks()->end() > sparticleIterator;
          ++sparticleIterator )
     {
-      cascadeSetList.push_back(
+      cascadeSetList->push_back(
           new fullCascadeSetType::gluinoOrElectroweakinoSetType::neutralinoSet(
                                                                  inputShortcut,
                                                             *sparticleIterator,
@@ -2306,7 +2290,7 @@ namespace LHC_FASER
          inputShortcut->getSquarks()->end() > sparticleIterator;
          ++sparticleIterator )
     {
-      cascadeSetList.push_back(
+      cascadeSetList->push_back(
             new fullCascadeSetType::gluinoOrElectroweakinoSetType::charginoSet(
                                                                  inputShortcut,
                                                             *sparticleIterator,

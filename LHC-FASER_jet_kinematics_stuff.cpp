@@ -926,7 +926,8 @@ namespace LHC_FASER
       typeToCountAs = gx;
       *squarkFromCascade = NULL;
     }
-    else if( fullCascade::squarkToEwino == givenCascade->getColorfulCascadeType() )
+    else if( fullCascade::squarkToEwino
+             == givenCascade->getColorfulCascadeType() )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -937,7 +938,8 @@ namespace LHC_FASER
       typeToCountAs = sx;
       *squarkFromCascade = givenCascade->getInitialSparticle();
     }
-    else if( fullCascade::sbsx == givenCascade->getColorfulCascadeType() )
+    else if( fullCascade::squarkToSquarkThenMore
+             == givenCascade->getColorfulCascadeType() )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -948,9 +950,8 @@ namespace LHC_FASER
       typeToCountAs = sx;
       *squarkFromCascade = givenCascade->getCascadeDefiner()->at( 1 )->first;
     }
-    else if( ( fullCascade::sjgx == givenCascade->getColorfulCascadeType() )
-             ||
-             ( fullCascade::sbgx == givenCascade->getColorfulCascadeType() ) )
+    else if( fullCascade::squarkToGauginoThenMore
+             == givenCascade->getColorfulCascadeType() )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -980,37 +981,6 @@ namespace LHC_FASER
 
       typeToCountAs = sgx;
       *squarkFromCascade = givenCascade->getInitialSparticle();
-    }
-    else if( fullCascade::sbsjgx == givenCascade->getColorfulCascadeType() )
-    {
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "counts as sgx";
-      std::cout << std::endl;**/
-
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "givenCascade->getCascadeDefiner()->size() = "
-      << givenCascade->getCascadeDefiner()->size()
-      << ", givenCascade = "
-      << *(givenCascade->getInitialSparticle()->get_name());
-      for( std::vector< fullCascade::particleWithInt*
-                                                >::const_reverse_iterator
-           cascadeParticleIterator(
-                                 givenCascade->getCascadeDefiner()->rbegin() );
-           givenCascade->getCascadeDefiner()->rend()
-           > cascadeParticleIterator;
-           ++cascadeParticleIterator )
-      {
-        std::cout
-        << " => " << *((*cascadeParticleIterator)->first->get_name());
-      }
-      std::cout << std::endl;**/
-
-      typeToCountAs = sgx;
-      *squarkFromCascade = givenCascade->getCascadeDefiner()->at( 2 )->first;
     }
     else
     {

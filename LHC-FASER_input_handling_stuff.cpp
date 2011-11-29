@@ -149,7 +149,7 @@ namespace LHC_FASER
                        CppSLHA::EW_scale_spectrum const* const spectrumPointer,
                               std::string const pathToGrids,
                               readierForNewPoint* const readierPointer ) :
-    isVerbose( false ),
+    isVerboseFlag( false ),
     usingNloFlag( true ),
     readierPointer( readierPointer ),
     cppSlhaPointer( cppSlhaPointer ),
