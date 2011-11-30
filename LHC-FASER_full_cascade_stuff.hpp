@@ -1630,7 +1630,7 @@ namespace LHC_FASER
     {
       inline fullCascade*
       sdownType::setProperties( particlePointer const initialSquark,
-                                          fullCascade* const subcascadePointer,
+                                fullCascade* const subcascadePointer,
           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource )
       {
         initialSparticle = initialSquark;
@@ -1695,7 +1695,7 @@ namespace LHC_FASER
 
       inline fullCascade*
       supType::setProperties( particlePointer const initialSquark,
-                                         fullCascade* const subcascadePointer,
+                              fullCascade* const subcascadePointer,
           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource )
       {
         initialSparticle = initialSquark;
@@ -1903,6 +1903,23 @@ namespace LHC_FASER
         compoundByJetCascades.addNewAtEnd()->setProperties( initialSparticle,
                                                             subcascadePointer,
                                                     electroweakCascadeSource );
+      }
+
+      inline void
+      supType::findOpenDirectCascades()
+      // this puts all open direct cascades into openCascades.
+      {
+        for( std::vector< fullCascadeType::squarkDirectlyToElectroweak*
+                                                                    >::iterator
+             cascadeIterator( directToEwinoCascades.begin() );
+             directToEwinoCascades.end() > cascadeIterator;
+             ++cascadeIterator )
+        {
+          if( (*cascadeIterator)->isOpen() )
+          {
+            openCascades.push_back( *cascadeIterator );
+          }
+        }
       }
 
     }  // end of squarkSetType namespace

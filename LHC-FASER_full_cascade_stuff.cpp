@@ -2025,23 +2025,6 @@ namespace LHC_FASER
         // does nothing.
       }
 
-      void
-      supType::findOpenDirectCascades()
-      // this puts all open direct cascades into openCascades.
-      {
-        for( std::vector< fullCascadeType::squarkDirectlyToElectroweak*
-                                                                    >::iterator
-             cascadeIterator( directToEwinoCascades.begin() );
-             directToEwinoCascades.end() > cascadeIterator;
-             ++cascadeIterator )
-        {
-          if( (*cascadeIterator)->isOpen() )
-          {
-            openCascades.push_back( *cascadeIterator );
-          }
-        }
-      }
-
     }  // end of squarkSetType namespace
 
 

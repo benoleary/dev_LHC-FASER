@@ -102,403 +102,66 @@ namespace LHC_FASER
     void
     performTest()
     {
+      particlePointer stopOne( testInputHandler->getStopOne() );
+      particlePointer sbottomOne( testInputHandler->getSbottomOne() );
+      particlePointer sbottomTwo( testInputHandler->getSbottomTwo() );
+      particlePointer gluinoPointer( testInputHandler->getGluino() );
+      particlePointer neutralinoOne( testInputHandler->getNeutralinoOne() );
+      particlePointer neutralinoTwo( testInputHandler->getNeutralinoTwo() );
+      particlePointer charginoOne( testInputHandler->getCharginoOne() );
+      particlePointer wPlus( testInputHandler->getWPlus() );
+
+      // 1st, SPS1a:
+
       electroweakCascadeHandler
       testElectroweakCascadeHandler( testInputHandler );
+      electroweakCascadesForOneBeamEnergy*
+      cascadesForSevenTev(
+          testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy(
+                                                                         7 ) );
       electroweakCascadeSet*
-      testEwinoCascadeSet(
-        testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
-                                                              )->getCascadeSet(
+      testEwinoCascadeSet( cascadesForSevenTev->getCascadeSet(
                                                  testInputHandler->getSdownL(),
                                       testInputHandler->getNeutralinoTwo() ) );
-      sxFullCascade testSxFullCascade;
-      testSxFullCascade.setProperties( testInputHandler,
-                                       testInputHandler->getSdownL(),
-                                       7,
-                                       testEwinoCascadeSet );
+      particlePointer sdownL( testInputHandler->getSdownL() );
+      fullCascadeType::squarkDirectlyToElectroweakType::sdownType
+      testSdNTwoFullCascade( testInputHandler,
+                             sdownL,
+                             7,
+                             testEwinoCascadeSet );
       std::cout
       << std::endl
-      << "testSxFullCascade set as sdown_L -> chi^0_2";
+      << "testSdNTwoFullCascade set as sdown_L -> chi^0_2";
       std::cout << std::endl;
-      if( testSxFullCascade.isOpen() )
+      if( testSdNTwoFullCascade.isOpen() )
       {
         std::cout
         << std::endl
-        << "testSxFullCascade is open.";
+        << "testSdNTwoFullCascade is open.";
         std::cout << std::endl;
       }
       else
       {
         std::cout
         << std::endl
-        << "testSxFullCascade is not open?!";
+        << "testSdNTwoFullCascade is not open?!";
         std::cout << std::endl;
       }
       std::list< int > testSmParticleExclusion;
       std::cout
       << std::endl
       << "BR with no excluded SM fermions = "
-      << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
+      << testSdNTwoFullCascade.getBrToEwino( &testSmParticleExclusion );
       testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
       std::cout
       << std::endl
       << "BR excluding downs (but not antidowns) in final state = "
-      << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
+      << testSdNTwoFullCascade.getBrToEwino( &testSmParticleExclusion );
       std::cout << std::endl;
       std::cout
       << std::endl
       << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
-      << " = " << testSxFullCascade.getAcceptance( true,
-                                                   &testAcceptanceCutSet,
-                                                   0,
-                                                   1,
-                                                   1,
-                                                   0,
-                                                   0 );
-      std::cout
-      << std::endl
-      << ".getAcceptance("
-      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
-      << testSxFullCascade.getAcceptance( false,
-                                          &testAcceptanceCutSet,
-                                          0,
-                                          1,
-                                          1,
-                                          0,
-                                          0 );
-      std::cout
-      << std::endl
-      << "testSxFullCascade seems OK.";
-      std::cout << std::endl;
-      std::cout << std::endl;
-      testEwinoCascadeSet
-      = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
-                                                              )->getCascadeSet(
-                                                 testInputHandler->getSdownL(),
-                                          testInputHandler->getCharginoOne() );
-      testSxFullCascade.setProperties( testInputHandler,
-                                       testInputHandler->getSdownL(),
-                                       7,
-                                       testEwinoCascadeSet );
-      std::cout
-      << std::endl
-      << "testSxFullCascade set as sdown_L -> chi^-_1";
-      std::cout << std::endl;
-      if( testSxFullCascade.isOpen() )
-      {
-        std::cout
-        << std::endl
-        << "testSxFullCascade is open.";
-        std::cout << std::endl;
-      }
-      else
-      {
-        std::cout
-        << std::endl
-        << "testSxFullCascade is not open?!";
-        std::cout << std::endl;
-      }
-      testSmParticleExclusion.clear();
-      std::cout
-      << std::endl
-      << "BR with no excluded SM fermions = "
-      << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      testSmParticleExclusion.push_back( CppSLHA::PDG_code::up );
-      testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::up) );
-      std::cout
-      << std::endl
-      << "BR excluding ups & antiups in final state = "
-      << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      std::cout << std::endl;
-      std::cout
-      << std::endl
-      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 )"
-      << " = " << testSxFullCascade.getAcceptance( true,
-                                                   &testAcceptanceCutSet,
-                                                   0,
-                                                   1,
-                                                   0,
-                                                   0,
-                                                   0 );
-      std::cout
-      << std::endl
-      << ".getAcceptance("
-      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 ) = "
-      << testSxFullCascade.getAcceptance( false,
-                                          &testAcceptanceCutSet,
-                                          0,
-                                          1,
-                                          0,
-                                          0,
-                                          0 );
-      std::cout
-      << std::endl
-      << ".getAcceptance("
-      << " [antiparticle], &testAcceptanceCutSet, 0, 0, 1, 0, 0 ) = "
-      << testSxFullCascade.getAcceptance( false,
-                                          &testAcceptanceCutSet,
-                                          0,
-                                          0,
-                                          1,
-                                          0,
-                                          0 );
-      std::cout
-      << std::endl
-      << "testSxFullCascade again seems OK.";
-      std::cout << std::endl;
-      std::cout << std::endl;
-      testEwinoCascadeSet
-      = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
-                                                              )->getCascadeSet(
-                                                 testInputHandler->getSdownL(),
-                                          testInputHandler->getCharginoTwo() );
-      testSxFullCascade.setProperties( testInputHandler,
-                                       testInputHandler->getSdownL(),
-                                       7,
-                                       testEwinoCascadeSet );
-      std::cout
-      << std::endl
-      << "testSxFullCascade set as sdown_L -> chi^-_2";
-      std::cout << std::endl;
-      if( testSxFullCascade.isOpen() )
-      {
-        std::cout
-        << std::endl
-        << "testSxFullCascade is open.";
-        std::cout << std::endl;
-      }
-      else
-      {
-        std::cout
-        << std::endl
-        << "testSxFullCascade is not open?!";
-        std::cout << std::endl;
-      }
-      testSmParticleExclusion.clear();
-      std::cout
-      << std::endl
-      << "BR with no excluded SM fermions = "
-      << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      testSmParticleExclusion.push_back( CppSLHA::PDG_code::up );
-      testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::up) );
-      std::cout
-      << std::endl
-      << "BR excluding ups & antiups in final state = "
-      << testSxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      std::cout << std::endl;
-      std::cout
-      << std::endl
-      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 0, 0, 0, 0 )"
-      << " = " << testSxFullCascade.getAcceptance( true,
-                                                   &testAcceptanceCutSet,
-                                                   0,
-                                                   0,
-                                                   0,
-                                                   0,
-                                                   0 );
-      std::cout
-      << std::endl
-      << "testSxFullCascade again seems OK.";
-      std::cout << std::endl;
-      std::cout << std::endl;
-
-
-      testEwinoCascadeSet
-      = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
-                                                              )->getCascadeSet(
-                                                 testInputHandler->getGluino(),
-                                        testInputHandler->getNeutralinoTwo() );
-      gxFullCascade testGxFullCascade;
-      testGxFullCascade.setProperties( testInputHandler,
-                                       7,
-                                       testEwinoCascadeSet );
-      std::cout
-      << std::endl
-      << "testGxFullCascade set as gluino -> chi^0_2";
-      std::cout << std::endl;
-      if( testGxFullCascade.isOpen() )
-      {
-        std::cout
-        << std::endl
-        << "testGxFullCascade is open.";
-        std::cout << std::endl;
-      }
-      else
-      {
-        std::cout
-        << std::endl
-        << "testGxFullCascade is not open?!";
-        std::cout << std::endl;
-      }
-      testSmParticleExclusion.clear();
-      std::cout
-      << std::endl
-      << "BR with no excluded SM fermions = "
-      << testGxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
-      std::cout
-      << std::endl
-      << "BR excluding downs (but not antidowns) in final state = "
-      << testGxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      std::cout
-      << std::endl
-      << "testGxFullCascade is open, & gives non-zero acceptances, but the"
-      << " BR is so low that it's snapped to zero.";
-      std::cout << std::endl;
-      std::cout
-      << std::endl
-      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
-      << " = " << testGxFullCascade.getAcceptance( true,
-                                                   &testAcceptanceCutSet,
-                                                   0,
-                                                   1,
-                                                   1,
-                                                   0,
-                                                   0 );
-      std::cout
-      << std::endl
-      << ".getAcceptance("
-      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
-      << testGxFullCascade.getAcceptance( false,
-                                          &testAcceptanceCutSet,
-                                          0,
-                                          1,
-                                          1,
-                                          0,
-                                          0 );
-      std::cout << std::endl;
-
-
-      gjsxFullCascade testGjsxFullCascade;
-      testGjsxFullCascade.setProperties( &testSxFullCascade );
-      std::cout
-      << std::endl
-      << "testGjsxFullCascade set with testSxFullCascade (pointer is "
-      << &testSxFullCascade << "), so is gluino => sdown_L => chargino_1";
-      testSmParticleExclusion.clear();
-      std::cout
-      << std::endl
-      << "BR with no excluded SM fermions = "
-      << testGjsxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
-      std::cout
-      << std::endl
-      << "BR excluding downs (but not antidowns) in final state = "
-      << testGjsxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      std::cout << std::endl;
-      std::cout
-      << std::endl
-      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 )"
-      << " = " << testGjsxFullCascade.getAcceptance( true,
-                                                     &testAcceptanceCutSet,
-                                                     0,
-                                                     1,
-                                                     0,
-                                                     0,
-                                                     0 );
-      std::cout
-      << std::endl
-      << ".getAcceptance("
-      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 ) = "
-      << testGjsxFullCascade.getAcceptance( false,
-                                            &testAcceptanceCutSet,
-                                            0,
-                                            1,
-                                            0,
-                                            0,
-                                            0 );
-      std::cout
-      << std::endl
-      << "testGjsxFullCascade seems OK.";
-      std::cout << std::endl;
-      std::cout << std::endl;
-
-
-      testEwinoCascadeSet
-      = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
-                                                              )->getCascadeSet(
-                                                testInputHandler->getStopOne(),
-                                          testInputHandler->getCharginoOne() );
-      sxFullCascade stopOneCharginoOneCascade;
-      stopOneCharginoOneCascade.setProperties( testInputHandler,
-                                               testInputHandler->getStopOne(),
-                                               7,
-                                               testEwinoCascadeSet );
-      electroweakCascadeSet*
-      testBosonCascadeSet(
-        testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
-                                                              )->getCascadeSet(
-                                             testInputHandler->getSbottomTwo(),
-                                                  testInputHandler->getWPlus(),
-                                            testInputHandler->getStopOne() ) );
-      sbsxFullCascade testSbsxFullCascade;
-      testSbsxFullCascade.setProperties( testInputHandler->getSbottomTwo(),
-                                         testBosonCascadeSet,
-                                         &stopOneCharginoOneCascade );
-      std::cout
-      << std::endl
-      << "testSbsxFullCascade set with sbottom_2 -> W^- stop_1 -> chargino_1";
-      std::cout << std::endl;
-      testSmParticleExclusion.clear();
-      std::cout
-      << std::endl
-      << "BR with no excluded SM fermions = "
-      << testSbsxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
-      std::cout
-      << std::endl
-      << "BR excluding downs (but not antidowns) in final state = "
-      << testSbsxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      std::cout << std::endl;
-      std::cout
-      << std::endl
-      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
-      << " = " << testSbsxFullCascade.getAcceptance( true,
-                                                     &testAcceptanceCutSet,
-                                                     0,
-                                                     1,
-                                                     1,
-                                                     0,
-                                                     0 );
-      std::cout
-      << std::endl
-      << ".getAcceptance("
-      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
-      << testSbsxFullCascade.getAcceptance( false,
-                                            &testAcceptanceCutSet,
-                                            0,
-                                            1,
-                                            1,
-                                            0,
-                                            0 );
-      std::cout
-      << std::endl
-      << "testSbsxFullCascade seems OK (~10% for W^- to pass e^-, ~3% for"
-      << " chargino as shown by testSxFullCascade).";
-      std::cout << std::endl;
-      std::cout << std::endl;
-
-
-      gjsbsxFullCascade testGjsbsxFullCascade;
-      testGjsbsxFullCascade.setProperties( &testSbsxFullCascade );
-      std::cout
-      << std::endl
-      << "testGjsbsxFullCascade set with testSbsxFullCascade";
-      std::cout << std::endl;
-      testSmParticleExclusion.clear();
-      std::cout
-      << std::endl
-      << "BR with no excluded SM fermions = "
-      << testGjsbsxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
-      std::cout
-      << std::endl
-      << "BR excluding downs (but not antidowns) in final state = "
-      << testGjsbsxFullCascade.getBrToEwino( &testSmParticleExclusion );
-      std::cout << std::endl;
-      std::cout
-      << std::endl
-      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
-      << " = " << testGjsbsxFullCascade.getAcceptance( true,
+      << " = " << testSdNTwoFullCascade.getAcceptance( true,
                                                        &testAcceptanceCutSet,
                                                        0,
                                                        1,
@@ -509,7 +172,7 @@ namespace LHC_FASER
       << std::endl
       << ".getAcceptance("
       << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
-      << testGjsbsxFullCascade.getAcceptance( false,
+      << testSdNTwoFullCascade.getAcceptance( false,
                                               &testAcceptanceCutSet,
                                               0,
                                               1,
@@ -518,9 +181,769 @@ namespace LHC_FASER
                                               0 );
       std::cout
       << std::endl
-      << "testGjsbsxFullCascade seems OK.";
+      << "testSdNTwoFullCascade seems OK.";
       std::cout << std::endl;
       std::cout << std::endl;
+      testEwinoCascadeSet
+      = cascadesForSevenTev->getCascadeSet( sdownL,
+                                            charginoOne );
+      fullCascadeType::squarkDirectlyToElectroweakType::sdownType
+      testSdXOneFullCascade( testInputHandler,
+                             sdownL,
+                             7,
+                             testEwinoCascadeSet );
+      std::cout
+      << std::endl
+      << "testSdXOneFullCascade set as sdown_L -> chi^-_1";
+      std::cout << std::endl;
+      if( testSdXOneFullCascade.isOpen() )
+      {
+        std::cout
+        << std::endl
+        << "testSdXOneFullCascade is open.";
+        std::cout << std::endl;
+      }
+      else
+      {
+        std::cout
+        << std::endl
+        << "testSdXOneFullCascade is not open?!";
+        std::cout << std::endl;
+      }
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testSdXOneFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::up );
+      testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::up) );
+      std::cout
+      << std::endl
+      << "BR excluding ups & antiups in final state = "
+      << testSdXOneFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 )"
+      << " = " << testSdXOneFullCascade.getAcceptance( true,
+                                                       &testAcceptanceCutSet,
+                                                       0,
+                                                       1,
+                                                       0,
+                                                       0,
+                                                       0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 ) = "
+      << testSdXOneFullCascade.getAcceptance( false,
+                                              &testAcceptanceCutSet,
+                                              0,
+                                              1,
+                                              0,
+                                              0,
+                                              0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 0, 1, 0, 0 ) = "
+      << testSdXOneFullCascade.getAcceptance( false,
+                                              &testAcceptanceCutSet,
+                                              0,
+                                              0,
+                                              1,
+                                              0,
+                                              0 );
+      std::cout
+      << std::endl
+      << "?? testSdXOneFullCascade seems OK.";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      testEwinoCascadeSet = cascadesForSevenTev->getCascadeSet( sdownL,
+                                          testInputHandler->getCharginoTwo() );
+      fullCascadeType::squarkDirectlyToElectroweakType::sdownType
+      testSdXTwoFullCascade( testInputHandler,
+                             sdownL,
+                             7,
+                             testEwinoCascadeSet );
+      std::cout
+      << std::endl
+      << "testSdXTwoFullCascade set as sdown_L -> chi^-_2";
+      std::cout << std::endl;
+      if( testSdXFullCascade.isOpen() )
+      {
+        std::cout
+        << std::endl
+        << "testSdXTwoFullCascade is open.";
+        std::cout << std::endl;
+      }
+      else
+      {
+        std::cout
+        << std::endl
+        << "testSdXTwoFullCascade is not open?!";
+        std::cout << std::endl;
+      }
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testSdXTwoFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::up );
+      testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::up) );
+      std::cout
+      << std::endl
+      << "BR excluding ups & antiups in final state = "
+      << testSdXTwoFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 )"
+      << " = " << testSdXTwoFullCascade.getAcceptance( true,
+                                                       &testAcceptanceCutSet,
+                                                       0,
+                                                       1,
+                                                       0,
+                                                       0,
+                                                       0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 ) = "
+      << testSdXTwoFullCascade.getAcceptance( false,
+                                              &testAcceptanceCutSet,
+                                              0,
+                                              1,
+                                              0,
+                                              0,
+                                              0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 0, 1, 0, 0 ) = "
+      << testSdXTwoFullCascade.getAcceptance( false,
+                                              &testAcceptanceCutSet,
+                                              0,
+                                              0,
+                                              1,
+                                              0,
+                                              0 );
+      std::cout
+      << std::endl
+      << "?? testSdXTwoFullCascade seems OK.";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      testEwinoCascadeSet
+      = cascadesForSevenTev->getCascadeSet( testInputHandler->getGluino(),
+                                        testInputHandler->getNeutralinoTwo() );
+      fullCascadeType::gluinoDirectlyToElectroweak
+      testGoNTwoFullCascade( testInputHandler,
+                             7,
+                             testEwinoCascadeSet );
+      std::cout
+      << std::endl
+      << "testGoNTwoFullCascade set as gluino -> chi^0_2";
+      std::cout << std::endl;
+      if( testGoNTwoFullCascade.isOpen() )
+      {
+        std::cout
+        << std::endl
+        << "testGoNTwoFullCascade is open.";
+        std::cout << std::endl;
+      }
+      else
+      {
+        std::cout
+        << std::endl
+        << "testGoNTwoFullCascade is not open?!";
+        std::cout << std::endl;
+      }
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testGoNTwoFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testGoNTwoFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout
+      << std::endl
+      << "testGoNTwoFullCascade is open, & gives non-zero acceptances, but the"
+      << " BR is so low that it's snapped to zero.";
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
+      << " = " << testGoNTwoFullCascade.getAcceptance( true,
+                                                       &testAcceptanceCutSet,
+                                                       0,
+                                                       1,
+                                                       1,
+                                                       0,
+                                                       0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+      << testGoNTwoFullCascade.getAcceptance( false,
+                                              &testAcceptanceCutSet,
+                                              0,
+                                              1,
+                                              1,
+                                              0,
+                                              0 );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "?? testGoNTwoFullCascade seems OK.";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      testEwinoCascadeSet = cascadesForSevenTev->getCascadeSet( stopOne,
+                                                                charginoOne );
+      fullCascadeType::squarkDirectlyToElectroweakType::supType
+      testStXOneFullCascade( testInputHandler,
+                             stopOne,
+                             7,
+                             testEwinoCascadeSet );
+      std::cout
+      << std::endl
+      << "testStXOneFullCascade set as stop_1 -> chi^+_1";
+      std::cout << std::endl;
+      if( testStXOneFullCascade.isOpen() )
+      {
+        std::cout
+        << std::endl
+        << "testStXOneFullCascade is open.";
+        std::cout << std::endl;
+      }
+      else
+      {
+        std::cout
+        << std::endl
+        << "testStXOneFullCascade is not open?!";
+        std::cout << std::endl;
+      }
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testStXOneFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::up );
+      testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::up) );
+      std::cout
+      << std::endl
+      << "BR excluding ups & antiups in final state = "
+      << testStXOneFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 )"
+      << " = " << testStXOneFullCascade.getAcceptance( true,
+                                                       &testAcceptanceCutSet,
+                                                       0,
+                                                       1,
+                                                       0,
+                                                       0,
+                                                       0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 ) = "
+      << testStXOneFullCascade.getAcceptance( false,
+                                              &testAcceptanceCutSet,
+                                              0,
+                                              1,
+                                              0,
+                                              0,
+                                              0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 0, 1, 0, 0 ) = "
+      << testStXOneFullCascade.getAcceptance( false,
+                                              &testAcceptanceCutSet,
+                                              0,
+                                              0,
+                                              1,
+                                              0,
+                                              0 );
+      std::cout
+      << std::endl
+      << "?? testStXOneFullCascade seems OK.";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      electroweakCascadeSet*
+      testBosonCascadeSet( cascadesForSevenTev->getCascadeSet( sbottomTwo,
+                                                               wPlus,
+                                                               stopOne ) );
+      fullCascadeType::squarkByBosonToCompound testSbWMFullCascade;
+      testSbWMFullCascade.setProperties( sbottomTwo,
+                                         testBosonCascadeSet,
+                                         &testStWNFullCascade );
+      std::cout
+      << std::endl
+      << "testSbWMFullCascade set with sbottom_2 -> W^- + stop_1,"
+      << " stop_1 -> chargino_1";
+      std::cout << std::endl;
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testSbWMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testSbWMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
+      << " = " << testSbWMFullCascade.getAcceptance( true,
+                                                     &testAcceptanceCutSet,
+                                                     0,
+                                                     1,
+                                                     1,
+                                                     0,
+                                                     0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+      << testSbWMFullCascade.getAcceptance( false,
+                                            &testAcceptanceCutSet,
+                                            0,
+                                            1,
+                                            1,
+                                            0,
+                                            0 );
+      std::cout
+      << std::endl
+      << "?? testSbWMFullCascade seems OK (~10% for W^- to pass e^-, ~3%"
+      << " for chargino as shown by testStXOneFullCascade).";
+      std::cout << std::endl;
+      std::cout << std::endl;
+
+
+
+      fullCascadeType::gluinoOrNeutralinoToCompound testGoMFullCascade;
+      testGoMFullCascade.setProperties( gluinoPointer,
+                                        &testSdXOneFullCascade,
+                                        cascadesForSevenTev );
+      std::cout
+      << std::endl
+      << "testGoMFullCascade set with testSdXOneFullCascade (pointer is "
+      << &testSdXOneFullCascade << "), so is gluino => sdown_L => chargino_1";
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testGoMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testGoMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 )"
+      << " = " << testGoMFullCascade.getAcceptance( true,
+                                                    &testAcceptanceCutSet,
+                                                    0,
+                                                    1,
+                                                    0,
+                                                    0,
+                                                    0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 0, 0, 0 ) = "
+      << testGoMFullCascade.getAcceptance( false,
+                                           &testAcceptanceCutSet,
+                                           0,
+                                           1,
+                                           0,
+                                           0,
+                                           0 );
+      std::cout
+      << std::endl
+      << "testGoMFullCascade seems OK.";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      testGoMFullCascade.setProperties( gluinoPointer,
+                                        &testSbTwoWMFullCascade,
+                                        cascadesForSevenTev );
+      basicStuff->getReadier()->readyObserversForNewPoint();
+      std::cout
+      << std::endl
+      << "testGoMFullCascade set with testSbTwoWMFullCascade"
+      << " (& readiers reset)";
+      std::cout << std::endl;
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testGoMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testGoMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
+      << " = " << testGoMFullCascade.getAcceptance( true,
+                                                    &testAcceptanceCutSet,
+                                                    0,
+                                                    1,
+                                                    1,
+                                                    0,
+                                                    0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+      << testGoMFullCascade.getAcceptance( false,
+                                           &testAcceptanceCutSet,
+                                           0,
+                                           1,
+                                           1,
+                                           0,
+                                           0 );
+      std::cout
+      << std::endl
+      << "testGoMFullCascade seems OK.";
+      std::cout << std::endl;
+      std::cout << std::endl;
+
+
+      // now the convolutedly long cascade:
+
+      basicStuff->getSlha()->read_file( "convoluted_spectrum.out" );
+      basicStuff->getReadier()->readyObserversForNewPoint();
+
+      effectiveSquarkMassHolder*
+      stopMinusW( testInputHandler->getSquarkMinusBosonEffectiveMass( stopOne,
+                                                                     wPlus,
+                                                             neutralinoOne ) );
+      effectiveSquarkMassHolder*
+      sbottomPlusW( testInputHandler->getSquarkPlusBosonEffectiveMass(
+                                                                    sbottomOne,
+                                                                       wPlus,
+                                                             neutralinoOne ) );
+      testEwinoCascadeSet = cascadesForSevenTev->getCascadeSet( stopOne,
+                                                               neutralinoOne );
+      fullCascadeType::squarkDirectlyToElectroweakType::supType
+      testStWNOneFullCascade( testInputHandler,
+                              stopOne,
+                              7,
+                              testEwinoCascadeSet,
+                              cascadesForSevenTev->getCascadeSet( stopOne,
+                                                                 neutralinoOne,
+                                                                  stopMinusW ),
+                              cascadesForSevenTev->getCascadeSet( stopOne,
+                                                                  wPlus,
+                                                                  sbottomOne,
+                                                              sbottomPlusW ) );
+      std::cout
+      << std::endl
+      << "testStWNOneFullCascade set as stop_1 -> chi^0_1 + W^+ + b";
+      std::cout << std::endl;
+      if( testStWNOneFullCascade.isOpen() )
+      {
+        std::cout
+        << std::endl
+        << "testStWNOneFullCascade is open.";
+        std::cout << std::endl;
+      }
+      else
+      {
+        std::cout
+        << std::endl
+        << "testStWNOneFullCascade is not open?!";
+        std::cout << std::endl;
+      }
+      std::list< int > testSmParticleExclusion;
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testStWNOneFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testStWNOneFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 0, 1, 0, 0 )"
+      << " = " << testStWNOneFullCascade.getAcceptance( true,
+                                                        &testAcceptanceCutSet,
+                                                        0,
+                                                        0,
+                                                        1,
+                                                        0,
+                                                        0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 0, 1, 0, 0 ) = "
+      << testStWNOneFullCascade.getAcceptance( false,
+                                               &testAcceptanceCutSet,
+                                               0,
+                                               0,
+                                               1,
+                                               0,
+                                               0 );
+      std::cout
+      << std::endl
+      << "?? testStWNOneFullCascade seems OK.";
+      std::cout
+      << std::endl
+      << "testSuperlongFullCascade should only work if negligibleBr has been"
+      << " set low enough (~10^-9).";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      testSbWMFullCascade.setProperties( sbottomOne,
+                                         cascadesForSevenTev->getCascadeSet(
+                                                                    sbottomOne,
+                                                                         wPlus,
+                                                                     stopOne ),
+                                         &testStWNOneFullCascade );
+      std::cout
+      << std::endl
+      << "testSbWMFullCascade set with sbottom_2 -> W^- + stop_1,"
+      << " stop_1 -> W^+ + b + neutralino_1";
+      std::cout << std::endl;
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testSbWMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testSbWMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
+      << " = " << testSbWMFullCascade.getAcceptance( true,
+                                                     &testAcceptanceCutSet,
+                                                     0,
+                                                     1,
+                                                     1,
+                                                     0,
+                                                     0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+      << testSbWMFullCascade.getAcceptance( false,
+                                            &testAcceptanceCutSet,
+                                            0,
+                                            1,
+                                            1,
+                                            0,
+                                            0 );
+      std::cout
+      << std::endl
+      << "?? testSbWMFullCascade seems OK?";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      fullCascadeType::gluinoOrNeutralinoToCompound testNTwoMFullCascade;
+      testNTwoMFullCascade.setProperties( neutralinoTwo,
+                                          &testSbWMFullCascade,
+                                          cascadesForSevenTev );
+      std::cout
+      << std::endl
+      << "testNTwoMFullCascade set to be:"
+      << testNTwoMFullCascade.getAsString();
+      std::cout << std::endl;
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testNTwoMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testNTwoMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
+      << " = " << testNTwoMFullCascade.getAcceptance( true,
+                                                      &testAcceptanceCutSet,
+                                                      0,
+                                                      1,
+                                                      1,
+                                                      0,
+                                                      0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+      << testNTwoMFullCascade.getAcceptance( false,
+                                             &testAcceptanceCutSet,
+                                             0,
+                                             1,
+                                             1,
+                                             0,
+                                             0 );
+      std::cout
+      << std::endl
+      << "?? testNTwoMFullCascade seems OK?";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      fullCascadeType::squarkByJetToCompound testSbTwoJMFullCascade;
+      testSbTwoJMFullCascade.setProperties( sbottomTwo,
+                                            &testNTwoMFullCascade,
+                                            cascadesForSevenTev );
+      std::cout
+      << std::endl
+      << "testSbTwoJMFullCascade set to be:"
+      << testNTwoMFullCascade.getAsString();
+      std::cout << std::endl;
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testSbTwoJMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testSbTwoJMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
+      << " = " << testSbTwoJMFullCascade.getAcceptance( true,
+                                                        &testAcceptanceCutSet,
+                                                        0,
+                                                        1,
+                                                        1,
+                                                        0,
+                                                        0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+      << testSbTwoJMFullCascade.getAcceptance( false,
+                                               &testAcceptanceCutSet,
+                                               0,
+                                               1,
+                                               1,
+                                               0,
+                                               0 );
+      std::cout
+      << std::endl
+      << "?? testSbTwoJMFullCascade seems OK?";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      testGoMFullCascade.setProperties( gluinoPointer,
+                                        &testSbTwoJMFullCascade,
+                                        cascadesForSevenTev );
+      std::cout
+      << std::endl
+      << "testGoMFullCascade set to be:"
+      << testGoMFullCascade.getAsString();
+      std::cout << std::endl;
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testGoMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testGoMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
+      << " = " << testGoMFullCascade.getAcceptance( true,
+                                                    &testAcceptanceCutSet,
+                                                    0,
+                                                    1,
+                                                    1,
+                                                    0,
+                                                    0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+      << testGoMFullCascade.getAcceptance( false,
+                                           &testAcceptanceCutSet,
+                                           0,
+                                           1,
+                                           1,
+                                           0,
+                                           0 );
+      std::cout
+      << std::endl
+      << "?? testGoMFullCascade seems OK?";
+      std::cout << std::endl;
+      std::cout << std::endl;
+      fullCascadeType::squarkByJetToCompoundType::supType testSupJMFullCascade;
+      testSupJMFullCascade.setProperties( testInputHandler->getSupL(),
+                                          &testGoMFullCascade,
+                                          cascadesForSevenTev );
+      std::cout
+      << std::endl
+      << "testSupJMFullCascade set to be:"
+      << testSupJMFullCascade.getAsString();
+      std::cout << std::endl;
+      testSmParticleExclusion.clear();
+      std::cout
+      << std::endl
+      << "BR with no excluded SM fermions = "
+      << testSupJMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      testSmParticleExclusion.push_back( CppSLHA::PDG_code::down );
+      std::cout
+      << std::endl
+      << "BR excluding downs (but not antidowns) in final state = "
+      << testSupJMFullCascade.getBrToEwino( &testSmParticleExclusion );
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << ".getAcceptance( [particle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 )"
+      << " = " << testSupJMFullCascade.getAcceptance( true,
+                                                      &testAcceptanceCutSet,
+                                                      0,
+                                                      1,
+                                                      1,
+                                                      0,
+                                                      0 );
+      std::cout
+      << std::endl
+      << ".getAcceptance("
+      << " [antiparticle], &testAcceptanceCutSet, 0, 1, 1, 0, 0 ) = "
+      << testSupJMFullCascade.getAcceptance( false,
+                                             &testAcceptanceCutSet,
+                                             0,
+                                             1,
+                                             1,
+                                             0,
+                                             0 );
+      std::cout
+      << std::endl
+      << "?? testSupJMFullCascade seems OK?";
+      std::cout << std::endl;
+      std::cout << std::endl;
+
+
+      // go back to SPS1a:
+      basicStuff->getSlha()->read_file( "SPS1a_spectrum.out" );
+      basicStuff->getReadier()->readyObserversForNewPoint();
 
 
       fullCascadeSetFactory testFullCascadeSetFactory( testInputHandler,
@@ -546,9 +969,12 @@ namespace LHC_FASER
       testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::top) );
       std::cout
       << std::endl
-      << "has " << openCascades->size() << " open cascades. 1 is sx, 3 is"
-      << " sjgx. BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
-      << " excludes top & antitop, \"acc\" is for ->getAcceptance("
+      << "has " << openCascades->size()
+      << " open cascades. 1 is squarkToEwino, 2 is gluinoToEwino, 3 is"
+      << " squarkToSquarkThenMore, 4 is squarkToGauginoThenMore, 5 is"
+      << " gluinoOrElectroweakinoToSquarkThenMore. BR is for"
+      << " ->getBrToEwino( &testSmParticleExclusion ), which excludes top &"
+      << " antitop, \"acc\" is for ->getAcceptance("
       << " [particle], &testAcceptanceCutSet, 0, 0, 0, 1, 0 ).";
       for( std::vector< fullCascade* >::iterator
            cascadeIterator( openCascades->begin() );
@@ -584,9 +1010,11 @@ namespace LHC_FASER
     openCascades = testFullCascadeSetFromFactory->getOpenCascades();
     std::cout
     << std::endl
-    << "has " << openCascades->size() << " open cascades. 2 is gx, 4 is gjsx,"
-    << " 8 is gjsbsx."
-    << " BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
+    << "has " << openCascades->size()
+    << " open cascades. 1 is squarkToEwino, 2 is gluinoToEwino, 3 is"
+    << " squarkToSquarkThenMore, 4 is squarkToGauginoThenMore, 5 is"
+    << " gluinoOrElectroweakinoToSquarkThenMore. BR is for"
+    << " ->getBrToEwino( &testSmParticleExclusion ), which"
     << " excludes top & antitop, \"acc\" is for ->getAcceptance("
     << " [particle], &testAcceptanceCutSet, 0, 0, 0, 1, 0 ).";
     for( std::vector< fullCascade* >::iterator
@@ -638,9 +1066,12 @@ namespace LHC_FASER
     testSmParticleExclusion.push_back( -(CppSLHA::PDG_code::top) );
     std::cout
     << std::endl
-    << "has " << openCascades->size() << " open cascades. 1 is sx, 3 is"
-    << " sjgx. BR is for ->getBrToEwino( &testSmParticleExclusion ), which"
-    << " excludes top & antitop, \"acc\" is for ->getAcceptance("
+    << "has " << openCascades->size()
+    << " open cascades. 1 is squarkToEwino, 2 is gluinoToEwino, 3 is"
+    << " squarkToSquarkThenMore, 4 is squarkToGauginoThenMore, 5 is"
+    << " gluinoOrElectroweakinoToSquarkThenMore. BR is for"
+    << " ->getBrToEwino( &testSmParticleExclusion ), which excludes top &"
+    << " antitop, \"acc\" is for ->getAcceptance("
     << " [particle], &testAcceptanceCutSet, 0, 0, 0, 1, 0 ).";
     for( std::vector< fullCascade* >::iterator
          cascadeIterator( openCascades->begin() );
@@ -681,9 +1112,12 @@ namespace LHC_FASER
     openCascades = testFullCascadeSetFromFactory->getOpenCascades();
     std::cout
     << std::endl
-    << "has " << openCascades->size() << " open cascades. 2 is gx, 4 is gjsx,"
-    << " 8 is gjsbsx. BR is for ->getBrToEwino( &testSmParticleExclusion ),"
-    << " which excludes top & antitop, \"acc\" is for ->getAcceptance("
+    << "has " << openCascades->size()
+    << " open cascades. 1 is squarkToEwino, 2 is gluinoToEwino, 3 is"
+    << " squarkToSquarkThenMore, 4 is squarkToGauginoThenMore, 5 is"
+    << " gluinoOrElectroweakinoToSquarkThenMore. BR is for"
+    << " ->getBrToEwino( &testSmParticleExclusion ), which excludes top &"
+    << " antitop, \"acc\" is for ->getAcceptance("
     << " [particle], &testAcceptanceCutSet, 0, 0, 0, 1, 0 ).";
     for( std::vector< fullCascade* >::iterator
          cascadeIterator( openCascades->begin() );

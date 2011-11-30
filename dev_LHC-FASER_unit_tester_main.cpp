@@ -375,11 +375,11 @@ int main( int argumentCount,
 
 
   /* testing the jet kinematics grid stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::jetKinematicsTesting jetKinematicsTester( &basicStuffTester,
                                                        &inputTester );
   jetKinematicsTester.performTest();
-  **/
+  /**/
 
 	
 

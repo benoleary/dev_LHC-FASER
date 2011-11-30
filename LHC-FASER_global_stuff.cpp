@@ -105,7 +105,8 @@ namespace LHC_FASER
   // this is where we decide what value marks when we throw away cascades
   // because the acceptance times branching ratio dropped too low:
   //double const lhcFaserGlobal::negligibleBr( 0.001 );
-  double const lhcFaserGlobal::negligibleBr = 0.000001;
+  //double const lhcFaserGlobal::negligibleBr = 0.000001;
+  double const lhcFaserGlobal::negligibleBr = 0.000000001;
   /* 1 millionth seems conservative enough. even at design luminosity, no
    * MSSM point could generate more than a few million electroweakinos in a
    * year.

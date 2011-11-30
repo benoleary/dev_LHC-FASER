@@ -1,0 +1,54 @@
+Block MODSEL   #  
+     1    0   #  
+#     6    1   # Generation Mixing 
+Block SMINPUTS   # Standard Model inputs
+#     1    1.27931390E+02  # alpha_em^-1(MZ)^MSbar
+     2    1.166390E-005   # G_F,Fermi constant 
+     3    1.190000E-001   # alpha_s(MZ) SM MSbar 
+     4    9.118760E+001   # Z-boson pole mass 
+     5    4.200000E+000   # m_b(mb) SM MSbar 
+     6    1.729000E+002   # m_top(pole) 
+     7    1.777000E+000   # m_tau(pole) 
+Block MINPAR   # Input parameters 
+#     1    0.000000E+000   # m0
+#     2    0.000000E+000   # m12
+#     3    1.000000E+001   # TanBeta
+#     4    1.000000E+000   # SignumMu
+#     5    0.000000E+000   # Azero
+Block EXTPAR   # Input parameters
+     0    1.000000E+003   # Q, SUSY scale
+     1    1.000000E+002   # M1
+     2    2.000000E+004   # M2
+     3    5.000000E+002   # M3
+    23    5.000000E+002   # mu
+    25    1.000000E+001   # TanBeta
+    26    8.000000E+002   # m_A
+    31    1.000000E+003   # m_eL
+    32    1.000000E+003   # m_muL
+    33    1.000000E+003   # m_tauL
+    34    1.000000E+003   # m_eR
+    35    1.000000E+003   # m_muR
+    36    1.000000E+003   # m_tauR
+    41    5.500000E+003   # m_q1L
+    42    1.000000E+003   # m_q2L
+    43    4.500000E+003   # m_q3L
+    44    1.000000E+003   # m_uR
+    45    1.000000E+003   # m_cR
+    46    2.500000E+003   # m_tR
+    47    1.000000E+003   # m_dR
+    48    1.000000E+003   # m_sR
+    49    3.500000E+003   # m_bR
+Block SPhenoInput   # SPheno specific input 
+     1   -1   # error level 
+     2    1   # SPA conventions 
+    11    1   # calculate branching ratios 
+    13    1   # include 3-Body decays 
+    12    1.000E-04   # write only branching ratios larger than this value 
+    34    1.000E-04   # Precision of mass calculation 
+    38    1   # 1- or 2-Loop RGEs 
+    51    0   # Write Output in CKM basis 
+    55    1   # Calculate one loop masses 
+    57    0   # Calculate low energy constraints 
+    60    0   # Include possible, kinetic mixing 
+    75    0   # Write HiggsBounds files 
+    76    0   # Write WHIZARD file 

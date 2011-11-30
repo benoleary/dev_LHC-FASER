@@ -1569,7 +1569,7 @@ namespace LHC_FASER
 
   inline effectiveSquarkMassHolder*
   inputHandler::getSquarkPlusBosonEffectiveMass(
-                                           particlePointer const onShellSquark,
+                                           particlePointer const virtualSquark,
                                             particlePointer const onShellBoson,
                                            particlePointer const onShellEwino )
   const
@@ -1580,7 +1580,7 @@ namespace LHC_FASER
          squarkPlusBosonEffectiveMasses.end() > massIterator;
          ++massIterator )
     {
-      if( (*massIterator)->isEquivalent( onShellSquark,
+      if( (*massIterator)->isEquivalent( virtualSquark,
                                          onShellBoson,
                                          onShellEwino ) )
       {
