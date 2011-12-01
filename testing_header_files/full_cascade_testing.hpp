@@ -102,6 +102,7 @@ namespace LHC_FASER
     void
     performTest()
     {
+      particlePointer sdownL( testInputHandler->getSdownL() );
       particlePointer stopOne( testInputHandler->getStopOne() );
       particlePointer sbottomOne( testInputHandler->getSbottomOne() );
       particlePointer sbottomTwo( testInputHandler->getSbottomTwo() );
@@ -120,10 +121,8 @@ namespace LHC_FASER
           testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy(
                                                                          7 ) );
       electroweakCascadeSet*
-      testEwinoCascadeSet( cascadesForSevenTev->getCascadeSet(
-                                                 testInputHandler->getSdownL(),
-                                      testInputHandler->getNeutralinoTwo() ) );
-      particlePointer sdownL( testInputHandler->getSdownL() );
+      testEwinoCascadeSet( cascadesForSevenTev->getCascadeSet( sdownL,
+                                                             neutralinoTwo ) );
       fullCascadeType::squarkDirectlyToElectroweakType::sdownType
       testSdNTwoFullCascade( testInputHandler,
                              sdownL,
@@ -131,7 +130,8 @@ namespace LHC_FASER
                              testEwinoCascadeSet );
       std::cout
       << std::endl
-      << "testSdNTwoFullCascade set as sdown_L -> chi^0_2";
+      << "testSdNTwoFullCascade set as sdown_L -> chi^0_2 ( "
+      << testSdNTwoFullCascade.getAsString() << " )";
       std::cout << std::endl;
       if( testSdNTwoFullCascade.isOpen() )
       {
@@ -184,9 +184,8 @@ namespace LHC_FASER
       << "testSdNTwoFullCascade seems OK.";
       std::cout << std::endl;
       std::cout << std::endl;
-      testEwinoCascadeSet
-      = cascadesForSevenTev->getCascadeSet( sdownL,
-                                            charginoOne );
+      testEwinoCascadeSet = cascadesForSevenTev->getCascadeSet( sdownL,
+                                                                charginoOne );
       fullCascadeType::squarkDirectlyToElectroweakType::sdownType
       testSdXOneFullCascade( testInputHandler,
                              sdownL,
@@ -194,7 +193,8 @@ namespace LHC_FASER
                              testEwinoCascadeSet );
       std::cout
       << std::endl
-      << "testSdXOneFullCascade set as sdown_L -> chi^-_1";
+      << "testSdXOneFullCascade set as sdown_L -> chi^-_1 ( "
+      << testSdXOneFullCascade.getAsString() << " )";
       std::cout << std::endl;
       if( testSdXOneFullCascade.isOpen() )
       {
@@ -256,7 +256,7 @@ namespace LHC_FASER
                                               0 );
       std::cout
       << std::endl
-      << "?? testSdXOneFullCascade seems OK.";
+      << "testSdXOneFullCascade seems OK.";
       std::cout << std::endl;
       std::cout << std::endl;
       testEwinoCascadeSet = cascadesForSevenTev->getCascadeSet( sdownL,
@@ -268,9 +268,10 @@ namespace LHC_FASER
                              testEwinoCascadeSet );
       std::cout
       << std::endl
-      << "testSdXTwoFullCascade set as sdown_L -> chi^-_2";
+      << "testSdXTwoFullCascade set as sdown_L -> chi^-_2 ( "
+      << testSdXTwoFullCascade.getAsString() << " )";
       std::cout << std::endl;
-      if( testSdXFullCascade.isOpen() )
+      if( testSdXTwoFullCascade.isOpen() )
       {
         std::cout
         << std::endl
@@ -330,32 +331,34 @@ namespace LHC_FASER
                                               0 );
       std::cout
       << std::endl
-      << "?? testSdXTwoFullCascade seems OK.";
+      << "testSdXTwoFullCascade seems OK (large amount of BR lost by ignoring"
+      << " channel to W^- + neutralino_2).";
       std::cout << std::endl;
       std::cout << std::endl;
-      testEwinoCascadeSet
-      = cascadesForSevenTev->getCascadeSet( testInputHandler->getGluino(),
-                                        testInputHandler->getNeutralinoTwo() );
+      testEwinoCascadeSet = cascadesForSevenTev->getCascadeSet( gluinoPointer,
+                                                               neutralinoTwo );
       fullCascadeType::gluinoDirectlyToElectroweak
       testGoNTwoFullCascade( testInputHandler,
                              7,
                              testEwinoCascadeSet );
       std::cout
       << std::endl
-      << "testGoNTwoFullCascade set as gluino -> chi^0_2";
+      << "testGoNTwoFullCascade set as gluino -> chi^0_2 ( "
+      << testGoNTwoFullCascade.getAsString() << " )";
       std::cout << std::endl;
       if( testGoNTwoFullCascade.isOpen() )
       {
         std::cout
         << std::endl
-        << "testGoNTwoFullCascade is open.";
+        << "testGoNTwoFullCascade is open?1";
         std::cout << std::endl;
       }
       else
       {
         std::cout
         << std::endl
-        << "testGoNTwoFullCascade is not open?!";
+        << "testGoNTwoFullCascade is not open (BR should be too low, despite"
+        << " masses checking out).";
         std::cout << std::endl;
       }
       testSmParticleExclusion.clear();
@@ -370,8 +373,8 @@ namespace LHC_FASER
       << testGoNTwoFullCascade.getBrToEwino( &testSmParticleExclusion );
       std::cout
       << std::endl
-      << "testGoNTwoFullCascade is open, & gives non-zero acceptances, but the"
-      << " BR is so low that it's snapped to zero.";
+      << "testGoNTwoFullCascade is kinematically allowed, & gives non-zero"
+      << " acceptances, but the BR is so low that the code snaps it to zero.";
       std::cout << std::endl;
       std::cout
       << std::endl
@@ -397,19 +400,50 @@ namespace LHC_FASER
       std::cout << std::endl;
       std::cout
       << std::endl
-      << "?? testGoNTwoFullCascade seems OK.";
+      << "testGoNTwoFullCascade seems OK.";
       std::cout << std::endl;
       std::cout << std::endl;
       testEwinoCascadeSet = cascadesForSevenTev->getCascadeSet( stopOne,
                                                                 charginoOne );
+
+      effectiveSquarkMassHolder*
+      stopMinusW( testInputHandler->getSquarkMinusBosonEffectiveMass( stopOne,
+                                                                     wPlus,
+                                                             neutralinoOne ) );
+      effectiveSquarkMassHolder*
+      sbottomPlusW( testInputHandler->getSquarkPlusBosonEffectiveMass(
+                                                                    sbottomOne,
+                                                                       wPlus,
+                                                             neutralinoOne ) );
+      std::cout
+      << std::endl
+      << "stopMinusW = " << stopMinusW << ", sbottomPlusW = " << sbottomPlusW;
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "stopMinusW->getEffectiveSquarkMass() = "
+      << stopMinusW->getEffectiveSquarkMass()
+      << std::endl
+      << "sbottomPlusW->getEffectiveSquarkMass() = "
+      << sbottomPlusW->getEffectiveSquarkMass();
+      std::cout << std::endl;
+
       fullCascadeType::squarkDirectlyToElectroweakType::supType
       testStXOneFullCascade( testInputHandler,
                              stopOne,
                              7,
-                             testEwinoCascadeSet );
+                             testEwinoCascadeSet,
+                             cascadesForSevenTev->getCascadeSet( stopOne,
+                                                                 charginoOne,
+                                                                 stopMinusW ),
+                             cascadesForSevenTev->getCascadeSet( stopOne,
+                                                                 wPlus,
+                                                                 sbottomOne,
+                                                              sbottomPlusW ) );
       std::cout
       << std::endl
-      << "testStXOneFullCascade set as stop_1 -> chi^+_1";
+      << "testStXOneFullCascade set as stop_1 -> chi^+_1 ( "
+      << testStXOneFullCascade.getAsString() << " )";
       std::cout << std::endl;
       if( testStXOneFullCascade.isOpen() )
       {
@@ -471,7 +505,8 @@ namespace LHC_FASER
                                               0 );
       std::cout
       << std::endl
-      << "?? testStXOneFullCascade seems OK.";
+      << "testStXOneFullCascade seems OK (large part of the example BR is from"
+      << " taus, so a lighter squark mass has a big effect).";
       std::cout << std::endl;
       std::cout << std::endl;
       electroweakCascadeSet*
@@ -481,11 +516,12 @@ namespace LHC_FASER
       fullCascadeType::squarkByBosonToCompound testSbWMFullCascade;
       testSbWMFullCascade.setProperties( sbottomTwo,
                                          testBosonCascadeSet,
-                                         &testStWNFullCascade );
+                                         &testStXOneFullCascade );
       std::cout
       << std::endl
       << "testSbWMFullCascade set with sbottom_2 -> W^- + stop_1,"
-      << " stop_1 -> chargino_1";
+      << " stop_1 -> chargino_1 ( " << testSbWMFullCascade.getAsString()
+      << " )";
       std::cout << std::endl;
       testSmParticleExclusion.clear();
       std::cout
@@ -521,13 +557,10 @@ namespace LHC_FASER
                                             0 );
       std::cout
       << std::endl
-      << "?? testSbWMFullCascade seems OK (~10% for W^- to pass e^-, ~3%"
+      << "testSbWMFullCascade seems OK (~10% for W^- to pass e^-, ~3%"
       << " for chargino as shown by testStXOneFullCascade).";
       std::cout << std::endl;
       std::cout << std::endl;
-
-
-
       fullCascadeType::gluinoOrNeutralinoToCompound testGoMFullCascade;
       testGoMFullCascade.setProperties( gluinoPointer,
                                         &testSdXOneFullCascade,
@@ -535,7 +568,9 @@ namespace LHC_FASER
       std::cout
       << std::endl
       << "testGoMFullCascade set with testSdXOneFullCascade (pointer is "
-      << &testSdXOneFullCascade << "), so is gluino => sdown_L => chargino_1";
+      << &testSdXOneFullCascade
+      << "), so is gluino => sdown_L => chargino_1 ( "
+      << testGoMFullCascade.getAsString() << " )";
       testSmParticleExclusion.clear();
       std::cout
       << std::endl
@@ -574,13 +609,14 @@ namespace LHC_FASER
       std::cout << std::endl;
       std::cout << std::endl;
       testGoMFullCascade.setProperties( gluinoPointer,
-                                        &testSbTwoWMFullCascade,
+                                        &testSbWMFullCascade,
                                         cascadesForSevenTev );
       basicStuff->getReadier()->readyObserversForNewPoint();
       std::cout
       << std::endl
-      << "testGoMFullCascade set with testSbTwoWMFullCascade"
-      << " (& readiers reset)";
+      << "testGoMFullCascade set with testSbWMFullCascade"
+      << " (& readiers reset) ( "
+      << testGoMFullCascade.getAsString() << " )";
       std::cout << std::endl;
       testSmParticleExclusion.clear();
       std::cout
@@ -626,15 +662,20 @@ namespace LHC_FASER
       basicStuff->getSlha()->read_file( "convoluted_spectrum.out" );
       basicStuff->getReadier()->readyObserversForNewPoint();
 
-      effectiveSquarkMassHolder*
-      stopMinusW( testInputHandler->getSquarkMinusBosonEffectiveMass( stopOne,
-                                                                     wPlus,
-                                                             neutralinoOne ) );
-      effectiveSquarkMassHolder*
-      sbottomPlusW( testInputHandler->getSquarkPlusBosonEffectiveMass(
-                                                                    sbottomOne,
-                                                                       wPlus,
-                                                             neutralinoOne ) );
+      std::cout
+      << std::endl
+      << "stopMinusW->getEffectiveSquarkMass() = "
+      << stopMinusW->getEffectiveSquarkMass()
+      << std::endl
+      << "sbottomPlusW->getEffectiveSquarkMass() = "
+      << sbottomPlusW->getEffectiveSquarkMass()
+      << std::endl
+      << "stopOne->get_absolute_mass() = "
+      << stopOne->get_absolute_mass()
+      << std::endl
+      << "sbottomOne->get_absolute_mass() = "
+      << sbottomOne->get_absolute_mass();
+      std::cout << std::endl;
       testEwinoCascadeSet = cascadesForSevenTev->getCascadeSet( stopOne,
                                                                neutralinoOne );
       fullCascadeType::squarkDirectlyToElectroweakType::supType
@@ -651,7 +692,8 @@ namespace LHC_FASER
                                                               sbottomPlusW ) );
       std::cout
       << std::endl
-      << "testStWNOneFullCascade set as stop_1 -> chi^0_1 + W^+ + b";
+      << "testStWNOneFullCascade set as stop_1 -> chi^0_1 + W^+ + b ( "
+      << testStWNOneFullCascade.getAsString() << " )";
       std::cout << std::endl;
       if( testStWNOneFullCascade.isOpen() )
       {
@@ -667,7 +709,7 @@ namespace LHC_FASER
         << "testStWNOneFullCascade is not open?!";
         std::cout << std::endl;
       }
-      std::list< int > testSmParticleExclusion;
+      testSmParticleExclusion.clear();
       std::cout
       << std::endl
       << "BR with no excluded SM fermions = "
@@ -701,8 +743,9 @@ namespace LHC_FASER
                                                0 );
       std::cout
       << std::endl
-      << "?? testStWNOneFullCascade seems OK.";
+      << "testStWNOneFullCascade seems OK.";
       std::cout
+      << std::endl
       << std::endl
       << "testSuperlongFullCascade should only work if negligibleBr has been"
       << " set low enough (~10^-9).";
@@ -717,7 +760,8 @@ namespace LHC_FASER
       std::cout
       << std::endl
       << "testSbWMFullCascade set with sbottom_2 -> W^- + stop_1,"
-      << " stop_1 -> W^+ + b + neutralino_1";
+      << " stop_1 -> W^+ + b + neutralino_1 ( "
+      << testSbWMFullCascade.getAsString() << " )";
       std::cout << std::endl;
       testSmParticleExclusion.clear();
       std::cout
@@ -753,7 +797,8 @@ namespace LHC_FASER
                                             0 );
       std::cout
       << std::endl
-      << "?? testSbWMFullCascade seems OK?";
+      << "testSbWMFullCascade seems OK (~10% for W^- to pass e^-, ~10% for W^+"
+      << " to pass e^+ as shown by testStWNOneFullCascade).";
       std::cout << std::endl;
       std::cout << std::endl;
       fullCascadeType::gluinoOrNeutralinoToCompound testNTwoMFullCascade;
@@ -762,8 +807,8 @@ namespace LHC_FASER
                                           cascadesForSevenTev );
       std::cout
       << std::endl
-      << "testNTwoMFullCascade set to be:"
-      << testNTwoMFullCascade.getAsString();
+      << "testNTwoMFullCascade set to be neutralino_2 -> testSbWMFullCascade"
+      << " ( " << testNTwoMFullCascade.getAsString() << " )";
       std::cout << std::endl;
       testSmParticleExclusion.clear();
       std::cout
@@ -799,17 +844,18 @@ namespace LHC_FASER
                                              0 );
       std::cout
       << std::endl
-      << "?? testNTwoMFullCascade seems OK?";
+      << "testNTwoMFullCascade seems OK.";
       std::cout << std::endl;
       std::cout << std::endl;
-      fullCascadeType::squarkByJetToCompound testSbTwoJMFullCascade;
+      fullCascadeType::squarkByJetToCompoundType::sdownType
+      testSbTwoJMFullCascade;
       testSbTwoJMFullCascade.setProperties( sbottomTwo,
                                             &testNTwoMFullCascade,
                                             cascadesForSevenTev );
       std::cout
       << std::endl
-      << "testSbTwoJMFullCascade set to be:"
-      << testNTwoMFullCascade.getAsString();
+      << "testSbTwoJMFullCascade set to be sbottom_2 -> testNTwoMFullCascade"
+      << " ( " << testSbTwoJMFullCascade.getAsString() << " )";
       std::cout << std::endl;
       testSmParticleExclusion.clear();
       std::cout
@@ -845,7 +891,7 @@ namespace LHC_FASER
                                                0 );
       std::cout
       << std::endl
-      << "?? testSbTwoJMFullCascade seems OK?";
+      << "testSbTwoJMFullCascade seems OK.";
       std::cout << std::endl;
       std::cout << std::endl;
       testGoMFullCascade.setProperties( gluinoPointer,
@@ -853,8 +899,8 @@ namespace LHC_FASER
                                         cascadesForSevenTev );
       std::cout
       << std::endl
-      << "testGoMFullCascade set to be:"
-      << testGoMFullCascade.getAsString();
+      << "testGoMFullCascade set to be gluino -> testSbTwoJMFullCascade ( "
+      << testGoMFullCascade.getAsString() << " )";
       std::cout << std::endl;
       testSmParticleExclusion.clear();
       std::cout
@@ -890,7 +936,7 @@ namespace LHC_FASER
                                            0 );
       std::cout
       << std::endl
-      << "?? testGoMFullCascade seems OK?";
+      << "testGoMFullCascade seems OK.";
       std::cout << std::endl;
       std::cout << std::endl;
       fullCascadeType::squarkByJetToCompoundType::supType testSupJMFullCascade;
@@ -899,8 +945,8 @@ namespace LHC_FASER
                                           cascadesForSevenTev );
       std::cout
       << std::endl
-      << "testSupJMFullCascade set to be:"
-      << testSupJMFullCascade.getAsString();
+      << "testSupJMFullCascade set to be sup_L -> testGoMFullCascade ( "
+      << testSupJMFullCascade.getAsString() << " )";
       std::cout << std::endl;
       testSmParticleExclusion.clear();
       std::cout
@@ -936,7 +982,7 @@ namespace LHC_FASER
                                              0 );
       std::cout
       << std::endl
-      << "?? testSupJMFullCascade seems OK?";
+      << "testSupJMFullCascade seems OK.";
       std::cout << std::endl;
       std::cout << std::endl;
 

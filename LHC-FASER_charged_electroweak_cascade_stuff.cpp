@@ -1498,8 +1498,11 @@ namespace LHC_FASER
     << "scoloredToWPlusScoloredCascade::calculateAcceptance( [ "
     << currentCuts->getJetCut() << "J, "
     << currentCuts->getPrimaryLeptonCut() << "L1, "
-    << currentCuts->getSecondaryLeptonCut() << "L2 ] ) called. cascadeBr = "
-    << cascadeBr;
+    << currentCuts->getSecondaryLeptonCut() << "L2 ] ) called."
+    << " effectiveSquarkMass->getEffectiveSquarkMass() = "
+    << effectiveSquarkMass->getEffectiveSquarkMass()
+    << ", lighter squark mass = "
+    << electroweakDecayer->get_absolute_mass();
     std::cout << std::endl;**/
 
     /* the branching ratios of the W into the various SM fermions are covered
@@ -1533,7 +1536,6 @@ namespace LHC_FASER
                      * CppSLHA::PDG_data::W_plus_to_neutrino_antielectron_BR );
     currentAcceptance->setZeroJetsOnePositiveMuon( directMuonPass
                          * CppSLHA::PDG_data::W_plus_to_neutrino_antimuon_BR );
-
     currentAcceptance->setZeroJetsZeroLeptons(
                                         CppSLHA::PDG_data::W_plus_to_hadrons_BR
                                         * directJetFail
@@ -1570,6 +1572,40 @@ namespace LHC_FASER
                      + ( CppSLHA::PDG_data::tau_lepton_to_neutrinos_electron_BR
                          + CppSLHA::PDG_data::tau_lepton_to_neutrinos_muon_BR )
                        * antitauAntimuonFail ) );
+
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "directMuonPass = " << directMuonPass
+    << std::endl
+    << "directMuonFail = " << directMuonFail
+    << std::endl
+    << "directJetPass = " << directJetPass
+    << std::endl
+    << "directJetFail = " << directJetFail
+    << std::endl
+    << "antitauAntimuonPass = " << antitauAntimuonPass
+    << std::endl
+    << "antitauAntimuonFail = " << antitauAntimuonFail
+    << std::endl
+    << "antitauPionPass = " << antitauPionPass
+    << std::endl
+    << "antitauPionFail = " << antitauPionFail
+    << std::endl
+    << "currentAcceptance->getTwoJets() = " << currentAcceptance->getTwoJets()
+    << std::endl
+    << "currentAcceptance->getOneJetZeroLeptons() = "
+    << currentAcceptance->getOneJetZeroLeptons()
+    << std::endl
+    << "currentAcceptance->getZeroJetsOnePositiveElectron() = "
+    << currentAcceptance->getZeroJetsOnePositiveElectron()
+    << std::endl
+    << "currentAcceptance->getZeroJetsOnePositiveMuon() = "
+    << currentAcceptance->getZeroJetsOnePositiveMuon()
+    << std::endl
+    << "currentAcceptance->getZeroJetsZeroLeptons() = "
+    << currentAcceptance->getZeroJetsZeroLeptons();
+    std::cout << std::endl;**/
   }
 
 }  // end of LHC_FASER namespace.

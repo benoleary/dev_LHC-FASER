@@ -780,7 +780,7 @@ namespace LHC_FASER
     // return the on-shell squark's mass, plus the boson's mass, plus a third
     // of the energy from the rest of the squark's mass.
     return ( ( 4.0 * virtualSquark->get_absolute_mass()
-               - 2.0 * onShellBoson->get_absolute_mass()
+               + 2.0 * onShellBoson->get_absolute_mass()
                - onShellEwino->get_absolute_mass() ) / 3.0 );
   }
 

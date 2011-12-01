@@ -100,10 +100,14 @@ namespace LHC_FASER
       particlePointer sdownLPointer( testInputHandler->getSdownL() );
       particlePointer sbottomOnePointer( testInputHandler->getSbottomOne() );
       particlePointer sbottomTwoPointer( testInputHandler->getSbottomTwo() );
+      particlePointer stopOnePointer( testInputHandler->getStopOne() );
+      particlePointer
+      neutralinoOnePointer( testInputHandler->getNeutralinoOne() );
       particlePointer
       neutralinoTwoPointer( testInputHandler->getNeutralinoTwo() );
       particlePointer
       charginoOnePointer( testInputHandler->getCharginoOne() );
+      particlePointer wPlusPointer( testInputHandler->getWPlus() );
       particlePointer firstPointer( gluinoPointer );
       particlePointer secondPointer( sdownLPointer );
       squarkMassForGridDecider*
@@ -490,46 +494,67 @@ namespace LHC_FASER
 
       electroweakCascadeHandler
       testElectroweakCascadeHandler( testInputHandler );
+      electroweakCascadesForOneBeamEnergy*
+      cascadesForSevenTev(
+          testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy(
+                                                                         7 ) );
       electroweakCascadeSet*
-      testEwinoCascadeSet(
-        testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
-                                                              )->getCascadeSet(
-                                                                 sdownLPointer,
+      testEwinoCascadeSet( cascadesForSevenTev->getCascadeSet( sdownLPointer,
                                                       neutralinoTwoPointer ) );
-      sxFullCascade testSxFullCascade;
-      testSxFullCascade.setProperties( testInputHandler,
-                                       testInputHandler->getSdownL(),
-                                       7,
-                                       testEwinoCascadeSet );
-      gxFullCascade testGxFullCascade;
-      testGxFullCascade.setProperties( testInputHandler,
-                                       7,
-                                       testEwinoCascadeSet );
-      gjsxFullCascade testGjsxFullCascade;
-      testGjsxFullCascade.setProperties( &testSxFullCascade );
+      fullCascadeType::squarkDirectlyToElectroweakType::sdownType
+      testSxFullCascade( testInputHandler,
+                         sdownLPointer,
+                         7,
+                         testEwinoCascadeSet );
       testEwinoCascadeSet
-      = testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
-                                                              )->getCascadeSet(
-                                                testInputHandler->getStopOne(),
+      = cascadesForSevenTev->getCascadeSet( gluinoPointer,
+                                            neutralinoTwoPointer );
+      fullCascadeType::gluinoDirectlyToElectroweak
+      testGxFullCascade( testInputHandler,
+                         7,
+                         testEwinoCascadeSet );
+      testEwinoCascadeSet = cascadesForSevenTev->getCascadeSet( stopOnePointer,
                                                           charginoOnePointer );
-      sxFullCascade stopOneCharginoOneCascade;
-      stopOneCharginoOneCascade.setProperties( testInputHandler,
-                                               testInputHandler->getStopOne(),
-                                               7,
-                                               testEwinoCascadeSet );
+
+      effectiveSquarkMassHolder*
+      stopMinusW( testInputHandler->getSquarkMinusBosonEffectiveMass(
+                                                                stopOnePointer,
+                                                                  wPlusPointer,
+                                                      neutralinoOnePointer ) );
+      effectiveSquarkMassHolder*
+      sbottomPlusW( testInputHandler->getSquarkPlusBosonEffectiveMass(
+                                                             sbottomOnePointer,
+                                                                  wPlusPointer,
+                                                      neutralinoOnePointer ) );
+      fullCascadeType::squarkDirectlyToElectroweakType::supType
+      testStXOneFullCascade( testInputHandler,
+                             stopOnePointer,
+                             7,
+                             testEwinoCascadeSet,
+                            cascadesForSevenTev->getCascadeSet( stopOnePointer,
+                                                            charginoOnePointer,
+                                                                stopMinusW ),
+                            cascadesForSevenTev->getCascadeSet( stopOnePointer,
+                                                                wPlusPointer,
+                                                             sbottomOnePointer,
+                                                              sbottomPlusW ) );
       electroweakCascadeSet*
-      testBosonCascadeSet(
-        testElectroweakCascadeHandler.getElectroweakCascadesForOneBeamEnergy( 7
-                                                              )->getCascadeSet(
+      testBosonCascadeSet( cascadesForSevenTev->getCascadeSet(
                                                              sbottomTwoPointer,
-                                                  testInputHandler->getWPlus(),
-                                            testInputHandler->getStopOne() ) );
-      sbsxFullCascade testSbsxFullCascade;
+                                                               wPlusPointer,
+                                                            stopOnePointer ) );
+      fullCascadeType::squarkByBosonToCompound testSbsxFullCascade;
       testSbsxFullCascade.setProperties( sbottomTwoPointer,
                                          testBosonCascadeSet,
-                                         &stopOneCharginoOneCascade );
-      gjsbsxFullCascade testGjsbsxFullCascade;
-      testGjsbsxFullCascade.setProperties( &testSbsxFullCascade );
+                                         &testStXOneFullCascade );
+      fullCascadeType::gluinoOrNeutralinoToCompound testGjsxFullCascade;
+      testGjsxFullCascade.setProperties( gluinoPointer,
+                                         &testSxFullCascade,
+                                         cascadesForSevenTev );
+      fullCascadeType::gluinoOrNeutralinoToCompound testGjsbsxFullCascade;
+      testGjsbsxFullCascade.setProperties( gluinoPointer,
+                                           &testSbsxFullCascade,
+                                           cascadesForSevenTev );
       signedParticleShortcutPair gluinoWithSdownL( gluinoPointer,
                                                    true,
                                                    sdownLPointer,

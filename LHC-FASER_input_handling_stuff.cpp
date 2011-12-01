@@ -553,8 +553,20 @@ namespace LHC_FASER
                                   new squarkMinusBosonMassHolder( *supIterator,
                                                                   wPlusPointer,
                                                             *ewinoIterator ) );
+      }
+    }
+    for( std::vector< particlePointer >::iterator
+         sdownIterator( sdownTypes.begin() );
+         sdownTypes.end() > sdownIterator;
+         ++sdownIterator )
+    {
+      for( std::vector< particlePointer >::iterator
+           ewinoIterator( allElectroweakinos.begin() );
+           allElectroweakinos.end() > ewinoIterator;
+           ++ewinoIterator )
+      {
         squarkPlusBosonEffectiveMasses.push_back(
-                                   new squarkPlusBosonMassHolder( *supIterator,
+                                 new squarkPlusBosonMassHolder( *sdownIterator,
                                                                   wPlusPointer,
                                                             *ewinoIterator ) );
       }

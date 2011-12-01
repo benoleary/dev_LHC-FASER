@@ -281,7 +281,8 @@ namespace LHC_FASER
       ~squarkDirectlyToElectroweak();
 
       virtual bool
-      isOpen();
+      isOpen()
+      = 0;
       /* this returns true if the squark is heavy enough to decay into the
        * electroweakino, false otherwise. it also sorts out whether it should
        * be using the decays involving a W boson.
@@ -1308,6 +1309,10 @@ namespace LHC_FASER
     {
       returnValue *= subcascadePointer->getBrToEwino( excludedSmParticles );
     }
+    if( initialSparticle->counts_as_self_conjugate() )
+    {
+      returnValue += returnValue;
+    }
     return returnValue;
   }
 
@@ -1611,6 +1616,24 @@ namespace LHC_FASER
       }
     }
 
+    inline bool
+    gluinoDirectlyToElectroweak::isOpen()
+    // this returns true if the squark is heavy enough to decay into the
+    // electroweakino, false otherwise.
+    {
+      if( ( initialSparticle->get_absolute_mass()
+            > ewinoCascades->getElectroweakDecayer()->get_absolute_mass() )
+          &&
+          ( lhcFaserGlobal::negligibleBr < getTotalBrToEwino() ) )
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
 
 
     inline double
@@ -1707,7 +1730,6 @@ namespace LHC_FASER
         resetCachedBranchingRatio();
         decayProductListIncludingW.front()
         = subcascadePointer->getInitialSparticle()->get_PDG_code();
-        decayProductListIncludingW.back() = CppSLHA::PDG_code::W_plus;
         shouldUseDecaysWithW = decayWithWIsNotNegligible();
         return this;
       }
@@ -1884,7 +1906,40 @@ namespace LHC_FASER
                                                     electroweakCascadeSource );
       }
 
+      inline void
+      sdownType::findOpenDirectCascades()
+      // this puts all open direct cascades into openCascades.
+      {
+        for( std::vector< fullCascadeType::squarkDirectlyToElectroweak*
+                                                                    >::iterator
+             cascadeIterator( directToEwinoCascades.begin() );
+             directToEwinoCascades.end() > cascadeIterator;
+             ++cascadeIterator )
+        {
+          if( (*cascadeIterator)->isOpen() )
+          {
+            openCascades.push_back( *cascadeIterator );
+          }
+        }
+      }
 
+
+
+      inline void
+      supType::buildSquarkCompoundCascades()
+      {
+        // now we look at compound cascades from up-type squarks:
+        orderedCascadeSets = setOrderer->getSupTypeCascades();
+        potentialDecayProducts
+        = inputShortcut->getNeutralEwsbBosonsAndMassiveVectorBosons();
+        addSquarkCompoundCascade( true );
+
+        // now we look at compound cascades from down-type squarks:
+        orderedCascadeSets = setOrderer->getSdownTypeCascades();
+        potentialDecayProducts
+        = inputShortcut->getChargedEwsbBosonsAndMassiveVectorBosons();
+        addSquarkCompoundCascade( true );
+      }
 
       inline void
       supType::clearCompoundByJetCascades()

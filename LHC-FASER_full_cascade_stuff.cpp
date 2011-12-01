@@ -295,7 +295,7 @@ namespace LHC_FASER
         soughtDecayProductList.front() = cascadeSegment->first->get_PDG_code();
         decayProductListIncludingW.push_back( soughtDecayProductList.front() );
         decayProductListIncludingW.push_back(
-                 ewinoWithWCascades->getElectroweakDecayer()->get_PDG_code() );
+                      bosonCascades->getElectroweakDecayer()->get_PDG_code() );
       }
 
       supType::~supType()
@@ -348,6 +348,17 @@ namespace LHC_FASER
        * charges should be swapped if scoloredIsNotAntiparticle is false.
        */
       {
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "fullCascadeType::squarkDirectlyToElectroweakType::supType::"
+        << "getAcceptance( " << initialSparticleIsNotAntiparticle
+        << ", " << acceptanceCuts << ", " << numberOfAdditionalJets << ", "
+        << numberOfNegativeElectrons << ", " << numberOfPositiveElectrons
+        << ", " << numberOfNegativeMuons << ", " << numberOfPositiveMuons
+        << " ) called. shouldUseDecaysWithW = " << shouldUseDecaysWithW;
+        std::cout << std::endl;**/
+
         if( !initialSparticleIsNotAntiparticle )
           // if the electroweakino is an antiparticle, we swap the charges.
         {
@@ -425,6 +436,17 @@ namespace LHC_FASER
                                       int const numberOfNegativeMuons,
                                       int const numberOfPositiveMuons )
       {
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "fullCascadeType::squarkDirectlyToElectroweakType::supType::"
+        << "getCombinedAcceptance( " << acceptanceCuts << ", "
+        << numberOfAdditionalJets << ", " << numberOfNegativeElectrons << ", "
+        << numberOfPositiveElectrons << ", " << numberOfNegativeMuons << ", "
+        << numberOfPositiveMuons << " ) called."
+        << " maximumSmFermionsFromElectroweakCascades = "
+        << maximumSmFermionsFromElectroweakCascades;
+        std::cout << std::endl;**/
         if( ( 0 > numberOfAdditionalJets )
             ||
             ( 0 > numberOfNegativeElectrons )
@@ -465,6 +487,38 @@ namespace LHC_FASER
                        0 <= ewinoPositiveMuons;
                        --ewinoPositiveMuons )
                   {
+                    // debugging:
+                    /**std::cout << std::endl << "debugging:"
+                    << std::endl
+                    << "ewinoWithWCascades->getAcceptance( "
+                    << acceptanceCuts << ", " << ewinoJets << ", "
+                    << ewinoNegativeElectrons << ", " << ewinoPositiveElectrons
+                    << ", " << ewinoNegativeMuons << ", " << ewinoPositiveMuons
+                    << " ) = "
+                    << ewinoWithWCascades->getAcceptance( acceptanceCuts,
+                                                          ewinoJets,
+                                                        ewinoNegativeElectrons,
+                                                        ewinoPositiveElectrons,
+                                                          ewinoNegativeMuons,
+                                                         ewinoPositiveMuons )
+                    << std::endl
+                    << "bosonCascades->getAcceptance( "
+                    << acceptanceCuts << ", "
+                    << ( numberOfAdditionalJets - ewinoJets ) << ", "
+                    << ( numberOfNegativeElectrons - ewinoNegativeElectrons )
+                    << ", "
+                    << ( numberOfPositiveElectrons - ewinoPositiveElectrons )
+                    << ", " << ( numberOfNegativeMuons - ewinoNegativeMuons )
+                    << ", " << ( numberOfPositiveMuons - ewinoPositiveMuons )
+                    << " ) = "
+                    << bosonCascades->getAcceptance( acceptanceCuts,
+                                        ( numberOfAdditionalJets - ewinoJets ),
+                        ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
+                        ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
+                                ( numberOfNegativeMuons - ewinoNegativeMuons ),
+                              ( numberOfPositiveMuons - ewinoPositiveMuons ) );
+                    std::cout << std::endl;**/
+
                     returnDouble
                     += ( ewinoWithWCascades->getAcceptance( acceptanceCuts,
                                                             ewinoJets,
@@ -555,8 +609,8 @@ namespace LHC_FASER
       {
         return ( 0.5 * ( ewinoCascades->getAcceptance( acceptanceCuts,
                                                        numberOfAdditionalJets,
-                                                       numberOfNegativeElectrons,
-                                                       numberOfPositiveElectrons,
+                                                     numberOfNegativeElectrons,
+                                                     numberOfPositiveElectrons,
                                                        numberOfNegativeMuons,
                                                        numberOfPositiveMuons )
                          + ewinoCascades->getAcceptance( acceptanceCuts,
@@ -657,6 +711,35 @@ namespace LHC_FASER
       }
       else
       {
+        /* we have to rearrange the number of charges of lepton sought based on
+         * bosonCascades assuming a positively-charged W boson.
+         * sup decaying:
+         * initialSparticleIsNotAntiparticle = true,
+         * bosonFlipsCharge = false
+         * -> charges left alone, no problem for subsequent sdown.
+         * antisup decaying:
+         * initialSparticleIsNotAntiparticle = false,
+         * bosonFlipsCharge = false
+         * -> charges flipped, no problem for subsequent sdown
+         * (e.g. 2 positive muons sought from antisup & subsequent antisdown ->
+         * 2 negative muons sought from W^+ & subsequent sdown).
+         * sdown decaying:
+         * initialSparticleIsNotAntiparticle = true,
+         * bosonFlipsCharge = true
+         * -> charges flipped, subsequent sup must flip charges again
+         * (e.g. 2 positive muons sought from antisdown & subsequent antisup ->
+         * 2 negative muons sought from W^+ & subsequent antisup ->
+         * positive muons again sought from sup).
+         * antisup decaying:
+         * initialSparticleIsNotAntiparticle = false,
+         * bosonFlipsCharge = true
+         * -> charges left alone, subsequent sup must flip charges
+         * (e.g. 2 positive muons sought from antisdown & subsequent antisup ->
+         * 2 positive muons sought from W^+ & subsequent antisup -> negative
+         * muons sought from sup).
+         * (above is fine for sdown decaying by Z or spin-0, since those cases
+         * have bosonFlipsCharge = false.)
+         */
         if( ( initialSparticleIsNotAntiparticle
               &&
               bosonFlipsCharge )
@@ -701,16 +784,20 @@ namespace LHC_FASER
                         ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
                                 ( numberOfNegativeMuons - ewinoNegativeMuons ),
                                ( numberOfPositiveMuons - ewinoPositiveMuons ) )
-                     * subcascadePointer->getAcceptance(
-                                             initialSparticleIsNotAntiparticle,
+                     * subcascadePointer->getAcceptance( !bosonFlipsCharge,
                                                          acceptanceCuts,
                                                          ewinoJets,
                                                         ewinoNegativeElectrons,
                                                         ewinoPositiveElectrons,
                                                          ewinoNegativeMuons,
                                                         ewinoPositiveMuons ) );
-                // in the used conventions, an incoming squark decays to a
-                // boson plus a squark, hence the same bool is used for both.
+                /* in the used conventions, an incoming squark decays to a
+                 * boson plus a squark, hence the same bool is used for both.
+                 * also, initialSparticleIsNotAntiparticle was used to swap the
+                 * numbers of charged leptons sought, & now should be replaced
+                 * by the opposite of bosonFlipsCharge, for reasons outlined
+                 * above.
+                 */
                 }  // end of loop over positive electrons.
               }  // end of loop over negative muons.
             }  // end of loop over positive electrons.
@@ -843,7 +930,7 @@ namespace LHC_FASER
           directFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
           wFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
           decayProductListIncludingW( 2,
-                                  CppSLHA::CppSLHA_global::really_wrong_value )
+                                      CppSLHA::PDG_code::W_plus )
       {
         // just an initialization list.
       }
@@ -868,6 +955,17 @@ namespace LHC_FASER
        * should be swapped if scoloredIsNotAntiparticle is false.
        */
       {
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "fullCascadeType::squarkByJetToCompound::supType::getAcceptance( "
+        << initialSparticleIsNotAntiparticle << ", " << acceptanceCuts << ", "
+        << numberOfAdditionalJets << ", " << numberOfNegativeElectrons << ", "
+        << numberOfPositiveElectrons << ", " << numberOfNegativeMuons << ", "
+        << numberOfPositiveMuons << " ) called. shouldUseDecaysWithW = "
+        << shouldUseDecaysWithW;
+        std::cout << std::endl;**/
+
         if( !initialSparticleIsNotAntiparticle )
           // if the electroweakino is an antiparticle, we swap the charges.
         {
@@ -889,14 +987,15 @@ namespace LHC_FASER
         }
         else
         {
-          return
-          subcascadePointer->getAcceptance( initialSparticleIsNotAntiparticle,
-                                            acceptanceCuts,
-                                            numberOfAdditionalJets,
-                                            numberOfNegativeElectrons,
-                                            numberOfPositiveElectrons,
-                                            numberOfNegativeMuons,
-                                            numberOfPositiveMuons );
+          return subcascadePointer->getAcceptance( true,
+                                                   acceptanceCuts,
+                                                   numberOfAdditionalJets,
+                                                   numberOfNegativeElectrons,
+                                                   numberOfPositiveElectrons,
+                                                   numberOfNegativeMuons,
+                                                   numberOfPositiveMuons );
+          // initialSparticleIsNotAntiparticle was used to swap the numbers of
+          // charged leptons sought, & now should be replaced by true.
         }
       }
 
@@ -963,6 +1062,42 @@ namespace LHC_FASER
       // this returns true if the decay involving a W boson is not negligible,
       // also setting up the relevant fractions, false otherwise.
       {
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "fullCascadeType::squarkByJetToCompound::supType::"
+        << "decayWithWIsNotNegligible() called. decayProductListIncludingW = ";
+        for( std::list< int >::iterator
+             codeIterator( decayProductListIncludingW.begin() );
+             decayProductListIncludingW.end() != codeIterator;
+             ++codeIterator )
+        {
+          std::cout << " " << *codeIterator;
+        }
+        std::cout
+        << std::endl
+        << "soughtDecayProductList = ";
+        for( std::list< int >::iterator
+             codeIterator( soughtDecayProductList.begin() );
+             soughtDecayProductList.end() != codeIterator;
+             ++codeIterator )
+        {
+          std::cout << " " << *codeIterator;
+        }
+        std::cout << std::endl;
+        std::cout
+        << std::endl
+        << "numerator = "
+        << initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                  &decayProductListIncludingW )
+        << std::endl
+        << "denominator = "
+        << initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                     &soughtDecayProductList );
+        std::cout << std::endl;**/
+
         wFraction = ( initialSparticle->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                   &decayProductListIncludingW )
@@ -1224,6 +1359,26 @@ namespace LHC_FASER
         }
         else
         {
+          // debugging:
+          /**std::cout << std::endl << "debugging:"
+          << std::endl
+          << "gluinoOrNeutralinoSet::getAcceptance( "
+          << initialSparticleIsNotAntiparticle << ", " << acceptanceCuts
+          << ", " << numberOfAdditionalJets << ", "
+          << numberOfNegativeElectrons << ", " << numberOfPositiveElectrons
+          << ", " << numberOfNegativeMuons << ", " << numberOfPositiveMuons
+          << " ) has subcascadePointer->getAcceptance( "
+          << initialSparticleIsNotAntiparticle << " ... ) = "
+          << subcascadePointer->getAcceptance(
+                                            initialSparticleIsNotAntiparticle,
+                                               acceptanceCuts,
+                                               numberOfAdditionalJets,
+                                               numberOfNegativeElectrons,
+                                               numberOfPositiveElectrons,
+                                               numberOfNegativeMuons,
+                                               numberOfPositiveMuons );
+          std::cout << std::endl;**/
+
           return
           ( 0.5 * ( subcascadePointer->getAcceptance(
                                              initialSparticleIsNotAntiparticle,
@@ -1234,7 +1389,7 @@ namespace LHC_FASER
                                                       numberOfNegativeMuons,
                                                       numberOfPositiveMuons )
                     + subcascadePointer->getAcceptance(
-                                             initialSparticleIsNotAntiparticle,
+                                            !initialSparticleIsNotAntiparticle,
                                                         acceptanceCuts,
                                                         numberOfAdditionalJets,
                                                      numberOfNegativeElectrons,
@@ -2226,6 +2381,14 @@ namespace LHC_FASER
                         beamEnergy ),
       cascadeSetList( cascadeOrderer.getSdownTypeCascades() )
   {
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "fullCascadeSetsForOneBeamEnergy::fullCascadeSetsForOneBeamEnergy( "
+    << inputShortcut << ", " << electroweakCascadeSource << ", " << beamEnergy
+    << " ) called.";
+    std::cout << std::endl;/**/
+
     for( std::vector< particlePointer >::const_iterator
          squarkIterator( inputShortcut->getSdownTypes()->begin() );
          inputShortcut->getSquarks()->end() > squarkIterator;
@@ -2281,6 +2444,13 @@ namespace LHC_FASER
                                                                &cascadeOrderer,
                                                                 beamEnergy ) );
     }
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "fullCascadeSetsForOneBeamEnergy::fullCascadeSetsForOneBeamEnergy( "
+    << inputShortcut << ", " << electroweakCascadeSource << ", " << beamEnergy
+    << " ) finished.";
+    std::cout << std::endl;/**/
   }
 
   fullCascadeSetsForOneBeamEnergy::~fullCascadeSetsForOneBeamEnergy()
@@ -2437,6 +2607,5 @@ namespace LHC_FASER
     }
     return returnPointer;
   }
-
 
 }  // end of LHC_FASER namespace.

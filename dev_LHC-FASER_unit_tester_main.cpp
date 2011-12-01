@@ -475,7 +475,7 @@ int main( int argumentCount,
   signalTimers.push_back( new lhcFaserTimer( "SPS3_spectrum.out",
                                              &testLhcFaser,
                                              &signalVector ) );
-  /*signalTimers.push_back( new lhcFaserTimer( "SPS4_spectrum.out",
+  *//*signalTimers.push_back( new lhcFaserTimer( "SPS4_spectrum.out",
                                              &testLhcFaser,
                                              &signalVector ) );*//*
   // SPS4 is borked.

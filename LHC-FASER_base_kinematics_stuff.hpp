@@ -80,10 +80,10 @@ namespace LHC_FASER
   {
   public:
     acceptanceCutSet();
-    // this constructor sets the acceptancesPerCutSet to -1.0, which is the default
+    // this constructor sets the acceptances to -1.0, which is the default
     // "unset" value.
     acceptanceCutSet( acceptanceCutSet const* const copySource );
-    // this constructor copies the acceptancesPerCutSet from a given acceptanceCutSet.
+    // this constructor copies the acceptances from a given acceptanceCutSet.
     virtual
     ~acceptanceCutSet();
 
