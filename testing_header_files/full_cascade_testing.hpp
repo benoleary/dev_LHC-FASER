@@ -557,7 +557,7 @@ namespace LHC_FASER
                                             0 );
       std::cout
       << std::endl
-      << "testSbWMFullCascade seems OK (~10% for W^- to pass e^-, ~3%"
+      << "testSbWMFullCascade seems OK (~10% for W^- to pass e^-, ~4%"
       << " for chargino as shown by testStXOneFullCascade).";
       std::cout << std::endl;
       std::cout << std::endl;

@@ -67,39 +67,39 @@ namespace LHC_FASER
                                                double const upperLeftValue )
   {
     if( 0.0 == xFraction )
-      {
-        return unitLinearInterpolation( yFraction,
-                                        lowerLeftValue,
-                                        upperLeftValue );
-      }
+    {
+      return unitLinearInterpolation( yFraction,
+                                      lowerLeftValue,
+                                      upperLeftValue );
+    }
     else if( 1.0 == xFraction )
-      {
-        return unitLinearInterpolation( yFraction,
-                                        lowerRightValue,
-                                        upperRightValue );
-      }
+    {
+      return unitLinearInterpolation( yFraction,
+                                      lowerRightValue,
+                                      upperRightValue );
+    }
     else if( 0.0 == yFraction )
-      {
-        return unitLinearInterpolation( xFraction,
-                                        lowerLeftValue,
-                                        lowerRightValue );
-      }
+    {
+      return unitLinearInterpolation( xFraction,
+                                      lowerLeftValue,
+                                      lowerRightValue );
+    }
     else if( 1.0 == yFraction )
-      {
-        return unitLinearInterpolation( xFraction,
-                                        upperLeftValue,
-                                        upperRightValue );
-      }
+    {
+      return unitLinearInterpolation( xFraction,
+                                      upperLeftValue,
+                                      upperRightValue );
+    }
     else
-      {
-        return unitLinearInterpolation( xFraction,
-                                        unitLinearInterpolation( yFraction,
-                                                                lowerLeftValue,
+    {
+      return unitLinearInterpolation( xFraction,
+                                      unitLinearInterpolation( yFraction,
+                                                               lowerLeftValue,
                                                               upperLeftValue ),
-                                        unitLinearInterpolation( yFraction,
+                                      unitLinearInterpolation( yFraction,
                                                                lowerRightValue,
                                                            upperRightValue ) );
-      }
+    }
   }
 
   // this is where we decide what value marks when we throw away cascades
@@ -139,94 +139,93 @@ namespace LHC_FASER
          observerBoolsForReadierExistence.end() != observerIterator;
          ++observerIterator )
       // go through the list of observed bools...
-      {
-        *(*observerIterator) = false;
-        // this should let any remaining observers know that they should *not*
-        // attempt to de-register themselves from this readierForNewPoint.
-      }
+    {
+      *(*observerIterator) = false;
+      // this should let any remaining observers know that they should *not*
+      // attempt to de-register themselves from this readierForNewPoint.
+    }
   }
 
 
   void
   readierForNewPoint::removeMe( bool* observerBoolForReadierExistence,
                                 bool* observerBoolForReadying )
-  /* this removes the observer from the readierPointer's list of observers which is
-   * used when the readierPointer's destructor is called to let the observers know
-   * to stop asking to be reset.
+  /* this removes the observer from the readierPointer's list of observers
+   * which is used when the readierPointer's destructor is called to let the
+   * observers know to stop asking to be reset.
    */
   {
     bool notFoundRequested( true );
     for( std::list< bool* >::iterator
          boolIterator( observerBoolsForReadierExistence.begin() );
-         ( ( observerBoolsForReadierExistence.end() != boolIterator )
+         ( notFoundRequested
            &&
-           notFoundRequested );
+           ( observerBoolsForReadierExistence.end() != boolIterator ) );
          ++boolIterator )
-      // look through the list for observer knowledge of readierPointer existence...
+      // look through the list for observer knowledge of readierPointer
+      // existence...
+    {
+      if( observerBoolForReadierExistence == *boolIterator )
+        // if we find the requested pointer...
       {
-        if( observerBoolForReadierExistence == *boolIterator )
-          // if we find the requested pointer...
-          {
-            boolIterator
-            = observerBoolsForReadierExistence.erase( boolIterator );
-            // remove the requested pointer from the list.
-            notFoundRequested = false;
-            // stop looking (there should only be 1 instance of this pointer).
-          }
+        boolIterator = observerBoolsForReadierExistence.erase( boolIterator );
+        // remove the requested pointer from the list.
+        notFoundRequested = false;
+        // stop looking (there should only be 1 instance of this pointer).
       }
+    }
     notFoundRequested = true;
     for( std::list< bool* >::iterator
          boolIterator( observerBoolsForReadying.begin() );
-         ( ( observerBoolsForReadying.end() != boolIterator )
+         ( notFoundRequested
            &&
-           notFoundRequested );
+           ( observerBoolsForReadying.end() != boolIterator ) );
          ++boolIterator )
       // look through the list for readying bools...
+    {
+      if( observerBoolForReadying == *boolIterator )
+        // if we find the requested pointer...
       {
-        if( observerBoolForReadying == *boolIterator )
-          // if we find the requested pointer...
-          {
-            boolIterator
-            = observerBoolsForReadying.erase( boolIterator );
-            // remove the requested pointer from the list.
-            notFoundRequested = true;
-            // stop looking (there should only be 1 instance of this pointer).
-          }
+        boolIterator = observerBoolsForReadying.erase( boolIterator );
+        // remove the requested pointer from the list.
+        notFoundRequested = true;
+        // stop looking (there should only be 1 instance of this pointer).
       }
+    }
   }
 
 
 
   getsReadiedForNewPoint::getsReadiedForNewPoint(
-                                          readierForNewPoint* const readier ) :
+                                   readierForNewPoint* const readierPointer ) :
     needsToPrepare( true ),
     readierStillExists( true ),
-    readier( readier )
-  /* the constructor gives a pointer to a bool pair to given_readier which
-   * has acceptanceValues that given_readier changes. this object keeps a pointer to
-   * given_readier so that it can de-register when its destructor is called.
+    readierPointer( readierPointer )
+  /* the constructor gives a pointer to a bool pair to readierPointer which
+   * has values that readierPointer changes. this object keeps a pointer to
+   * readierPointer so that it can de-register when its destructor is called.
    */
   {
-    readier->includeMe( &readierStillExists );
+    readierPointer->includeMe( &readierStillExists );
   }
 
   getsReadiedForNewPoint::~getsReadiedForNewPoint()
-  // the destructor tells readierPointer, if it still exists, to stop modifying its
-  // bools.
+  // the destructor tells readierPointer, if it still exists, to stop modifying
+  // its bools.
   {
     if( readierStillExists )
       // if the readierPointer still exists...
-      {
-        readier->removeMe( &readierStillExists,
-                           &needsToPrepare );
-      }
+    {
+      readierPointer->removeMe( &readierStillExists,
+                                &needsToPrepare );
+    }
   }
 
 
 
   publicGetsReadiedForNewPoint::publicGetsReadiedForNewPoint(
-                                          readierForNewPoint* const readier ) :
-    getsReadiedForNewPoint( readier )
+                                   readierForNewPoint* const readierPointer ) :
+    getsReadiedForNewPoint( readierPointer )
   {
     // just an initialization of the base class.
   }
@@ -235,5 +234,6 @@ namespace LHC_FASER
   {
     // does nothing.
   }
+
 }  // end of LHC_FASER namespace.
 

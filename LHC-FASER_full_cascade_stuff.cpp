@@ -57,6 +57,9 @@
 
 namespace LHC_FASER
 {
+  int const fullCascade::maximumJetsFromEwCascade( 2 );
+  int const fullCascade::maximumLeptonsOfEachTypeFromEwCascade( 1 );
+
   fullCascade::fullCascade( colorfulCascadeType const typeOfColorfulCascade,
                             int const firstDecayBodyNumber,
                             int const maximumSmFermionsFromElectroweakCascades,
@@ -757,23 +760,33 @@ namespace LHC_FASER
           numberOfNegativeMuons = swappingInt;
         }
         double returnDouble( 0.0 );
-        for( int ewinoJets( numberOfAdditionalJets );
+        for( int
+            ewinoJets( lhcFaserGlobal::smallerInteger( numberOfAdditionalJets,
+                                                  maximumJetsFromEwCascade ) );
              0 <= ewinoJets;
              --ewinoJets )
         {
-          for( int ewinoNegativeElectrons( numberOfNegativeElectrons );
+          for( int ewinoNegativeElectrons( lhcFaserGlobal::smallerInteger(
+                                                     numberOfNegativeElectrons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                0 <= ewinoNegativeElectrons;
                --ewinoNegativeElectrons )
           {
-            for( int ewinoPositiveElectrons( numberOfPositiveElectrons );
+            for( int ewinoPositiveElectrons( lhcFaserGlobal::smallerInteger(
+                                                     numberOfPositiveElectrons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                  0 <= ewinoPositiveElectrons;
                  --ewinoPositiveElectrons )
             {
-              for( int ewinoNegativeMuons( numberOfNegativeMuons );
+              for( int ewinoNegativeMuons( lhcFaserGlobal::smallerInteger(
+                                                         numberOfNegativeMuons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                    0 <= ewinoNegativeMuons;
                    --ewinoNegativeMuons )
               {
-                for( int ewinoPositiveMuons( numberOfPositiveMuons );
+                for( int ewinoPositiveMuons( lhcFaserGlobal::smallerInteger(
+                                                         numberOfPositiveMuons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                      0 <= ewinoPositiveMuons;
                      --ewinoPositiveMuons )
                 {
@@ -1006,14 +1019,16 @@ namespace LHC_FASER
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
       {
-        /* if there is no possibility of extra jets from a boson decay, we can
-         * only get a single OSSF-OSDF pair from an electroweakino decay, which
-         * cannot produce additional jets.
-         */
-        if( shouldUseDecaysWithW )
+        if( 0 <= numberOfAdditionalJets )
         {
-          return ( ( wFraction
-                     * ( ( bosonCascades->getAcceptance( acceptanceCuts,
+          /* if there is no possibility of extra jets from a boson decay, we
+           * can only get a single OSSF-OSDF pair from an electroweakino decay,
+           * which cannot produce additional jets.
+           */
+          if( shouldUseDecaysWithW )
+          {
+            double
+            wContribution( bosonCascades->getAcceptance( acceptanceCuts,
                                                          0,
                                                          0,
                                                          0,
@@ -1021,35 +1036,38 @@ namespace LHC_FASER
                                                          0 )
                         * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
                                                                 acceptanceCuts,
-                                                     numberOfAdditionalJets ) )
-                         + ( bosonCascades->getAcceptance( acceptanceCuts,
-                                                           1,
-                                                           0,
-                                                           0,
-                                                           0,
-                                                           0 )
-                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                    numberOfAdditionalJets ) );
+            // first the contribution of no jets from the boson is worked out,
+            // then any contributions
+            for( int jetCounter( lhcFaserGlobal::smallerInteger(
+                                                        numberOfAdditionalJets,
+                                                  maximumJetsFromEwCascade ) );
+                 0 < jetCounter;
+                 --jetCounter )
+            {
+              wContribution
+              += ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                 jetCounter,
+                                                 0,
+                                                 0,
+                                                 0,
+                                                 0 )
+                   * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
                                                                 acceptanceCuts,
-                                             ( numberOfAdditionalJets - 1 ) ) )
-                         + ( bosonCascades->getAcceptance( acceptanceCuts,
-                                                           2,
-                                                           0,
-                                                           0,
-                                                           0,
-                                                           0 )
+                                   ( numberOfAdditionalJets - jetCounter ) ) );
+            }
+            return ( ( wFraction * wContribution )
+                     + ( directFraction
                         * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
-                                                                acceptanceCuts,
-                                         ( numberOfAdditionalJets - 2 ) ) ) ) )
-                   + ( directFraction
-                       * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
                                                                 acceptanceCuts,
                                                   numberOfAdditionalJets ) ) );
-        }
-        else if( 0 <= numberOfAdditionalJets )
-        {
-          return subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+          }
+          else
+          {
+            return subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
                                                                 acceptanceCuts,
                                                       numberOfAdditionalJets );
+          }
         }
         else
         {
@@ -1150,36 +1168,46 @@ namespace LHC_FASER
         }
         else
         {
-          double returnDouble( 0.0 );
-          for( int ewinoJets( numberOfAdditionalJets );
+          double wContribution( 0.0 );
+          for( int ewinoJets( lhcFaserGlobal::smallerInteger(
+                                                        numberOfAdditionalJets,
+                                                  maximumJetsFromEwCascade ) );
                0 <= ewinoJets;
                --ewinoJets )
           {
-            for( int ewinoNegativeElectrons( numberOfNegativeElectrons );
+            for( int ewinoNegativeElectrons( lhcFaserGlobal::smallerInteger(
+                                                     numberOfNegativeElectrons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                  0 <= ewinoNegativeElectrons;
                  --ewinoNegativeElectrons )
             {
-              for( int ewinoPositiveElectrons( numberOfPositiveElectrons );
+              for( int ewinoPositiveElectrons( lhcFaserGlobal::smallerInteger(
+                                                     numberOfPositiveElectrons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                    0 <= ewinoPositiveElectrons;
                    --ewinoPositiveElectrons )
               {
-                for( int ewinoNegativeMuons( numberOfNegativeMuons );
+                for( int ewinoNegativeMuons( lhcFaserGlobal::smallerInteger(
+                                                         numberOfNegativeMuons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                      0 <= ewinoNegativeMuons;
                      --ewinoNegativeMuons )
                 {
-                  for( int ewinoPositiveMuons( numberOfPositiveMuons );
+                  for( int ewinoPositiveMuons( lhcFaserGlobal::smallerInteger(
+                                                         numberOfPositiveMuons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                        0 <= ewinoPositiveMuons;
                        --ewinoPositiveMuons )
                   {
-                    returnDouble
-                    += ( subcascadePointer->getAcceptance( true,
-                                                           acceptanceCuts,
-                                                           ewinoJets,
-                                                        ewinoNegativeElectrons,
-                                                        ewinoPositiveElectrons,
-                                                           ewinoNegativeMuons,
-                                                           ewinoPositiveMuons )
-                         * bosonCascades->getAcceptance( acceptanceCuts,
+                    wContribution
+                    += ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                       ewinoJets,
+                                                       ewinoNegativeElectrons,
+                                                       ewinoPositiveElectrons,
+                                                       ewinoNegativeMuons,
+                                                       ewinoPositiveMuons )
+                         * subcascadePointer->getAcceptance( true,
+                                                             acceptanceCuts,
                                         ( numberOfAdditionalJets - ewinoJets ),
                         ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
                         ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
@@ -1190,15 +1218,15 @@ namespace LHC_FASER
               }  // end of loop over positive electrons.
             }  // end of loop over negative electrons.
           }  // end of loop over jets.
-          return ( wFraction * returnDouble
-                   + directFraction
-                     * subcascadePointer->getAcceptance( true,
-                                                         acceptanceCuts,
+          return ( ( wFraction * wContribution )
+                   + ( directFraction
+                       * subcascadePointer->getAcceptance( true,
+                                                           acceptanceCuts,
                                                         numberOfAdditionalJets,
                                                      numberOfNegativeElectrons,
                                                      numberOfPositiveElectrons,
                                                          numberOfNegativeMuons,
-                                                     numberOfPositiveMuons ) );
+                                                   numberOfPositiveMuons ) ) );
         }  // end of if number of SM fermions was in the allowed range.
       }
 
@@ -1235,50 +1263,55 @@ namespace LHC_FASER
     // this should add up all combinations of jets while looking only for
     // one OSSF-OSDF pair.
     {
-      /* if there is no possibility of extra jets from a boson decay, we can
-       * only get a single OSSF-OSDF pair from an electroweakino decay, which
-       * cannot produce additional jets.
-       */
-      if( shouldUseDecaysWithW )
+      if( 0 <= numberOfAdditionalJets )
       {
-        return ( ( wFraction
-                   * ( ( bosonCascades->getAcceptance( acceptanceCuts,
+        /* if there is no possibility of extra jets from a boson decay, we
+         * can only get a single OSSF-OSDF pair from an electroweakino decay,
+         * which cannot produce additional jets.
+         */
+        if( shouldUseDecaysWithW )
+        {
+          double
+          wContribution( bosonCascades->getAcceptance( acceptanceCuts,
                                                        0,
                                                        0,
                                                        0,
                                                        0,
                                                        0 )
-                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
-                                                                acceptanceCuts,
-                                                     numberOfAdditionalJets ) )
-                       + ( bosonCascades->getAcceptance( acceptanceCuts,
-                                                         1,
-                                                         0,
-                                                         0,
-                                                         0,
-                                                         0 )
-                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
-                                                                acceptanceCuts,
-                                             ( numberOfAdditionalJets - 1 ) ) )
-                       + ( bosonCascades->getAcceptance( acceptanceCuts,
-                                                         2,
-                                                         0,
-                                                         0,
-                                                         0,
-                                                         0 )
-                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
-                                                                acceptanceCuts,
-                                         ( numberOfAdditionalJets - 2 ) ) ) ) )
-                 + ( directFraction
-                     * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
-                                                                acceptanceCuts,
-                                                  numberOfAdditionalJets ) ) );
-      }
-      else if( 0 <= numberOfAdditionalJets )
-      {
-        return subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                      * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                              acceptanceCuts,
+                                                  numberOfAdditionalJets ) );
+          // first the contribution of no jets from the boson is worked out,
+          // then any contributions
+          for( int jetCounter( lhcFaserGlobal::smallerInteger(
+                                                      numberOfAdditionalJets,
+                                                maximumJetsFromEwCascade ) );
+               0 < jetCounter;
+               --jetCounter )
+          {
+            wContribution
+            += ( bosonCascades->getAcceptance( acceptanceCuts,
+                                               jetCounter,
+                                               0,
+                                               0,
+                                               0,
+                                               0 )
+                 * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                              acceptanceCuts,
+                                 ( numberOfAdditionalJets - jetCounter ) ) );
+          }
+          return ( ( wFraction * wContribution )
+                   + ( directFraction
+                      * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                              acceptanceCuts,
+                                                numberOfAdditionalJets ) ) );
+        }
+        else
+        {
+          return subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
                                                               acceptanceCuts,
                                                     numberOfAdditionalJets );
+        }
       }
       else
       {
@@ -1380,22 +1413,20 @@ namespace LHC_FASER
           std::cout << std::endl;**/
 
           return
-          ( 0.5 * ( subcascadePointer->getAcceptance(
-                                             initialSparticleIsNotAntiparticle,
+          ( 0.5 * ( subcascadePointer->getAcceptance( true,
                                                       acceptanceCuts,
                                                       numberOfAdditionalJets,
                                                      numberOfNegativeElectrons,
                                                      numberOfPositiveElectrons,
                                                       numberOfNegativeMuons,
                                                       numberOfPositiveMuons )
-                    + subcascadePointer->getAcceptance(
-                                            !initialSparticleIsNotAntiparticle,
+                    + subcascadePointer->getAcceptance( true,
                                                         acceptanceCuts,
                                                         numberOfAdditionalJets,
-                                                     numberOfNegativeElectrons,
                                                      numberOfPositiveElectrons,
-                                                        numberOfNegativeMuons,
-                                                   numberOfPositiveMuons ) ) );
+                                                     numberOfNegativeElectrons,
+                                                        numberOfPositiveMuons,
+                                                   numberOfNegativeMuons ) ) );
         }
       }
 
@@ -1458,23 +1489,33 @@ namespace LHC_FASER
         else
         {
           double returnDouble( 0.0 );
-          for( int ewinoJets( numberOfAdditionalJets );
+          for( int ewinoJets( lhcFaserGlobal::smallerInteger(
+                                                        numberOfAdditionalJets,
+                                                  maximumJetsFromEwCascade ) );
                0 <= ewinoJets;
                --ewinoJets )
           {
-            for( int ewinoNegativeElectrons( numberOfNegativeElectrons );
+            for( int ewinoNegativeElectrons( lhcFaserGlobal::smallerInteger(
+                                                     numberOfNegativeElectrons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                  0 <= ewinoNegativeElectrons;
                  --ewinoNegativeElectrons )
             {
-              for( int ewinoPositiveElectrons( numberOfPositiveElectrons );
+              for( int ewinoPositiveElectrons( lhcFaserGlobal::smallerInteger(
+                                                     numberOfPositiveElectrons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                    0 <= ewinoPositiveElectrons;
                    --ewinoPositiveElectrons )
               {
-                for( int ewinoNegativeMuons( numberOfNegativeMuons );
+                for( int ewinoNegativeMuons( lhcFaserGlobal::smallerInteger(
+                                                         numberOfNegativeMuons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                      0 <= ewinoNegativeMuons;
                      --ewinoNegativeMuons )
                 {
-                  for( int ewinoPositiveMuons( numberOfPositiveMuons );
+                  for( int ewinoPositiveMuons( lhcFaserGlobal::smallerInteger(
+                                                         numberOfPositiveMuons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                        0 <= ewinoPositiveMuons;
                        --ewinoPositiveMuons )
                   {
@@ -1484,28 +1525,26 @@ namespace LHC_FASER
                      * numbers, but this way seems simpler):
                      */
                     returnDouble
-                    += ( 0.5 * ( subcascadePointer->getAcceptance( true,
-                                                                acceptanceCuts,
-                                                                   ewinoJets,
+                    += ( 0.5 * ( bosonCascades->getAcceptance( acceptanceCuts,
+                                                               ewinoJets,
                                                         ewinoNegativeElectrons,
                                                         ewinoPositiveElectrons,
                                                             ewinoNegativeMuons,
                                                            ewinoPositiveMuons )
-                                 * bosonCascades->getAcceptance(
+                                 * subcascadePointer->getAcceptance( true,
                                                                 acceptanceCuts,
                                         ( numberOfAdditionalJets - ewinoJets ),
                         ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
                         ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
                                 ( numberOfNegativeMuons - ewinoNegativeMuons ),
                                ( numberOfPositiveMuons - ewinoPositiveMuons ) )
-                                 + subcascadePointer->getAcceptance( true,
-                                                                acceptanceCuts,
+                                 + bosonCascades->getAcceptance( acceptanceCuts,
                                                                      ewinoJets,
                                                         ewinoPositiveElectrons,
                                                         ewinoNegativeElectrons,
                                                             ewinoPositiveMuons,
                                                            ewinoNegativeMuons )
-                                   * bosonCascades->getAcceptance(
+                                   * subcascadePointer->getAcceptance( true,
                                                                 acceptanceCuts,
                                         ( numberOfAdditionalJets - ewinoJets ),
                         ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
@@ -1517,22 +1556,22 @@ namespace LHC_FASER
               }  // end of loop over positive electrons.
             }  // end of loop over negative electrons.
           }  // end of loop over jets.
-          return ( wFraction * returnDouble
-                   + directFraction * 0.5
-                     * ( subcascadePointer->getAcceptance( true,
-                                                           acceptanceCuts,
+          return ( ( wFraction * returnDouble )
+                   + ( directFraction * 0.5
+                       * ( subcascadePointer->getAcceptance( true,
+                                                             acceptanceCuts,
                                                         numberOfAdditionalJets,
                                                      numberOfNegativeElectrons,
                                                      numberOfPositiveElectrons,
                                                          numberOfNegativeMuons,
                                                         numberOfPositiveMuons )
-                         + subcascadePointer->getAcceptance( true,
-                                                             acceptanceCuts,
+                           + subcascadePointer->getAcceptance( true,
+                                                               acceptanceCuts,
                                                         numberOfAdditionalJets,
                                                      numberOfPositiveElectrons,
                                                      numberOfNegativeElectrons,
                                                          numberOfPositiveMuons,
-                                                   numberOfNegativeMuons ) ) );
+                                                 numberOfNegativeMuons ) ) ) );
         }  // end of if number of SM fermions was in the allowed range.
       }
 
@@ -1706,23 +1745,33 @@ namespace LHC_FASER
         else
         {
           double returnDouble( 0.0 );
-          for( int ewinoJets( numberOfAdditionalJets );
+          for( int ewinoJets( lhcFaserGlobal::smallerInteger(
+                                                        numberOfAdditionalJets,
+                                                  maximumJetsFromEwCascade ) );
                0 <= ewinoJets;
                --ewinoJets )
           {
-            for( int ewinoNegativeElectrons( numberOfNegativeElectrons );
+            for( int ewinoNegativeElectrons( lhcFaserGlobal::smallerInteger(
+                                                     numberOfNegativeElectrons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                  0 <= ewinoNegativeElectrons;
                  --ewinoNegativeElectrons )
             {
-              for( int ewinoPositiveElectrons( numberOfPositiveElectrons );
+              for( int ewinoPositiveElectrons( lhcFaserGlobal::smallerInteger(
+                                                     numberOfPositiveElectrons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                    0 <= ewinoPositiveElectrons;
                    --ewinoPositiveElectrons )
               {
-                for( int ewinoNegativeMuons( numberOfNegativeMuons );
+                for( int ewinoNegativeMuons( lhcFaserGlobal::smallerInteger(
+                                                         numberOfNegativeMuons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                      0 <= ewinoNegativeMuons;
                      --ewinoNegativeMuons )
                 {
-                  for( int ewinoPositiveMuons( numberOfPositiveMuons );
+                  for( int ewinoPositiveMuons( lhcFaserGlobal::smallerInteger(
+                                                         numberOfPositiveMuons,
+                                     maximumLeptonsOfEachTypeFromEwCascade ) );
                        0 <= ewinoPositiveMuons;
                        --ewinoPositiveMuons )
                   {
@@ -1731,24 +1780,24 @@ namespace LHC_FASER
                            * subcascadePointer->getAcceptance( false,
                                                                acceptanceCuts,
                                                                ewinoJets,
-                                                        ewinoNegativeElectrons,
-                                                        ewinoPositiveElectrons,
-                                                            ewinoNegativeMuons,
-                                                           ewinoPositiveMuons )
+                        ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
+                        ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
+                                ( numberOfNegativeMuons - ewinoNegativeMuons ),
+                               ( numberOfPositiveMuons - ewinoPositiveMuons ) )
                            + antisquarkWithWFraction
                              * subcascadePointer->getAcceptance( false,
                                                                 acceptanceCuts,
                                                                  ewinoJets,
-                                                        ewinoNegativeElectrons,
-                                                        ewinoPositiveElectrons,
-                                                            ewinoNegativeMuons,
-                                                         ewinoPositiveMuons ) )
-                         * bosonCascades->getAcceptance( acceptanceCuts,
-                                        ( numberOfAdditionalJets - ewinoJets ),
                         ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
                         ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
                                 ( numberOfNegativeMuons - ewinoNegativeMuons ),
-                            ( numberOfPositiveMuons - ewinoPositiveMuons ) ) );
+                             ( numberOfPositiveMuons - ewinoPositiveMuons ) ) )
+                         * bosonCascades->getAcceptance( acceptanceCuts,
+                                        ( numberOfAdditionalJets - ewinoJets ),
+                                                        ewinoNegativeElectrons,
+                                                        ewinoPositiveElectrons,
+                                                        ewinoNegativeMuons,
+                                                        ewinoPositiveMuons ) );
                   }  // end of loop over positive electrons.
                 }  // end of loop over negative muons.
               }  // end of loop over positive electrons.
@@ -2386,7 +2435,8 @@ namespace LHC_FASER
     << std::endl
     << "fullCascadeSetsForOneBeamEnergy::fullCascadeSetsForOneBeamEnergy( "
     << inputShortcut << ", " << electroweakCascadeSource << ", " << beamEnergy
-    << " ) called.";
+    << " ) called. cascadeSetList = " << cascadeSetList
+    << ", cascadeSetList->size() = " << cascadeSetList->size();
     std::cout << std::endl;/**/
 
     for( std::vector< particlePointer >::const_iterator
@@ -2402,6 +2452,13 @@ namespace LHC_FASER
                                                              &gluinoCascadeSet,
                                                                 beamEnergy ) );
     }
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "after adding sdown-types, cascadeSetList->size() = "
+    << cascadeSetList->size();
+    std::cout << std::endl;/**/
+
     cascadeSetList = cascadeOrderer.getSupTypeCascades();
     for( std::vector< particlePointer >::const_iterator
          squarkIterator( inputShortcut->getSupTypes()->begin() );

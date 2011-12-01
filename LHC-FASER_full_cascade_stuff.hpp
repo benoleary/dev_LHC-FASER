@@ -231,6 +231,9 @@ namespace LHC_FASER
 
 
   protected:
+    static int const maximumJetsFromEwCascade;
+    static int const maximumLeptonsOfEachTypeFromEwCascade;
+
     inputHandler const* inputShortcut;
     particlePointer initialSparticle;
     double beamEnergy;

@@ -79,20 +79,26 @@ namespace LHC_FASER
     static double
     unitLinearInterpolation( double const xFraction,
                              double const leftValue,
-                             double const rightValue )
-    // this does a linear interpolation from the acceptanceValues at the given 2
+                             double const rightValue );
+    // this does a linear interpolation from the values at the given 2
     // ends of a unit line segment for the given point in the segment.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     static double
     squareBilinearInterpolation( double const xFraction,
                                  double const yFraction,
                                  double const lowerLeftValue,
                                  double const lowerRightValue,
                                  double const upperRightValue,
-                                 double const upperLeftValue )
-    // this does a bilinear interpolation from the acceptanceValues at the given 4
+                                 double const upperLeftValue );
+    // this does a bilinear interpolation from the values at the given 4
     // corners of a unit square for the given point in the unit square.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    static int
+    smallerInteger( int const firstInteger,
+                    int const secondInteger );
+    // this returns the smaller of the 2 given integers.
+    static int
+    largerInteger( int const firstInteger,
+                   int const secondInteger );
+    // this returns the larger of the 2 given integers.
 
     static double const negligibleBr;
     // this is what we use to decide when we throw away cascades because the
@@ -114,34 +120,28 @@ namespace LHC_FASER
   class readierForNewPoint
   {
   public:
-    readierForNewPoint()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~readierForNewPoint()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    readierForNewPoint();
+    ~readierForNewPoint();
 
     void
-    includeMe( bool* observerBoolForReadierExistence )
-    // this registers the observer so that the readierPointer's destructor can let
-    // the observer know that the readierPointer is retiring.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    includeMe( bool* observerBoolForReadierExistence );
+    // this registers the observer so that the readier's destructor can let
+    // the observer know that the readier is retiring.
     void
     removeMe( bool* observerBoolForReadierExistence,
-              bool* observerBoolForReadying )
-    /* this removes the observer from the readierPointer's list of observers which is
-     * used when the readierPointer's destructor is called to let the observers know
+              bool* observerBoolForReadying );
+    /* this removes the observer from the readier's list of observers which is
+     * used when the readier's destructor is called to let the observers know
      * to stop asking to be reset.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    resetMeOnNextUpdate( bool* observerBoolForReadying )
+    resetMeOnNextUpdate( bool* observerBoolForReadying );
     // this adds a pointer from the observer to the list of bools to be set to
     // true with the next call of readyObserversForNewPoint().
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    readyObserversForNewPoint()
+    readyObserversForNewPoint();
     // this goes through the list of pointers to bools created by observers
     // calling resetMe() & sets all the bools to true.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     std::list< bool* > observerBoolsForReadying;
@@ -163,23 +163,21 @@ namespace LHC_FASER
   class getsReadiedForNewPoint
   {
   public:
-    getsReadiedForNewPoint( readierForNewPoint* const readier )
-    /* the constructor gives a pointer to a bool to given_readier which
-     * has a value that given_readier's destructor changes. this object keeps
-     * a pointer to given_readier so that it can de-register when its
+    getsReadiedForNewPoint( readierForNewPoint* const readierPointer );
+    /* the constructor gives a pointer to a bool to given readier which
+     * has a value that given readier's destructor changes. this object keeps
+     * a pointer to given readier so that it can de-register when its
      * destructor is called.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual
-    ~getsReadiedForNewPoint()
-    // the destructor tells readierPointer, if it still exists, to stop modifying its
-    // bool pointers.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~getsReadiedForNewPoint();
+    // the destructor tells readierPointer, if it still exists, to stop
+    // modifying its bool pointers.
 
   protected:
     bool needsToPrepare;
     bool readierStillExists;
-    readierForNewPoint* const readier;
+    readierForNewPoint* const readierPointer;
 
     bool
     needsToPrepareForThisPoint();
@@ -221,6 +219,36 @@ namespace LHC_FASER
    */
   {
     return ( leftValue + ( rightValue - leftValue ) * xFraction );
+  }
+
+  inline int
+  lhcFaserGlobal::smallerInteger( int const firstInteger,
+                                  int const secondInteger )
+  // this returns the smaller of the 2 given integers.
+  {
+    if( secondInteger < firstInteger )
+    {
+      return secondInteger;
+    }
+    else
+    {
+      return firstInteger;
+    }
+  }
+
+  inline int
+  lhcFaserGlobal::largerInteger( int const firstInteger,
+                                 int const secondInteger )
+  // this returns the larger of the 2 given integers.
+  {
+    if( secondInteger > firstInteger )
+    {
+      return secondInteger;
+    }
+    else
+    {
+      return firstInteger;
+    }
   }
 
 
@@ -273,7 +301,7 @@ namespace LHC_FASER
       if( readierStillExists )
         // if the readierPointer still exists...
       {
-        readier->resetMeOnNextUpdate( &needsToPrepare );
+        readierPointer->resetMeOnNextUpdate( &needsToPrepare );
       }
       return true;
     }
