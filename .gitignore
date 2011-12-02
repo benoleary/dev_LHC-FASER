@@ -1083,3 +1083,5 @@ Debug/LHC-FASER_base_electroweak_cascade_stuff.o
 Debug/LHC-FASER.o
 
 .gitignore
+
+Debug/LHC-FASER.o

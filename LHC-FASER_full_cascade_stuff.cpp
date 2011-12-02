@@ -1244,7 +1244,7 @@ namespace LHC_FASER
         directFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
         wFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
         decayProductListIncludingW( 2,
-                                  CppSLHA::CppSLHA_global::really_wrong_value )
+                                    CppSLHA::PDG_code::W_plus )
         // gjm also means that the initial decay is 2-body.
     {
       // just an initialization list.
@@ -1341,6 +1341,18 @@ namespace LHC_FASER
                                           fullCascade* const subcascadePointer,
           electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource )
       {
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "gluinoOrNeutralinoSet::setProperties( "
+        << *(initialSparticle->get_name()) << ", " << subcascadePointer;
+        if( NULL != subcascadePointer )
+        {
+          std::cout << " = [ " << subcascadePointer->getAsString() << " ]";
+        }
+        std::cout << ", " << electroweakCascadeSource << " ) called.";
+        std::cout << std::endl;**/
+
         this->initialSparticle = initialSparticle;
         this->electroweakCascadeSource = electroweakCascadeSource;
         buildOn( subcascadePointer );
@@ -1355,8 +1367,6 @@ namespace LHC_FASER
         if( inputShortcut->isIn( decayProductListIncludingW.front(),
                                  inputShortcut->getSupTypes() ) )
         {
-          decayProductListIncludingW.back()
-          = -(bosonCascades->getElectroweakDecayer()->get_PDG_code());
           shouldUseDecaysWithW = decayWithWIsNotNegligible();
         }
         else
@@ -1435,6 +1445,44 @@ namespace LHC_FASER
       // this returns true if the decay involving a W boson is not negligible,
       // also setting up the relevant fractions, false otherwise.
       {
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "fullCascadeType::gluinoOrNeutralinoSet::decayWithWIsNotNegligible("
+        << ") called. decayProductListIncludingW = ";
+        std::cout << std::endl << "wtf?" << std::endl;
+        std::cout << std::endl;
+        for( std::list< int >::iterator
+             codeIterator( decayProductListIncludingW.begin() );
+             decayProductListIncludingW.end() != codeIterator;
+             ++codeIterator )
+        {
+          std::cout << " " << *codeIterator;
+        }
+        std::cout
+        << std::endl
+        << "soughtDecayProductList = ";
+        for( std::list< int >::iterator
+             codeIterator( soughtDecayProductList.begin() );
+             soughtDecayProductList.end() != codeIterator;
+             ++codeIterator )
+        {
+          std::cout << " " << *codeIterator;
+        }
+        std::cout << std::endl;
+        std::cout
+        << std::endl
+        << "numerator = "
+        << initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                  &decayProductListIncludingW )
+        << std::endl
+        << "denominator = "
+        << initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                     &soughtDecayProductList );
+        std::cout << std::endl;**/
+
         wFraction = ( initialSparticle->inspect_direct_decay_handler(
                                              )->get_branching_ratio_for_subset(
                                                   &decayProductListIncludingW )
@@ -1877,6 +1925,24 @@ namespace LHC_FASER
   void
   fullCascadeSetOrderer::orderCascades()
   {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "fullCascadeSetOrderer::orderCascades() called."
+    << " sdownTypeColoredCascades.size() = "
+    << sdownTypeColoredCascades.size()
+    << ", supTypeColoredCascades.size() = "
+    << supTypeColoredCascades.size()
+    << ", allNeutralinoColoredCascades.size() = "
+    << allNeutralinoColoredCascades.size()
+    << ", relevantNeutralinoColoredCascades.size() = "
+    << relevantNeutralinoColoredCascades.size()
+    << ", allCharginoColoredCascades.size() = "
+    << allCharginoColoredCascades.size()
+    << ", relevantCharginoColoredCascades.size() = "
+    << relevantCharginoColoredCascades.size();
+    std::cout << std::endl;**/
+
     sdownTypeColoredCascades.sort( &(fullCascadeSet::massOrdered) );
     lightestSquarkMass
     = sdownTypeColoredCascades.front()->getInitialSparticle(
@@ -1916,6 +1982,64 @@ namespace LHC_FASER
         relevantCharginoColoredCascades.push_front( *setIterator );
       }
     }
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "fullCascadeSetOrderer::orderCascades() finished. lightestSquarkMass = "
+    << lightestSquarkMass << std::endl << "sdownTypeColoredCascades =";
+    for( std::list< fullCascadeSet* >::iterator
+         setIterator( sdownTypeColoredCascades.begin() );
+         sdownTypeColoredCascades.end() != setIterator;
+         ++setIterator )
+    {
+      std::cout << " " << *((*setIterator)->getInitialSparticle()->get_name());
+    }
+    std::cout
+    << std::endl << "supTypeColoredCascades =";
+    for( std::list< fullCascadeSet* >::iterator
+         setIterator( supTypeColoredCascades.begin() );
+         supTypeColoredCascades.end() != setIterator;
+         ++setIterator )
+    {
+      std::cout << " " << *((*setIterator)->getInitialSparticle()->get_name());
+    }
+    std::cout
+    << std::endl << "allNeutralinoColoredCascades =";
+    for( std::list< fullCascadeSet* >::iterator
+         setIterator( allNeutralinoColoredCascades.begin() );
+         allNeutralinoColoredCascades.end() != setIterator;
+         ++setIterator )
+    {
+      std::cout << " " << *((*setIterator)->getInitialSparticle()->get_name());
+    }
+    std::cout
+    << std::endl << "relevantNeutralinoColoredCascades =";
+    for( std::list< fullCascadeSet* >::iterator
+         setIterator( relevantNeutralinoColoredCascades.begin() );
+         relevantNeutralinoColoredCascades.end() != setIterator;
+         ++setIterator )
+    {
+      std::cout << " " << *((*setIterator)->getInitialSparticle()->get_name());
+    }
+    std::cout
+    << std::endl << "allCharginoColoredCascades =";
+    for( std::list< fullCascadeSet* >::iterator
+         setIterator( allCharginoColoredCascades.begin() );
+         allCharginoColoredCascades.end() != setIterator;
+         ++setIterator )
+    {
+      std::cout << " " << *((*setIterator)->getInitialSparticle()->get_name());
+    }
+    std::cout
+    << std::endl << "relevantCharginoColoredCascades =";
+    for( std::list< fullCascadeSet* >::iterator
+         setIterator( relevantCharginoColoredCascades.begin() );
+         relevantCharginoColoredCascades.end() != setIterator;
+         ++setIterator )
+    {
+      std::cout << " " << *((*setIterator)->getInitialSparticle()->get_name());
+    }
+    std::cout << std::endl;**/
   }
 
 
@@ -1933,8 +2057,7 @@ namespace LHC_FASER
         fullCascadeSet( inputShortcut,
                         initialScolored,
                         electroweakCascadeSource,
-                        beamEnergy/*,
-                        gluinoFullCascade*/ ),
+                        beamEnergy ),
         setOrderer( setOrderer ),
         gluinoFullCascade( gluinoFullCascade ),
         directToEwinoCascades(),
@@ -1961,6 +2084,13 @@ namespace LHC_FASER
     void
     squarkSet::setUpCascades()
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "squarkSet::setUpCascades() for " << *(initialSparticle->get_name())
+      << " called.";
+      std::cout << std::endl;**/
+
       // 1st we add the direct cascades:
       for( std::vector< fullCascadeType::squarkDirectlyToElectroweak*
                                                                     >::iterator
@@ -1968,6 +2098,13 @@ namespace LHC_FASER
            directToEwinoCascades.end() > cascadeIterator;
            ++cascadeIterator )
       {
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "squarkSet::setUpCascades() about to ask if "
+        << (*cascadeIterator)->getAsString() << " is open";
+        std::cout << std::endl;**/
+
         if( (*cascadeIterator)->isOpen() )
         {
           openCascades.push_back( *cascadeIterator );
@@ -1999,17 +2136,6 @@ namespace LHC_FASER
 
       // now we look at compound cascades from squarks:
       buildSquarkCompoundCascades();
-      // now we look at compound cascades from down-type squarks:
-      orderedCascadeSets = setOrderer->getSdownTypeCascades();
-      potentialDecayProducts
-      = inputShortcut->getNeutralEwsbBosonsAndMassiveVectorBosons();
-      addSquarkCompoundCascade( true );
-
-      // now we look at compound cascades from up-type squarks:
-      orderedCascadeSets = setOrderer->getSupTypeCascades();
-      potentialDecayProducts
-      = inputShortcut->getChargedEwsbBosonsAndMassiveVectorBosons();
-      addSquarkCompoundCascade( false );
     }
 
     void
@@ -2281,10 +2407,25 @@ namespace LHC_FASER
                potentialSubcascades->end() > cascadeIterator;
                ++cascadeIterator )
           {
+            // debugging:
+            /**std::cout << std::endl << "debugging:"
+            << std::endl
+            << "about to ask " << (*cascadeIterator)->getAsString()
+            << " what its total BR is.";
+            std::cout << std::endl;**/
+
             if( lhcFaserGlobal::negligibleBr
                 < ( subcascadeBranchingRatio
                     * (*cascadeIterator)->getTotalBrToEwino() ) )
             {
+              // debugging:
+              /**std::cout << std::endl << "debugging:"
+              << std::endl
+              << "subcascadeBranchingRatio = " << subcascadeBranchingRatio
+              << ", ->getTotalBrToEwino() = "
+              << (*cascadeIterator)->getTotalBrToEwino();
+              std::cout << std::endl;**/
+
               // we add each cascade with an overall BR that is not negligible:
               openCascades.push_back( getNewCompoundCascade(
                                                           *cascadeIterator ) );
@@ -2350,6 +2491,13 @@ namespace LHC_FASER
              directToEwinoCascades.end() > cascadeIterator;
              ++cascadeIterator )
         {
+          // debugging:
+          /**std::cout << std::endl << "debugging:"
+          << std::endl
+          << "gluinoOrElectroweakinoSetType::gluinoSet::setUpCascades() about"
+          << " to ask if " << (*cascadeIterator)->getAsString() << " is open";
+          std::cout << std::endl;**/
+
           if( (*cascadeIterator)->isOpen() )
           {
             openCascades.push_back( *cascadeIterator );
@@ -2362,8 +2510,19 @@ namespace LHC_FASER
         // now we look at compound cascades from squarks:
         orderedCascadeSets = setOrderer->getSdownTypeCascades();
         buildSquarkCompoundCascades();
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "finished building gluino -> sdown-types.";
+        std::cout << std::endl;**/
+
         orderedCascadeSets = setOrderer->getSupTypeCascades();
         buildSquarkCompoundCascades();
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "finished building gluino -> sup-types.";
+        std::cout << std::endl;**/
       }
 
 
@@ -2428,20 +2587,11 @@ namespace LHC_FASER
                         electroweakCascadeSource,
                         &cascadeOrderer,
                         beamEnergy ),
-      cascadeSetList( cascadeOrderer.getSdownTypeCascades() )
+      cascadeSetList( cascadeOrderer.getSdownTypeCascadesWithoutOrdering() )
   {
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "fullCascadeSetsForOneBeamEnergy::fullCascadeSetsForOneBeamEnergy( "
-    << inputShortcut << ", " << electroweakCascadeSource << ", " << beamEnergy
-    << " ) called. cascadeSetList = " << cascadeSetList
-    << ", cascadeSetList->size() = " << cascadeSetList->size();
-    std::cout << std::endl;/**/
-
     for( std::vector< particlePointer >::const_iterator
          squarkIterator( inputShortcut->getSdownTypes()->begin() );
-         inputShortcut->getSquarks()->end() > squarkIterator;
+         inputShortcut->getSdownTypes()->end() > squarkIterator;
          ++squarkIterator )
     {
       cascadeSetList->push_back(
@@ -2453,16 +2603,15 @@ namespace LHC_FASER
                                                                 beamEnergy ) );
     }
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
     << std::endl
-    << "after adding sdown-types, cascadeSetList->size() = "
+    << "number of fullCascadeSetType::squarkSetType::sdownTypes = "
     << cascadeSetList->size();
-    std::cout << std::endl;/**/
-
-    cascadeSetList = cascadeOrderer.getSupTypeCascades();
+    std::cout << std::endl;**/
+    cascadeSetList = cascadeOrderer.getSupTypeCascadesWithoutOrdering();
     for( std::vector< particlePointer >::const_iterator
          squarkIterator( inputShortcut->getSupTypes()->begin() );
-         inputShortcut->getSquarks()->end() > squarkIterator;
+         inputShortcut->getSupTypes()->end() > squarkIterator;
          ++squarkIterator )
     {
       cascadeSetList->push_back(
@@ -2473,10 +2622,17 @@ namespace LHC_FASER
                                                              &gluinoCascadeSet,
                                                                 beamEnergy ) );
     }
-    cascadeSetList = cascadeOrderer.getNeutralinoColoredCascades();
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "number of fullCascadeSetType::squarkSetType::supTypes = "
+    << cascadeSetList->size();
+    std::cout << std::endl;**/
+    cascadeSetList
+    = cascadeOrderer.getNeutralinoColoredCascadesWithoutOrdering();
     for( std::vector< particlePointer >::const_iterator
          sparticleIterator( inputShortcut->getUnstableNeutralinos()->begin() );
-         inputShortcut->getSquarks()->end() > sparticleIterator;
+         inputShortcut->getUnstableNeutralinos()->end() > sparticleIterator;
          ++sparticleIterator )
     {
       cascadeSetList->push_back(
@@ -2487,10 +2643,18 @@ namespace LHC_FASER
                                                                &cascadeOrderer,
                                                                 beamEnergy ) );
     }
-    cascadeSetList = cascadeOrderer.getCharginoColoredCascades();
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "number of"
+    << " fullCascadeSetType::gluinoOrElectroweakinoSetType::neutralinoSets = "
+    << cascadeSetList->size();
+    std::cout << std::endl;**/
+    cascadeSetList
+    = cascadeOrderer.getCharginoColoredCascadesWithoutOrdering();
     for( std::vector< particlePointer >::const_iterator
-         sparticleIterator( inputShortcut->getSupTypes()->begin() );
-         inputShortcut->getSquarks()->end() > sparticleIterator;
+         sparticleIterator( inputShortcut->getCharginos()->begin() );
+         inputShortcut->getCharginos()->end() > sparticleIterator;
          ++sparticleIterator )
     {
       cascadeSetList->push_back(
@@ -2502,12 +2666,20 @@ namespace LHC_FASER
                                                                 beamEnergy ) );
     }
     // debugging:
-    /**/std::cout << std::endl << "debugging:"
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "number of"
+    << " fullCascadeSetType::gluinoOrElectroweakinoSetType::charginoSets = "
+    << cascadeSetList->size();
+    std::cout << std::endl;**/
+
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
     << std::endl
     << "fullCascadeSetsForOneBeamEnergy::fullCascadeSetsForOneBeamEnergy( "
     << inputShortcut << ", " << electroweakCascadeSource << ", " << beamEnergy
     << " ) finished.";
-    std::cout << std::endl;/**/
+    std::cout << std::endl;**/
   }
 
   fullCascadeSetsForOneBeamEnergy::~fullCascadeSetsForOneBeamEnergy()

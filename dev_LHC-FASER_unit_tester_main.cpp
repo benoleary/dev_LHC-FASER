@@ -367,28 +367,28 @@ int main( int argumentCount,
 
 
   /* testing the full cascade stuff:
-   * (needs checking for new version)*//**/
+   * (needs checking for new version)*//**
   LHC_FASER::fullCascadeTesting fullCascadeTester( &basicStuffTester,
                                                    &inputTester );
   fullCascadeTester.performTest();
-  /**/
+  **/
 
 
   /* testing the jet kinematics grid stuff:
-   * (works)*//**/
+   * (works)*//**
   LHC_FASER::jetKinematicsTesting jetKinematicsTester( &basicStuffTester,
                                                        &inputTester );
   jetKinematicsTester.performTest();
-  /**/
+  **/
 
 	
 
   /* testing the signal stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::signalTesting signalTester( &basicStuffTester,
                                          &inputTester );
   signalTester.performTest();
-  **/
+  /**/
 
   /* finally, testing the lhcFaser itself:
    * (works)*//**

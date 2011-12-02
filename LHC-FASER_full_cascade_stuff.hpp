@@ -832,9 +832,7 @@ namespace LHC_FASER
     fullCascadeSet( inputHandler const* const inputShortcut,
                     particlePointer const initialSparticle,
                 electroweakCascadesForOneBeamEnergy* const electroweakCascades,
-                    double const beamEnergy//,
-                    //fullCascadeSet* const gluinoFullCascade
-                    );
+                    double const beamEnergy );
     virtual
     ~fullCascadeSet();
 
@@ -853,7 +851,6 @@ namespace LHC_FASER
     electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource;
     std::vector< fullCascade* > openCascades;
     // this holds pointers to all the open cascades.
-    //fullCascadeSet* const gluinoFullCascade;
     std::list< fullCascadeSet* >* orderedCascadeSets;
     std::list< fullCascadeSet* >::iterator setIterator;
     std::vector< fullCascade* >* potentialSubcascades;
@@ -885,6 +882,14 @@ namespace LHC_FASER
     getSdownTypeCascades();
     std::list< fullCascadeSet* >*
     getSupTypeCascades();
+    std::list< fullCascadeSet* >*
+    getNeutralinoColoredCascadesWithoutOrdering();
+    std::list< fullCascadeSet* >*
+    getCharginoColoredCascadesWithoutOrdering();
+    std::list< fullCascadeSet* >*
+    getSdownTypeCascadesWithoutOrdering();
+    std::list< fullCascadeSet* >*
+    getSupTypeCascadesWithoutOrdering();
 
 
   protected:
@@ -1777,6 +1782,13 @@ namespace LHC_FASER
   fullCascadeSet::getOpenCascades()
   // this calls setUpCascades() if it needs to be readied for this point.
   {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "fullCascadeSet::getOpenCascades() called for "
+    << *(initialSparticle->get_name());
+    std::cout << std::endl;**/
+
     if( needsToPrepareForThisPoint() )
     {
       openCascades.clear();
@@ -1832,6 +1844,30 @@ namespace LHC_FASER
     {
       orderCascades();
     }
+    return &supTypeColoredCascades;
+  }
+
+  inline std::list< fullCascadeSet* >*
+  fullCascadeSetOrderer::getNeutralinoColoredCascadesWithoutOrdering()
+  {
+    return &allNeutralinoColoredCascades;
+  }
+
+  inline std::list< fullCascadeSet* >*
+  fullCascadeSetOrderer::getCharginoColoredCascadesWithoutOrdering()
+  {
+    return &allCharginoColoredCascades;
+  }
+
+  inline std::list< fullCascadeSet* >*
+  fullCascadeSetOrderer::getSdownTypeCascadesWithoutOrdering()
+  {
+    return &sdownTypeColoredCascades;
+  }
+
+  inline std::list< fullCascadeSet* >*
+  fullCascadeSetOrderer::getSupTypeCascadesWithoutOrdering()
+  {
     return &supTypeColoredCascades;
   }
 

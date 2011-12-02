@@ -1029,11 +1029,7 @@ namespace LHC_FASER
       {
         std::cout
         << std::endl
-        << *((*cascadeIterator)->getInitialSparticle()->get_name())
-        << " => " << (*cascadeIterator)->getColorfulCascadeType()
-        << " => "
-        << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(
-                                                                 )->get_name())
+        << (*cascadeIterator)->getAsString()
         << ", BR = "
         << (*cascadeIterator)->getBrToEwino( &testSmParticleExclusion )
         << ", acc = "
@@ -1070,11 +1066,7 @@ namespace LHC_FASER
     {
       std::cout
       << std::endl
-      << *((*cascadeIterator)->getInitialSparticle()->get_name())
-      << " => " << (*cascadeIterator)->getColorfulCascadeType()
-      << " => "
-      << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(
-                                                               )->get_name())
+      << (*cascadeIterator)->getAsString()
       << ", BR = "
       << (*cascadeIterator)->getBrToEwino( &testSmParticleExclusion )
       << ", acc = "
@@ -1088,7 +1080,9 @@ namespace LHC_FASER
     }
     std::cout
     << std::endl
-    << "remember that gluino -> (squark ->) chargino sums over both charges";
+    << "remember that gluino -> (squark ->) chargino sums over both charges;"
+    << " also at SPS1a, the gluino 3-body decays to electroweakinos are only"
+    << " to negative charginos with top + bottom or the charge-conjugate.";
     std::cout << std::endl;
 
     std::cout
@@ -1126,11 +1120,7 @@ namespace LHC_FASER
     {
       std::cout
       << std::endl
-      << *((*cascadeIterator)->getInitialSparticle()->get_name())
-      << " => " << (*cascadeIterator)->getColorfulCascadeType()
-      << " => "
-      << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(
-                                                               )->get_name())
+      << (*cascadeIterator)->getAsString()
       << ", BR = "
       << (*cascadeIterator)->getBrToEwino( &testSmParticleExclusion )
       << ", acc = "
@@ -1172,11 +1162,7 @@ namespace LHC_FASER
     {
       std::cout
       << std::endl
-      << *((*cascadeIterator)->getInitialSparticle()->get_name())
-      << " => " << (*cascadeIterator)->getColorfulCascadeType()
-      << " => "
-      << *((*cascadeIterator)->getElectroweakinoAtEndOfScoloredness(
-                                                                 )->get_name())
+      << (*cascadeIterator)->getAsString()
       << ", BR = "
       << (*cascadeIterator)->getBrToEwino( &testSmParticleExclusion )
       << ", acc = "
