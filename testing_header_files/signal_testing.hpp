@@ -352,7 +352,7 @@ namespace LHC_FASER
       std::cout << std::endl;
       std::cout
       << std::endl
-      << "atlasFourJetMetZeroLepton seems a bit small?";
+      << "atlasFourJetMetZeroLepton seems OK.";
       std::cout << std::endl;
       std::cout
       << std::endl
@@ -361,7 +361,7 @@ namespace LHC_FASER
       std::cout << std::endl;
       std::cout
       << std::endl
-      << "atlasFourJetMetZeroLepton seems a bit small?";
+      << "atlasFourJetMetZeroLepton seems OK.";
       std::cout << std::endl;
       std::cout
       << std::endl
@@ -370,7 +370,7 @@ namespace LHC_FASER
       std::cout << std::endl;
       std::cout
       << std::endl
-      << "atlasThreeJetMetOneLepton seems a bit small?";
+      << "atlasThreeJetMetOneLepton seems OK.";
       std::cout << std::endl;
       std::cout
       << std::endl
@@ -379,7 +379,7 @@ namespace LHC_FASER
       std::cout << std::endl;
       std::cout
       << std::endl
-      << "atlasThreeJetMetOneLeptonHighCuts seems a bit small?";
+      << "atlasThreeJetMetOneLeptonHighCuts seems OK.";
       std::cout << std::endl;
 
       basicStuff->getSlha()->read_file( "SPS1a_spectrum.out" );

@@ -482,7 +482,8 @@ namespace LHC_FASER
         << " + "
         << *((*channelIterator)->getScoloredPair()->getSecondParticle(
                   )->get_name_or_antiname( (*channelIterator)->getScoloredPair(
-                                               )->secondIsNotAntiparticle() ));
+                                               )->secondIsNotAntiparticle() ))
+        << "; cross-section = " << (*channelIterator)->getCrossSection();
         std::cout << std::endl;**/
 
         if( lhcFaserGlobal::negligibleSigma
@@ -504,18 +505,7 @@ namespace LHC_FASER
             /**std::cout << std::endl << "debugging:"
             << std::endl
             << "1st: "
-            << *((*firstCascadeIterator)->getInitialSparticle()->get_name());
-            for( std::vector< fullCascade::particleWithInt*
-                                                      >::const_reverse_iterator
-                 cascadeParticleIterator(
-                      (*firstCascadeIterator)->getCascadeDefiner()->rbegin() );
-                 (*firstCascadeIterator)->getCascadeDefiner()->rend()
-                 > cascadeParticleIterator;
-                 ++cascadeParticleIterator )
-            {
-              std::cout
-              << " => " << *((*cascadeParticleIterator)->first->get_name());
-            }
+            << (*firstCascadeIterator)->getAsString();
             std::cout << std::endl;**/
 
             firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
@@ -535,20 +525,7 @@ namespace LHC_FASER
                 /**std::cout << std::endl << "debugging:"
                 << std::endl
                 << "2nd: "
-                << *((*secondCascadeIterator)->getInitialSparticle(
-                                                                )->get_name());
-                for( std::vector< fullCascade::particleWithInt*
-                                                      >::const_reverse_iterator
-                     cascadeParticleIterator(
-                     (*secondCascadeIterator)->getCascadeDefiner()->rbegin() );
-                     (*secondCascadeIterator)->getCascadeDefiner()->rend()
-                     > cascadeParticleIterator;
-                     ++cascadeParticleIterator )
-                {
-                  std::cout
-                  << " => "
-                  << *((*cascadeParticleIterator)->first->get_name());
-                }
+                << (*secondCascadeIterator)->getAsString();
                 std::cout << std::endl;**/
 
                 secondCascadeBrToEwino

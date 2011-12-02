@@ -111,11 +111,11 @@
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
+ *      LHC-FASER_full_cascade_stuff.hpp
+ *      LHC-FASER_full_cascade_stuff.cpp
  *
  *
  * still to test:
- *      LHC-FASER_full_cascade_stuff.hpp
- *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
  *
@@ -384,11 +384,11 @@ int main( int argumentCount,
 	
 
   /* testing the signal stuff:
-   * (works)*//**/
+   * (works)*//**
   LHC_FASER::signalTesting signalTester( &basicStuffTester,
                                          &inputTester );
   signalTester.performTest();
-  /**/
+  **/
 
   /* finally, testing the lhcFaser itself:
    * (works)*//**
@@ -399,7 +399,7 @@ int main( int argumentCount,
 
 
   /* testing adding new signals & how long it takes to load & calculate:
-   * (works, but showed up problems) *//**
+   * (works, but showed up problems) *//**/
   timeval startTime;
   timeval endTime;
   double secondsTaken;
@@ -475,9 +475,9 @@ int main( int argumentCount,
   signalTimers.push_back( new lhcFaserTimer( "SPS3_spectrum.out",
                                              &testLhcFaser,
                                              &signalVector ) );
-  *//*signalTimers.push_back( new lhcFaserTimer( "SPS4_spectrum.out",
+  /**//*signalTimers.push_back( new lhcFaserTimer( "SPS4_spectrum.out",
                                              &testLhcFaser,
-                                             &signalVector ) );*//*
+                                             &signalVector ) );*//**/
   // SPS4 is borked.
   signalTimers.push_back( new lhcFaserTimer( "SPS5_spectrum.out",
                                              &testLhcFaser,
@@ -501,6 +501,9 @@ int main( int argumentCount,
                                              &testLhcFaser,
                                              &signalVector ) );
   signalTimers.push_back( new lhcFaserTimer( "SU4_spectrum.out",
+                                             &testLhcFaser,
+                                             &signalVector ) );
+  signalTimers.push_back( new lhcFaserTimer( "convoluted_spectrum.out",
                                              &testLhcFaser,
                                              &signalVector ) );
 
@@ -583,11 +586,9 @@ int main( int argumentCount,
   std::cout << std::endl;
   std::cout
   << std::endl
-  << "the problematic points (SPS5, SU4) go wrong when looking up jet+MET"
-  << " grids for different squarks, one of which is decaying into an"
-  << " electroweakino which is heavier than the other squark."
+  << "need to check that these event rates are reasonable."
   << std::endl;
-  **/
+  /**/
 
 
   std::cout << std::endl;
