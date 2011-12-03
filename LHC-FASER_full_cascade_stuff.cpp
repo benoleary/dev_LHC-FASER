@@ -2115,6 +2115,7 @@ namespace LHC_FASER
       compoundByBosonCascades.clearEntries();
       clearCompoundByJetCascades();
 
+      std::cout << std::endl;**/
       // next we check to see if we should add compound cascades from the
       // gluino:
       if( inputShortcut->getGluinoMass() < initialSparticleMass )

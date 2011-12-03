@@ -105,6 +105,7 @@ namespace LHC_FASER
       electroweakCascadeSource( testInputHandler );
       fullCascadeSetFactory cascadeSets( testInputHandler,
                                          &electroweakCascadeSource );
+      /**
       signalShortcuts*
       testSignalShortcutsPointer( new signalShortcuts( testInputHandler,
                                                        &crossSections,
@@ -142,7 +143,6 @@ namespace LHC_FASER
       << "signalDefinitionSet class seems to be OK.";
       std::cout << std::endl;
       testSignalDefinitionSet.setBeamEnergy( 7 );
-
       particlePointer gluinoPointer( testInputHandler->getGluino() );
       particlePointer sdownLPointer( testInputHandler->getSdownL() );
       particlePointer sbottomOnePointer( testInputHandler->getSbottomOne() );
@@ -380,6 +380,29 @@ namespace LHC_FASER
       std::cout
       << std::endl
       << "atlasThreeJetMetOneLeptonHighCuts seems OK.";
+      std::cout << std::endl;
+      **/
+      signalShortcuts
+      convolutedSignalShortcuts( testInputHandler,
+                                 &crossSections,
+                                 &jetPlusMetAcceptances,
+                                 &cascadeSets );
+      signalDefinitionSet
+      convolutedSignalDefinitionSet( &convolutedSignalShortcuts );
+      convolutedSignalDefinitionSet.setExcludedStandardModelProducts(
+                                           testInputHandler->getNotInJets5() );
+      convolutedSignalDefinitionSet.setJetCut( 40.0 );
+      convolutedSignalDefinitionSet.setPrimaryLeptonCut( 20.0 );
+      convolutedSignalDefinitionSet.setSecondaryLeptonCut( 10.0 );
+      signalHandler convolutedSigmaBreakdownTest( "sigmaBreakdownTest",
+                                                  1000.0,
+                                              &convolutedSignalDefinitionSet );
+      basicStuff->getSlha()->read_file( "convoluted_spectrum.out" );
+      basicStuff->getReadier()->readyObserversForNewPoint();
+      std::cout
+      << std::endl
+      << "convoluted: convolutedSigmaBreakdownTest.getValue() (in *fb*) = "
+      << convolutedSigmaBreakdownTest.getValue();
       std::cout << std::endl;
 
       basicStuff->getSlha()->read_file( "SPS1a_spectrum.out" );

@@ -256,8 +256,22 @@ namespace LHC_FASER
           // we have to look at all the open cascade pairings:
           firstCascades
           = (*channelIterator)->getFirstCascadeSet()->getOpenCascades();
+          // debugging:
+          /**std::cout << std::endl << "debugging:"
+          << std::endl
+          << "got open cascades from "
+          << *((*channelIterator)->getFirstCascadeSet()->getInitialSparticle(
+                                                                )->get_name());
+          std::cout << std::endl;**/
           secondCascades
           = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
+
+          // debugging:
+          /**std::cout << std::endl << "debugging:"
+          << std::endl
+          << "got both open cascades.";
+          std::cout << std::endl;**/
+
 
           for( std::vector< fullCascade* >::iterator
                firstCascadeIterator( firstCascades->begin() );
@@ -286,6 +300,17 @@ namespace LHC_FASER
                   // this should mean we never throw away more than
                   // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
                 {
+                  // debugging:
+                  /**/std::cout << std::endl << "debugging:"
+                  << std::endl
+                  << "adding" << std::endl
+                  << (*firstCascadeIterator)->getAsString() << " BR = "
+                  << firstCascadeBrToEwino << std::endl
+                  << (*secondCascadeIterator)->getAsString() << " BR = "
+                  << secondCascadeBrToEwino << std::endl << " => "
+                  << ( firstCascadeBrToEwino * secondCascadeBrToEwino );
+                  std::cout << std::endl;/**/
+
                   channelBrTotal += ( firstCascadeBrToEwino
                                       * secondCascadeBrToEwino );
                 }

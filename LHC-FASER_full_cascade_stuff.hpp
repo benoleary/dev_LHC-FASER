@@ -1782,13 +1782,6 @@ namespace LHC_FASER
   fullCascadeSet::getOpenCascades()
   // this calls setUpCascades() if it needs to be readied for this point.
   {
-    // debugging:
-    /**std::cout << std::endl << "debugging:"
-    << std::endl
-    << "fullCascadeSet::getOpenCascades() called for "
-    << *(initialSparticle->get_name());
-    std::cout << std::endl;**/
-
     if( needsToPrepareForThisPoint() )
     {
       openCascades.clear();

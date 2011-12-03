@@ -113,13 +113,11 @@
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
- *
- *
- * still to test:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
  *
  *
+ * still to test:
  *      nothing! we're done. well, the accuracy of the approximations has to be
  *      tested...
  */
@@ -138,157 +136,12 @@
 #include "testing_header_files/full_cascade_testing.hpp"
 #include "testing_header_files/jet_kinematics_testing.hpp"
 #include "testing_header_files/signal_testing.hpp"
+#include "testing_header_files/signal_timing_testing.hpp"
 #include "testing_header_files/lhcFaser_testing.hpp"
 
 // future includes:
 // none, since we're done!
 
-typedef std::pair< LHC_FASER::signalHandler*,
-                   std::vector< double >* > signalAndTimes;
-
-class lhcFaserTimer
-{
-public:
-  lhcFaserTimer( std::string const spectrumFileToLoad,
-                 LHC_FASER::lhcFaser* theLhcFaser,
-                 std::vector< LHC_FASER::signalHandler* >* const signalVector,
-      std::string const nameOfFileLoadedByTheLhcFaser = "test_spectrum.out" ) :
-    spectrumFileToLoad( spectrumFileToLoad ),
-    nameOfFileLoadedByTheLhcFaser( nameOfFileLoadedByTheLhcFaser ),
-    theLhcFaser( theLhcFaser ),
-    signalsAndTheirTimes(),
-    systemCallString( "cp " ),
-    startTime(),
-    endTime(),
-    secondsTaken( 0.0 )
-  {
-    systemCallString.append( spectrumFileToLoad );
-    systemCallString.append( " test_spectrum.out" );
-
-    for( std::vector< LHC_FASER::signalHandler* >::iterator
-         signalIterator( signalVector->begin() );
-         signalVector->end() > signalIterator;
-         ++signalIterator )
-    {
-      signalsAndTheirTimes.push_back( new signalAndTimes( *signalIterator,
-                                                 new std::vector< double > ) );
-    }
-  }
-  ~lhcFaserTimer()
-  {
-    for( std::vector< signalAndTimes* >::iterator
-         deletionIterator( signalsAndTheirTimes.begin() );
-         signalsAndTheirTimes.end() > deletionIterator;
-         ++deletionIterator )
-    {
-      delete (*deletionIterator)->second;
-      delete *deletionIterator;
-    }
-  }
-
-  std::string const*
-  getSpectrumFilename()
-  const
-  {
-    return &spectrumFileToLoad;
-  }
-
-  void
-  loadSpectrumAndCalculate()
-  {
-    std::cout << std::endl;
-    std::cout << std::endl;
-    gettimeofday( &startTime,
-                  NULL );
-    std::cout
-    << std::endl << "copying " << spectrumFileToLoad;
-    system( systemCallString.c_str() );
-    gettimeofday( &endTime,
-                  NULL );
-    secondsTaken
-    = ( (double)( endTime.tv_sec - startTime.tv_sec )
-        + 0.000001 * (double)( endTime.tv_usec - startTime.tv_usec ) );
-    std::cout
-    << " took " << secondsTaken << " seconds.";
-    std::cout << std::endl;
-
-    gettimeofday( &startTime,
-                  NULL );
-    std::cout
-    << std::endl << "reading it in & updating";
-    theLhcFaser->updateForNewSlha();
-    gettimeofday( &endTime,
-                  NULL );
-    secondsTaken
-    = ( (double)( endTime.tv_sec - startTime.tv_sec )
-        + 0.000001 * (double)( endTime.tv_usec - startTime.tv_usec ) );
-    std::cout
-    << " took " << secondsTaken << " seconds.";
-    std::cout << std::endl;
-
-    for( std::vector< signalAndTimes* >::iterator
-         signalIterator( signalsAndTheirTimes.begin() );
-         signalsAndTheirTimes.end() > signalIterator;
-         ++signalIterator )
-    {
-      gettimeofday( &startTime,
-                    NULL );
-      std::cout
-      << std::endl << "calculating the point's value for "
-      << *((*signalIterator)->first->getName()) << ": ";
-      std::cout << (*signalIterator)->first->getValue();
-      gettimeofday( &endTime,
-                    NULL );
-      secondsTaken
-      = ( (double)( endTime.tv_sec - startTime.tv_sec )
-          + 0.000001 * (double)( endTime.tv_usec
-              - startTime.tv_usec ) );
-      std::cout
-      << "; took " << secondsTaken << " seconds.";
-      std::cout << std::endl;
-      (*signalIterator)->second->push_back( secondsTaken );
-    }
-  }
-
-  void
-  summarizeTimes()
-  {
-    std::cout
-    << std::endl
-    << spectrumFileToLoad << ":";
-    std::cout << std::endl;
-    for( std::vector< signalAndTimes* >::iterator
-         signalIterator( signalsAndTheirTimes.begin() );
-         signalsAndTheirTimes.end() > signalIterator;
-         ++signalIterator )
-    {
-      secondsTaken = 0.0;
-      for( std::vector< double >::iterator
-           timeIterator( (*signalIterator)->second->begin() );
-           (*signalIterator)->second->end() > timeIterator;
-           ++timeIterator )
-      {
-        secondsTaken += *timeIterator;
-      }
-      secondsTaken *= ( 1.0 / (double)((*signalIterator)->second->size()) );
-      std::cout
-      << std::endl
-      << *((*signalIterator)->first->getName()) << ": " << secondsTaken;
-      std::cout << std::endl;
-    }
-    std::cout << std::endl;
-  }
-
-protected:
-  std::string spectrumFileToLoad;
-  std::string nameOfFileLoadedByTheLhcFaser;
-  LHC_FASER::lhcFaser* theLhcFaser;
-  std::vector< signalAndTimes* > signalsAndTheirTimes;
-  std::string systemCallString;
-  timeval startTime;
-  timeval endTime;
-  double secondsTaken;
-};
 
 
 // the main program:
@@ -384,11 +237,11 @@ int main( int argumentCount,
 	
 
   /* testing the signal stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::signalTesting signalTester( &basicStuffTester,
                                          &inputTester );
   signalTester.performTest();
-  **/
+  /**/
 
   /* finally, testing the lhcFaser itself:
    * (works)*//**
@@ -399,196 +252,11 @@ int main( int argumentCount,
 
 
   /* testing adding new signals & how long it takes to load & calculate:
-   * (works, but showed up problems) *//**/
-  timeval startTime;
-  timeval endTime;
-  double secondsTaken;
-
-  std::vector< LHC_FASER::signalHandler* > signalVector;
-  std::string signalName;
-
-  //std::string gridPath( "/home/bol/BOL_work/projects/Eclipse_workspace/");
-  //gridPath.append( "LHC-FASER_unit_tester/testing/grids/" );
-  std::string gridPath( "./grids/");
-
-  system( "cp LM1_spectrum.out test_spectrum.out" );
-
-  gettimeofday( &startTime,
-                NULL );
-  std::cout
-  << std::endl << "constructing testLhcFaser";
-  LHC_FASER::lhcFaser testLhcFaser( "test_spectrum.out",
-                                    gridPath,
-                                    "fb" );
-  testLhcFaser.setVerbosity( true );
-  gettimeofday( &endTime,
-                NULL );
-  secondsTaken = ( (double)( endTime.tv_sec - startTime.tv_sec )
-                   + 0.000001
-                     * (double)( endTime.tv_usec - startTime.tv_usec ) );
-  std::cout
-  << " took " << secondsTaken << " seconds.";
-  std::cout << std::endl;
-  double initialConstruction( secondsTaken );
-
-  gettimeofday( &startTime,
-                NULL );
-  signalName.assign( "Atlas4jMET0l7TeV" );
-  std::cout
-  << std::endl << "adding " << signalName;
-  testLhcFaser.addSignal( signalName );
-  signalVector.push_back( testLhcFaser.getSignal( signalName ) );
-  gettimeofday( &endTime,
-                NULL );
-  secondsTaken
-  = ( (double)( endTime.tv_sec - startTime.tv_sec )
-      + 0.000001 * (double)( endTime.tv_usec - startTime.tv_usec ) );
-  std::cout
-  << " took " << secondsTaken << " seconds.";
-  std::cout << std::endl;
-
-  gettimeofday( &startTime,
-                NULL );
-  signalName.assign( "Atlas3jMET1l7TeV" );
-  std::cout
-  << std::endl << "adding " << signalName;
-  signalVector.push_back( testLhcFaser.addSignal( signalName ) );
-  gettimeofday( &endTime,
-                NULL );
-  secondsTaken
-  = ( (double)( endTime.tv_sec - startTime.tv_sec )
-      + 0.000001 * (double)( endTime.tv_usec - startTime.tv_usec ) );
-  std::cout
-  << " took " << secondsTaken << " seconds.";
-  std::cout << std::endl;
-
-  std::vector< lhcFaserTimer* > signalTimers;
-  signalTimers.push_back( new lhcFaserTimer( "SPS1a_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "SPS1b_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "SPS2_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "SPS3_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  /**//*signalTimers.push_back( new lhcFaserTimer( "SPS4_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );*//**/
-  // SPS4 is borked.
-  signalTimers.push_back( new lhcFaserTimer( "SPS5_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "SPS6_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "SPS7_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "SPS8_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "SPS9_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "LM1_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "LM8_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "SU4_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-  signalTimers.push_back( new lhcFaserTimer( "convoluted_spectrum.out",
-                                             &testLhcFaser,
-                                             &signalVector ) );
-
-  std::cout
-  << std::endl << "timing sum of 1st calculations of each signal:";
-  gettimeofday( &startTime,
-                NULL );
-  std::string systemCallString( "" );
-  std::string const* spectrumFile;
-  for( std::vector< lhcFaserTimer* >::iterator
-       spectrumIterator( signalTimers.begin() );
-       signalTimers.end() > spectrumIterator;
-       ++spectrumIterator )
-  {
-    spectrumFile = (*spectrumIterator)->getSpectrumFilename();
-    systemCallString.assign( "cp " );
-    systemCallString.append( *spectrumFile );
-    systemCallString.append( " test_spectrum.out" );
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout
-    << std::endl << "copying " << *spectrumFile;
-    system( systemCallString.c_str() );
-    std::cout << std::endl;
-    std::cout
-    << std::endl << "reading it in & updating";
-    testLhcFaser.updateForNewSlha();
-    for( std::vector< LHC_FASER::signalHandler* >::iterator
-         signalIterator( signalVector.begin() );
-         signalVector.end() > signalIterator;
-         ++signalIterator )
-    {
-      std::cout
-      << std::endl << "calculating "
-      << *((*signalIterator)->getName()) << ": ";
-      std::cout << (*signalIterator)->getValue();
-    }
-  }
-  gettimeofday( &endTime,
-                NULL );
-  secondsTaken
-  = ( (double)( endTime.tv_sec - startTime.tv_sec )
-      + 0.000001 * (double)( endTime.tv_usec
-          - startTime.tv_usec ) );
-  std::cout
-  << "; it took " << secondsTaken << " seconds.";
-  std::cout << std::endl;
-  double totalForFirstCalculations( secondsTaken );
-
-  for( int reloadCount( recalculationAmount );
-       0 < reloadCount;
-       --reloadCount )
-  {
-    std::cout
-    << std::endl << "number of reloads to go: " << reloadCount;
-    for( std::vector< lhcFaserTimer* >::iterator
-         spectrumIterator( signalTimers.begin() );
-         signalTimers.end() > spectrumIterator;
-         ++spectrumIterator )
-    {
-      (*spectrumIterator)->loadSpectrumAndCalculate();
-    }
-  }
-  // now we calculate the averages & display the summary:
-  std::cout
-  << std::endl
-  << "summary:"
-  << std::endl
-  << "inital constuction of the lhcFaser: "
-  << initialConstruction << " seconds" << std::endl
-  << "total time to run the full set of points once: "
-  << totalForFirstCalculations << " seconds" << std::endl;
-  for( std::vector< lhcFaserTimer* >::iterator
-       spectrumIterator( signalTimers.begin() );
-       signalTimers.end() > spectrumIterator;
-       ++spectrumIterator )
-  {
-    (*spectrumIterator)->summarizeTimes();
-  }
-  std::cout << std::endl;
-  std::cout
-  << std::endl
-  << "need to check that these event rates are reasonable."
-  << std::endl;
-  /**/
+   * (works, but showed up problems) *//**
+  LHC_FASER::signalTimingTesting signalTimingTester( &basicStuffTester,
+                                                     &inputTester );
+  signalTimingTester.performTest( recalculationAmount );
+  **/
 
 
   std::cout << std::endl;
