@@ -1651,8 +1651,6 @@ namespace LHC_FASER
         resetCachedBranchingRatio();
         decayProductListIncludingW.front()
         = subcascadePointer->getInitialSparticle()->get_PDG_code();
-        decayProductListIncludingW.back()
-        = bosonCascades->getElectroweakDecayer()->get_PDG_code();
         // positive charginos decay to positive W bosons.
         if( inputShortcut->isIn( decayProductListIncludingW.front(),
                                  inputShortcut->getSdownTypes() ) )
@@ -2115,7 +2113,12 @@ namespace LHC_FASER
       compoundByBosonCascades.clearEntries();
       clearCompoundByJetCascades();
 
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "squarkSet::setUpCascades() about to ask for gluino open cascades.";
       std::cout << std::endl;**/
+
       // next we check to see if we should add compound cascades from the
       // gluino:
       if( inputShortcut->getGluinoMass() < initialSparticleMass )
@@ -2125,15 +2128,35 @@ namespace LHC_FASER
         addByJetCascade();
       }
 
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "squarkSet::setUpCascades() about to ask for neutralino open"
+      << " cascades.";
+      std::cout << std::endl;**/
+
       // now we look at compound cascades from neutralinos:
       orderedCascadeSets = setOrderer->getNeutralinoColoredCascades();
       addEwinoCompoundCascade( true );
+
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "squarkSet::setUpCascades() about to ask for chargino open"
+      << " cascades.";
+      std::cout << std::endl;**/
 
       // now we look at compound cascades from charginos:
       orderedCascadeSets = setOrderer->getCharginoColoredCascades();
       addEwinoCompoundCascade( ewinoCodeIsAlwaysPositive );
       // down-type squarks decay to negatively-charged charginos, up-type to
       // positively-charged.
+
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "squarkSet::setUpCascades() about to ask for squark open cascades.";
+      std::cout << std::endl;**/
 
       // now we look at compound cascades from squarks:
       buildSquarkCompoundCascades();
@@ -2174,6 +2197,12 @@ namespace LHC_FASER
     // this relies on orderedCascadeSets & potentialDecayProducts having
     // already been set correctly.
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "squarkSet::addSquarkCompoundCascade( " << positiveBosonCode << " )";
+      std::cout << std::endl;**/
+
       setIterator = orderedCascadeSets->begin();
       int bosonCode;
       while( ( setIterator != orderedCascadeSets->end() )
@@ -2385,6 +2414,12 @@ namespace LHC_FASER
     gluinoOrElectroweakinoSet::buildSquarkCompoundCascades()
     // this does the job of finding the right squark subcascades.
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "gluinoOrElectroweakinoSet::buildSquarkCompoundCascades() called.";
+      std::cout << std::endl;**/
+
       setIterator = orderedCascadeSets->begin();
       while( ( setIterator != orderedCascadeSets->end() )
              &&
@@ -2430,6 +2465,12 @@ namespace LHC_FASER
               // we add each cascade with an overall BR that is not negligible:
               openCascades.push_back( getNewCompoundCascade(
                                                           *cascadeIterator ) );
+
+              // debugging:
+              /**std::cout << std::endl << "debugging:"
+              << std::endl
+              << "added compound cascade.";
+              std::cout << std::endl;**/
             }
           }
         }
