@@ -309,6 +309,21 @@ namespace LHC_FASER
       << " took " << secondsTaken << " seconds.";
       std::cout << std::endl;
 
+      gettimeofday( &startTime,
+                    NULL );
+      signalName.assign( "sameSignDilepton7TeV" );
+      std::cout
+      << std::endl << "adding " << signalName;
+      signalVector.push_back( testLhcFaser.addSignal( signalName ) );
+      gettimeofday( &endTime,
+                    NULL );
+      secondsTaken
+      = ( (double)( endTime.tv_sec - startTime.tv_sec )
+          + 0.000001 * (double)( endTime.tv_usec - startTime.tv_usec ) );
+      std::cout
+      << " took " << secondsTaken << " seconds.";
+      std::cout << std::endl;
+
       std::vector< lhcFaserTimer* > signalTimers;
       signalTimers.push_back( new lhcFaserTimer( "SPS1a_spectrum.out",
                                                  &testLhcFaser,
@@ -419,9 +434,10 @@ namespace LHC_FASER
       << std::endl
       << "summary:"
       << std::endl
-      << "inital constuction of the lhcFaser: "
+      << "initial construction of the lhcFaser: "
       << initialConstruction << " seconds" << std::endl
-      << "total time to run the full set of points once: "
+      << "total time to run the full set of " << signalTimers.size()
+      << " points once: "
       << totalForFirstCalculations << " seconds" << std::endl;
       for( std::vector< lhcFaserTimer* >::iterator
            spectrumIterator( signalTimers.begin() );

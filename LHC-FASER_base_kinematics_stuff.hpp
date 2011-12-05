@@ -74,7 +74,7 @@
 
 namespace LHC_FASER
 {
-  // this stores the acceptance cut acceptanceValues which are associated with a
+  // this stores the acceptance cut values which are associated with a
   // particular signal.
   class acceptanceCutSet
   {
@@ -113,6 +113,9 @@ namespace LHC_FASER
     getBeamEnergy()
     const;
     // setBeamEnergy is only defined in the signalDefinitions derived class.
+    bool
+    leptonCutsAreEqual()
+    const;
     double
     getPrimaryLeptonCut()
     const;
@@ -153,20 +156,24 @@ namespace LHC_FASER
     double primaryLeptonCut;
     double secondaryLeptonCut;
     double jetCut;
+    bool leptonCutsAreEqualFlag;
     std::list< int > const* excludedStandardModelProducts;
-  };  // end of acceptanceCutSet class.
+
+    void
+    updateLeptonCutsAreEqualFlag();
+  };
 
 
   /* this class reads in a file in the assumed format, stores it, & gives out
-   * interpolated acceptanceValues. it was written with acceptancesPerCutSet for leptons in mind,
+   * interpolated values. it was written with acceptances for leptons in mind,
    * to be adapted for jets plus missing transverse momentum as a special case,
    * with data files in the format
    * squarkMass gluinoMass lighterNeutralinoMass heavierNeutralinoMass
    * (continued) then either
-   * 42 lepton acceptance acceptanceValues (effective squark mass, pseudorapidity cut
+   * 42 lepton acceptance values (effective squark mass, pseudorapidity cut
    * acceptance, then 40 bins for transverse momentum cut acceptancesPerCutSet)
    * or
-   * 7 acceptance acceptanceValues for different choices of which jets+MET combination to
+   * 7 acceptance values for different choices of which jets+MET combination to
    * use
    * then newline.
    */
@@ -322,6 +329,13 @@ namespace LHC_FASER
     return beamEnergy;
   }
 
+  inline bool
+  acceptanceCutSet::leptonCutsAreEqual()
+  const
+  {
+    return leptonCutsAreEqualFlag;
+  }
+
   inline double
   acceptanceCutSet::getPrimaryLeptonCut()
   const
@@ -333,6 +347,7 @@ namespace LHC_FASER
   acceptanceCutSet::setPrimaryLeptonCut( double inputValue )
   {
     primaryLeptonCut = inputValue;
+    updateLeptonCutsAreEqualFlag();
   }
 
   inline double
@@ -346,6 +361,7 @@ namespace LHC_FASER
   acceptanceCutSet::setSecondaryLeptonCut( double inputValue )
   {
     secondaryLeptonCut = inputValue;
+    updateLeptonCutsAreEqualFlag();
   }
 
   inline double
@@ -360,6 +376,7 @@ namespace LHC_FASER
   {
     setPrimaryLeptonCut( inputValue );
     setSecondaryLeptonCut( inputValue );
+    leptonCutsAreEqualFlag = true;
   }
 
   inline double
@@ -408,6 +425,19 @@ namespace LHC_FASER
     else
     {
       return false;
+    }
+  }
+
+  inline void
+  acceptanceCutSet::updateLeptonCutsAreEqualFlag()
+  {
+    if( primaryLeptonCut == secondaryLeptonCut )
+    {
+      leptonCutsAreEqualFlag = true;
+    }
+    else
+    {
+      leptonCutsAreEqualFlag = false;
     }
   }
 

@@ -199,6 +199,17 @@ namespace LHC_FASER
      *      - numberOfNegativeMuons
      *      - numberOfPositiveMuons )
      */
+    double
+    leptonFlavorSummedWithMinimumJets(
+                                  bool const initialSparticleIsNotAntiparticle,
+                                        acceptanceCutSet* const acceptanceCuts,
+                                       int const minimumNumberOfAdditionalJets,
+                                             int const numberOfNegativeLeptons,
+                                           int const numberOfPositiveLeptons );
+    /* this sums up getAcceptanceWithMinimumJets for numberOfNegativeLeptons &
+     * numberOfPositiveLeptons split between electrons & muons in every
+     * combination.
+     */
     virtual double
     specifiedJetsOneOssfMinusOsdfPair( acceptanceCutSet* const acceptanceCuts,
                                        int const numberOfAdditionalJets )
@@ -1372,6 +1383,40 @@ namespace LHC_FASER
                                      numberOfPositiveElectrons,
                                      numberOfNegativeMuons,
                                      numberOfPositiveMuons );
+    }
+    return returnDouble;
+  }
+
+  inline double
+  fullCascade::leptonFlavorSummedWithMinimumJets(
+                                  bool const initialSparticleIsNotAntiparticle,
+                                        acceptanceCutSet* const acceptanceCuts,
+                                       int const minimumNumberOfAdditionalJets,
+                                             int const numberOfNegativeLeptons,
+                                            int const numberOfPositiveLeptons )
+  /* this sums up getAcceptanceWithMinimumJets for numberOfNegativeLeptons &
+   * numberOfPositiveLeptons split between electrons & muons in every
+   * combination.
+   */
+  {
+    double returnDouble( 0.0 );
+    for( int numberOfNegativeElectrons( numberOfNegativeLeptons );
+         0 <= numberOfNegativeElectrons;
+         --numberOfNegativeElectrons )
+    {
+      for( int numberOfPositiveElectrons( numberOfPositiveLeptons );
+           0 <= numberOfPositiveElectrons;
+           --numberOfPositiveElectrons )
+      {
+      returnDouble
+      += getAcceptanceWithMinimumJets( initialSparticleIsNotAntiparticle,
+                                       acceptanceCuts,
+                                       minimumNumberOfAdditionalJets,
+                                       numberOfNegativeElectrons,
+                                       numberOfPositiveElectrons,
+                       ( numberOfNegativeLeptons - numberOfNegativeElectrons ),
+                     ( numberOfPositiveLeptons - numberOfPositiveElectrons ) );
+      }
     }
     return returnDouble;
   }

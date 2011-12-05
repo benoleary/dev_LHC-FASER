@@ -140,14 +140,16 @@ namespace LHC_FASER
     std::list< int > excludedFinalStateParticles;
     double firstCascadeBrToEwino;
     double secondCascadeBrToEwino;
+    bool firstSparticleIsNotAntiparticle;
+    bool secondSparticleIsNotAntiparticle;
   };
 
 
   /* this is a class to handle each individual signal to be calculated.
    * it accesses numbers common to different signals through the
    * crossSectionHandler, kinematicsHandler & cascadeHandler classes.
-   * it takes a string encoding what it should calculateValue, & constructs a
-   * signalCalculator object to actually calculateValue the signal with the
+   * it takes a string encoding what it should calculate, & constructs a
+   * signalCalculator object to actually calculate the signal with the
    * given handlers. it also takes care of updating the signal & storing its
    * value & estimated uncertainty.
    */
@@ -291,7 +293,7 @@ namespace LHC_FASER
     };
 
 
-    /* this is a derived class to calculateValue the "Atlas 3 jets plus missing
+    /* this is a derived class to calculate the "Atlas 3 jets plus missing
      * transverse momentum plus exactly 1 lepton" signal.
      * it takes the kinematics from the Atlas3jMET grid & combines them with
      * cascade decays leading to 1 lepton passing the cut.
@@ -306,7 +308,7 @@ namespace LHC_FASER
       // signal as implemented in this code.
       static double const defaultPrimaryLeptonCut;
       static double const defaultSecondaryLeptonCut;
-      // the default Atlas4jMET0l lepton transverse momentum cuts are 20.0 GeV
+      // the default Atlas3jMET1l lepton transverse momentum cuts are 20.0 GeV
       // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
 
       static signalCalculator*
@@ -336,6 +338,56 @@ namespace LHC_FASER
                                 signalDefinitionSet* const signalDefinitions );
     };
 
+
+    /* this is a derived class to calculate  the "same sign dilepton" signal.
+     * it assumes no jet or MET cuts, so combines acceptances just from lepton
+     * cuts combined with cross-sections & branching ratios.
+     */
+    class sameSignDilepton : public signalCalculator
+    {
+    public:
+      static double const defaultLeptonCut;
+      // the default same-sign dilepton lepton transverse momentum cut is
+      // 20.0 GeV.
+
+      static signalCalculator*
+      getCalculator( std::string const* const argumentString,
+                     signalDefinitionSet* const signalDefinitions );
+      // this either returns a pointer to a new sameSignDilepton with cuts
+      // decided by the given string, or a reallyWrongCalculator pointer.
+
+      ~sameSignDilepton();
+
+      bool
+      calculateValue( double* const signalValue,
+                      double* const uncertaintyFactor )
+      /* this calculates the event rate for the signal & puts its value in
+       * signalValue, & puts an estimate for the uncertainty into
+       * uncertaintyFactor, & returns true if it did all this successfully.
+       */;
+
+
+    protected:
+      // these are used as each pairing of cascades from each production
+      // channel is calculated.
+      double subchannelCrossSectionTimesBrToEwinos;
+      double subchannelDileptonAcceptance;
+
+      sameSignDilepton( signalDefinitionSet* const signalDefinitions );
+
+      double
+      getDileptonFromSingleCascade( fullCascade* dileptonCascade,
+                                  bool const dileptonCascaderIsNotAntiparticle,
+                                    fullCascade* otherCascade,
+                                    bool const otherIsNotAntiparticle );
+      double
+      getOneLeptonFromEachCascade( fullCascade* firstCascade,
+                                   bool const firstIsNotAntiparticle,
+                                   fullCascade* secondCascade,
+                                   bool const secondIsNotAntiparticle );
+    };
+
+
   }  // end of signalCalculatorClasses namespace.
 
 
@@ -355,14 +407,6 @@ namespace LHC_FASER
   inline double
   signalHandler::getValue()
   {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: signalHandler::getValue() called."
-    << " needsToPrepareForThisPoint() = "
-    << needsToPrepareForThisPoint();
-    std::cout << std::endl;**/
-
     // if the signal has not been calculated for this point, update
     // signalValue before returning it:
     if( needsToPrepareForThisPoint() )
@@ -413,23 +457,51 @@ namespace LHC_FASER
 
 
 
-  inline bool
-  signalCalculatorClasses::reallyWrongCalculator::calculateValue(
-                                                           double* signalValue,
-                                                    double* uncertaintyFactor )
-  // this always returns false, & always sets signalValue &
-  // uncertaintyFactor to CppSLHA::CppSLHA_global::really_wrong_value.
+  namespace signalCalculatorClasses
   {
-    // debugging:
-    /**std::cout
-    << std::endl
-    << "debugging: reallyWrongCalculator::calculateValue( "
-    << signalValue << ", " << uncertaintyFactor << " ) called.";
-    std::cout << std::endl;**/
-    *signalValue = CppSLHA::CppSLHA_global::really_wrong_value;
-    *uncertaintyFactor = CppSLHA::CppSLHA_global::really_wrong_value;
-    return false;
-  }
+    inline bool
+    reallyWrongCalculator::calculateValue( double* signalValue,
+                                           double* uncertaintyFactor )
+    // this always returns false, & always sets signalValue &
+    // uncertaintyFactor to CppSLHA::CppSLHA_global::really_wrong_value.
+    {
+      *signalValue = CppSLHA::CppSLHA_global::really_wrong_value;
+      *uncertaintyFactor = CppSLHA::CppSLHA_global::really_wrong_value;
+      return false;
+    }
+
+
+
+    inline double
+    sameSignDilepton::getDileptonFromSingleCascade(
+                                                  fullCascade* dileptonCascade,
+                                  bool const dileptonCascaderIsNotAntiparticle,
+                                                    fullCascade* otherCascade,
+                                            bool const otherIsNotAntiparticle )
+    {
+      return ( ( dileptonCascade->leptonFlavorSummedWithMinimumJets(
+                                             dileptonCascaderIsNotAntiparticle,
+                                                            &signalDefinitions,
+                                                                     0,
+                                                                     2,
+                                                                     0 )
+                 + dileptonCascade->leptonFlavorSummedWithMinimumJets(
+                                             dileptonCascaderIsNotAntiparticle,
+                                                            &signalDefinitions,
+                                                                       0,
+                                                                       0,
+                                                                       2 ) )
+               * otherCascade->getAcceptanceWithMinimumJets(
+                                                        otherIsNotAntiparticle,
+                                                            &signalDefinitions,
+                                                             0,
+                                                             0,
+                                                             0,
+                                                             0,
+                                                             0 ) );
+    }
+
+  }  // end of signalCalculatorClasses namespace
 
 }  // end of LHC_FASER namespace.
 

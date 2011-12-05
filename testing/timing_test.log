@@ -1,0 +1,890 @@
+
+CppSLHA::read_file() (using "SPS1a_spectrum.out") has been called
+
+constructing testLhcFaser took 0.001051 seconds.
+
+adding Atlas4jMET0l7TeV
+CppSLHA::error! an SLHA BLOCK was asked for an entry which it had not recorded.
+NaN ("Not a Number") has been returned.
+
+CppSLHA::error! an SLHA BLOCK was asked for an entry which it had not recorded.
+NaN ("Not a Number") has been returned.
+ took 3.92375 seconds.
+
+adding Atlas3jMET1l7TeV took 9.5e-05 seconds.
+
+adding sameSignDilepton7TeV took 7.3e-05 seconds.
+
+timing sum of 1st calculations of each signal:
+
+
+copying SPS1a_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 745.74
+calculating Atlas3jMET1l7TeV: 169.433
+calculating sameSignDilepton7TeV: 10.4702
+
+
+copying SPS1b_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 33.1591
+calculating Atlas3jMET1l7TeV: 7.45961
+calculating sameSignDilepton7TeV: 0.455731
+
+
+copying SPS2_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 1.46112
+calculating Atlas3jMET1l7TeV: 0.839852
+calculating sameSignDilepton7TeV: 0.115694
+
+
+copying SPS3_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 26.8894
+calculating Atlas3jMET1l7TeV: 13.5169
+calculating sameSignDilepton7TeV: 2.17498
+
+
+copying SPS5_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 200.488
+calculating Atlas3jMET1l7TeV: 67.5442
+calculating sameSignDilepton7TeV: 6.16244
+
+
+copying SPS6_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 254.945
+calculating Atlas3jMET1l7TeV: 67.3157
+calculating sameSignDilepton7TeV: 5.52593
+
+
+copying SPS7_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 17.6931
+calculating Atlas3jMET1l7TeV: 6.72635
+calculating sameSignDilepton7TeV: 0.918602
+
+
+copying SPS8_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 4.92181
+calculating Atlas3jMET1l7TeV: 1.73897
+calculating sameSignDilepton7TeV: 0.160209
+
+
+copying SPS9_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 0
+calculating Atlas3jMET1l7TeV: 0
+calculating sameSignDilepton7TeV: 0
+
+
+copying LM1_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 694.804
+calculating Atlas3jMET1l7TeV: 124.049
+calculating sameSignDilepton7TeV: 5.92133
+
+
+copying LM8_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 47.5197
+calculating Atlas3jMET1l7TeV: 10.805
+calculating sameSignDilepton7TeV: 0.733796
+
+
+copying SU4_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 4385.86
+calculating Atlas3jMET1l7TeV: 1162.1
+calculating sameSignDilepton7TeV: 69.2291
+
+
+copying convoluted_spectrum.out
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+
+calculating Atlas4jMET0l7TeV: 635.248
+calculating Atlas3jMET1l7TeV: 10.4801
+calculating sameSignDilepton7TeV: 0.0736094; it took 27.3716 seconds.
+
+number of reloads to go: 10
+
+
+copying SPS1a_spectrum.out took 0.003597 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007639 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 745.74; took 0.376293 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 169.433; took 0.919873 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 10.4702; took 1.8495 seconds.
+
+
+
+copying SPS1b_spectrum.out took 0.003357 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007497 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 33.1591; took 0.376956 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 7.45961; took 0.876427 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.455731; took 1.75599 seconds.
+
+
+
+copying SPS2_spectrum.out took 0.003323 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007694 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 1.46112; took 0.018494 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 0.839852; took 0.016813 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.115694; took 0.016015 seconds.
+
+
+
+copying SPS3_spectrum.out took 0.00323 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007669 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 26.8894; took 0.369534 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 13.5169; took 0.829112 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 2.17498; took 1.68986 seconds.
+
+
+
+copying SPS5_spectrum.out took 0.003184 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008406 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 200.488; took 0.144423 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 67.5442; took 0.304397 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 6.16244; took 0.65906 seconds.
+
+
+
+copying SPS6_spectrum.out took 0.003518 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007638 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 254.945; took 0.390595 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 67.3157; took 0.917263 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 5.52593; took 1.86796 seconds.
+
+
+
+copying SPS7_spectrum.out took 0.003394 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007612 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 17.6931; took 0.284636 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 6.72635; took 0.45392 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.918602; took 0.675068 seconds.
+
+
+
+copying SPS8_spectrum.out took 0.003235 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008057 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 4.92181; took 0.05059 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 1.73897; took 0.051701 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.160209; took 0.065607 seconds.
+
+
+
+copying SPS9_spectrum.out took 0.003154 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008122 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 0; took 4.3e-05 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 0; took 9e-06 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0; took 9e-06 seconds.
+
+
+
+copying LM1_spectrum.out took 0.003301 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007392 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 694.804; took 0.38969 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 124.049; took 0.95845 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 5.92133; took 1.95824 seconds.
+
+
+
+copying LM8_spectrum.out took 0.004958 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.009796 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 47.5197; took 0.367986 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 10.805; took 1.19029 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.733796; took 2.70106 seconds.
+
+
+
+copying SU4_spectrum.out took 0.003768 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007263 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 4385.86; took 0.326372 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 1162.1; took 0.870696 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 69.2291; took 1.95172 seconds.
+
+
+
+copying convoluted_spectrum.out took 0.003212 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007236 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 635.248; took 0.166084 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 10.4801; took 0.402456 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.0736094; took 0.742717 seconds.
+
+number of reloads to go: 9
+
+
+copying SPS1a_spectrum.out took 0.003247 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.00771 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 745.74; took 0.365686 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 169.433; took 0.962463 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 10.4702; took 1.86926 seconds.
+
+
+
+copying SPS1b_spectrum.out took 0.003189 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008206 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 33.1591; took 0.395227 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 7.45961; took 0.894833 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.455731; took 1.76756 seconds.
+
+
+
+copying SPS2_spectrum.out took 0.003504 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008922 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 1.46112; took 0.016504 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 0.839852; took 0.014006 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.115694; took 0.015718 seconds.
+
+
+
+copying SPS3_spectrum.out took 0.003299 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007266 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 26.8894; took 0.362733 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 13.5169; took 0.83201 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 2.17498; took 1.62708 seconds.
+
+
+
+copying SPS5_spectrum.out took 0.003241 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008746 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 200.488; took 0.143164 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 67.5442; took 0.296468 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 6.16244; took 0.640581 seconds.
+
+
+
+copying SPS6_spectrum.out took 0.003262 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007633 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 254.945; took 0.361884 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 67.3157; took 0.888807 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 5.52593; took 1.81029 seconds.
+
+
+
+copying SPS7_spectrum.out took 0.003179 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007686 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 17.6931; took 0.280017 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 6.72635; took 0.480948 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.918602; took 0.752227 seconds.
+
+
+
+copying SPS8_spectrum.out took 0.003396 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008632 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 4.92181; took 0.05721 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 1.73897; took 0.059329 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.160209; took 0.073593 seconds.
+
+
+
+copying SPS9_spectrum.out took 0.003434 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.010195 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 0; took 4.5e-05 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 0; took 9e-06 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0; took 8e-06 seconds.
+
+
+
+copying LM1_spectrum.out took 0.003235 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007874 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 694.804; took 0.419608 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 124.049; took 1.01893 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 5.92133; took 2.10451 seconds.
+
+
+
+copying LM8_spectrum.out took 0.003263 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007274 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 47.5197; took 0.407239 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 10.805; took 1.24003 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.733796; took 2.73415 seconds.
+
+
+
+copying SU4_spectrum.out took 0.003083 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.009239 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 4385.86; took 0.318371 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 1162.1; took 0.867937 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 69.2291; took 1.97289 seconds.
+
+
+
+copying convoluted_spectrum.out took 0.023103 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.012783 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 635.248; took 0.175507 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 10.4801; took 0.422595 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.0736094; took 0.756507 seconds.
+
+number of reloads to go: 8
+
+
+copying SPS1a_spectrum.out took 0.047743 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.011607 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 745.74; took 0.369032 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 169.433; took 0.895122 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 10.4702; took 1.82213 seconds.
+
+
+
+copying SPS1b_spectrum.out took 0.00321 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007542 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 33.1591; took 0.375655 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 7.45961; took 0.881306 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.455731; took 1.73893 seconds.
+
+
+
+copying SPS2_spectrum.out took 0.003242 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008327 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 1.46112; took 0.016811 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 0.839852; took 0.014373 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.115694; took 0.015619 seconds.
+
+
+
+copying SPS3_spectrum.out took 0.003641 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007453 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 26.8894; took 0.359881 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 13.5169; took 0.826821 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 2.17498; took 1.6322 seconds.
+
+
+
+copying SPS5_spectrum.out took 0.003067 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008108 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 200.488; took 0.142723 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 67.5442; took 0.299421 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 6.16244; took 0.637994 seconds.
+
+
+
+copying SPS6_spectrum.out took 0.004375 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008223 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 254.945; took 0.364787 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 67.3157; took 0.880017 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 5.52593; took 1.78827 seconds.
+
+
+
+copying SPS7_spectrum.out took 0.003207 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.00901 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 17.6931; took 0.279195 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 6.72635; took 0.450748 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.918602; took 0.664739 seconds.
+
+
+
+copying SPS8_spectrum.out took 0.003706 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008472 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 4.92181; took 0.053783 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 1.73897; took 0.054008 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.160209; took 0.065587 seconds.
+
+
+
+copying SPS9_spectrum.out took 0.003372 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.00753 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 0; took 4e-05 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 0; took 8e-06 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0; took 8e-06 seconds.
+
+
+
+copying LM1_spectrum.out took 0.003187 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.00803 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 694.804; took 0.396917 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 124.049; took 0.984543 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 5.92133; took 1.98652 seconds.
+
+
+
+copying LM8_spectrum.out took 0.003347 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007557 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 47.5197; took 0.362571 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 10.805; took 1.17737 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.733796; took 2.65816 seconds.
+
+
+
+copying SU4_spectrum.out took 0.004704 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007398 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 4385.86; took 0.324812 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 1162.1; took 0.872096 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 69.2291; took 1.9661 seconds.
+
+
+
+copying convoluted_spectrum.out took 0.003273 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007388 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 635.248; took 0.170481 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 10.4801; took 0.41503 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.0736094; took 0.748984 seconds.
+
+number of reloads to go: 7
+
+
+copying SPS1a_spectrum.out took 0.003111 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007498 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 745.74; took 0.362909 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 169.433; took 0.898322 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 10.4702; took 1.85343 seconds.
+
+
+
+copying SPS1b_spectrum.out took 0.003286 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008331 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 33.1591; took 0.391895 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 7.45961; took 0.881401 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.455731; took 1.78728 seconds.
+
+
+
+copying SPS2_spectrum.out took 0.003224 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007643 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 1.46112; took 0.017334 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 0.839852; took 0.01383 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.115694; took 0.01559 seconds.
+
+
+
+copying SPS3_spectrum.out took 0.003203 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007291 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 26.8894; took 0.366354 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 13.5169; took 0.837086 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 2.17498; took 1.64999 seconds.
+
+
+
+copying SPS5_spectrum.out took 0.003164 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007498 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 200.488; took 0.141303 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 67.5442; took 0.298359 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 6.16244; took 0.635278 seconds.
+
+
+
+copying SPS6_spectrum.out took 0.003211 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007735 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 254.945; took 0.360696 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 67.3157; took 0.877417 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 5.52593; took 1.8273 seconds.
+
+
+
+copying SPS7_spectrum.out took 0.003219 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007718 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 17.6931; took 0.297855 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 6.72635; took 0.480633 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.918602; took 0.676315 seconds.
+
+
+
+copying SPS8_spectrum.out took 0.003324 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.008949 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 4.92181; took 0.052552 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 1.73897; took 0.058557 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.160209; took 0.064661 seconds.
+
+
+
+copying SPS9_spectrum.out took 0.003181 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007309 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 0; took 3.8e-05 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 0; took 8e-06 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0; took 8e-06 seconds.
+
+
+
+copying LM1_spectrum.out took 0.003082 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007744 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 694.804; took 0.418405 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 124.049; took 0.96947 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 5.92133; took 1.99749 seconds.
+
+
+
+copying LM8_spectrum.out took 0.003534 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.00819 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 47.5197; took 0.391515 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 10.805; took 1.21229 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.733796; took 2.66784 seconds.
+
+
+
+copying SU4_spectrum.out took 0.005236 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007025 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 4385.86; took 0.322407 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 1162.1; took 0.862961 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 69.2291; took 1.95909 seconds.
+
+
+
+copying convoluted_spectrum.out took 0.003276 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007232 seconds.
+
+calculating the point's value for Atlas4jMET0l7TeV: 635.248; took 0.165248 seconds.
+
+calculating the point's value for Atlas3jMET1l7TeV: 10.4801; took 0.398586 seconds.
+
+calculating the point's value for sameSignDilepton7TeV: 0.0736094; took 0.746134 seconds.
+
+number of reloads to go: 6
+
+
+copying SPS1a_spectrum.out took 0.003274 seconds.
+
+reading it in & updating
+CppSLHA::read_file() (using "test_spectrum.out") has been called
+ took 0.007338 seconds.
+

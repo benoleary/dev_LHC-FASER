@@ -105,7 +105,7 @@ namespace LHC_FASER
       electroweakCascadeSource( testInputHandler );
       fullCascadeSetFactory cascadeSets( testInputHandler,
                                          &electroweakCascadeSource );
-      /**
+      /**/
       signalShortcuts*
       testSignalShortcutsPointer( new signalShortcuts( testInputHandler,
                                                        &crossSections,
@@ -324,6 +324,19 @@ namespace LHC_FASER
       << std::endl
       << "atlasThreeJetMetOneLeptonHighCuts seems OK.";
       std::cout << std::endl;
+      signalHandler
+      testSameSignDilepton( "sameSignDilepton07TeV",
+                            1.0,
+                            &testSignalDefinitionSet );
+      std::cout
+      << std::endl
+      << "SPS1a: testSameSignDilepton.getValue() (in *pb*) = "
+      << testSameSignDilepton.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "sameSignDilepton seems OK.";
+      std::cout << std::endl;
 
       std::cout
       << std::endl
@@ -381,7 +394,16 @@ namespace LHC_FASER
       << std::endl
       << "atlasThreeJetMetOneLeptonHighCuts seems OK.";
       std::cout << std::endl;
-      **/
+      std::cout
+      << std::endl
+      << "SPS2: testSameSignDilepton.getValue() (in *pb*) = "
+      << testSameSignDilepton.getValue();
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "sameSignDilepton seems OK.";
+      std::cout << std::endl;
+      /**/
       signalShortcuts
       convolutedSignalShortcuts( testInputHandler,
                                  &crossSections,
@@ -404,6 +426,15 @@ namespace LHC_FASER
       << "convoluted: convolutedSigmaBreakdownTest.getValue() (in *fb*) = "
       << convolutedSigmaBreakdownTest.getValue();
       std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "don't worry about the BRs adding up to over 100% for the convoluted"
+      << " point from sigmaBreakdownTest, since it overcounts channels where"
+      << " the electroweakino can decay back into a colored cascade, for"
+      << " example (so the assumption of sigmaBreakdownTest that the EW decays"
+      << " of the charginos are 100% is wrong).";
+      std::cout << std::endl;
+
 
       basicStuff->getSlha()->read_file( "SPS1a_spectrum.out" );
       basicStuff->getReadier()->readyObserversForNewPoint();
