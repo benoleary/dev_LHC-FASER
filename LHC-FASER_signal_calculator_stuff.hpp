@@ -68,10 +68,13 @@
  * you'll have to go by the existing signals as examples.
  *
  * Things to remember:
+ * - valueForCurrentCascades(...) has to be written for any class derived from
+ *   signalCalculator, even if it doesn't use it because it over-rides
+ *   calculateValue(...) itself. however, most signals should just have their
+ *   own valueForCurrentCascades(...), unless they do something strange.
  * - make sure that exclusiveBrHandler::alwaysNeglectedDecays doesn't
  *   interfere with the new signal. exclusiveBrHandler returns a NULL pointer
  *   if the decay is in alwaysNeglectedDecays.
- * - remember to include antiparticles in jets_to_tag & jets_to_neglect.
  * - fire hot, hot hurt.
  */
 
@@ -106,26 +109,22 @@ namespace LHC_FASER
      */
     virtual bool
     calculateValue( double* signalValue,
-                    double* uncertaintyFactor )
-    = 0;
+                    double* uncertaintyFactor );
     /* this calculates the event rate for the signal & puts its value in
      * signalValue, & puts an estimate for the uncertainty into
      * uncertaintyFactor, & returns true if it did all this successfully.
      *
-     *
-     * the flow for signalCalculator::calculateValue() is:
-     * sets up a set of productionChannels (once per calculator instance)
-     * - each of these productionChannels associates with a cross-section table
-     *
-     * once per new point, each channel:
-     * - checks its cross-section - if it's high enough, it proceeds
-     * - obtains the sQCD_to_EWinos for its scoloreds
+     * by default, this calls goThroughCascadesNormally( signalValue,
+     *                                                   uncertaintyFactor )
+     * which calls valueForCurrentCascades(...) for each pair of cascades.
+     * it is expected that valueForCurrentCascades(...) for each derived class
+     * - checks the cross-section times BRs for the cascade pair - if it's high
+     *   enough, it proceeds
+     * - checks the lepton acceptances for the cascade pair - if they're high
+     *   enough in combination with the BRs & the cross-section, it proceeds
      * - obtains its jet acceptance from its kinematics table, checks
-     *   cross-section * scew BRs * jet acceptance, if high enough, proceeds
-     * - obtains lepton acceptance from kinematics table, passes it with scew
-     *   pairs to cascade handler, now has lepton & additional jet acceptances
-     * - puts it all together
-     * then all the channel totals are added together
+     *   cross-section * BRs * acceptances, & if high enough, returns the
+     *   product, or 0.0 otherwise.
      */
 
   protected:
@@ -139,8 +138,33 @@ namespace LHC_FASER
     std::list< int > excludedFinalStateParticles;
     double firstCascadeBrToEwino;
     double secondCascadeBrToEwino;
+    signedParticleShortcutPair const* initialPair;
     bool firstSparticleIsNotAntiparticle;
     bool secondSparticleIsNotAntiparticle;
+    double subchannelCrossSectionTimesBrToEwinos;
+
+    virtual double
+    valueForCurrentCascades( fullCascade* firstCascade,
+                             fullCascade* secondCascade )
+    = 0;
+    /* this function should assume that firstCascadeBrToEwino,
+     * secondCascadeBrToEwino, initialPair, firstSparticleIsNotAntiparticle,
+     * secondCascadeBrToEwino, & subchannelCrossSectionTimesBrToEwinos have all
+     * been set correctly.
+     * it is expected that valueForCurrentCascades(...) for each derived class
+     * - checks the cross-section times BRs for the cascade pair - if it's high
+     *   enough, it proceeds
+     * - checks the lepton acceptances for the cascade pair - if they're high
+     *   enough in combination with the BRs & the cross-section, it proceeds
+     * - obtains its jet acceptance from its kinematics table, checks
+     *   cross-section * BRs * acceptances, & if high enough, returns the
+     *   product, or 0.0 otherwise.
+     */
+    bool
+    goThroughCascadesNormally( double* signalValue,
+                               double* uncertaintyFactor );
+    // this calls valueForCurrentCascades(...) for each pair of cascades for
+    // each production channel.
   };
 
 
@@ -206,8 +230,11 @@ namespace LHC_FASER
       // this always returns false, & always sets signalValue &
       // uncertaintyFactor to CppSLHA::CppSLHA_global::really_wrong_value.
 
-    //protected:
-      //nothing.
+    protected:
+      virtual double
+      valueForCurrentCascades( fullCascade* firstCascade,
+                               fullCascade* secondCascade );
+      // this shouldn't be called.
     };
 
 
@@ -224,13 +251,17 @@ namespace LHC_FASER
       bool
       calculateValue( double* const signalValue,
                       double* const uncertaintyFactor );
-      /* this calculates the event rate for the signal & puts its value in
-       * signalValue, & puts an estimate for the uncertainty into
-       * uncertaintyFactor, & returns true if it did all this successfully.
-       */
+      // this over-rides the base version because it does things a bit
+      // differently in a few of the steps.
+
 
     protected:
       double channelBrTotal;
+
+      virtual double
+      valueForCurrentCascades( fullCascade* firstCascade,
+                               fullCascade* secondCascade );
+      // this shouldn't be called.
     };
 
 
@@ -260,13 +291,6 @@ namespace LHC_FASER
 
       ~atlasFourJetMetZeroLepton();
 
-      bool
-      calculateValue( double* const signalValue,
-                      double* const uncertaintyFactor );
-      /* this calculates the event rate for the signal & puts its value in
-       * signal_value, & puts an estimate for the uncertainty into
-       * uncertainty_factor, & returns true if it did all this successfully.
-       */
 
     protected:
       jetAcceptanceTable* fourJetKinematics;
@@ -278,17 +302,19 @@ namespace LHC_FASER
        * only used for direct jet acceptance).
        */
       double fourJetAcceptance;
-      //double threeJetAcceptance;
-
       // these are used as each pairing of cascades from each production
-      // channel is calculated.
-      double subchannelCrossSectionTimesBrToEwinos;
+      // channel is calculated:
       double subchannelValue;
       double subchannelZeroOrMoreJetsZeroLeptons;
       double subchannelOneOrMoreJetsZeroLeptons;
 
       atlasFourJetMetZeroLepton(
                                 signalDefinitionSet* const signalDefinitions );
+
+      virtual double
+      valueForCurrentCascades( fullCascade* firstCascade,
+                               fullCascade* secondCascade );
+      // see base version's description.
     };
 
 
@@ -318,23 +344,19 @@ namespace LHC_FASER
 
       ~atlasThreeJetMetOneLepton();
 
-      bool
-      calculateValue( double* const signalValue,
-                      double* const uncertaintyFactor )
-      /* this calculates the event rate for the signal & puts its value in
-       * signalValue, & puts an estimate for the uncertainty into
-       * uncertaintyFactor, & returns true if it did all this successfully.
-       */;
-
 
     protected:
-      // these are used as each pairing of cascades from each production
+      // this is used as each pairing of cascades from each production
       // channel is calculated.
-      double subchannelCrossSectionTimesBrToEwinos;
       double subchannelZeroOrMoreJetsOneLepton;
 
       atlasThreeJetMetOneLepton(
                                 signalDefinitionSet* const signalDefinitions );
+
+      virtual double
+      valueForCurrentCascades( fullCascade* firstCascade,
+                               fullCascade* secondCascade );
+      // see base version's description.
     };
 
 
@@ -357,19 +379,10 @@ namespace LHC_FASER
 
       ~sameSignDilepton();
 
-      bool
-      calculateValue( double* const signalValue,
-                      double* const uncertaintyFactor )
-      /* this calculates the event rate for the signal & puts its value in
-       * signalValue, & puts an estimate for the uncertainty into
-       * uncertaintyFactor, & returns true if it did all this successfully.
-       */;
-
 
     protected:
-      // these are used as each pairing of cascades from each production
+      // this is used as each pairing of cascades from each production
       // channel is calculated.
-      double subchannelCrossSectionTimesBrToEwinos;
       double subchannelDileptonAcceptance;
 
       sameSignDilepton( signalDefinitionSet* const signalDefinitions );
@@ -384,6 +397,10 @@ namespace LHC_FASER
                                    bool const firstIsNotAntiparticle,
                                    fullCascade* secondCascade,
                                    bool const secondIsNotAntiparticle );
+      virtual double
+      valueForCurrentCascades( fullCascade* firstCascade,
+                               fullCascade* secondCascade );
+      // see base version's description.
     };
 
 
@@ -394,6 +411,32 @@ namespace LHC_FASER
 
 
   // inline functions:
+
+
+  inline bool
+  signalCalculator::calculateValue( double* signalValue,
+                                    double* uncertaintyFactor )
+  /* this calculates the event rate for the signal & puts its value in
+   * signalValue, & puts an estimate for the uncertainty into
+   * uncertaintyFactor, & returns true if it did all this successfully.
+   *
+   * by default, this calls goThroughCascadesNormally( signalValue,
+   *                                                   uncertaintyFactor )
+   * which calls valueForCurrentCascades(...) for each pair of cascades.
+   * it is expected that valueForCurrentCascades(...) for each derived class
+   * - checks the cross-section times BRs for the cascade pair - if it's high
+   *   enough, it proceeds
+   * - checks the lepton acceptances for the cascade pair - if they're high
+   *   enough in combination with the BRs & the cross-section, it proceeds
+   * - obtains its jet acceptance from its kinematics table, checks
+   *   cross-section * BRs * acceptances, & if high enough, returns the
+   *   product, or 0.0 otherwise.
+   */
+  {
+    return goThroughCascadesNormally( signalValue,
+                                      uncertaintyFactor );
+  }
+
 
 
   inline std::string const*
@@ -467,6 +510,38 @@ namespace LHC_FASER
       *signalValue = CppSLHA::CppSLHA_global::really_wrong_value;
       *uncertaintyFactor = CppSLHA::CppSLHA_global::really_wrong_value;
       return false;
+    }
+
+    inline double
+    reallyWrongCalculator::valueForCurrentCascades( fullCascade* firstCascade,
+                                                   fullCascade* secondCascade )
+    // this shouldn't be called.
+    {
+      std::cout
+      << std::endl
+      << "LHC-FASER::error! if this message is being displayed, somehow"
+      << "reallyWrongCalculator::valueForCurrentCascades( " << firstCascade
+      << ", " << secondCascade << " ) has been called.";
+      std::cout << std::endl;
+
+      return 0.0;
+    }
+
+
+
+    inline double
+    sigmaBreakdownTest::valueForCurrentCascades( fullCascade* firstCascade,
+                                                 fullCascade* secondCascade )
+    // this shouldn't be called.
+    {
+      std::cout
+      << std::endl
+      << "LHC-FASER::error! if this message is being displayed, somehow"
+      << "sigmaBreakdownTest::valueForCurrentCascades( " << firstCascade
+      << ", " << secondCascade << " ) has been called.";
+      std::cout << std::endl;
+
+      return 0.0;
     }
 
 

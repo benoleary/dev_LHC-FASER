@@ -96,6 +96,130 @@ namespace LHC_FASER
   }
 
 
+  bool
+  signalCalculator::goThroughCascadesNormally( double* signalValue,
+                                               double* uncertaintyFactor )
+  // this calls valueForCurrentCascades(...) for each pair of cascades for
+  // each production channel.
+  {
+    // debugging:
+    /**std::cout
+    << std::endl
+    << "debugging: signalCalculator::goThroughCascadesNormally( "
+    << signalValue << ", " << uncertaintyFactor << " ) called."
+    << " signalDefinitions.getPrimaryLeptonCut() = "
+    << signalDefinitions.getPrimaryLeptonCut();
+    std::cout << std::endl;**/
+
+    // start by setting the signal value to 0.0:
+    *signalValue = 0.0;
+
+    for( std::vector< productionChannelPointerSet* >::iterator
+         channelIterator( productionChannels.begin() );
+         productionChannels.end() > channelIterator;
+         ++channelIterator )
+    {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << *((*channelIterator)->getScoloredPair()->getFirstParticle(
+                )->get_name_or_antiname( (*channelIterator)->getScoloredPair(
+                                               )->firstIsNotAntiparticle() ))
+      << " + "
+      << *((*channelIterator)->getScoloredPair()->getSecondParticle(
+                )->get_name_or_antiname( (*channelIterator)->getScoloredPair(
+                                             )->secondIsNotAntiparticle() ))
+      << "; cross-section = " << (*channelIterator)->getCrossSection();
+      std::cout << std::endl;**/
+
+      if( lhcFaserGlobal::negligibleSigma
+          < (*channelIterator)->getCrossSection() )
+        // if it's worth looking at this channel...
+      {
+        // we have to look at all the open cascade pairings:
+        firstCascades
+        = (*channelIterator)->getFirstCascadeSet()->getOpenCascades();
+        secondCascades
+        = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
+        initialPair = (*channelIterator)->getScoloredPair();
+        firstSparticleIsNotAntiparticle
+        = initialPair->firstIsNotAntiparticle();
+        secondSparticleIsNotAntiparticle
+        = initialPair->secondIsNotAntiparticle();
+
+        for( std::vector< fullCascade* >::iterator
+             firstCascadeIterator( firstCascades->begin() );
+             firstCascades->end() > firstCascadeIterator;
+             ++firstCascadeIterator )
+        {
+          // debugging:
+          /**std::cout << std::endl << "debugging:"
+          << std::endl
+          << "1st: " << (*firstCascadeIterator)->getAsString();
+          std::cout << std::endl;**/
+
+          firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
+                                                &excludedFinalStateParticles );
+          if( ( lhcFaserGlobal::negligibleBr
+                * 2.0 * (double)(firstCascades->size()) )
+              < firstCascadeBrToEwino )
+            // this should mean we never throw away more than
+            // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
+          {
+            for( std::vector< fullCascade* >::iterator
+                 secondCascadeIterator( secondCascades->begin() );
+                 secondCascades->end() > secondCascadeIterator;
+                 ++secondCascadeIterator )
+            {
+              // debugging:
+              /**std::cout << std::endl << "debugging:"
+              << std::endl
+              << "2nd: " << (*secondCascadeIterator)->getAsString();
+              std::cout << std::endl;**/
+
+              secondCascadeBrToEwino
+              = (*secondCascadeIterator)->getBrToEwino(
+                                                &excludedFinalStateParticles );
+              if( ( lhcFaserGlobal::negligibleBr
+                    * 2.0 * (double)(secondCascades->size()) )
+                  < secondCascadeBrToEwino )
+                // this should mean we never throw away more than
+                // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
+              {
+                subchannelCrossSectionTimesBrToEwinos
+                = ( (*channelIterator)->getCrossSection()
+                    * firstCascadeBrToEwino * secondCascadeBrToEwino );
+
+                // debugging:
+                /**std::cout << std::endl << "debugging:"
+                << std::endl
+                << "(*channelIterator)->getCrossSection() = "
+                << (*channelIterator)->getCrossSection()
+                << ", firstCascadeBrToEwino = " << firstCascadeBrToEwino
+                << ", secondCascadeBrToEwino = " << secondCascadeBrToEwino
+                << ", subchannelCrossSectionTimesBrToEwinos = "
+                << subchannelCrossSectionTimesBrToEwinos;
+                std::cout << std::endl;**/
+
+                *signalValue += valueForCurrentCascades( *firstCascadeIterator,
+                                                      *secondCascadeIterator );
+              }
+              // end of if the BR of the 2nd cascade to its electroweakino was
+              // not negligible.
+            }  // end of loop over 2nd cascade.
+          }
+          // end of if the BR of the 1st cascade to its electroweakino was not
+          // negligible.
+        }  // end of loop over 1st cascade.
+      }  // end of if the channel's cross-section was not negligible.
+    }  // end of loop over productionChannels.
+    // currently, we do the uncertainty very roughly:
+    *uncertaintyFactor
+    = ( *signalValue * signalDefinitions.getShortcuts()->getUncertainty() );
+    return true;
+  }
+
+
 
   signalHandler::signalHandler( std::string const signalName,
                                 double const crossSectionUnitFactor,
@@ -235,10 +359,8 @@ namespace LHC_FASER
     bool
     sigmaBreakdownTest::calculateValue( double* const signalValue,
                                         double* const uncertaintyFactor )
-    /* this calculates the event rate for the signal & puts its value in
-     * signalValue, & puts an estimate for the uncertainty into
-     * uncertainty_factor, & returns true if it did all this successfully.
-     */
+    // this over-rides the base version because it does things a bit
+    // differently in a few of the steps.
     {
       // start by setting the signal value to 0.0:
       *signalValue = 0.0;
@@ -487,291 +609,169 @@ namespace LHC_FASER
     }
 
 
-    bool
-    atlasFourJetMetZeroLepton::calculateValue( double* const signalValue,
-                                              double* const uncertaintyFactor )
-    /* this calculates the event rate for the signal & puts its value in
-     * signalValue, & puts an estimate for the uncertainty into
-     * uncertaintyFactor, & returns true if it did all this successfully.
-     */
+    double
+    atlasFourJetMetZeroLepton::valueForCurrentCascades(
+                                                     fullCascade* firstCascade,
+                                                   fullCascade* secondCascade )
+    // see base version's description.
     {
+      subchannelZeroOrMoreJetsZeroLeptons
+      = ( firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                     0 )
+          * secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                        0 ) );
+      // chance of both cascades not producing any leptons which pass the cut &
+      // thus cause the event to be rejected.
+
       // debugging:
-      /**std::cout
+      /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "debugging: atlasFourJetMetZeroLepton::calculateValue( "
-      << signalValue << ", " << uncertaintyFactor << " ) called."
-      << " signalDefinitions.getPrimaryLeptonCut() = "
-      << signalDefinitions.getPrimaryLeptonCut();
+      << "subchannelZeroOrMoreJetsZeroLeptons = "
+      << subchannelZeroOrMoreJetsZeroLeptons;
       std::cout << std::endl;**/
 
-      // start by setting the signal value to 0.0:
-      *signalValue = 0.0;
+      subchannelOneOrMoreJetsZeroLeptons
+      = ( subchannelZeroOrMoreJetsZeroLeptons
+          - ( firstCascade->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                       0,
+                                                                       0 )
+              * secondCascade->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                          0,
+                                                                       0 ) ) );
+      // chance of no lepton rejection removing the portion without any extra
+      // jet passing the cut.
 
-      for( std::vector< productionChannelPointerSet* >::iterator
-           channelIterator( productionChannels.begin() );
-           productionChannels.end() > channelIterator;
-           ++channelIterator )
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "subchannelOneOrMoreJetsZeroLeptons = "
+      << subchannelOneOrMoreJetsZeroLeptons;
+      std::cout << std::endl;**/
+
+      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJetsZeroLeptons )
       {
+        fourJetAcceptance = fourJetKinematics->getAcceptance( initialPair,
+                                                              firstCascade,
+                                                              secondCascade );
+        subchannelValue = ( subchannelCrossSectionTimesBrToEwinos
+                            * subchannelZeroOrMoreJetsZeroLeptons
+                            * fourJetAcceptance );
+
+        // debugging:
+        /**if( 0.05 < ( subchannelCrossSectionTimesBrToEwinos
+                         * subchannelZeroOrMoreJetsZeroLeptons ) )
+        {
+          std::cout << std::endl << "debugging:"
+          << std::endl
+          << "adding" << std::endl;
+          if( !firstSparticleIsNotAntiparticle )
+          {
+            std::cout << "anti-";
+          }
+          std::cout
+          << firstCascade->getAsString() << " BR = "
+          << firstCascadeBrToEwino << std::endl;
+          if( !secondSparticleIsNotAntiparticle )
+          {
+            std::cout << "anti-";
+          }
+          std::cout
+          << secondCascade->getAsString() << " BR = " << secondCascadeBrToEwino
+          << std::endl
+          << " => " << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
+          << std::endl
+          << "subchannelCrossSectionTimesBrToEwinos = "
+          << subchannelCrossSectionTimesBrToEwinos
+          << std::endl
+          << "subchannelZeroOrMoreJetsZeroLeptons = "
+          << subchannelZeroOrMoreJetsZeroLeptons;
+          std::cout << std::endl;
+        }**/
+
+        // it's not going to ever be the case where the acceptance for 1+ jets
+        // is greater than 0+ jets...
+        if( lhcFaserGlobal::negligibleBr < subchannelOneOrMoreJetsZeroLeptons )
+        {
+          subchannelValue
+          += ( subchannelCrossSectionTimesBrToEwinos
+               * subchannelOneOrMoreJetsZeroLeptons
+               * ( threeJetKinematics->getAcceptance( initialPair,
+                                                      firstCascade,
+                                                      secondCascade )
+                   - fourJetAcceptance ) );
+          // we assume that the 3-jet+MET acceptance from the grid is greater
+          // than the 4-jet+MET acceptance.
+        }
         // debugging:
         /**std::cout << std::endl << "debugging:"
         << std::endl
-        << *((*channelIterator)->getScoloredPair()->getFirstParticle(
-                  )->get_name_or_antiname( (*channelIterator)->getScoloredPair(
-                                                 )->firstIsNotAntiparticle() ))
-        << " + "
-        << *((*channelIterator)->getScoloredPair()->getSecondParticle(
-                  )->get_name_or_antiname( (*channelIterator)->getScoloredPair(
-                                               )->secondIsNotAntiparticle() ))
-        << "; cross-section = " << (*channelIterator)->getCrossSection();
+        << "subchannelCrossSectionTimesBrToEwinos = "
+        << subchannelCrossSectionTimesBrToEwinos
+        << std::endl
+        << "subchannelZeroOrMoreJetsZeroLeptons = "
+        << subchannelZeroOrMoreJetsZeroLeptons
+        << std::endl
+        << "fourJetAcceptance = " << fourJetAcceptance
+        << std::endl
+        << "=> adding subchannelValue = " << subchannelValue;
         std::cout << std::endl;**/
-
-        if( lhcFaserGlobal::negligibleSigma
-            < (*channelIterator)->getCrossSection() )
-          // if it's worth looking at this channel...
+        if( !( ( 1.0 >= subchannelZeroOrMoreJetsZeroLeptons )
+               &&
+               ( 0.0 <= subchannelZeroOrMoreJetsZeroLeptons )
+               &&
+               ( 1.0 >= subchannelOneOrMoreJetsZeroLeptons )
+               &&
+               ( 0.0 <= subchannelOneOrMoreJetsZeroLeptons )
+               &&
+               ( 1.0 >= fourJetAcceptance )
+               &&
+               ( 0.0 <= fourJetAcceptance )
+               &&
+               ( 0.0 <= subchannelValue ) ) )
         {
-          // we have to look at all the open cascade pairings:
-          firstCascades
-          = (*channelIterator)->getFirstCascadeSet()->getOpenCascades();
-          secondCascades
-          = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
-
-          for( std::vector< fullCascade* >::iterator
-               firstCascadeIterator( firstCascades->begin() );
-               firstCascades->end() > firstCascadeIterator;
-               ++firstCascadeIterator )
-          {
-            // debugging:
-            /**std::cout << std::endl << "debugging:"
-            << std::endl
-            << "1st: "
-            << (*firstCascadeIterator)->getAsString();
-            std::cout << std::endl;**/
-
-            firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
-                                                &excludedFinalStateParticles );
-            if( ( lhcFaserGlobal::negligibleBr
-                * 2.0 * (double)(firstCascades->size()) )
-                < firstCascadeBrToEwino )
-              // this should mean we never throw away more than
-              // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
-            {
-              for( std::vector< fullCascade* >::iterator
-                   secondCascadeIterator( secondCascades->begin() );
-                   secondCascades->end() > secondCascadeIterator;
-                   ++secondCascadeIterator )
-              {
-                // debugging:
-                /**std::cout << std::endl << "debugging:"
-                << std::endl
-                << "2nd: "
-                << (*secondCascadeIterator)->getAsString();
-                std::cout << std::endl;**/
-
-                secondCascadeBrToEwino
-                = (*secondCascadeIterator)->getBrToEwino(
-                                                &excludedFinalStateParticles );
-                if( ( lhcFaserGlobal::negligibleBr
-                    * 2.0 * (double)(secondCascades->size()) )
-                    < secondCascadeBrToEwino )
-                  // this should mean we never throw away more than
-                  // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
-                {
-                  subchannelCrossSectionTimesBrToEwinos
-                  = ( (*channelIterator)->getCrossSection()
-                      * firstCascadeBrToEwino * secondCascadeBrToEwino );
-                  subchannelZeroOrMoreJetsZeroLeptons
-                  = ( (*firstCascadeIterator
-                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+          std::cout << std::endl << "LHC-FASER::error!"
+          << std::endl
+          << *(initialPair->getFirstParticle()->get_name_or_antiname(
+                                             firstSparticleIsNotAntiparticle ))
+          << " + "
+          << *(initialPair->getSecondParticle()->get_name_or_antiname(
+                                           secondSparticleIsNotAntiparticle ));
+          std::cout
+          << std::endl
+          << "1st: " << firstCascade->getAsString() << "; 0+j, 0l = "
+          << firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
-                                                                            0 )
-                       * (*secondCascadeIterator
-                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                                        0 );
+          std::cout
+          << std::endl
+          << "2nd: " << secondCascade->getAsString() << "; 0+j, 0l = "
+          << secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
-                                                                         0 ) );
-                  // chance of both cascades not producing any leptons which
-                  // pass the cut & thus cause the event to be rejected.
-
-                  // debugging:
-                  /**std::cout << std::endl << "debugging:"
-                  << std::endl
-                  << "subchannelZeroOrMoreJetsZeroLeptons = "
-                  << subchannelZeroOrMoreJetsZeroLeptons;
-                  std::cout << std::endl;**/
-
-                  subchannelOneOrMoreJetsZeroLeptons
-                  = ( subchannelZeroOrMoreJetsZeroLeptons
-                      - ( (*firstCascadeIterator
-                                  )->specifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                             0,
-                                                                            0 )
-                          * (*secondCascadeIterator
-                                  )->specifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                             0,
-                                                                       0 ) ) );
-                  // chance of no lepton rejection removing the portion without
-                  // any extra jet passing the cut.
-
-                  // debugging:
-                  /**std::cout << std::endl << "debugging:"
-                  << std::endl
-                  << "subchannelOneOrMoreJetsZeroLeptons = "
-                  << subchannelOneOrMoreJetsZeroLeptons;
-                  std::cout << std::endl;**/
-
-                  if( lhcFaserGlobal::negligibleBr
-                      < subchannelZeroOrMoreJetsZeroLeptons )
-                  {
-                    fourJetAcceptance = fourJetKinematics->getAcceptance(
-                                         (*channelIterator)->getScoloredPair(),
-                                                         *firstCascadeIterator,
-                                                      *secondCascadeIterator );
-                    subchannelValue
-                    = ( subchannelCrossSectionTimesBrToEwinos
-                        * subchannelZeroOrMoreJetsZeroLeptons
-                        * fourJetAcceptance );
-
-                    // debugging:
-                    /**
-                    if( 0.05 < ( subchannelCrossSectionTimesBrToEwinos
-                                  * subchannelZeroOrMoreJetsZeroLeptons ) )
-                    {
-                      std::cout << std::endl << "debugging:"
-                      << std::endl
-                      << "adding" << std::endl;
-                      if( !((*channelIterator)->getScoloredPair(
-                                                 )->firstIsNotAntiparticle()) )
-                      {
-                        std::cout << "anti-";
-                      }
-                      std::cout
-                      << (*firstCascadeIterator)->getAsString() << " BR = "
-                      << firstCascadeBrToEwino << std::endl;
-                      if( !((*channelIterator)->getScoloredPair(
-                                                )->secondIsNotAntiparticle()) )
-                      {
-                        std::cout << "anti-";
-                      }
-                      std::cout
-                      << (*secondCascadeIterator)->getAsString() << " BR = "
-                      << secondCascadeBrToEwino << std::endl << " => "
-                      << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
-                      << std::endl
-                      << "subchannelCrossSectionTimesBrToEwinos = "
-                      << subchannelCrossSectionTimesBrToEwinos
-                      << std::endl
-                      << "subchannelZeroOrMoreJetsZeroLeptons = "
-                      << subchannelZeroOrMoreJetsZeroLeptons;
-                      std::cout << std::endl;
-                    }**/
-
-                    // it's not going to ever be the case where the acceptance
-                    // for 1+ jets is greater than 0+ jets...
-                    if( lhcFaserGlobal::negligibleBr
-                        < subchannelOneOrMoreJetsZeroLeptons )
-                    {
-                      subchannelValue
-                      += ( subchannelCrossSectionTimesBrToEwinos
-                          * subchannelOneOrMoreJetsZeroLeptons
-                          * ( threeJetKinematics->getAcceptance(
-                                         (*channelIterator)->getScoloredPair(),
-                                                         *firstCascadeIterator,
-                                                       *secondCascadeIterator )
-                              - fourJetAcceptance ) );
-                      // we assume that the 3-jet+MET acceptance from the grid
-                      // is greater than the 4-jet+MET acceptance.
-                    }
-                    // here is where we update *signalValue to account for
-                    // this particular subchannel:
-                    *signalValue += subchannelValue;
-                    // debugging:
-                    /**std::cout << std::endl << "debugging:"
-                    << std::endl
-                    << "subchannelCrossSectionTimesBrToEwinos = "
-                    << subchannelCrossSectionTimesBrToEwinos
-                    << std::endl
-                    << "subchannelZeroOrMoreJetsZeroLeptons = "
-                    << subchannelZeroOrMoreJetsZeroLeptons
-                    << std::endl
-                    << "fourJetAcceptance = " << fourJetAcceptance
-                    << std::endl
-                    << "=> adding subchannelValue = " << subchannelValue;
-                    std::cout << std::endl;**/
-                    if( !( ( 1.0 >= subchannelZeroOrMoreJetsZeroLeptons )
-                           &&
-                           ( 0.0 <= subchannelZeroOrMoreJetsZeroLeptons )
-                           &&
-                           ( 1.0 >= subchannelOneOrMoreJetsZeroLeptons )
-                           &&
-                           ( 0.0 <= subchannelOneOrMoreJetsZeroLeptons )
-                           &&
-                           ( 1.0 >= fourJetAcceptance )
-                           &&
-                           ( 0.0 <= fourJetAcceptance )
-                           &&
-                           ( 0.0 <= subchannelValue ) ) )
-                    {
-                      std::cout << std::endl << "LHC-FASER::error!"
-                      << std::endl
-                      << *((*channelIterator)->getScoloredPair(
-                                   )->getFirstParticle()->get_name_or_antiname(
-                                           (*channelIterator)->getScoloredPair(
-                                                 )->firstIsNotAntiparticle() ))
-                      << " + "
-                      << *((*channelIterator)->getScoloredPair(
-                                  )->getSecondParticle()->get_name_or_antiname(
-                                           (*channelIterator)->getScoloredPair(
-                                               )->secondIsNotAntiparticle() ));
-                      std::cout
-                      << std::endl
-                      << "1st: "
-                      << (*firstCascadeIterator)->getAsString()
-                      << "; 0+j, 0l = "
-                      << (*firstCascadeIterator
-                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                           0 );
-                      std::cout
-                      << std::endl
-                      << "2nd: "
-                      << (*secondCascadeIterator)->getAsString()
-                      << "; 0+j, 0l = "
-                      << (*secondCascadeIterator
-                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                           0 );
-                      std::cout << std::endl;
-                      std::cout
-                      << std::endl
-                      << "produced subchannelZeroOrMoreJetsZeroLeptons = "
-                      << subchannelZeroOrMoreJetsZeroLeptons
-                      << ", subchannelOneOrMoreJetsZeroLeptons = "
-                      << subchannelOneOrMoreJetsZeroLeptons
-                      << ", & fourJetAcceptance = "
-                      << fourJetAcceptance
-                      << ", all of which should be >= 0.0 & <= 1.0 for valid"
-                      << " input! subchannelValue = " << subchannelValue
-                      << ", which should be >= 0.0 for valid input!";
-                      std::cout << std::endl;
-                    }
-                  }
-                  // end of if the BR of the subchannel to zero leptons is not
-                  // negligible.
-                }
-                // end of if the BR of the 2nd cascade to its electroweakino
-                // was not negligible.
-              }  // end of loop over 2nd cascade.
-            }
-            // end of if the BR of the 1st cascade to its electroweakino was
-            // not negligible.
-          }  // end of loop over 1st cascade.
-        }  // end of if the channel's cross-section was not negligible.
-      }  // end of loop over productionChannels.
-      // currently, we do the uncertainty very roughly:
-      *uncertaintyFactor
-      = ( *signalValue * signalDefinitions.getShortcuts()->getUncertainty() );
-      return true;
+                                                                         0 );
+          std::cout << std::endl;
+          std::cout
+          << std::endl
+          << "produced subchannelZeroOrMoreJetsZeroLeptons = "
+          << subchannelZeroOrMoreJetsZeroLeptons
+          << ", subchannelOneOrMoreJetsZeroLeptons = "
+          << subchannelOneOrMoreJetsZeroLeptons
+          << ", & fourJetAcceptance = "
+          << fourJetAcceptance
+          << ", all of which should be >= 0.0 & <= 1.0 for valid"
+          << " input! subchannelValue = " << subchannelValue
+          << ", which should be >= 0.0 for valid input!";
+          std::cout << std::endl;
+        }
+        return subchannelValue;
+      }
+      else
+      {
+        return 0.0;
+      }
     }
 
 
@@ -920,159 +920,101 @@ namespace LHC_FASER
     }
 
 
-    bool
-    atlasThreeJetMetOneLepton::calculateValue( double* const signalValue,
-                                              double* const uncertaintyFactor )
-    /* this calculates the event rate for the signal & puts its value in
-     * signalValue, & puts an estimate for the uncertainty into
-     * uncertaintyFactor, & returns true if it did all this successfully.
-     */
+    double
+    atlasThreeJetMetOneLepton::valueForCurrentCascades(
+                                                     fullCascade* firstCascade,
+                                                   fullCascade* secondCascade )
+    // see base version's description.
     {
       // debugging:
-      /**std::cout
+      /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "debugging: atlasThreeJetMetOneLepton::calculateValue( "
-      << signalValue << ", " << uncertaintyFactor << " ) called."
-      << " signalDefinitions.getPrimaryLeptonCut() = "
-      << signalDefinitions.getPrimaryLeptonCut()
-      << ", signalDefinitions.getSecondaryLeptonCut() = "
-      << signalDefinitions.getSecondaryLeptonCut();
+      << "looking at " << std::endl;
+      if( !firstSparticleIsNotAntiparticle )
+      {
+        std::cout << "anti-";
+      }
+      std::cout
+      << firstCascade->getAsString() << " BR = " << firstCascadeBrToEwino
+      << std::endl;
+      if( !secondSparticleIsNotAntiparticle )
+      {
+        std::cout << "anti-";
+      }
+      std::cout
+      << secondCascade->getAsString() << " BR = " << secondCascadeBrToEwino
+      << std::endl << " => "
+      << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
+      << std::endl
+      << "subchannelCrossSectionTimesBrToEwinos = "
+      << subchannelCrossSectionTimesBrToEwinos
+      << std::endl
+      << "subchannelZeroOrMoreJetsOneLepton = "
+      << subchannelZeroOrMoreJetsOneLepton;
       std::cout << std::endl;**/
 
-      // start by setting the signal value to 0.0:
-      *signalValue = 0.0;
-
-      for( std::vector< productionChannelPointerSet* >::iterator
-           channelIterator( productionChannels.begin() );
-           productionChannels.end() > channelIterator;
-           ++channelIterator )
-      {
-        if( lhcFaserGlobal::negligibleSigma
-            < (*channelIterator)->getCrossSection() )
-          // if it's worth looking at this channel...
-        {
-          // we have to look at all the open cascade pairings:
-          firstCascades
-          = (*channelIterator)->getFirstCascadeSet()->getOpenCascades();
-          secondCascades
-          = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
-
-          for( std::vector< fullCascade* >::iterator
-               firstCascadeIterator( firstCascades->begin() );
-               firstCascades->end() > firstCascadeIterator;
-               ++firstCascadeIterator )
-          {
-            firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
-                                                &excludedFinalStateParticles );
-            if( ( lhcFaserGlobal::negligibleBr
-                * 2.0 * (double)(firstCascades->size()) )
-                < firstCascadeBrToEwino )
-              // this should mean we never throw away more than
-              // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
-            {
-              for( std::vector< fullCascade* >::iterator
-                  secondCascadeIterator( secondCascades->begin() );
-                  secondCascades->end() > secondCascadeIterator;
-                  ++secondCascadeIterator )
-              {
-                secondCascadeBrToEwino
-                = (*secondCascadeIterator)->getBrToEwino(
-                                                &excludedFinalStateParticles );
-                if( ( lhcFaserGlobal::negligibleBr
-                    * 2.0 * (double)(secondCascades->size()) )
-                    < secondCascadeBrToEwino )
-                  // this should mean we never throw away more than
-                  // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
-                {
-                  subchannelCrossSectionTimesBrToEwinos
-                  = ( (*channelIterator)->getCrossSection()
-                      * firstCascadeBrToEwino * secondCascadeBrToEwino );
-                  subchannelZeroOrMoreJetsOneLepton
-                  = ( (*firstCascadeIterator
-                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+      subchannelZeroOrMoreJetsOneLepton
+      = ( firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
-                                                                            1 )
-                      * (*secondCascadeIterator
-                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                                     1 )
+          * secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
-                                                                            0 )
-                      + (*firstCascadeIterator
-                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                                        0 )
+          + firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
-                                                                            0 )
-                        * (*secondCascadeIterator
-                                )->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                                       0 )
+            * secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
                                                                          1 ) );
-                  /* chance for 1st cascade to produce the lepton * chance
-                   * of 2nd to not produce any further leptons (which would
-                   * cause the event to be rejected) + chance of lepton from
-                   * 2nd cascade * chance of no lepton from 1st cascade.
-                   */
-                  // debugging:
-                  /**
-                  if( 0.01 < ( subchannelCrossSectionTimesBrToEwinos
-                                * subchannelZeroOrMoreJetsOneLepton ) )
-                  {
-                    std::cout << std::endl << "debugging:"
-                    << std::endl
-                    << "adding" << std::endl;
-                    if( !((*channelIterator)->getScoloredPair(
-                                                 )->firstIsNotAntiparticle()) )
-                    {
-                      std::cout << "anti-";
-                    }
-                    std::cout
-                    << (*firstCascadeIterator)->getAsString() << " BR = "
-                    << firstCascadeBrToEwino << std::endl;
-                    if( !((*channelIterator)->getScoloredPair(
-                                                )->secondIsNotAntiparticle()) )
-                    {
-                      std::cout << "anti-";
-                    }
-                    std::cout
-                    << (*secondCascadeIterator)->getAsString() << " BR = "
-                    << secondCascadeBrToEwino << std::endl << " => "
-                    << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
-                    << std::endl
-                    << "subchannelCrossSectionTimesBrToEwinos = "
-                    << subchannelCrossSectionTimesBrToEwinos
-                    << std::endl
-                    << "subchannelZeroOrMoreJetsOneLepton = "
-                    << subchannelZeroOrMoreJetsOneLepton;
-                    std::cout << std::endl;
-                  }**/
+      /* chance for 1st cascade to produce the lepton * chance of 2nd to not
+       * produce any further leptons (which would cause the event to be
+       * rejected) + chance of lepton from 2nd cascade * chance of no lepton
+       * from 1st cascade.
+       */
+      // debugging:
+      /**if( 0.01 < ( subchannelCrossSectionTimesBrToEwinos
+                       * subchannelZeroOrMoreJetsOneLepton ) )
+      {
+        std::cout << std::endl << "debugging:"
+        << std::endl
+        << "adding" << std::endl;
+        if( !firstSparticleIsNotAntiparticle )
+        {
+          std::cout << "anti-";
+        }
+        std::cout
+        << firstCascade->getAsString() << " BR = " << firstCascadeBrToEwino
+        << std::endl;
+        if( !secondSparticleIsNotAntiparticle )
+        {
+          std::cout << "anti-";
+        }
+        std::cout
+        << secondCascade->getAsString() << " BR = " << secondCascadeBrToEwino
+        << std::endl << " => "
+        << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
+        << std::endl
+        << "subchannelCrossSectionTimesBrToEwinos = "
+        << subchannelCrossSectionTimesBrToEwinos
+        << std::endl
+        << "subchannelZeroOrMoreJetsOneLepton = "
+        << subchannelZeroOrMoreJetsOneLepton;
+        std::cout << std::endl;
+      }**/
 
-                  if( lhcFaserGlobal::negligibleBr
-                      < subchannelZeroOrMoreJetsOneLepton )
-                  {
-                    // here is where we update *signalValue to account for
-                    // this particular subchannel:
-                    *signalValue
-                    += ( subchannelCrossSectionTimesBrToEwinos
-                        * subchannelZeroOrMoreJetsOneLepton
-                        * signalDefinitions.getJetPlusMetAcceptance(
-                                                              )->getAcceptance(
-                                         (*channelIterator)->getScoloredPair(),
-                                                         *firstCascadeIterator,
-                                                    *secondCascadeIterator ) );
-                  }
-                  // end of if the BR of the subchannel to zero leptons is not
-                  // negligible.
-                }
-                // end of if the BR of the 2nd cascade to its electroweakino
-                // was not negligible.
-              }  // end of loop over 2nd cascade.
-            }
-            // end of if the BR of the 1st cascade to its electroweakino was
-            // not negligible.
-          }  // end of loop over 1st cascade.
-        }  // end of if the channel's cross-section was not negligible.
-      }  // end of loop over productionChannels.
-      // currently, we do the uncertainty very roughly:
-      *uncertaintyFactor
-      = ( *signalValue * signalDefinitions.getShortcuts()->getUncertainty() );
-      return true;
+      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJetsOneLepton )
+      {
+        return ( subchannelCrossSectionTimesBrToEwinos
+                 * subchannelZeroOrMoreJetsOneLepton
+                 * signalDefinitions.getJetPlusMetAcceptance()->getAcceptance(
+                                                                   initialPair,
+                                                                  firstCascade,
+                                                             secondCascade ) );
+      }
+      else
+      {
+        return 0.0;
+      }
     }
 
 
@@ -1207,148 +1149,61 @@ namespace LHC_FASER
                                                                        1 ) ) );
     }
 
-    bool
-    sameSignDilepton::calculateValue( double* const signalValue,
-                                      double* const uncertaintyFactor )
-    /* this calculates the event rate for the signal & puts its value in
-     * signalValue, & puts an estimate for the uncertainty into
-     * uncertaintyFactor, & returns true if it did all this successfully.
-     */
+    double
+    sameSignDilepton::valueForCurrentCascades( fullCascade* firstCascade,
+                                               fullCascade* secondCascade )
+    // see base version's description.
     {
+      subchannelDileptonAcceptance
+      = ( getDileptonFromSingleCascade( firstCascade,
+                                        firstSparticleIsNotAntiparticle,
+                                        secondCascade,
+                                        secondSparticleIsNotAntiparticle )
+          + getDileptonFromSingleCascade( secondCascade,
+                                          secondSparticleIsNotAntiparticle,
+                                          firstCascade,
+                                          firstSparticleIsNotAntiparticle )
+          + getOneLeptonFromEachCascade( firstCascade,
+                                         firstSparticleIsNotAntiparticle,
+                                         secondCascade,
+                                         secondSparticleIsNotAntiparticle ) );
+      /* chance for 1st cascade to produce the same-sign leptons * chance of
+       * 2nd to not produce any further leptons (which would cause the event to
+       * be rejected?) + chance with cascades swapped + chance for one from
+       * each.
+       */
       // debugging:
-      /**std::cout
-      << std::endl
-      << "debugging: sameSignDilepton::calculateValue( "
-      << signalValue << ", " << uncertaintyFactor << " ) called."
-      << " signalDefinitions.getPrimaryLeptonCut() = "
-      << signalDefinitions.getPrimaryLeptonCut()
-      << ", signalDefinitions.getSecondaryLeptonCut() = "
-      << signalDefinitions.getSecondaryLeptonCut();
-      std::cout << std::endl;**/
-
-      // start by setting the signal value to 0.0:
-      *signalValue = 0.0;
-
-      for( std::vector< productionChannelPointerSet* >::iterator
-           channelIterator( productionChannels.begin() );
-           productionChannels.end() > channelIterator;
-           ++channelIterator )
+      /**if( 0.0005 < ( subchannelCrossSectionTimesBrToEwinos
+                         * subchannelDileptonAcceptance ) )
       {
-        if( lhcFaserGlobal::negligibleSigma
-            < (*channelIterator)->getCrossSection() )
-          // if it's worth looking at this channel...
+        std::cout << std::endl << "debugging:"
+        << std::endl
+        << "adding" << std::endl;
+        if( !firstSparticleIsNotAntiparticle )
         {
-          firstSparticleIsNotAntiparticle
-          = (*channelIterator)->getScoloredPair()->firstIsNotAntiparticle();
-          secondSparticleIsNotAntiparticle
-          = (*channelIterator)->getScoloredPair()->secondIsNotAntiparticle();
-          // we have to look at all the open cascade pairings:
-          firstCascades
-          = (*channelIterator)->getFirstCascadeSet()->getOpenCascades();
-          secondCascades
-          = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
-
-          for( std::vector< fullCascade* >::iterator
-               firstCascadeIterator( firstCascades->begin() );
-               firstCascades->end() > firstCascadeIterator;
-               ++firstCascadeIterator )
-          {
-            firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
-                                                &excludedFinalStateParticles );
-            if( ( lhcFaserGlobal::negligibleBr
-                * 2.0 * (double)(firstCascades->size()) )
-                < firstCascadeBrToEwino )
-              // this should mean we never throw away more than
-              // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
-            {
-              for( std::vector< fullCascade* >::iterator
-                  secondCascadeIterator( secondCascades->begin() );
-                  secondCascades->end() > secondCascadeIterator;
-                  ++secondCascadeIterator )
-              {
-                secondCascadeBrToEwino
-                = (*secondCascadeIterator)->getBrToEwino(
-                                                &excludedFinalStateParticles );
-                if( ( lhcFaserGlobal::negligibleBr
-                    * 2.0 * (double)(secondCascades->size()) )
-                    < secondCascadeBrToEwino )
-                  // this should mean we never throw away more than
-                  // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
-                {
-                  subchannelCrossSectionTimesBrToEwinos
-                  = ( (*channelIterator)->getCrossSection()
-                      * firstCascadeBrToEwino * secondCascadeBrToEwino );
-
-                  subchannelDileptonAcceptance
-                  = ( getDileptonFromSingleCascade( *firstCascadeIterator,
-                                              firstSparticleIsNotAntiparticle,
-                                                    *secondCascadeIterator,
-                                             secondSparticleIsNotAntiparticle )
-                      + getDileptonFromSingleCascade( *secondCascadeIterator,
-                                              secondSparticleIsNotAntiparticle,
-                                                      *firstCascadeIterator,
-                                              firstSparticleIsNotAntiparticle )
-                      + getOneLeptonFromEachCascade( *firstCascadeIterator,
-                                               firstSparticleIsNotAntiparticle,
-                                                     *secondCascadeIterator,
-                                          secondSparticleIsNotAntiparticle ) );
-                  /* chance for 1st cascade to produce the same-sign leptons
-                   * * chance of 2nd to not produce any further leptons (which
-                   * would cause the event to be rejected?) + chance with
-                   * cascades swapped + chance for one from each.
-                   */
-                  // debugging:
-                  /**
-                  if( 0.0005 < ( subchannelCrossSectionTimesBrToEwinos
-                                * subchannelDileptonAcceptance ) )
-                  {
-                    std::cout << std::endl << "debugging:"
-                    << std::endl
-                    << "adding" << std::endl;
-                    if( !((*channelIterator)->getScoloredPair(
-                                                 )->firstIsNotAntiparticle()) )
-                    {
-                      std::cout << "anti-";
-                    }
-                    std::cout
-                    << (*firstCascadeIterator)->getAsString() << " BR = "
-                    << firstCascadeBrToEwino << std::endl;
-                    if( !((*channelIterator)->getScoloredPair(
-                                                )->secondIsNotAntiparticle()) )
-                    {
-                      std::cout << "anti-";
-                    }
-                    std::cout
-                    << (*secondCascadeIterator)->getAsString() << " BR = "
-                    << secondCascadeBrToEwino << std::endl << " => "
-                    << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
-                    << std::endl
-                    << "subchannelCrossSectionTimesBrToEwinos = "
-                    << subchannelCrossSectionTimesBrToEwinos
-                    << std::endl
-                    << "subchannelDileptonAcceptance = "
-                    << subchannelDileptonAcceptance;
-                    std::cout << std::endl;
-                  }**/
-
-                  // here is where we update *signalValue to account for this
-                  // particular subchannel:
-                  *signalValue += ( subchannelCrossSectionTimesBrToEwinos
-                                    * subchannelDileptonAcceptance );
-                }
-                // end of if the BR of the 2nd cascade to its electroweakino
-                // was not negligible.
-              }  // end of loop over 2nd cascade.
-            }
-            // end of if the BR of the 1st cascade to its electroweakino was
-            // not negligible.
-          }  // end of loop over 1st cascade.
-        }  // end of if the channel's cross-section was not negligible.
-      }  // end of loop over productionChannels.
-      // currently, we do the uncertainty very roughly:
-      *uncertaintyFactor
-      = ( *signalValue * signalDefinitions.getShortcuts()->getUncertainty() );
-      return true;
+          std::cout << "anti-";
+        }
+        std::cout
+        << firstCascade->getAsString() << " BR = "
+        << firstCascadeBrToEwino << std::endl;
+        if( !secondSparticleIsNotAntiparticle )
+        {
+          std::cout << "anti-";
+        }
+        std::cout
+        << secondCascade->getAsString() << " BR = " << secondCascadeBrToEwino
+        << std::endl
+        << " => " << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
+        << std::endl
+        << "subchannelCrossSectionTimesBrToEwinos = "
+        << subchannelCrossSectionTimesBrToEwinos
+        << std::endl
+        << "subchannelDileptonAcceptance = "
+        << subchannelDileptonAcceptance;
+        std::cout << std::endl;
+      }**/
+      return ( subchannelCrossSectionTimesBrToEwinos
+               * subchannelDileptonAcceptance );
     }
 
   }  // end of signalCalculatorClasses namespace.

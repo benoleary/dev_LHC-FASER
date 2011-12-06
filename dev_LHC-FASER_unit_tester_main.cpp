@@ -237,11 +237,11 @@ int main( int argumentCount,
 	
 
   /* testing the signal stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::signalTesting signalTester( &basicStuffTester,
                                          &inputTester );
   signalTester.performTest();
-  **/
+  /**/
 
   /* finally, testing the lhcFaser itself:
    * (works)*//**
@@ -252,11 +252,11 @@ int main( int argumentCount,
 
 
   /* testing adding new signals & how long it takes to load & calculate:
-   * (works) *//**/
+   * (works) *//**
   LHC_FASER::signalTimingTesting signalTimingTester( &basicStuffTester,
                                                      &inputTester );
   signalTimingTester.performTest( recalculationAmount );
-  /**/
+  **/
 
 
   std::cout << std::endl;
