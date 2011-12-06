@@ -120,7 +120,6 @@ namespace LHC_FASER
      * once per new point, each channel:
      * - checks its cross-section - if it's high enough, it proceeds
      * - obtains the sQCD_to_EWinos for its scoloreds
-     * - checks the scew BRs - if they're high enough, it proceeds
      * - obtains its jet acceptance from its kinematics table, checks
      *   cross-section * scew BRs * jet acceptance, if high enough, proceeds
      * - obtains lepton acceptance from kinematics table, passes it with scew
