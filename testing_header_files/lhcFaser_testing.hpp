@@ -2,9 +2,9 @@
  * lhcFaser_testing.hpp
  *
  *  Created on: Oct 30, 2011
- *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
- *              Jonas Lindert (jonas.lindert@googlemail.com)
- *              Carsten Robens (carsten.robens@gmx.de)
+ *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
+ *               Jonas Lindert (jonas.lindert@googlemail.com)
+ *               Carsten Robens (carsten.robens@gmx.de)
  *      Copyright 2010 Ben O'Leary, Jonas Lindert, Carsten Robens
  *
  *      This file is part of LHC-FASER.
@@ -81,7 +81,7 @@ namespace LHC_FASER
   {
   public:
     lhcFaserTesting( basicStuffTesting* basicStuff,
-                                    inputTesting* inputTester ) :
+                     inputTesting* inputTester ) :
         basicStuff( basicStuff ),
         inputTester( inputTester ),
         testInputHandler( inputTester->getInput() )

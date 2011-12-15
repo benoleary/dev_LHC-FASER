@@ -147,7 +147,6 @@ namespace LHC_FASER
      * (pathToGrids)/kinematics/PYTHIA8, where the 7TeV & 14TeV (&
      * possibly others, if such grids are made) directories are.
      */
-
     signalHandler*
     addSignal( std::string const signalName );
     // this adds a new signal to the set of signals based on its name.
@@ -188,7 +187,6 @@ namespace LHC_FASER
     // this is to allow for the user to specify event rates in fb, pb or nb.
     bool usingNlo;
     // this is to allow the user to use LO or NLO cross-sections.
-
     inputHandler* inputSource;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
@@ -205,7 +203,6 @@ namespace LHC_FASER
     std::vector< signalHandler* > signalSet;
     // this tracks the various signals of LHC supersymmetric events & their
     // rates.
-
     signalShortcuts* inputShortcut;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
@@ -217,7 +214,6 @@ namespace LHC_FASER
                 std::string const crossSectionUnit,
                 bool const usingNlo );
     // this is used by all the constructors to do most of the construction.
-
   };  // end of lhcFaser class.
 
 

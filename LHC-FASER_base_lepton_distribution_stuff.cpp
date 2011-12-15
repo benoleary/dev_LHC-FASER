@@ -26,32 +26,45 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
  *      LHC-FASER_base_lepton_distribution_stuff.hpp
  *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
  *      LHC-FASER_derived_lepton_distributions.hpp
  *      LHC-FASER_derived_lepton_distributions.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -134,7 +147,6 @@ namespace LHC_FASER
   {
     // just an initialization list.
   }
-
 
   leptonDistributionExpansionTerm::~leptonDistributionExpansionTerm()
   {
@@ -588,7 +600,7 @@ namespace LHC_FASER
          /* the maximum of the range of the tau lepton energies considered. */,
                                bool const isInsideRange )
   const
-  /* this returns the coefficientValue for the muon distribution which would come
+  /* this returns the coefficient for the muon distribution which would come
    * from a left-handed tau lepton distribution of the given power of the tau
    * lepton's energy & power of logarithm thereof, for requested integer powers
    * of the muon's energy or logarithm thereof, which also depends on whether
@@ -894,7 +906,7 @@ namespace LHC_FASER
          /* the maximum of the range of the tau lepton energies considered. */,
                                bool const isInsideRange )
   const
-  /* this returns the coefficientValue for the muon distribution which would come
+  /* this returns the coefficient for the muon distribution which would come
    * from a right-handed tau lepton distribution of the given power of the tau
    * lepton's energy & power of logarithm thereof, for requested integer powers
    * of the muon's energy or logarithm thereof, which also depends on whether
@@ -1249,7 +1261,7 @@ namespace LHC_FASER
          /* the maximum of the range of the tau lepton energies considered. */,
                                bool const isInsideRange )
   const
-  /* this returns the coefficientValue for the pion distribution which would come
+  /* this returns the coefficient for the pion distribution which would come
    * from a right-handed tau lepton distribution of the given power of the
    * tau lepton's energy & power of logarithm thereof, for requested integer
    * powers of the pion's energy or logarithm thereof, which also depends on
@@ -1525,7 +1537,7 @@ namespace LHC_FASER
          /* the maximum of the range of the tau lepton energies considered. */,
                                bool const isInsideRange )
   const
-  /* this returns the coefficientValue for the pion distribution which would come
+  /* this returns the coefficient for the pion distribution which would come
    * from a left-handed tau lepton distribution of the given power of the tau
    * lepton's energy & power of logarithm thereof, for requested integer
    * powers of the pion's energy or logarithm thereof, which also depends on
@@ -2025,15 +2037,15 @@ namespace LHC_FASER
 
 
   leptonEnergyDistribution::leptonEnergyDistribution(
-                                          readierForNewPoint* const readier,
-                                       CppSLHA::CppSLHA0 const* const spectrum,
+                                      readierForNewPoint* const readierPointer,
+                                CppSLHA::CppSLHA0 const* const spectrumPointer,
                      CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
                  CppSLHA::particle_property_set const* const fourthParticle ) :
-    getsReadiedForNewPoint( readier ),
-    spectrum( spectrum ),
+    getsReadiedForNewPoint( readierPointer ),
+    spectrumPointer( spectrumPointer ),
     firstParticle( firstParticle ),
     effectiveSquarkMass( effectiveSquarkMass ),
     secondParticle( secondParticle ),
@@ -2091,17 +2103,17 @@ namespace LHC_FASER
 
 
   visibleTauDecayProduct::visibleTauDecayProduct(
-                                    readierForNewPoint* const given_readier,
-                      leptonEnergyDistribution* const given_tau_distribution,
-                               tauDecayCoefficient const* const tau_decay ) :
-    leptonEnergyDistribution( given_readier,
+                                      readierForNewPoint* const readierPointer,
+                               leptonEnergyDistribution* const tauDistribution,
+                                  tauDecayCoefficient const* const tauDecay ) :
+    leptonEnergyDistribution( readierPointer,
                               NULL,
                               NULL,
                               NULL,
                               NULL,
                               NULL,
                               NULL ),
-    tauDistribution( given_tau_distribution )
+    tauDistribution( tauDistribution )
   {
     // debugging:
     /**std::cout
@@ -2114,14 +2126,14 @@ namespace LHC_FASER
     minimumEnergy = leptonDistributionExpansionTerm::minimumInputEnergy;
 
     for( std::vector< segmentTermSet* >::iterator
-         segmentIterator( given_tau_distribution->getSegments()->begin() );
-         given_tau_distribution->getSegments()->end() > segmentIterator;
+         segmentIterator( tauDistribution->getSegments()->begin() );
+         tauDistribution->getSegments()->end() > segmentIterator;
          ++segmentIterator )
       {
 
-        tauTriples.push_back( new tauSegmentTriple( &segments,
+        tauTriples.push_back( new tauSegmentTriple( &segmentSet,
                                                     *segmentIterator,
-                                                    tau_decay ) );
+                                                    tauDecay ) );
 
       }  // end of loop through segments.
 
@@ -2131,12 +2143,12 @@ namespace LHC_FASER
   {
 
     for( std::vector< tauSegmentTriple* >::iterator
-         deletion_iterator = tauTriples.begin();
-         tauTriples.end() > deletion_iterator;
-         ++deletion_iterator )
+         deletionIterator( tauTriples.begin() );
+         tauTriples.end() > deletionIterator;
+         ++deletionIterator )
       {
 
-        delete *deletion_iterator;
+        delete *deletionIterator;
 
       }
 

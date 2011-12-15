@@ -26,24 +26,39 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
- *      LHC-FASER_lepton_distributions.hpp
- *      LHC-FASER_lepton_distributions.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
@@ -115,20 +130,17 @@ namespace LHC_FASER
   electroweakCascade::cachedAcceptanceResetValue( 0.0 );
 
   electroweakCascade::electroweakCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
-                                  //bool const coloredDecayerIsNotAntiparticle,
                                       particlePointer const electroweakDecayer,
-                              //bool const electroweakDecayerIsNotAntiparticle,
                                      particlePointer const intermediateDecayer,
                                           bool const canDoOssfMinusOsdf,
                                     inputHandler const* const inputShortcut ) :
       getsReadiedForNewPoint( inputShortcut->getReadier() ),
-      kinematics( kinematics ),
+      kinematicsTable( kinematicsTable ),
       effectiveSquarkMass( effectiveSquarkMass ),
       coloredDecayer( coloredDecayer ),
-      //coloredDecayerIsNotAntiparticle( coloredDecayerIsNotAntiparticle ),
       electroweakDecayer( electroweakDecayer ),
       intermediateDecayer( intermediateDecayer ),
       canDoOssfMinusOsdf( canDoOssfMinusOsdf ),
@@ -339,8 +351,8 @@ namespace LHC_FASER
        */
       double
       returnValue( ( 0.5 * binSize
-                         * kinematics->acceptanceAt( binEnergy,
-                                                     transverseMomentumCut )
+                         * kinematicsTable->acceptanceAt( binEnergy,
+                                                        transverseMomentumCut )
                          * leptonDistribution->valueAt( binEnergy ) ) );
       for( int binCounter( 1 );
            numberOfIntegrationBins > binCounter;
@@ -348,14 +360,14 @@ namespace LHC_FASER
       {
         binEnergy += binSize;
         returnValue += ( binSize
-                         * kinematics->acceptanceAt( binEnergy,
-                                                     transverseMomentumCut )
+                         * kinematicsTable->acceptanceAt( binEnergy,
+                                                        transverseMomentumCut )
                          * leptonDistribution->valueAt( binEnergy ) );
       }
       binEnergy += binSize;
       returnValue += ( 0.5 * binSize
-                           * kinematics->acceptanceAt( binEnergy,
-                                                       transverseMomentumCut )
+                           * kinematicsTable->acceptanceAt( binEnergy,
+                                                        transverseMomentumCut )
                            * leptonDistribution->valueAt( binEnergy ) );
       return returnValue;
     }

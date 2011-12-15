@@ -2,9 +2,9 @@
  * signal_timing_testing.hpp
  *
  *  Created on: Dec 03, 2011
- *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
- *              Jonas Lindert (jonas.lindert@googlemail.com)
- *              Carsten Robens (carsten.robens@gmx.de)
+ *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
+ *               Jonas Lindert (jonas.lindert@googlemail.com)
+ *               Carsten Robens (carsten.robens@gmx.de)
  *      Copyright 2010 Ben O'Leary, Jonas Lindert, Carsten Robens
  *
  *      This file is part of LHC-FASER.
@@ -100,7 +100,7 @@ namespace LHC_FASER
       systemCallString.append( spectrumFileToLoad );
       systemCallString.append( " test_spectrum.out" );
 
-      for( std::vector< LHC_FASER::signalHandler* >::iterator
+      for( std::vector< signalHandler* >::iterator
            signalIterator( signalVector->begin() );
            signalVector->end() > signalIterator;
            ++signalIterator )
@@ -214,6 +214,7 @@ namespace LHC_FASER
       std::cout << std::endl;
     }
 
+
   protected:
     std::string spectrumFileToLoad;
     std::string nameOfFileLoadedByTheLhcFaser;
@@ -250,7 +251,7 @@ namespace LHC_FASER
       timeval endTime;
       double secondsTaken;
 
-      std::vector< LHC_FASER::signalHandler* > signalVector;
+      std::vector< signalHandler* > signalVector;
       std::string signalName;
 
       //std::string gridPath( "/home/bol/BOL_work/projects/");
@@ -264,9 +265,9 @@ namespace LHC_FASER
                     NULL );
       std::cout
       << std::endl << "constructing testLhcFaser";
-      LHC_FASER::lhcFaser testLhcFaser( "test_spectrum.out",
-                                        gridPath,
-                                        "fb" );
+      lhcFaser testLhcFaser( "test_spectrum.out",
+                             gridPath,
+                             "fb" );
       testLhcFaser.setVerbosity( true );
       gettimeofday( &endTime,
                     NULL );
@@ -393,7 +394,7 @@ namespace LHC_FASER
         std::cout
         << std::endl << "reading it in & updating";
         testLhcFaser.updateForNewSlha();
-        for( std::vector< LHC_FASER::signalHandler* >::iterator
+        for( std::vector< signalHandler* >::iterator
              signalIterator( signalVector.begin() );
              signalVector.end() > signalIterator;
              ++signalIterator )

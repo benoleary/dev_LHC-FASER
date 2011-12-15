@@ -159,10 +159,9 @@ namespace LHC_FASER
     {
       // open the file:
       int const maxLengthOfGridFile( 100000 );
-      CppSLHA::hash_commented_file_reader
-      inputFileReader( gridFileLocation,
-                       maxLengthOfGridFile,
-                       false );
+      CppSLHA::hash_commented_file_reader inputFileReader( gridFileLocation,
+                                                           maxLengthOfGridFile,
+                                                           false );
       /* a hundred thousand lines should be long enough for any grid file. if
        * readIn() is reading in more lines than that, it's probably because
        * of some file corruption.
@@ -1566,7 +1565,6 @@ namespace LHC_FASER
   {
     // just an initialization list
   }
-
 
   crossSectionHandler::~crossSectionHandler()
   {

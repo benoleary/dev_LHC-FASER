@@ -2,9 +2,9 @@
  * lepton_energy_distributions_testing.hpp
  *
  *  Created on: Oct 30, 2011
- *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
- *              Jonas Lindert (jonas.lindert@googlemail.com)
- *              Carsten Robens (carsten.robens@gmx.de)
+ *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
+ *               Jonas Lindert (jonas.lindert@googlemail.com)
+ *               Carsten Robens (carsten.robens@gmx.de)
  *      Copyright 2010 Ben O'Leary, Jonas Lindert, Carsten Robens
  *
  *      This file is part of LHC-FASER.
@@ -79,8 +79,9 @@ namespace LHC_FASER
   class squarkMassReturner : public effectiveSquarkMassHolder
   {
   public:
-    squarkMassReturner( CppSLHA::particle_property_set const* const squark ) :
-      squark( squark )
+    squarkMassReturner(
+                  CppSLHA::particle_property_set const* const squarkPointer ) :
+        squarkPointer( squarkPointer )
     {
       // just an initialization list.
     }
@@ -93,23 +94,24 @@ namespace LHC_FASER
     double
     getEffectiveSquarkMass()
     {
-      return squark->get_absolute_mass();
+      return squarkPointer->get_absolute_mass();
     }
 
   protected:
-    CppSLHA::particle_property_set const* const squark;
+    CppSLHA::particle_property_set const* const squarkPointer;
   };
+
 
   // this holds the set of distributions & handles adding them.
   class distributionSet
   {
   public:
     distributionSet( readierForNewPoint* const testReadier ) :
-      testReadier( testReadier ),
-      hardMuon( new hardMuonFromTau() ),
-      softMuon( new softMuonFromTau() ),
-      hardPion( new hardPionFromTau() ),
-      softPion( new softPionFromTau() )
+        testReadier( testReadier ),
+        hardMuon( new hardMuonFromTau() ),
+        softMuon( new softMuonFromTau() ),
+        hardPion( new hardPionFromTau() ),
+        softPion( new softPionFromTau() )
     {
       // just an initialization list.
     }
@@ -196,6 +198,7 @@ namespace LHC_FASER
     distributionsVector;
     std::vector< std::string* > namesVector;
   };
+
 
   class leptonEnergyDistributionsTestingClass
   {

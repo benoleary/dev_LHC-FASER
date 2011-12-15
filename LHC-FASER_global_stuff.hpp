@@ -5,9 +5,6 @@
  *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
  *               Jonas Lindert (jonas.lindert@googlemail.com)
  *               Carsten Robens (carsten.robens@gmx.de)
- *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
- *               Jonas Lindert (jonas.lindert@googlemail.com)
- *               Carsten Robens (carsten.robens@gmx.de)
  *      Copyright 2010 Ben O'Leary, Jonas Lindert, Carsten Robens
  *
  *      This file is part of LHC-FASER.

@@ -703,6 +703,7 @@ namespace LHC_FASER
     typedef squarkByJetToCompoundType::sdownType sdownByJetToCompound;
     typedef squarkByJetToCompoundType::supType supByJetToCompound;
 
+
     /* this is derived class for compound fullCascades beginning with a
      * gluino or electroweakino, which decays to a jet, maybe a boson, & the
      * initial sparticle of subcascadePointer.
@@ -845,6 +846,13 @@ namespace LHC_FASER
   typedef
   fullCascadeType::gluinoOrNeutralinoToCompound
   compoundGluinoOrNeutralinoFullCascade;
+  typedef
+  fullCascadeType::squarkDirectlyToElectroweak
+  squarkDirectlyToElectroweakCascade;
+  typedef
+  fullCascadeType::gluinoDirectlyToElectroweak
+  gluinoDirectlyToElectroweakCascade;
+
 
   /* this class holds the possible cascades for a given scolored, as well as a
    * pointer to a std::list of the other fullCascadeSet instances, which get
@@ -960,8 +968,7 @@ namespace LHC_FASER
     protected:
       fullCascadeSetOrderer* const setOrderer;
       fullCascadeSet* const gluinoFullCascade;
-      std::vector< fullCascadeType::squarkDirectlyToElectroweak* >
-      directToEwinoCascades;
+      std::vector< squarkDirectlyToElectroweakCascade* > directToEwinoCascades;
       minimalAllocationVector< fullCascadeType::squarkByBosonToCompound >
       compoundByBosonCascades;
       bool ewinoCodeIsAlwaysPositive;
@@ -1126,7 +1133,7 @@ namespace LHC_FASER
 
 
       protected:
-        std::vector< fullCascadeType::gluinoDirectlyToElectroweak* >
+        std::vector< gluinoDirectlyToElectroweakCascade* >
         directToEwinoCascades;
         minimalAllocationVector< compoundGluinoOrNeutralinoFullCascade >
         compoundCascades;
@@ -2001,8 +2008,7 @@ namespace LHC_FASER
       sdownType::findOpenDirectCascades()
       // this puts all open direct cascades into openCascades.
       {
-        for( std::vector< fullCascadeType::squarkDirectlyToElectroweak*
-                                                                    >::iterator
+        for( std::vector< squarkDirectlyToElectroweakCascade* >::iterator
              cascadeIterator( directToEwinoCascades.begin() );
              directToEwinoCascades.end() > cascadeIterator;
              ++cascadeIterator )
@@ -2055,8 +2061,7 @@ namespace LHC_FASER
       supType::findOpenDirectCascades()
       // this puts all open direct cascades into openCascades.
       {
-        for( std::vector< fullCascadeType::squarkDirectlyToElectroweak*
-                                                                    >::iterator
+        for( std::vector< squarkDirectlyToElectroweakCascade* >::iterator
              cascadeIterator( directToEwinoCascades.begin() );
              directToEwinoCascades.end() > cascadeIterator;
              ++cascadeIterator )

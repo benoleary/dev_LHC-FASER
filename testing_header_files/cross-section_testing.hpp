@@ -2,7 +2,7 @@
  * cross-section_testing.hpp
  *
  *  Created on: Oct 30, 2011
- *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
  *               Jonas Lindert (jonas.lindert@googlemail.com)
  *               Carsten Robens (carsten.robens@gmx.de)
  *      Copyright 2010 Ben O'Leary, Jonas Lindert, Carsten Robens
@@ -308,6 +308,7 @@ namespace LHC_FASER
     inputTesting* inputTester;
     inputHandler const* const testInputHandler;
   };
+
 }  // end of LHC_FASER namespace
 
 #endif /* CROSS_SECTION_TESTING_HPP_ */

@@ -185,7 +185,7 @@ namespace LHC_FASER
   protected:
     inputHandler const* const inputShortcut;
     signedParticleShortcutPair const* scoloredPair;
-    CppSLHA::particle_property_set const* directlyProducedSquark;
+    particlePointer directlyProducedSquark;
     double storedValue;
     squareGrid const* const lookupTable;
     double const flavorFactor;

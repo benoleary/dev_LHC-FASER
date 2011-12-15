@@ -102,6 +102,7 @@ namespace LHC_FASER
                 particlePointer const secondScolored )
     = 0;
 
+
   protected:
     inputHandler const* const inputShortcut;
   };
@@ -123,6 +124,7 @@ namespace LHC_FASER
     operator()( particlePointer const firstScolored,
                 particlePointer const secondScolored );
 
+
   //protected:
     // nothing
   };
@@ -140,6 +142,7 @@ namespace LHC_FASER
     operator()( particlePointer const firstScolored,
                 particlePointer const secondScolored );
 
+
   //protected:
     // nothing
   };
@@ -156,6 +159,7 @@ namespace LHC_FASER
     virtual double
     operator()( particlePointer const firstScolored,
                 particlePointer const secondScolored );
+
 
   //protected:
     // nothing
@@ -175,11 +179,10 @@ namespace LHC_FASER
     operator()( particlePointer const firstScolored,
                 particlePointer const secondScolored );
 
+
   //protected:
     // nothing
   };
-
-
 
 
   /* this is a derived class to interpret an acceptanceGrid as acceptances for
@@ -370,6 +373,7 @@ namespace LHC_FASER
   }
 
 
+
   inline double
   firstMassForGrid::operator()( particlePointer const firstScolored,
                                 particlePointer const secondScolored )
@@ -378,12 +382,14 @@ namespace LHC_FASER
   }
 
 
+
   inline double
   secondMassForGrid::operator()( particlePointer const firstScolored,
                                  particlePointer const secondScolored )
   {
     return secondScolored->get_absolute_mass();
   }
+
 
 
   inline double

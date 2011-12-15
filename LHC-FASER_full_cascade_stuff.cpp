@@ -26,24 +26,39 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
- *      LHC-FASER_lepton_distributions.hpp
- *      LHC-FASER_lepton_distributions.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
@@ -207,7 +222,7 @@ namespace LHC_FASER
       sdownType::sdownType( inputHandler const* const inputShortcut,
                             particlePointer const initialSquark,
                             double const beamEnergy,
-                            electroweakCascadeSet* const directEwinoCascades ) :
+                           electroweakCascadeSet* const directEwinoCascades ) :
           squarkDirectlyToElectroweak( inputShortcut,
                                        initialSquark,
                                        beamEnergy,
@@ -235,6 +250,7 @@ namespace LHC_FASER
       {
         // does nothing.
       }
+
 
       double
       sdownType::getAcceptance( bool const initialSparticleIsNotAntiparticle,
@@ -586,10 +602,10 @@ namespace LHC_FASER
                                   bool const initialSparticleIsNotAntiparticle,
                                         acceptanceCutSet* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
-                                                 int numberOfNegativeElectrons,
-                                                 int numberOfPositiveElectrons,
-                                                     int numberOfNegativeMuons,
-                                                    int numberOfPositiveMuons )
+                                                int numberOfNegativeElectrons,
+                                                int numberOfPositiveElectrons,
+                                                int numberOfNegativeMuons,
+                                                int numberOfPositiveMuons )
     /* this calls the appropriate functions on ewinoCascade, summing over the 2
      * charge versions if the electroweakino is a chargino. it ignores the
      * value of scoloredIsNotAntiparticle.
@@ -1870,14 +1886,12 @@ namespace LHC_FASER
   fullCascadeSet::fullCascadeSet( inputHandler const* const inputShortcut,
                                   particlePointer const initialScolored,
            electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource,
-                                  double const beamEnergy/*,
-                                  fullCascadeSet* const gluinoFullCascade*/ ) :
+                                  double const beamEnergy ) :
     getsReadiedForNewPoint( inputShortcut->getReadier() ),
     inputShortcut( inputShortcut ),
     initialSparticle( initialScolored ),
     electroweakCascadeSource( electroweakCascadeSource ),
     openCascades(),
-    //gluinoFullCascade( gluinoFullCascade ),
     orderedCascadeSets( NULL ),
     setIterator(),
     potentialSubcascades( NULL ),
@@ -2068,8 +2082,7 @@ namespace LHC_FASER
 
     squarkSet::~squarkSet()
     {
-      for( std::vector< fullCascadeType::squarkDirectlyToElectroweak*
-                                                                    >::iterator
+      for( std::vector< squarkDirectlyToElectroweakCascade* >::iterator
            deletionIterator( directToEwinoCascades.begin() );
            directToEwinoCascades.end() > deletionIterator;
            ++deletionIterator )
@@ -2090,8 +2103,7 @@ namespace LHC_FASER
       std::cout << std::endl;**/
 
       // 1st we add the direct cascades:
-      for( std::vector< fullCascadeType::squarkDirectlyToElectroweak*
-                                                                    >::iterator
+      for( std::vector< squarkDirectlyToElectroweakCascade* >::iterator
            cascadeIterator( directToEwinoCascades.begin() );
            directToEwinoCascades.end() > cascadeIterator;
            ++cascadeIterator )
@@ -2231,7 +2243,7 @@ namespace LHC_FASER
           = initialSparticle->inspect_direct_decay_handler(
                                         )->get_branching_ratio_for_exact_match(
                                                    singleSpecifiedDecayProduct,
-                                                            bosonCode );
+                                                                   bosonCode );
           if( lhcFaserGlobal::negligibleBr < subcascadeBranchingRatio )
             // if the BR to the next stage of the cascade is not negligible...
           {
@@ -2513,8 +2525,7 @@ namespace LHC_FASER
 
       gluinoSet::~gluinoSet()
       {
-        for( std::vector< fullCascadeType::gluinoDirectlyToElectroweak*
-                                                                    >::iterator
+        for( std::vector< gluinoDirectlyToElectroweakCascade* >::iterator
              deletionIterator( directToEwinoCascades.begin() );
              directToEwinoCascades.end() > deletionIterator;
              ++deletionIterator )
@@ -2527,8 +2538,7 @@ namespace LHC_FASER
       gluinoSet::setUpCascades()
       {
         // 1st we add the direct cascades:
-        for( std::vector< fullCascadeType::gluinoDirectlyToElectroweak*
-                                                                    >::iterator
+        for( std::vector< gluinoDirectlyToElectroweakCascade* >::iterator
              cascadeIterator( directToEwinoCascades.begin() );
              directToEwinoCascades.end() > cascadeIterator;
              ++cascadeIterator )

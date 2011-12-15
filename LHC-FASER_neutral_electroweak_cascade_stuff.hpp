@@ -75,7 +75,6 @@
 
 namespace LHC_FASER
 {
-
   /* this is a derived class that implements the channel where the
    * "decaying neutralino" is actually the lightest neutralino & hence assumed
    * to be stable
@@ -86,6 +85,7 @@ namespace LHC_FASER
     lightestNeutralinoCascade( inputHandler const* const inputShortcut );
     virtual
     ~lightestNeutralinoCascade();
+
 
   protected:
     virtual bool
@@ -112,14 +112,16 @@ namespace LHC_FASER
   class neutralinoToSemuCascade : public electroweakCascade
   {
   public:
-    neutralinoToSemuCascade( leptonAcceptanceParameterSet* const kinematics,
+    neutralinoToSemuCascade(
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                              particlePointer const coloredDecayer,
                              particlePointer const electroweakDecayer,
                              particlePointer const intermediateDecayer,
-                             inputHandler const* const shortcut );
+                             inputHandler const* const inputShortcut );
     virtual
     ~neutralinoToSemuCascade();
+
 
   protected:
     bool muonsNotElectrons;
@@ -138,7 +140,6 @@ namespace LHC_FASER
      * diagram with a positively-charged near lepton, this number gives the
      * branching ratio times the proportion with opposite helicity.
      */
-
     double nearSamePass;
     double nearSameFail;
     double farSamePass;
@@ -160,12 +161,11 @@ namespace LHC_FASER
                  int const numberOfPositiveMuons );
     // this returns true if numberOfJets == 0, & either 1 of or both signs of
     // electron OR muon are asked for.
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
+    // from the electroweakino through to the LSP and visible final particles.
   };
 
 
@@ -180,12 +180,12 @@ namespace LHC_FASER
 
   public:
     chargeSummedNeutralinoToSemuCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                          particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                      particlePointer const intermediateDecayer,
-                                         inputHandler const* const shortcut );
+                                     inputHandler const* const inputShortcut );
     virtual
     ~chargeSummedNeutralinoToSemuCascade();
 
@@ -193,7 +193,6 @@ namespace LHC_FASER
     bool muonsNotElectrons;
     leptonEnergyDistribution* nearDistribution;
     leptonEnergyDistribution* farDistribution;
-
     double nearPass;
     double nearFail;
     double farPass;
@@ -211,12 +210,11 @@ namespace LHC_FASER
                  int const numberOfPositiveMuons );
     // this returns true if numberOfJets == 0, & either 1 of or both signs of
     // electron OR muon are asked for.
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
+    // from the electroweakino through to the LSP and visible final particles.
   };
 
 
@@ -229,14 +227,16 @@ namespace LHC_FASER
   class neutralinoToStauCascade : public electroweakCascade
   {
   public:
-    neutralinoToStauCascade( leptonAcceptanceParameterSet* const kinematics,
+    neutralinoToStauCascade(
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                              particlePointer const coloredDecayer,
                              particlePointer const electroweakDecayer,
                              particlePointer const intermediateDecayer,
-                             inputHandler const* const shortcut );
+                             inputHandler const* const inputShortcut );
 
     ~neutralinoToStauCascade();
+
 
   protected:
     leptonEnergyDistribution* nearSameTauDistribution;
@@ -277,7 +277,6 @@ namespace LHC_FASER
     double positiveNearConfigurationBr;
     // these are the branching ratios for the particular polarization & charge
     // configurations of the tau leptons being calculated.
-
     double nearMuonPass;
     double nearMuonFail;
     double farMuonPass;
@@ -302,16 +301,15 @@ namespace LHC_FASER
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-
+    // from the electroweakino through to the LSP and visible final particles.
     void
     calculateForCurrentConfiguration();
   };
+
 
   /* this is a derived class that implements the channel
    * decaying neutralino -> stau -> lightest neutralino.
@@ -323,14 +321,15 @@ namespace LHC_FASER
   {
   public:
     chargeSummedNeutralinoToStauCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                          particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                      particlePointer const intermediateDecayer,
-                                         inputHandler const* const shortcut );
+                                     inputHandler const* const inputShortcut );
 
     ~chargeSummedNeutralinoToStauCascade();
+
 
   protected:
     leptonEnergyDistribution* nearTauDistribution;
@@ -360,7 +359,6 @@ namespace LHC_FASER
     double configurationBr;
     // this is the branching ratio for the particular polarization & charge
     // configuration of the tau leptons being calculated.
-
     double nearMuonPass;
     double nearMuonFail;
     double farMuonPass;
@@ -385,13 +383,11 @@ namespace LHC_FASER
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-
+    // from the electroweakino through to the LSP and visible final particles.
     void
     calculateForCurrentConfiguration();
   };
@@ -402,11 +398,11 @@ namespace LHC_FASER
   class neutralinoToZCascade : public electroweakCascade
   {
   public:
-    neutralinoToZCascade( leptonAcceptanceParameterSet* const kinematics,
+    neutralinoToZCascade( leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                           particlePointer const coloredDecayer,
                           particlePointer const electroweakDecayer,
-                          inputHandler const* const shortcut );
+                          inputHandler const* const inputShortcut );
     ~neutralinoToZCascade();
 
   protected:
@@ -458,16 +454,15 @@ namespace LHC_FASER
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-
+    // from the electroweakino through to the LSP and visible final particles.
     void
     calculateForCurrentConfiguration();
   };
+
 
   // this is a derived class that implements the channel
   // decaying neutralino -> Z + lightest neutralino
@@ -475,12 +470,13 @@ namespace LHC_FASER
   {
   public:
     chargeSummedNeutralinoToZCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                       particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
-                                      inputHandler const* const shortcut );
+                                     inputHandler const* const inputShortcut );
     ~chargeSummedNeutralinoToZCascade();
+
 
   protected:
     leptonEnergyDistribution* directMuonDistribution;
@@ -518,13 +514,11 @@ namespace LHC_FASER
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-
+    // from the electroweakino through to the LSP and visible final particles.
     void
     calculateForCurrentConfiguration();
   };
@@ -535,12 +529,13 @@ namespace LHC_FASER
   class neutralinoToHiggsCascade : public electroweakCascade
   {
   public:
-    neutralinoToHiggsCascade( leptonAcceptanceParameterSet* const kinematics,
+    neutralinoToHiggsCascade(
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                               particlePointer const coloredDecayer,
                               particlePointer const electroweakDecayer,
                               particlePointer const intermediateDecayer,
-                              inputHandler const* const shortcut );
+                              inputHandler const* const inputShortcut );
     ~neutralinoToHiggsCascade();
 
   protected:
@@ -590,13 +585,11 @@ namespace LHC_FASER
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-
+    // from the electroweakino through to the LSP and visible final particles.
     void
     calculateForCurrentConfiguration();
   };
@@ -608,12 +601,13 @@ namespace LHC_FASER
   {
   public:
     chargeSummedNeutralinoVirtualCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
-                                          inputHandler const* const shortcut );
+                                     inputHandler const* const inputShortcut );
     ~chargeSummedNeutralinoVirtualCascade();
+
 
   protected:
     leptonEnergyDistribution* directDownDistribution;
@@ -665,16 +659,15 @@ namespace LHC_FASER
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-
+    // from the electroweakino through to the LSP and visible final particles.
     void
     calculateForCurrentJetConfiguration();
   };
+
 
   // this is a derived class that implements the channel
   // decaying neutralino -> SM fermion+antifermion pair + lightest neutralino
@@ -683,12 +676,14 @@ namespace LHC_FASER
   class neutralinoVirtualCascade : public chargeSummedNeutralinoVirtualCascade
   {
   public:
-    neutralinoVirtualCascade( leptonAcceptanceParameterSet* const kinematics,
+    neutralinoVirtualCascade(
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                               particlePointer const coloredDecayer,
                               particlePointer const electroweakDecayer,
-                              inputHandler const* const shortcut );
+                              inputHandler const* const inputShortcut );
     ~neutralinoVirtualCascade();
+
 
   //protected:
     // nothing.
@@ -701,11 +696,11 @@ namespace LHC_FASER
   {
   public:
     scoloredToZPlusScoloredCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                     particlePointer const coloredDecayer,
                                     particlePointer const lighterScolored,
-                                    inputHandler const* const shortcut );
+                                    inputHandler const* const inputShortcut );
     ~scoloredToZPlusScoloredCascade();
 
   protected:
@@ -744,13 +739,11 @@ namespace LHC_FASER
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-
+    // from the electroweakino through to the LSP and visible final particles.
     void
     calculateForCurrentConfiguration();
   };
@@ -762,13 +755,14 @@ namespace LHC_FASER
   {
   public:
     scoloredToHiggsPlusScoloredCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                         particlePointer const coloredDecayer,
                                         particlePointer const lighterScolored,
                                      particlePointer const intermediateDecayer,
-                                        inputHandler const* const shortcut );
+                                     inputHandler const* const inputShortcut );
     ~scoloredToHiggsPlusScoloredCascade();
+
 
   protected:
     leptonEnergyDistribution* directMuonDistribution;
@@ -811,13 +805,11 @@ namespace LHC_FASER
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
                          acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-
+    // from the electroweakino through to the LSP and visible final particles.
     void
     calculateForCurrentConfiguration();
   };

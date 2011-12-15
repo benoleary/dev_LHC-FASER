@@ -83,17 +83,15 @@ namespace LHC_FASER
   {
   public:
     charginoToSemuOrEmuSnuCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                    particlePointer const coloredDecayer,
                                    particlePointer const electroweakDecayer,
                                    particlePointer const intermediateDecayer,
                                    inputHandler const* const inputShortcut,
-                                   bool const sneutrinoVersion )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                   bool const sneutrinoVersion );
     virtual
-    ~charginoToSemuOrEmuSnuCascade()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~charginoToSemuOrEmuSnuCascade();
 
   protected:
     bool muonsNotElectrons;
@@ -121,17 +119,15 @@ namespace LHC_FASER
                  int const numberOfNegativeElectrons,
                  int const numberOfPositiveElectrons,
                  int const numberOfNegativeMuons,
-                 int const numberOfPositiveMuons )
+                 int const numberOfPositiveMuons );
     // this returns true if numberOfJets == 0, & either 1 of or both signs of
     // electron OR muon are asked for.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
-                         acceptanceValues* const currentAcceptance )
-    // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                         acceptanceValues* const currentAcceptance );
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through to the LSP and visible final particles.
   };
 
 
@@ -141,17 +137,15 @@ namespace LHC_FASER
   {
   public:
     charginoToStauOrTauSnuCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                    particlePointer const coloredDecayer,
                                    particlePointer const electroweakDecayer,
                                    particlePointer const intermediateDecayer,
                                    inputHandler const* const inputShortcut,
-                                   bool const sneutrinoVersion )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                   bool const sneutrinoVersion );
     virtual
-    ~charginoToStauOrTauSnuCascade()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~charginoToStauOrTauSnuCascade();
 
   protected:
     bool const sneutrinoVersion;
@@ -186,17 +180,15 @@ namespace LHC_FASER
                  int const numberOfNegativeElectrons,
                  int const numberOfPositiveElectrons,
                  int const numberOfNegativeMuons,
-                 int const numberOfPositiveMuons )
+                 int const numberOfPositiveMuons );
     // this returns true if numberOfJets == 0, & either 1 of or both signs of
     // electron OR muon are asked for.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
-                         acceptanceValues* const currentAcceptance )
+                         acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    // from the electroweakino through to the LSP and visible final particles.
   };
 
 
@@ -205,14 +197,12 @@ namespace LHC_FASER
   class charginoToWCascade : public electroweakCascade
   {
   public:
-    charginoToWCascade( leptonAcceptanceParameterSet* const kinematics,
+    charginoToWCascade( leptonAcceptanceParameterSet* const kinematicsTable,
                         effectiveSquarkMassHolder* const effectiveSquarkMass,
                         particlePointer const coloredDecayer,
                         particlePointer const electroweakDecayer,
-                        inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~charginoToWCascade()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                        inputHandler const* const inputShortcut );
+    ~charginoToWCascade();
 
   protected:
     bool downTypeQuark;
@@ -248,23 +238,20 @@ namespace LHC_FASER
                  int const numberOfNegativeElectrons,
                  int const numberOfPositiveElectrons,
                  int const numberOfNegativeMuons,
-                 int const numberOfPositiveMuons )
+                 int const numberOfPositiveMuons );
     /* this returns true if a configuration where each of the signs of tau
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
-                         acceptanceValues* const currentAcceptance )
-    // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                         acceptanceValues* const currentAcceptance );
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through to the LSP and visible final particles.
 
     void
-    calculateForCurrentConfiguration()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateForCurrentConfiguration();
   };
 
 
@@ -273,15 +260,14 @@ namespace LHC_FASER
   class charginoToHiggsCascade : public electroweakCascade
   {
   public:
-    charginoToHiggsCascade( leptonAcceptanceParameterSet* const kinematics,
+    charginoToHiggsCascade(
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                             particlePointer const coloredDecayer,
                             particlePointer const electroweakDecayer,
                             particlePointer const intermediateDecayer,
-                            inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~charginoToHiggsCascade()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                            inputHandler const* const inputShortcut );
+    ~charginoToHiggsCascade();
 
   protected:
     leptonEnergyDistribution* directAntimuonDistribution;
@@ -315,19 +301,17 @@ namespace LHC_FASER
                  int const numberOfNegativeElectrons,
                  int const numberOfPositiveElectrons,
                  int const numberOfNegativeMuons,
-                 int const numberOfPositiveMuons )
+                 int const numberOfPositiveMuons );
     /* this returns true if a configuration where each of the signs of tau
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
-                         acceptanceValues* const currentAcceptance )
-    // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                         acceptanceValues* const currentAcceptance );
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through to the LSP and visible final particles.
   };
 
 
@@ -336,14 +320,13 @@ namespace LHC_FASER
   class charginoVirtualCascade : public electroweakCascade
   {
   public:
-    charginoVirtualCascade( leptonAcceptanceParameterSet* const kinematics,
+    charginoVirtualCascade(
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                             particlePointer const coloredDecayer,
                             particlePointer const electroweakDecayer,
-                            inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~charginoVirtualCascade()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                            inputHandler const* const inputShortcut );
+    ~charginoVirtualCascade();
 
   protected:
     leptonEnergyDistribution* directDownUpDistribution;
@@ -384,23 +367,20 @@ namespace LHC_FASER
                  int const numberOfNegativeElectrons,
                  int const numberOfPositiveElectrons,
                  int const numberOfNegativeMuons,
-                 int const numberOfPositiveMuons )
+                 int const numberOfPositiveMuons );
     /* this returns true if a configuration where each of the signs of tau
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
-                         acceptanceValues* const currentAcceptance )
-    // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                         acceptanceValues* const currentAcceptance );
+    // this returns the appropriate acceptances multiplied by branching ratios
+    // from the electroweakino through to the LSP and visible final particles.
 
     void
-    calculateForCurrentJetConfiguration()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateForCurrentJetConfiguration();
   };
 
 
@@ -411,15 +391,13 @@ namespace LHC_FASER
   {
   public:
     scoloredToWPlusScoloredCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                     particlePointer const coloredDecayer,
                                     particlePointer const electroweakDecayer,
                                     particlePointer const lighterScolored,
-                                    inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~scoloredToWPlusScoloredCascade()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                    inputHandler const* const inputShortcut );
+    ~scoloredToWPlusScoloredCascade();
 
   protected:
     leptonEnergyDistribution* directMuonDistribution;
@@ -446,19 +424,17 @@ namespace LHC_FASER
                  int const numberOfNegativeElectrons,
                  int const numberOfPositiveElectrons,
                  int const numberOfNegativeMuons,
-                 int const numberOfPositiveMuons )
+                 int const numberOfPositiveMuons );
     /* this returns true if a configuration where each of the signs of tau
      * lepton decayed either into a detected jet, detected lepton, or
      * undetected particle, & false otherwise.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     virtual void
     calculateAcceptance( acceptanceCutSet const* const currentCuts,
-                         acceptanceValues* const currentAcceptance )
+                         acceptanceValues* const currentAcceptance );
     // this returns the appropriate acceptances multiplied by branching ratios
-    // from the electroweakino through the selectron or smuon to the LSP.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    // from the electroweakino through to the LSP and visible final particles.
   };
 
 

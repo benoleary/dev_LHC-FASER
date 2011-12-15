@@ -26,26 +26,39 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
  *      LHC-FASER_base_lepton_distribution_stuff.hpp
  *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
  *      LHC-FASER_derived_lepton_distributions.hpp
  *      LHC-FASER_derived_lepton_distributions.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
@@ -78,7 +91,7 @@ namespace LHC_FASER
                                             NULL,
                                             1.0 ) )
   {
-    segments.push_back( &minToMaxSegment );
+    segmentSet.push_back( &minToMaxSegment );
   }
 
   flatNearMuonPlusAntimuon::~flatNearMuonPlusAntimuon()
@@ -107,7 +120,7 @@ namespace LHC_FASER
     minToMaxLin( minToMaxSegment.addTerm( 1,
                                           0 ) )
   {
-    segments.push_back( &minToMaxSegment );
+    segmentSet.push_back( &minToMaxSegment );
   }
 
   sameChiralityNearMuon::~sameChiralityNearMuon()
@@ -136,7 +149,7 @@ namespace LHC_FASER
     minToMaxLin( minToMaxSegment.addTerm( 1,
                                           0 ) )
   {
-    segments.push_back( &minToMaxSegment );
+    segmentSet.push_back( &minToMaxSegment );
   }
 
   oppositeChiralityNearMuon::~oppositeChiralityNearMuon()
@@ -172,9 +185,9 @@ namespace LHC_FASER
     hkToMaxLog( hkToMaxSegment.addTerm( 0,
                                         1 ) )
   {
-    segments.push_back( &minToLkSegment );
-    segments.push_back( &lkToHkSegment );
-    segments.push_back( &hkToMaxSegment );
+    segmentSet.push_back( &minToLkSegment );
+    segmentSet.push_back( &lkToHkSegment );
+    segmentSet.push_back( &hkToMaxSegment );
   }
 
   flatFarMuonPlusAntimuon::~flatFarMuonPlusAntimuon()
@@ -278,9 +291,9 @@ namespace LHC_FASER
     hkToMaxLin( hkToMaxSegment.addTerm( 1,
                                         0 ) )
   {
-    segments.push_back( &minToLkSegment );
-    segments.push_back( &lkToHkSegment );
-    segments.push_back( &hkToMaxSegment );
+    segmentSet.push_back( &minToLkSegment );
+    segmentSet.push_back( &lkToHkSegment );
+    segmentSet.push_back( &hkToMaxSegment );
   }
 
   sameChiralityFarMuon::~sameChiralityFarMuon()
@@ -445,9 +458,9 @@ namespace LHC_FASER
     hkToMaxLin( hkToMaxSegment.addTerm( 1,
                                         0 ) )
   {
-    segments.push_back( &minToLkSegment );
-    segments.push_back( &lkToHkSegment );
-    segments.push_back( &hkToMaxSegment );
+    segmentSet.push_back( &minToLkSegment );
+    segmentSet.push_back( &lkToHkSegment );
+    segmentSet.push_back( &hkToMaxSegment );
   }
 
   oppositeChiralityFarMuon::~oppositeChiralityFarMuon()
@@ -587,20 +600,20 @@ namespace LHC_FASER
 
 
   HiggsMuonPlusAntimuon::HiggsMuonPlusAntimuon(
-                                    readierForNewPoint* const readierPointer,
-                                 CppSLHA::CppSLHA0 const* const spectrumData,
-              CppSLHA::particle_property_set const* const firstParticle,
+                                      readierForNewPoint* const readierPointer,
+                                   CppSLHA::CppSLHA0 const* const spectrumData,
+                     CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
              CppSLHA::particle_property_set const* const secondParticle,
               CppSLHA::particle_property_set const* const thirdParticle,
           CppSLHA::particle_property_set const* const fourthParticle ) :
     leptonEnergyDistribution( readierPointer,
-                                spectrumData,
-                                firstParticle,
-                                effectiveSquarkMass,
-                                secondParticle,
-                                thirdParticle,
-                                fourthParticle ),
+                              spectrumData,
+                              firstParticle,
+                              effectiveSquarkMass,
+                              secondParticle,
+                              thirdParticle,
+                              fourthParticle ),
     minToLkConst( minToLkSegment.addTerm( 0,
                                           0 ) ),
     minToLkLog( minToLkSegment.addTerm( 0,
@@ -612,9 +625,9 @@ namespace LHC_FASER
     hkToMaxLog( hkToMaxSegment.addTerm( 0,
                                         1 ) )
   {
-    segments.push_back( &minToLkSegment );
-    segments.push_back( &lkToHkSegment );
-    segments.push_back( &hkToMaxSegment );
+    segmentSet.push_back( &minToLkSegment );
+    segmentSet.push_back( &lkToHkSegment );
+    segmentSet.push_back( &hkToMaxSegment );
   }
 
   HiggsMuonPlusAntimuon::~HiggsMuonPlusAntimuon()
@@ -694,8 +707,9 @@ namespace LHC_FASER
   }
 
 
+
   weakVectorBosonHandedMuon::weakVectorBosonHandedMuon(
-                                             readierForNewPoint* const readier,
+                                      readierForNewPoint* const readierPointer,
                                    CppSLHA::CppSLHA0 const* const spectrumData,
                      CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -703,7 +717,7 @@ namespace LHC_FASER
                      CppSLHA::particle_property_set const* const thirdParticle,
                     CppSLHA::particle_property_set const* const fourthParticle,
                                bool const negativeMuonIsSameHandednessAsJet ) :
-    leptonEnergyDistribution( readier,
+    leptonEnergyDistribution( readierPointer,
                               spectrumData,
                               firstParticle,
                               effectiveSquarkMass,
@@ -742,9 +756,9 @@ namespace LHC_FASER
     hkToMaxSq( hkToMaxSegment.addTerm( 2,
                                        0 ) )
   {
-    segments.push_back( &minToLkSegment );
-    segments.push_back( &lkToHkSegment );
-    segments.push_back( &hkToMaxSegment );
+    segmentSet.push_back( &minToLkSegment );
+    segmentSet.push_back( &lkToHkSegment );
+    segmentSet.push_back( &hkToMaxSegment );
   }
 
   weakVectorBosonHandedMuon::~weakVectorBosonHandedMuon()
@@ -1384,7 +1398,7 @@ namespace LHC_FASER
   }
 
 
-  zHandedMuon::zHandedMuon( readierForNewPoint* const readier,
+  zHandedMuon::zHandedMuon( readierForNewPoint* const readierPointer,
                             CppSLHA::CppSLHA0 const* const spectrumData,
               CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
@@ -1393,7 +1407,7 @@ namespace LHC_FASER
           CppSLHA::particle_property_set const* const fourthParticle,
                             bool const negativeMuonIsSameHandednessAsJet,
                             bool const shouldSumOverHandedness ) :
-    weakVectorBosonHandedMuon( readier,
+    weakVectorBosonHandedMuon( readierPointer,
                                spectrumData,
                                firstParticle,
                                effectiveSquarkMass,
@@ -1410,6 +1424,7 @@ namespace LHC_FASER
   {
     // does nothing.
   }
+
 
   void
   zHandedMuon::calculateCoefficients()
@@ -1647,9 +1662,9 @@ namespace LHC_FASER
                                jetIsLeftHanded
                                /* W^- decays to left-handed mu^- */ )
   {
-    NMIX = spectrum->inspect_BLOCK( "NMIX" );
-    UMIX = spectrum->inspect_BLOCK( "UMIX" );
-    VMIX = spectrum->inspect_BLOCK( "VMIX" );
+    NMIX = spectrumData->inspect_BLOCK( "NMIX" );
+    UMIX = spectrumData->inspect_BLOCK( "UMIX" );
+    VMIX = spectrumData->inspect_BLOCK( "VMIX" );
     if( CppSLHA::PDG_code::chargino_one == secondParticle->get_PDG_code() )
     {
       whichChargino = 1;
@@ -2045,13 +2060,14 @@ namespace LHC_FASER
     minToMaxSq( minToMaxSegment.addTerm( 2,
                                          0 ) )
   {
-    segments.push_back( &minToMaxSegment );
+    segmentSet.push_back( &minToMaxSegment );
   }
 
   vectorFromSquarkToMuon::~vectorFromSquarkToMuon()
   {
     // does nothing.
   }
+
 
 
   scalarFromSquarkToMuon::scalarFromSquarkToMuon(
@@ -2071,7 +2087,7 @@ namespace LHC_FASER
     minToMaxConst( minToMaxSegment.addTerm( 0,
                                             0 ) )
   {
-    segments.push_back( &minToMaxSegment );
+    segmentSet.push_back( &minToMaxSegment );
   }
 
   scalarFromSquarkToMuon::~scalarFromSquarkToMuon()
@@ -2197,12 +2213,12 @@ namespace LHC_FASER
                       CppSLHA::particle_property_set const* const leftSfermion,
                   CppSLHA::particle_property_set const* const rightSfermion ) :
     leptonEnergyDistribution( readierPointer,
-                                spectrumData,
-                                firstParticle,
-                                effectiveSquarkMass,
-                                secondParticle,
-                                thirdParticle,
-                                NULL ),
+                              spectrumData,
+                              firstParticle,
+                              effectiveSquarkMass,
+                              secondParticle,
+                              thirdParticle,
+                              NULL ),
     leftSfermion( leftSfermion ),
     rightSfermion( rightSfermion ),
     minToMaxConst( minToMaxSegment.addTerm( 0,
@@ -2210,7 +2226,7 @@ namespace LHC_FASER
                                             NULL,
                                             1.0 ) )
   {
-    segments.push_back( &minToMaxSegment );
+    segmentSet.push_back( &minToMaxSegment );
   }
 
   neutralinoThreeBodyDecay::~neutralinoThreeBodyDecay()
@@ -2261,7 +2277,7 @@ namespace LHC_FASER
                                             NULL,
                                             1.0 ) )
   {
-    segments.push_back( &minToMaxSegment );
+    segmentSet.push_back( &minToMaxSegment );
   }
 
   charginoThreeBodyDecay::~charginoThreeBodyDecay()

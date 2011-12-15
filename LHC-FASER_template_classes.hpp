@@ -189,6 +189,7 @@ namespace LHC_FASER
      * constructor, but this is the use intended.)
      */
 
+
   protected:
     std::vector< storedClass* > allConstructedPointers;
     std::vector< storedClass* > currentPointers;
@@ -258,6 +259,7 @@ namespace LHC_FASER
     clearEntries();
     // this notes that all current storedClass instances are now to be treated
     // as stored-but-not-current, & drops their pointers from currentPointers.
+
 
   protected:
     std::vector< std::pair< storedClass*,
@@ -546,7 +548,7 @@ namespace LHC_FASER
     {
       for( unsigned int deletionCounter( 0 );
            allConstructedPointers.size() > deletionCounter;
-          ++deletionCounter )
+           ++deletionCounter )
       {
         delete allConstructedPointers.at( deletionCounter )->first;
         delete allConstructedPointers.at( deletionCounter )->second;

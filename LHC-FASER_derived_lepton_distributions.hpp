@@ -102,6 +102,7 @@ namespace LHC_FASER
     calculateCoefficients();
   };
 
+
   /* this derived class sets up the energy distribution for a light lepton
    * which is the "near" lepton in a cascade decay from a squark to a slepton,
    * where the near lepton or antilepton has the same helicity to the jet (thus
@@ -133,6 +134,7 @@ namespace LHC_FASER
     calculateCoefficients();
   };
 
+
   /* this derived class sets up the energy distribution for a light lepton
    * which is the "near" lepton in a cascade decay from a squark to a slepton,
    * where the near lepton or antilepton has the opposite helicity to the jet
@@ -163,6 +165,7 @@ namespace LHC_FASER
     void
     calculateCoefficients();
   };
+
 
   /* this derived class sets up the energy distribution for a light lepton
    * which is the "far" lepton in a cascade decay, summing over charges, which
@@ -208,6 +211,7 @@ namespace LHC_FASER
     void
     calculateCoefficients();
   };
+
 
   /* this derived class sets up the energy distribution for a light lepton
    * which is the "far" lepton in a cascade decay from a squark to a slepton,
@@ -269,6 +273,7 @@ namespace LHC_FASER
     void
     calculateCoefficients();
   };
+
 
   /* this derived class sets up the energy distribution for a light lepton
    * which is the "far" lepton in a cascade decay from a squark to a slepton,
@@ -332,6 +337,7 @@ namespace LHC_FASER
     calculateCoefficients();
   };
 
+
   /* the negatively- & positively-charged leptons from neutral EWSB scalar
    * decays have the same distribution thanks to the spin-0 nature of the
    * bosons.
@@ -354,6 +360,7 @@ namespace LHC_FASER
                   CppSLHA::particle_property_set const* const fourthParticle );
       virtual
       ~HiggsMuonPlusAntimuon();
+
 
   protected:
       double Elk;
@@ -399,6 +406,7 @@ namespace LHC_FASER
                                bool const negativeMuonIsSameHandednessAsJet );
     virtual
     ~weakVectorBosonHandedMuon();
+
 
   protected:
     bool const negativeMuonIsSameHandednessAsJet;
@@ -602,7 +610,6 @@ namespace LHC_FASER
 
     void
     flipSignsOfCurrentCoefficients();
-
     void
     calculateCoefficients();
   };
@@ -665,7 +672,6 @@ namespace LHC_FASER
 
     void
     scaleCurrentCoefficients( double const scalingFactor );
-
     void
     calculateCoefficients();
   };
@@ -686,6 +692,7 @@ namespace LHC_FASER
              CppSLHA::particle_property_set const* const thirdParticle );
     virtual
     ~vectorFromSquarkToMuon();
+
 
   protected:
     // these are for ease of calculating the coefficients (referring to the
@@ -735,6 +742,7 @@ namespace LHC_FASER
     virtual
     ~scalarFromSquarkToMuon();
 
+
   protected:
     // these are for ease of calculating the coefficients (referring to the
     // decaying squark as Qh & the product squark as Ql):
@@ -760,6 +768,7 @@ namespace LHC_FASER
     calculateCoefficients();
   };
 
+
   // averaging over both jets from the Z boson produces the same distribution
   // as directly-produced light leptons.
   class zDirectJet : public zHandedMuon
@@ -775,9 +784,11 @@ namespace LHC_FASER
     virtual
     ~zDirectJet();
 
+
   //protected:
     // nothing.
   };
+
 
   // averaging over both jets from the W boson produces the same distribution
   // which Z bosons produce.
@@ -794,7 +805,8 @@ namespace LHC_FASER
     virtual
     ~wMinusDirectJet();
 
-    //protected:
+
+  //protected:
       // nothing.
   };
 
@@ -835,7 +847,8 @@ namespace LHC_FASER
     virtual
     ~negativelyChargedHiggsMuon();
 
-    //protected:
+
+  //protected:
       // nothing.
   };
 
@@ -859,10 +872,10 @@ namespace LHC_FASER
     virtual
     ~negativelyChargedHiggsJet();
 
-    //protected:
+
+  //protected:
       // nothing.
   };
-
 
 
   /* this needs to know the 2 sfermions which appear off-shell in the process.
@@ -888,6 +901,7 @@ namespace LHC_FASER
     virtual
     ~neutralinoThreeBodyDecay();
 
+
   protected:
     CppSLHA::particle_property_set const* const leftSfermion;
     CppSLHA::particle_property_set const* const rightSfermion;
@@ -900,6 +914,7 @@ namespace LHC_FASER
     void
     calculateCoefficients();
   };
+
 
   /* this needs to know the 2 sfermions which appear off-shell in the process.
    * they are given as "left" & "right", but the code checks for 3rd-generation
@@ -925,6 +940,7 @@ namespace LHC_FASER
         CppSLHA::particle_property_set const* const rightDownIsospinSfermion );
     virtual
     ~charginoThreeBodyDecay();
+
 
   protected:
     CppSLHA::particle_property_set const* const leftUpIsospinSfermion;

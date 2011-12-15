@@ -141,6 +141,7 @@ namespace LHC_FASER
      *   product, or 0.0 otherwise.
      */
 
+
   protected:
     signalDefinitionSet signalDefinitions;
     inputHandler const* const inputShortcut;
@@ -214,6 +215,7 @@ namespace LHC_FASER
     double
     getLogUncertainty();
 
+
   protected:
     std::string signalName;
     signalCalculator* rateCalculator;
@@ -222,7 +224,7 @@ namespace LHC_FASER
     double uncertaintyFactor;
     double crossSectionUnitFactor;
     // this is to allow for the user to specify event rates in fb, pb or nb.
-  };  // end of signalHandler class.
+  };
 
 
   namespace signalCalculatorClasses
@@ -243,6 +245,7 @@ namespace LHC_FASER
                       double* uncertaintyFactor );
       // this always returns false, & always sets signalValue &
       // uncertaintyFactor to CppSLHA::CppSLHA_global::really_wrong_value.
+
 
     protected:
       virtual double
@@ -416,7 +419,6 @@ namespace LHC_FASER
                                fullCascade* secondCascade );
       // see base version's description.
     };
-
 
   }  // end of signalCalculatorClasses namespace.
 

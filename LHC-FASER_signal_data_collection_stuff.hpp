@@ -110,6 +110,7 @@ namespace LHC_FASER
      * > 1.0).
      */
 
+
   protected:
     inputHandler const* const inputShortcuts;
     crossSectionHandler* const crossSections;
@@ -149,6 +150,7 @@ namespace LHC_FASER
     fullCascadeSetsForOneBeamEnergy*
     getCascadeSets();
 
+
   protected:
     signalShortcuts* const inputShortcut;
 
@@ -184,8 +186,8 @@ namespace LHC_FASER
     fullCascadeSet*
     getSecondCascadeSet();
 
+
   protected:
-    //signalShortcuts* const inputShortcut;
     crossSectionTable* crossSection;
     fullCascadeSet* firstCascadeSet;
     fullCascadeSet* secondCascadeSet;

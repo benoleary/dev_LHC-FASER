@@ -2,7 +2,70 @@
  * LHC-FASER_charged_electroweak_cascade_stuff.cpp
  *
  *  Created on: May 9, 2011
- *      Author: bol
+ *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
+ *               Jonas Lindert (jonas.lindert@googlemail.com)
+ *               Carsten Robens (carsten.robens@gmx.de)
+ *      Copyright 2010 Ben O'Leary, Jonas Lindert, Carsten Robens
+ *
+ *      This file is part of LHC-FASER.
+ *
+ *      LHC-FASER is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      LHC-FASER is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with LHC-FASER.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *      The GNU General Public License should be in GNU_public_license.txt
+ *      the files of LHC-FASER are:
+ *      LHC-FASER.hpp
+ *      LHC-FASER.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
+ *      LHC-FASER_full_cascade_stuff.hpp
+ *      LHC-FASER_full_cascade_stuff.cpp
+ *      LHC-FASER_global_stuff.hpp
+ *      LHC-FASER_global_stuff.cpp
+ *      LHC-FASER_input_handling_stuff.hpp
+ *      LHC-FASER_input_handling_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_signal_calculator_stuff.hpp
+ *      LHC-FASER_signal_calculator_stuff.cpp
+ *      LHC-FASER_signal_data_collection_stuff.hpp
+ *      LHC-FASER_signal_data_collection_stuff.cpp
+ *      LHC-FASER_sparticle_decay_stuff.hpp
+ *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
+ *      and README.LHC-FASER.txt which describes the package.
+ *
+ *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
+ *      included with this package.
+ *
+ *      LHC-FASER also requires grids of lookup values. These should also be
+ *      found in a subdirectory included with this package.
  */
 
 #include "LHC-FASER_charged_electroweak_cascade_stuff.hpp"
@@ -10,14 +73,14 @@
 namespace LHC_FASER
 {
   charginoToSemuOrEmuSnuCascade::charginoToSemuOrEmuSnuCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                      particlePointer const intermediateDecayer,
                                        inputHandler const* const inputShortcut,
                                                 bool const sneutrinoVersion ) :
-    electroweakCascade( kinematics,
+    electroweakCascade( kinematicsTable,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
@@ -143,7 +206,7 @@ namespace LHC_FASER
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios
-  // from the electroweakino through the slepton to the LSP.
+  // from the electroweakino through to the LSP and visible final particles.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
     // debugging:
@@ -238,14 +301,14 @@ namespace LHC_FASER
 
 
   charginoToStauOrTauSnuCascade::charginoToStauOrTauSnuCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                      particlePointer const intermediateDecayer,
                                        inputHandler const* const inputShortcut,
                                                 bool const sneutrinoVersion ) :
-    electroweakCascade( kinematics,
+    electroweakCascade( kinematicsTable,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
@@ -267,18 +330,18 @@ namespace LHC_FASER
                                                inputShortcut->getEmptyList() );
       sameTauDistribution
       = new sameChiralityNearMuon( inputShortcut->getReadier(),
-                                      inputShortcut->getCppSlha(),
-                                      coloredDecayer,
-                                      effectiveSquarkMass,
-                                      electroweakDecayer,
-                                      intermediateDecayer );
+                                   inputShortcut->getCppSlha(),
+                                   coloredDecayer,
+                                   effectiveSquarkMass,
+                                   electroweakDecayer,
+                                   intermediateDecayer );
       oppositeTauDistribution
       = new oppositeChiralityNearMuon( inputShortcut->getReadier(),
-                                          inputShortcut->getCppSlha(),
-                                          coloredDecayer,
-                                          effectiveSquarkMass,
-                                          electroweakDecayer,
-                                          intermediateDecayer );
+                                       inputShortcut->getCppSlha(),
+                                       coloredDecayer,
+                                       effectiveSquarkMass,
+                                       electroweakDecayer,
+                                       intermediateDecayer );
     }
     else
     {
@@ -288,56 +351,56 @@ namespace LHC_FASER
                                                inputShortcut->getEmptyList() );
       sameTauDistribution
       = new sameChiralityFarMuon( inputShortcut->getReadier(),
-                                     inputShortcut->getCppSlha(),
-                                     coloredDecayer,
-                                     effectiveSquarkMass,
-                                     electroweakDecayer,
-                                     intermediateDecayer,
-                                     inputShortcut->getNeutralinoOne() );
+                                  inputShortcut->getCppSlha(),
+                                  coloredDecayer,
+                                  effectiveSquarkMass,
+                                  electroweakDecayer,
+                                  intermediateDecayer,
+                                  inputShortcut->getNeutralinoOne() );
       oppositeTauDistribution
       = new oppositeChiralityFarMuon( inputShortcut->getReadier(),
-                                         inputShortcut->getCppSlha(),
-                                         coloredDecayer,
-                                         effectiveSquarkMass,
-                                         electroweakDecayer,
-                                         intermediateDecayer,
-                                         inputShortcut->getNeutralinoOne() );
+                                      inputShortcut->getCppSlha(),
+                                      coloredDecayer,
+                                      effectiveSquarkMass,
+                                      electroweakDecayer,
+                                      intermediateDecayer,
+                                      inputShortcut->getNeutralinoOne() );
     }
     activeDistributions.push_back( sameTauDistribution );
     activeDistributions.push_back( oppositeTauDistribution );
 
     sameHardMuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     sameTauDistribution,
-                                     inputShortcut->getHardMuonFromTau() );
+                                  sameTauDistribution,
+                                  inputShortcut->getHardMuonFromTau() );
     sameSoftMuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     sameTauDistribution,
-                                     inputShortcut->getSoftMuonFromTau() );
+                                  sameTauDistribution,
+                                  inputShortcut->getSoftMuonFromTau() );
     sameHardPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     sameTauDistribution,
-                                     inputShortcut->getHardPionFromTau() );
+                                  sameTauDistribution,
+                                  inputShortcut->getHardPionFromTau() );
     sameSoftPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     sameTauDistribution,
-                                     inputShortcut->getSoftPionFromTau() );
+                                  sameTauDistribution,
+                                  inputShortcut->getSoftPionFromTau() );
     oppositeHardMuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     oppositeTauDistribution,
-                                     inputShortcut->getHardMuonFromTau() );
+                                  oppositeTauDistribution,
+                                  inputShortcut->getHardMuonFromTau() );
     oppositeSoftMuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     oppositeTauDistribution,
-                                     inputShortcut->getSoftMuonFromTau() );
+                                  oppositeTauDistribution,
+                                  inputShortcut->getSoftMuonFromTau() );
     oppositeHardPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     oppositeTauDistribution,
-                                     inputShortcut->getHardPionFromTau() );
+                                  oppositeTauDistribution,
+                                  inputShortcut->getHardPionFromTau() );
     oppositeSoftPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     oppositeTauDistribution,
-                                     inputShortcut->getSoftPionFromTau() );
+                                  oppositeTauDistribution,
+                                  inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( sameHardMuonDistribution );
     activeDistributions.push_back( sameSoftMuonDistribution );
     activeDistributions.push_back( sameHardPionDistribution );
@@ -406,7 +469,7 @@ namespace LHC_FASER
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
   // this returns the appropriate acceptances multiplied by branching ratios
-  // from the electroweakino through the slepton to the LSP.
+  // from the electroweakino through to the LSP and visible final particles.
   {
     cascadeBr = ( firstBr->getBr() * secondBr->getBr() );
     // debugging:
@@ -595,12 +658,12 @@ namespace LHC_FASER
 
 
   charginoToWCascade::charginoToWCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                     inputHandler const* const inputShortcut ) :
-    electroweakCascade( kinematics,
+    electroweakCascade( kinematicsTable,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
@@ -743,7 +806,8 @@ namespace LHC_FASER
   charginoToWCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptancesPerCutSet multiplied by branching ratios.
+  // this returns the appropriate acceptances multiplied by branching ratios
+  // from the electroweakino through to the LSP and visible final particles.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetZeroLeptons( 0.0 );
@@ -895,13 +959,13 @@ namespace LHC_FASER
 
 
   charginoToHiggsCascade::charginoToHiggsCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                      particlePointer const intermediateDecayer,
                                     inputHandler const* const inputShortcut ) :
-    electroweakCascade( kinematics,
+    electroweakCascade( kinematicsTable,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
@@ -1000,7 +1064,8 @@ namespace LHC_FASER
   charginoToHiggsCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptances multiplied by branching ratios
+  // from the electroweakino through to the LSP and visible final particles.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetZeroLeptons( 0.0 );
@@ -1135,12 +1200,12 @@ namespace LHC_FASER
 
 
   charginoVirtualCascade::charginoVirtualCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                     inputHandler const* const inputShortcut ) :
-    electroweakCascade( kinematics,
+    electroweakCascade( kinematicsTable,
                         effectiveSquarkMass,
                         coloredDecayer,
                         electroweakDecayer,
@@ -1159,59 +1224,59 @@ namespace LHC_FASER
 
     directDownUpDistribution
     = new charginoThreeBodyDecay( inputShortcut->getReadier(),
-                                     inputShortcut->getCppSlha(),
-                                     coloredDecayer,
-                                     effectiveSquarkMass,
-                                     electroweakDecayer,
-                                     inputShortcut->getNeutralinoOne(),
-                                     inputShortcut->getSupL(),
-                                     inputShortcut->getSupR(),
-                                     inputShortcut->getSdownL(),
-                                     inputShortcut->getSdownR() );
+                                  inputShortcut->getCppSlha(),
+                                  coloredDecayer,
+                                  effectiveSquarkMass,
+                                  electroweakDecayer,
+                                  inputShortcut->getNeutralinoOne(),
+                                  inputShortcut->getSupL(),
+                                  inputShortcut->getSupR(),
+                                  inputShortcut->getSdownL(),
+                                  inputShortcut->getSdownR() );
     directStrangeCharmDistribution
     = new charginoThreeBodyDecay( inputShortcut->getReadier(),
-                                     inputShortcut->getCppSlha(),
-                                     coloredDecayer,
-                                     effectiveSquarkMass,
-                                     electroweakDecayer,
-                                     inputShortcut->getNeutralinoOne(),
-                                     inputShortcut->getScharmL(),
-                                     inputShortcut->getScharmR(),
-                                     inputShortcut->getSstrangeL(),
-                                     inputShortcut->getSstrangeR() );
+                                  inputShortcut->getCppSlha(),
+                                  coloredDecayer,
+                                  effectiveSquarkMass,
+                                  electroweakDecayer,
+                                  inputShortcut->getNeutralinoOne(),
+                                  inputShortcut->getScharmL(),
+                                  inputShortcut->getScharmR(),
+                                  inputShortcut->getSstrangeL(),
+                                  inputShortcut->getSstrangeR() );
     directElectronDistribution
     = new charginoThreeBodyDecay( inputShortcut->getReadier(),
-                                     inputShortcut->getCppSlha(),
-                                     coloredDecayer,
-                                     effectiveSquarkMass,
-                                     electroweakDecayer,
-                                     inputShortcut->getNeutralinoOne(),
-                                     inputShortcut->getElectronSneutrinoL(),
-                                     inputShortcut->getElectronSneutrinoR(),
-                                     inputShortcut->getSelectronL(),
-                                     inputShortcut->getSelectronR() );
+                                  inputShortcut->getCppSlha(),
+                                  coloredDecayer,
+                                  effectiveSquarkMass,
+                                  electroweakDecayer,
+                                  inputShortcut->getNeutralinoOne(),
+                                  inputShortcut->getElectronSneutrinoL(),
+                                  inputShortcut->getElectronSneutrinoR(),
+                                  inputShortcut->getSelectronL(),
+                                  inputShortcut->getSelectronR() );
     directMuonDistribution
     = new charginoThreeBodyDecay( inputShortcut->getReadier(),
-                                     inputShortcut->getCppSlha(),
-                                     coloredDecayer,
-                                     effectiveSquarkMass,
-                                     electroweakDecayer,
-                                     inputShortcut->getNeutralinoOne(),
-                                     inputShortcut->getMuonSneutrinoL(),
-                                     inputShortcut->getMuonSneutrinoR(),
-                                     inputShortcut->getSmuonL(),
-                                     inputShortcut->getSmuonR() );
+                                  inputShortcut->getCppSlha(),
+                                  coloredDecayer,
+                                  effectiveSquarkMass,
+                                  electroweakDecayer,
+                                  inputShortcut->getNeutralinoOne(),
+                                  inputShortcut->getMuonSneutrinoL(),
+                                  inputShortcut->getMuonSneutrinoR(),
+                                  inputShortcut->getSmuonL(),
+                                  inputShortcut->getSmuonR() );
     directTauDistribution
     = new charginoThreeBodyDecay( inputShortcut->getReadier(),
-                                     inputShortcut->getCppSlha(),
-                                     coloredDecayer,
-                                     effectiveSquarkMass,
-                                     electroweakDecayer,
-                                     inputShortcut->getNeutralinoOne(),
-                                     inputShortcut->getTauSneutrinoL(),
-                                     inputShortcut->getTauSneutrinoR(),
-                                     inputShortcut->getStauOne(),
-                                     inputShortcut->getStauTwo() );
+                                  inputShortcut->getCppSlha(),
+                                  coloredDecayer,
+                                  effectiveSquarkMass,
+                                  electroweakDecayer,
+                                  inputShortcut->getNeutralinoOne(),
+                                  inputShortcut->getTauSneutrinoL(),
+                                  inputShortcut->getTauSneutrinoR(),
+                                  inputShortcut->getStauOne(),
+                                  inputShortcut->getStauTwo() );
     activeDistributions.push_back( directDownUpDistribution );
     activeDistributions.push_back( directStrangeCharmDistribution );
     activeDistributions.push_back( directElectronDistribution );
@@ -1220,20 +1285,20 @@ namespace LHC_FASER
 
     hardMuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     directTauDistribution,
-                                     inputShortcut->getHardMuonFromTau() );
+                                  directTauDistribution,
+                                  inputShortcut->getHardMuonFromTau() );
     softMuonDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     directTauDistribution,
-                                     inputShortcut->getSoftMuonFromTau() );
+                                  directTauDistribution,
+                                  inputShortcut->getSoftMuonFromTau() );
     hardPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     directTauDistribution,
-                                     inputShortcut->getHardPionFromTau() );
+                                  directTauDistribution,
+                                  inputShortcut->getHardPionFromTau() );
     softPionDistribution
     = new visibleTauDecayProduct( inputShortcut->getReadier(),
-                                     directTauDistribution,
-                                     inputShortcut->getSoftPionFromTau() );
+                                  directTauDistribution,
+                                  inputShortcut->getSoftPionFromTau() );
     activeDistributions.push_back( hardMuonDistribution );
     activeDistributions.push_back( softMuonDistribution );
     activeDistributions.push_back( hardPionDistribution );
@@ -1303,7 +1368,8 @@ namespace LHC_FASER
   charginoVirtualCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptances multiplied by branching ratios
+  // from the electroweakino through to the LSP and visible final particles.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetZeroLeptons( 0.0 );
@@ -1449,13 +1515,13 @@ namespace LHC_FASER
 
 
   scoloredToWPlusScoloredCascade::scoloredToWPlusScoloredCascade(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                          particlePointer const lighterScolored,
                                     inputHandler const* const inputShortcut ) :
-    electroweakCascade( kinematics,
+    electroweakCascade( kinematicsTable,
                         effectiveSquarkMass,
                         coloredDecayer,
                         lighterScolored,
@@ -1565,7 +1631,8 @@ namespace LHC_FASER
   scoloredToWPlusScoloredCascade::calculateAcceptance(
                                      acceptanceCutSet const* const currentCuts,
                                     acceptanceValues* const currentAcceptance )
-  // this returns the appropriate acceptances multiplied by branching ratios.
+  // this returns the appropriate acceptances multiplied by branching ratios
+  // from the electroweakino through to the LSP and visible final particles.
   {
     currentAcceptance->setTwoJets( 0.0 );
     currentAcceptance->setOneJetZeroLeptons( 0.0 );

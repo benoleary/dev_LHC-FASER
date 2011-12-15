@@ -109,6 +109,7 @@ namespace LHC_FASER
     isSameAcceptanceCutSet( acceptanceCutSet const* const comparisonCuts )
     const;
 
+
   //protected:
     // nothing
   };
@@ -137,6 +138,7 @@ namespace LHC_FASER
     // this interpolates the grid to obtain values for the acceptances based on
     // the given masses.
 
+
   //protected:
     // nothing.
   };
@@ -163,6 +165,7 @@ namespace LHC_FASER
                             std::vector< double >* const energyAcceptances );
     // this interpolates the grid to obtain values for the acceptances based on
     // the given masses.
+
 
   protected:
     std::vector< double >* lowerLeftVector;
@@ -193,6 +196,7 @@ namespace LHC_FASER
                             std::vector< double >* const energyAcceptances );
     // this interpolates the grid to obtain values for the acceptances based on
     // the given masses.
+
 
   protected:
     unsigned int lowerElectroweakinoMassIndex;
@@ -250,10 +254,10 @@ namespace LHC_FASER
      * pseudorapidityAcceptance if it's lower, scaled to the given value for
      * the transverse momentum cut.
      */
-
     particlePointer
     getEwino()
     const;
+
 
   protected:
     inputHandler const* const inputShortcut;
@@ -277,11 +281,9 @@ namespace LHC_FASER
     resetValues();
     // this interpolates values from acceptanceTable to set up acceptanceBins
     // for the given colored sparticle.
-
     double
     calculateAcceptanceAt( double const givenEnergy,
                            double const givenCut );
-    //const
     /* this interpolates the values in acceptanceBins to the requested value,
      * or returns pseudorapidityAcceptance if it's lower, scaled to the given
      * value for the transverse momentum cut.
@@ -308,6 +310,7 @@ namespace LHC_FASER
     particlePointer
     getScolored()
     const;
+
 
   protected:
     inputHandler const* const inputShortcut;
@@ -344,6 +347,7 @@ namespace LHC_FASER
                  double const binSize,
                  double const transverseMomentumCut )
     const;
+
 
   protected:
     inputHandler const* const inputShortcut;
@@ -401,6 +405,7 @@ namespace LHC_FASER
      * leptonAcceptancesForOneBeamEnergy with the requested acceptances, & if
      * not, makes 1, & returns the pointer.
      */
+
 
   protected:
     inputHandler const* const inputShortcut;

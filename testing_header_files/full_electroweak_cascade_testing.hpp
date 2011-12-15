@@ -2,9 +2,9 @@
  * full_electroweak_cascade_testing.hpp
  *
  *  Created on: Oct 30, 2011
- *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
- *              Jonas Lindert (jonas.lindert@googlemail.com)
- *              Carsten Robens (carsten.robens@gmx.de)
+ *      Authors: Ben O'Leary (benjamin.oleary@gmail.com)
+ *               Jonas Lindert (jonas.lindert@googlemail.com)
+ *               Carsten Robens (carsten.robens@gmx.de)
  *      Copyright 2010 Ben O'Leary, Jonas Lindert, Carsten Robens
  *
  *      This file is part of LHC-FASER.
@@ -110,7 +110,7 @@ namespace LHC_FASER
     {
       leptonAcceptanceHandler
       testLeptonAcceptanceHandler( testInputHandler,
-                             testInputHandler->inspectPathToKinematicsGrids() );
+                            testInputHandler->inspectPathToKinematicsGrids() );
       leptonAcceptanceParameterSet*
       cascadeKinematics(
                 testLeptonAcceptanceHandler.getLeptonAcceptanceParameterSet( 7,
@@ -183,7 +183,8 @@ namespace LHC_FASER
       << testEwinoCascadeSet->getOssfMinusOsdf( &testAcceptanceCutSet );
       std::cout
       << std::endl
-      << "testEwinoCascadeSet->getOssfMinusOsdf( &noLeptonGapAcceptanceCutSet ) = "
+      << "testEwinoCascadeSet->getOssfMinusOsdf( &noLeptonGapAcceptanceCutSet"
+      << " ) = "
       << testEwinoCascadeSet->getOssfMinusOsdf( &noLeptonGapAcceptanceCutSet );
       std::cout
       << std::endl

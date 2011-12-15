@@ -166,6 +166,7 @@ namespace LHC_FASER
      * signal.
      */
 
+
   protected:
     leptonAcceptanceParameterSet* const kinematicsTable;
     inputHandler const* const inputShortcut;
@@ -228,6 +229,7 @@ namespace LHC_FASER
      * electroweakCascadeSet & returns a pointer to that.
      */
 
+
   protected:
     leptonAcceptancesForOneBeamEnergy* const kinematicsTable;
     int const beamEnergy;
@@ -255,6 +257,7 @@ namespace LHC_FASER
      * leptonAcceptancesForOneBeamEnergy with the requested values, & if not,
      * makes 1, & returns the pointer.
      */
+
 
   protected:
     leptonAcceptanceHandler kinematicsSource;

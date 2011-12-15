@@ -26,30 +26,45 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
- *      LHC-FASER_lepton_distributions.hpp
- *      LHC-FASER_lepton_distributions.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -173,50 +188,39 @@ namespace LHC_FASER
     leptonDistributionExpansionTerm( int const powerOfEnergy,
                                      int const powerOfLogarithm,
                                      double const coefficientValue,
-                  leptonDistributionExpansionTerm* const referenceTerm = NULL )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                 leptonDistributionExpansionTerm* const referenceTerm = NULL );
     virtual
-    ~leptonDistributionExpansionTerm()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~leptonDistributionExpansionTerm();
 
     leptonDistributionExpansionTerm const*
     getReferenceTerm()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     int
     getPowerOfEnergy()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     int
     getPowerOfLogarithm()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     getCoefficient()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setCoefficient( double const coefficientValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setCoefficient( double const coefficientValue );
     void
-    addToCoefficient( double const coefficientValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addToCoefficient( double const coefficientValue );
     void
-    normalizeCoefficient( double const normalizingFactor )
+    normalizeCoefficient( double const normalizingFactor );
     // this just multiplies coefficientValue by normalizingFactor.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual double
     evaluate( double const inputEnergy )
-    const
+    const;
     // this evaluates this term for the given input energy.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual double
     getArea( double startEnergy,
              double endEnergy )
-    const
+    const;
     // this gives the definite integral of the term from startEnergy to
     // endEnergy.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     int powerOfEnergy;
@@ -230,26 +234,23 @@ namespace LHC_FASER
   {
   public:
     leptonDistributionInverseTerm( double const coefficientValue,
-                  leptonDistributionExpansionTerm* const referenceTerm = NULL )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                 leptonDistributionExpansionTerm* const referenceTerm = NULL );
     virtual
-    ~leptonDistributionInverseTerm()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~leptonDistributionInverseTerm();
 
     virtual double
     evaluate( double const inputEnergy )
-    const
+    const;
     // this evaluates this term for the given input energy.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual double
     getArea( double startEnergy,
              double endEnergy )
-    const
+    const;
     // this gives the definite integral of the term from startEnergy to
     // endEnergy.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-  protected:
+
+  //protected:
     // nothing.
   };
 
@@ -257,26 +258,23 @@ namespace LHC_FASER
   {
   public:
     leptonDistributionConstantTerm( double const coefficientValue,
-                  leptonDistributionExpansionTerm* const referenceTerm = NULL )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                 leptonDistributionExpansionTerm* const referenceTerm = NULL );
     virtual
-    ~leptonDistributionConstantTerm()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~leptonDistributionConstantTerm();
 
     virtual double
     evaluate( double const inputEnergy )
-    const
+    const;
     // this evaluates this term for the given input energy.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual double
     getArea( double startEnergy,
              double endEnergy )
-    const
+    const;
     // this gives the definite integral of the term from startEnergy to
     // endEnergy.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-  protected:
+
+  //protected:
     // nothing.
   };
 
@@ -285,26 +283,23 @@ namespace LHC_FASER
   public:
     leptonDistributionPowerTerm( int const powerOfEnergy,
                                  double const coefficientValue,
-                  leptonDistributionExpansionTerm* const referenceTerm = NULL )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                 leptonDistributionExpansionTerm* const referenceTerm = NULL );
     virtual
-    ~leptonDistributionPowerTerm()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~leptonDistributionPowerTerm();
 
     virtual double
     evaluate( double const inputEnergy )
-    const
+    const;
     // this evaluates this term for the given input energy.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual double
     getArea( double startEnergy,
              double endEnergy )
-    const
+    const;
     // this gives the definite integral of the term from startEnergy to
     // endEnergy.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
-  protected:
+
+  //protected:
     // nothing.
   };
 
@@ -314,65 +309,52 @@ namespace LHC_FASER
   class segmentTermSet
   {
   public:
-    segmentTermSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~segmentTermSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    segmentTermSet();
+    ~segmentTermSet();
 
     double
     getSegmentStart()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setSegmentStart( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setSegmentStart( double const inputValue );
     double
     getSegmentEnd()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     void
-    setSegmentEnd( double const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setSegmentEnd( double const inputValue );
     void
     setSegmentRange( double const rangeStart,
-                     double const rangeEnd )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                     double const rangeEnd );
     std::vector< leptonDistributionExpansionTerm* > const*
     getTerms()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     int
     getNumberOfTerms()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     leptonDistributionExpansionTerm*
     addTerm( int const powerOfEnergy,
              int const powerOfLogarithm,
              leptonDistributionExpansionTerm* const referenceTerm = NULL,
              double const
-             coefficientValue = CppSLHA::CppSLHA_global::really_wrong_value )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+             coefficientValue = CppSLHA::CppSLHA_global::really_wrong_value );
     void
-    normalizeCoefficients( double const normalizingFactor )
+    normalizeCoefficients( double const normalizingFactor );
     // this goes through each term & gets it to multiply its coefficient
     // by normalizingFactor.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getCoefficient( int const powerOfEnergy,
                     int const powerOfLogarithm )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
     evaluate( double const inputEnergy )
-    const
+    const;
     // this evaluates the sum of the set of terms for the given input energy.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     double
     getArea()
-    const
+    const;
     // this evaluates the sum of the areas of the set of terms for the
     // segment's range.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
 
   protected:
     std::vector< leptonDistributionExpansionTerm* > segmentTerms;
@@ -394,11 +376,9 @@ namespace LHC_FASER
   class tauDecayCoefficient
   {
   public:
-    tauDecayCoefficient()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    tauDecayCoefficient();
     virtual
-    ~tauDecayCoefficient()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~tauDecayCoefficient();
 
     virtual double
     operator()( int const visibleProductEnergyPower
@@ -425,6 +405,7 @@ namespace LHC_FASER
     // nothing.
   };
 
+
   /* this functor returns the coefficient for the muon distribution which would
    * come from a left-handed tau lepton distribution of the given power of the
    * tau lepton's energy & power of logarithm thereof, for requested integer
@@ -435,11 +416,9 @@ namespace LHC_FASER
   class hardMuonFromTau : public tauDecayCoefficient
   {
   public:
-    hardMuonFromTau()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    hardMuonFromTau();
     virtual
-    ~hardMuonFromTau()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~hardMuonFromTau();
 
     virtual double
     operator()( int const visibleProductEnergyPower
@@ -455,14 +434,15 @@ namespace LHC_FASER
                 double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
                 bool const isInsideRange )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
+
 
   //protected:
     // nothing.
   };
 
-  /* this functor returns the coefficientValue for the muon distribution which would
+
+  /* this functor returns the coefficient for the muon distribution which would
    * come from a right-handed tau lepton distribution of the given power of the
    * tau lepton's energy & power of logarithm thereof, for requested integer
    * powers of the muon's energy or logarithm thereof, which also depends on
@@ -472,11 +452,9 @@ namespace LHC_FASER
   class softMuonFromTau : public tauDecayCoefficient
   {
   public:
-    softMuonFromTau()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    softMuonFromTau();
     virtual
-    ~softMuonFromTau()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~softMuonFromTau();
 
     virtual double
     operator()( int const visibleProductEnergyPower
@@ -492,14 +470,15 @@ namespace LHC_FASER
                 double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
                 bool const isInsideRange )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
+
 
   //protected:
     // nothing.
   };
 
-  /* this functor returns the coefficientValue for the pion distribution which would
+
+  /* this functor returns the coefficient for the pion distribution which would
    * come from a right-handed tau lepton distribution of the given power of the
    * tau lepton's energy & power of logarithm thereof, for requested integer
    * powers of the pion's energy or logarithm thereof, which also depends on
@@ -509,11 +488,9 @@ namespace LHC_FASER
   class hardPionFromTau : public tauDecayCoefficient
   {
   public:
-    hardPionFromTau()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    hardPionFromTau();
     virtual
-    ~hardPionFromTau()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~hardPionFromTau();
 
     virtual double
     operator()( int const visibleProductEnergyPower
@@ -529,14 +506,15 @@ namespace LHC_FASER
                 double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
                 bool const isInsideRange )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
+
 
   //protected:
     // nothing.
   };
 
-  /* this functor returns the coefficientValue for the pion distribution which would
+
+  /* this functor returns the coefficient for the pion distribution which would
    * come from a left-handed tau lepton distribution of the given power of the
    * tau lepton's energy & power of logarithm thereof, for requested integer
    * powers of the pion's energy or logarithm thereof, which also depends on
@@ -546,11 +524,9 @@ namespace LHC_FASER
   class softPionFromTau : public tauDecayCoefficient
   {
   public:
-    softPionFromTau()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    softPionFromTau();
     virtual
-    ~softPionFromTau()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~softPionFromTau();
 
     virtual double
     operator()( int const visibleProductEnergyPower
@@ -566,8 +542,8 @@ namespace LHC_FASER
                 double const tauMaxEnergy
          /* the maximum of the range of the tau lepton energies considered. */,
                 bool const isInsideRange )
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
+
 
   //protected:
     // nothing.
@@ -585,14 +561,11 @@ namespace LHC_FASER
   public:
     tauSegmentTriple( std::vector< segmentTermSet* >* segmentSetToPopulate,
                       segmentTermSet* referenceSegment,
-                      tauDecayCoefficient const* const tauDecay )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~tauSegmentTriple()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                      tauDecayCoefficient const* const tauDecay );
+    ~tauSegmentTriple();
 
     void
-    updateSegments()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    updateSegments();
 
   protected:
     segmentTermSet* referenceSegment;
@@ -601,6 +574,7 @@ namespace LHC_FASER
     tauDecayCoefficient const* const tauDecay;
   };
 
+
   /* this class is just an abstract base class for some polymorphic derived
    * classes. However, it does do most of the work, the derived classes just
    * set up the leptonDistributionExpansionTerm objects properly.
@@ -608,45 +582,39 @@ namespace LHC_FASER
   class leptonEnergyDistribution : public getsReadiedForNewPoint
   {
   public:
-    leptonEnergyDistribution( readierForNewPoint* const readier,
-                              CppSLHA::CppSLHA0 const* const spectrum,
+    leptonEnergyDistribution( readierForNewPoint* const readierPointer,
+                              CppSLHA::CppSLHA0 const* const spectrumPointer,
                      CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
-                   CppSLHA::particle_property_set const* const fourthParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                  CppSLHA::particle_property_set const* const fourthParticle );
     virtual
-    ~leptonEnergyDistribution()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~leptonEnergyDistribution();
 
     double
-    getMinimumEnergy()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getMinimumEnergy();
     double
-    getMaximumEnergy()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getMaximumEnergy();
     std::vector< segmentTermSet* >*
-    getSegments()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getSegments();
     std::vector< segmentTermSet* > const*
     inspectSegments()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
-    valueAt( double const inputEnergy )
+    valueAt( double const inputEnergy );
     // this returns the value of the distribution at the given value, with
     // arbitrary normalization (different for each distribution).
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+
 
   protected:
-    CppSLHA::CppSLHA0 const* spectrum;
+    CppSLHA::CppSLHA0 const* spectrumPointer;
     // this holds all the information about the MSSM point. care must be taken
     // to ensure that it has the appropriate BLOCKs for the distribution.
     double minimumEnergy;
     double maximumEnergy;
 
-    std::vector< segmentTermSet* > segments;
+    std::vector< segmentTermSet* > segmentSet;
 
     CppSLHA::particle_property_set const* const firstParticle;
     effectiveSquarkMassHolder* const effectiveSquarkMass;
@@ -680,19 +648,17 @@ namespace LHC_FASER
     double productionFrameEnergy;
 
     void
-    reset()
+    reset();
     // this updates the masses then calls calculate_coefficients().
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     virtual void
     calculateCoefficients()
     = 0;
     // this is overridden by functions which calculate & set the coefficients
     // of all the terms of the distribution.
     void
-    normalizeCoefficients()
+    normalizeCoefficients();
     // this goes through each segment & gets it to divide its terms'
-    // coefficients by normalization.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    // coefficients by normalizingDivisor.
   };
 
 
@@ -703,23 +669,21 @@ namespace LHC_FASER
   class visibleTauDecayProduct : public leptonEnergyDistribution
   {
   public:
-    visibleTauDecayProduct( readierForNewPoint* const readier,
+    visibleTauDecayProduct( readierForNewPoint* const readierPointer,
                             leptonEnergyDistribution* const tauDistribution,
-                            tauDecayCoefficient const* const tauDecay )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                            tauDecayCoefficient const* const tauDecay );
     virtual
-    ~visibleTauDecayProduct()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~visibleTauDecayProduct();
+
 
   protected:
     leptonEnergyDistribution* const tauDistribution;
     std::vector< tauSegmentTriple* > tauTriples;
 
     virtual void
-    calculateCoefficients()
+    calculateCoefficients();
     // this is overridden by functions which calculate & set the coefficients
     // of all the terms of the distribution.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
 
@@ -740,6 +704,7 @@ namespace LHC_FASER
   {
     return onShellSquark;
   }
+
 
 
   inline double
@@ -772,6 +737,7 @@ namespace LHC_FASER
       return false;
     }
   }
+
 
 
   inline double
@@ -997,7 +963,7 @@ namespace LHC_FASER
   segmentTermSet::getNumberOfTerms()
   const
   {
-    return (int)segmentTerms.size();
+    return (int)(segmentTerms.size());
   }
 
   inline void
@@ -1072,8 +1038,8 @@ namespace LHC_FASER
     }
     double returnValue( 0.0 );
     for( std::vector< segmentTermSet* >::const_iterator
-         summationIterator( segments.begin() );
-         segments.end() > summationIterator;
+         summationIterator( segmentSet.begin() );
+         segmentSet.end() > summationIterator;
          ++summationIterator )
     {
       returnValue += (*summationIterator)->evaluate( inputEnergy );
@@ -1104,33 +1070,33 @@ namespace LHC_FASER
   inline std::vector< segmentTermSet* >*
   leptonEnergyDistribution::getSegments()
   {
-    return &segments;
+    return &segmentSet;
   }
 
   inline std::vector< segmentTermSet* > const*
   leptonEnergyDistribution::inspectSegments()
   const
   {
-    return &segments;
+    return &segmentSet;
   }
 
   inline void
   leptonEnergyDistribution::normalizeCoefficients()
   // this goes through each segment & gets it to divide its terms' coefficients
-  // by normalization.
+  // by normalizingDivisor.
   {
     normalizingDivisor = 0.0;
     for( std::vector< segmentTermSet* >::iterator
-         segmentIterator( segments.begin() );
-         segments.end() > segmentIterator;
+         segmentIterator( segmentSet.begin() );
+         segmentSet.end() > segmentIterator;
          ++segmentIterator )
     {
       normalizingDivisor += (*segmentIterator)->getArea();
     }
     normalizingFactor = ( 1.0 / normalizingDivisor );
     for( std::vector< segmentTermSet* >::iterator
-         segmentIterator( segments.begin() );
-         segments.end() > segmentIterator;
+         segmentIterator( segmentSet.begin() );
+         segmentSet.end() > segmentIterator;
          ++segmentIterator )
     {
       (*segmentIterator)->normalizeCoefficients( normalizingFactor );
