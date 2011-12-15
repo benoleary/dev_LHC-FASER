@@ -26,30 +26,45 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
- *      LHC-FASER_lepton_distributions.hpp
- *      LHC-FASER_lepton_distributions.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -82,13 +97,13 @@ namespace LHC_FASER
   class electroweakCascadeSet
   {
   public:
-    electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
+    electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematicsTable,
                            particlePointer const coloredDecayer,
                            particlePointer const electroweakDecayer,
                            inputHandler const* const inputShortcut,
                 effectiveSquarkMassHolder* effectiveSquarkMassPointer = NULL );
     // this is the version for electroweakinos.
-    electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematics,
+    electroweakCascadeSet( leptonAcceptanceParameterSet* const kinematicsTable,
                            particlePointer const coloredDecayer,
                            particlePointer const electroweakDecayer,
                            particlePointer const lighterScolored,
@@ -152,13 +167,13 @@ namespace LHC_FASER
      */
 
   protected:
-    leptonAcceptanceParameterSet* const kinematics;
+    leptonAcceptanceParameterSet* const kinematicsTable;
     inputHandler const* const inputShortcut;
     particlePointer const coloredDecayer;
     particlePointer const electroweakDecayer;
     particlePointer const lighterScolored;
-    std::vector< electroweakCascade* > cascades;
-    electroweakCascade* currentCascade; // this is used for filling cascades.
+    std::vector< electroweakCascade* > cascadeSet;
+    electroweakCascade* currentCascade; // this is used for filling cascadeSet.
   };
 
 
@@ -328,8 +343,8 @@ namespace LHC_FASER
   {
     double returnValue( 0.0 );
     for( std::vector< electroweakCascade* >::iterator
-         cascadeIterator( cascades.begin() );
-         cascades.end() > cascadeIterator;
+         cascadeIterator( cascadeSet.begin() );
+         cascadeSet.end() > cascadeIterator;
          ++cascadeIterator )
     {
       returnValue += (*cascadeIterator)->getAcceptance( acceptanceCuts,
@@ -352,14 +367,14 @@ namespace LHC_FASER
    * coloredDecayer to electroweakDecayer - this is dealt with by the
    * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
    * are being considered for the signal).
-   * this function returns 0.0 if the cascades never result in an OSSF - OSDF
+   * this function returns 0.0 if the cascadeSet never result in an OSSF - OSDF
    * signal.
    */
   {
     double returnValue( 0.0 );
     for( std::vector< electroweakCascade* >::iterator
-         cascadeIterator( cascades.begin() );
-         cascades.end() > cascadeIterator;
+         cascadeIterator( cascadeSet.begin() );
+         cascadeSet.end() > cascadeIterator;
          ++cascadeIterator )
     {
       returnValue += (*cascadeIterator)->getOssfMinusOsdf( acceptanceCuts );

@@ -26,30 +26,45 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
- *      LHC-FASER_lepton_distributions.hpp
- *      LHC-FASER_lepton_distributions.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -64,7 +79,7 @@ namespace LHC_FASER
   /* this class reads in a file in the assumed format, stores it, & gives out
    * interpolated values. it was written with cross-sections in mind, with data
    * files in the format
-   * squark_mass gluino_mass cross-section newline
+   * squarkMass gluinoMass crossSection newline
    * or K-factors, in a similar format.
    */
   class squareGrid
@@ -75,8 +90,8 @@ namespace LHC_FASER
                 squareGrid const* const scalingGrid,
                 inputHandler const* const inputShortcut );
     /* this constructor reads in a grid file, assumed to be in the format
-     * x_coordinate y_coordinate value
-     * in ascending order, y_coordinate varying first
+     * xCoordinate yCoordinate value
+     * in ascending order, yCoordinate varying first
      * (e.g.
      * 200.0 200.0 123.4
      * 200.0 210.0 567.8
@@ -154,22 +169,18 @@ namespace LHC_FASER
     crossSectionTable( squareGrid const* const lookupTable,
                        signedParticleShortcutPair const* const scoloredPair,
                        double const flavorFactor,
-                       inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~crossSectionTable()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                       inputHandler const* const inputShortcut );
+    ~crossSectionTable();
 
     signedParticleShortcutPair const*
     getPair()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
-    getValue()
+    getValue();
     /* this checks to see if it needs to recalculate the value for this point,
      * & if so, it does, & if the point lies outside the grid, it takes the
      * value of the nearest point on the grid instead.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     inputHandler const* const inputShortcut;
@@ -195,60 +206,50 @@ namespace LHC_FASER
   public:
     crossSectionTableSet( std::string const* const gridDirectory,
                           int const beamEnergy,
-                          inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~crossSectionTableSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                          inputHandler const* const inputShortcut );
+    ~crossSectionTableSet();
 
     int
     getBeamEnergy()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     crossSectionTable*
-    getTable( signedParticleShortcutPair const* const requestedChannel )
+    getTable( signedParticleShortcutPair const* const requestedChannel );
     // this returns the crossSectionTable for the requested pair.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     inputHandler const* const inputShortcut;
     std::string const gridDirectory;
     int const beamEnergy;
-    std::vector< squareGrid* > grids;
+    std::vector< squareGrid* > gridSet;
     // this holds squareGrid instances with unique names.
-    std::vector< crossSectionTable* > tables;
+    std::vector< crossSectionTable* > tableSet;
     // this holds crossSectionTable instances with appropriate
     // signedParticleShortcutPair pointers.
 
     double
     prepareGridName( std::string* const gridName,
-                     signedParticleShortcutPair const* const scoloredPair )
+                     signedParticleShortcutPair const* const scoloredPair );
     // this returns the flavor factor for the requested pair while putting the
     // squareGrid's associated string in gridName.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
     squareGrid const*
-    getGrid( std::string const* const gridName )
+    getGrid( std::string const* const gridName );
     // this either finds the appropriate squareGrid in grids or makes a new
     // instance, stores it, & returns its pointer.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
   };
 
 
   class crossSectionHandler
   {
   public:
-    crossSectionHandler( inputHandler const* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~crossSectionHandler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    crossSectionHandler( inputHandler const* const inputShortcut );
+    ~crossSectionHandler();
 
     crossSectionTableSet*
-    getTableSet( int const beamEnergyInTev )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getTableSet( int const beamEnergyInTev );
     crossSectionTable*
     getTable( int const beamEnergyInTev,
-              signedParticleShortcutPair const* const requestedChannel )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+              signedParticleShortcutPair const* const requestedChannel );
 
   protected:
     inputHandler const* const inputShortcut;

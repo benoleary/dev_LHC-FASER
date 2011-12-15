@@ -26,24 +26,39 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
- *      LHC-FASER_lepton_distributions.hpp
- *      LHC-FASER_lepton_distributions.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
@@ -685,7 +700,8 @@ namespace LHC_FASER
       };
 
     }  // end of squarkByJetToCompoundType namespace
-
+    typedef squarkByJetToCompoundType::sdownType sdownByJetToCompound;
+    typedef squarkByJetToCompoundType::supType supByJetToCompound;
 
     /* this is derived class for compound fullCascades beginning with a
      * gluino or electroweakino, which decays to a jet, maybe a boson, & the
@@ -826,7 +842,9 @@ namespace LHC_FASER
     charginoToCompound;
 
   }
-
+  typedef
+  fullCascadeType::gluinoOrNeutralinoToCompound
+  compoundGluinoOrNeutralinoFullCascade;
 
   /* this class holds the possible cascades for a given scolored, as well as a
    * pointer to a std::list of the other fullCascadeSet instances, which get
@@ -997,8 +1015,7 @@ namespace LHC_FASER
 
 
       protected:
-        minimalAllocationVector<
-                        fullCascadeType::squarkByJetToCompoundType::sdownType >
+        minimalAllocationVector< fullCascadeType::sdownByJetToCompound >
         compoundByJetCascades;
 
         virtual void
@@ -1034,8 +1051,7 @@ namespace LHC_FASER
 
 
       protected:
-        minimalAllocationVector<
-                          fullCascadeType::squarkByJetToCompoundType::supType >
+        minimalAllocationVector< fullCascadeType::supByJetToCompound >
         compoundByJetCascades;
         std::list< int > twoSpecifiedDecayProductsList;
         particlePointer appropriateSdownForWDecay;
@@ -1112,8 +1128,7 @@ namespace LHC_FASER
       protected:
         std::vector< fullCascadeType::gluinoDirectlyToElectroweak* >
         directToEwinoCascades;
-        minimalAllocationVector<
-                                fullCascadeType::gluinoOrNeutralinoToCompound >
+        minimalAllocationVector< compoundGluinoOrNeutralinoFullCascade >
         compoundCascades;
 
         virtual void
@@ -1144,8 +1159,7 @@ namespace LHC_FASER
 
 
       protected:
-        minimalAllocationVector<
-                                fullCascadeType::gluinoOrNeutralinoToCompound >
+        minimalAllocationVector< compoundGluinoOrNeutralinoFullCascade >
         compoundCascades;
 
         virtual void
@@ -1507,8 +1521,8 @@ namespace LHC_FASER
 
     inline double
     squarkDirectlyToElectroweak::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                      acceptanceCutSet* const acceptanceCuts,
-                                              int const numberOfLeptonPairs )
+                                        acceptanceCutSet* const acceptanceCuts,
+                                                int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {
       if( 0 <= numberOfLeptonPairs )

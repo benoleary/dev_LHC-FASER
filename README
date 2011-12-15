@@ -28,28 +28,37 @@
  *      LHC-FASER.cpp
  *      LHC-FASER_base_electroweak_cascade_stuff.hpp
  *      LHC-FASER_base_electroweak_cascade_stuff.cpp
- *      LHC-FASER_base_lepton_distributions.hpp
- *      LHC-FASER_base_lepton_distributions.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
  *      LHC-FASER_cross-section_stuff.hpp
  *      LHC-FASER_cross-section_stuff.cpp
- *      LHC-FASER_derived_electroweak_cascade_stuff.hpp
- *      LHC-FASER_derived_electroweak_cascade_stuff.cpp
  *      LHC-FASER_derived_lepton_distributions.hpp
  *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
@@ -61,20 +70,111 @@
 
 /* Usage Instructions!
  * 
- * Currently LHC-FASER is in "not even beta" form. It gives results, but it
- * misses out on a few important channels, and has not been properly tested
- * against full simulations of many points yet. It also needs to be made
- * faster - I'm working on it! Anyway, in short, it is recommended that
- * nobody use it at all. :P  If you insist on using it, I would assume that
- * the uncertainty on any signal is up to a factor 2.
+ * Currently LHC-FASER is in alpha testing. The code performs the algorithm
+ * correctly, as far as tests have shown; however, the accuracy of the
+ * approximations used by the algorithm has not yet been studied.
  *
- * You should use the appropriate arguments in a LHC_FASER_UI constructor,
- * then use LHC_FASER_UI::add_signal(). Every time the input file changes,
- * LHC_FASER_UI::update_for_new_point() or
- * LHC_FASER_UI::update_for_updated_point() should be called before calculating
- * signals. A pointer to a signal (type LHC_FASER_UI::signal_handler*) is
- * obtained by LHC_FASER_UI::get_signal(), & this pointer can call
- * ->get_value() to return its value as a double. This pointer does not change
- * over the lifetime of the LHC_FASER_UI object, by the way.
+ * The intended usage of LHC-FASER is that an instance of the
+ * LHC_FASER::lhcFaser class is created (there are several options which can be
+ * set in the constructor, such as where to find the lookup grids and what unit
+ * of cross-section to use for the calculated event rates), then that the
+ * lhcFaser::addSignal( std::string const signalName ) function is called,
+ * perhaps several times.
+ * LHC_FASER::signalHandler pointers can be used to store the return value of
+ * lhcFaser::addSignal( std::string const signalName ) so that the rate
+ * calculated for this signal can be directly accessed. Otherwise, 
+ * lhcFaser::getSignal( std::string const signalName ) has to be used to find
+ * it again.
+ * After this initial setup, each time that the input file changes,
+ * lhcFaser::updateForNewSlha() should be called (or
+ * updateForUpdatedSpectrum(), if the lhcFaser is getting its information from
+ * an external CppSLHA object rather than reading in the SLHA file itself),
+ * which flags all cached values as needing to be recalculated. If this
+ * function is not called, no matter what happens to the SLHA file that
+ * originally provided the data, the lhcFaser object will continue to return
+ * cached values for the original input.
+ * Once the data file has been (re)read in, the LHC_FASER::signalHandler
+ * pointers can return the calculated event rates with
+ * signalHandler::getValue(), which returns a double.
+ *
+ * example code would be:
+ 
+// initial code stuff
+ 
+#include "/path/to/LHC-FASER/LHC-FASER.hpp" // remember to include the header!
+ 
+// more preamble
+ 
+// code...
+ 
+// somewhere in the main(...) function:
+LHC_FASER::lhcFaser
+exampleLhcFaser( "~/exampleWorkingDirectory/exampleSlhaFile.txt",
+                 "~/exampleWorkingDirectory/exampleAlternativeGridDirectory/",
+                 "pb" );
+ /* exampleLhcFaser now reads in ~/exampleWorkingDirectory/exampleSlhaFile.txt
+  * for its data, looks for its grids in
+  * ~/exampleWorkingDirectory/exampleAlternativeGridDirectory/, and returns its
+  * values in units of picobarns of cross-section.
+  */
+ LHC_FASER::signalHandler*
+ exampleRateForAtlas4j0l( exampleLhcFaser.addSignal( "Atlas4jMET0l7TeV" ) );
+ LHC_FASER::signalHandler*
+ exampleRateForAtlas3j1l( exampleLhcFaser.addSignal( "Atlas3jMET1l7TeV" ) );
+ /* exampleRateForAtlas4j0l is now a pointer to an LHC_FASER::signalHandler
+  * which calculates the rate of SUSY events which pass the Atlas 4-jet, MET,
+  * 0-lepton cuts based on the spectrum found in
+  * ~/exampleWorkingDirectory/exampleSlhaFile.txt when
+  * exampleRateForAtlas4j0l->getValue() is called.
+  * likewise exampleRateForAtlas3j1l is for the Atlas 3-jet, MET, 1-lepton cuts
+  * based on ~/exampleWorkingDirectory/exampleSlhaFile.txt
+  */
+  
+  // more code
+  
+  bool notYetFinished( true );
+  double exampleEventRateHolder;
+  double exampleCombinedRate;
+  for( int numberOfPointsStillToCheck( initialNumberOfPointsToCheck );
+       0 < numberOfPointsStillToCheck;
+      --numberOfPointsStillToCheck )
+  {
+    /* more code, which presumably modifies the contents of
+     * ~/exampleWorkingDirectory/exampleSlhaFile.txt, possibly by re-writing
+     * it, though it's not important how it changed, just that it changed.
+     */
+  
+    exampleLhcFaser.updateForNewSlha();
+    // exampleLhcFaser has now read in the new SLHA data.
+  
+    exampleEventRateHolder = exampleRateForAtlas4j0l->getValue();
+  
+    // code that does something based on the event rate now stored in
+    // exampleEventRateHolder
+  
+    exampleEventRateHolder = exampleRateForAtlas3j1l->getValue();
+  
+    // code that does something based on the event rate now stored in
+    // exampleEventRateHolder
+  
+    // more code
+    
+    /* oops, we forgot that we still need the Atlas 4-jet, MET, 0-lepton rate.
+     * luckily exampleRateForAtlas4j0l->getValue() doesn't re-calculate the
+     * value, taking up the CPU time again, since
+     * exampleLhcFaser.updateForNewSlha() has not been called since last we
+     * called exampleRateForAtlas4j0l->getValue(); it just returns the cached
+     * value.
+     */
+     exampleCombinedRate
+     = ( exampleEventRateHolder + exampleRateForAtlas4j0l->getValue() );
+  
+    // more code
+    
+  }
+  
+// more code
+  
+/* The example code above should demonstrate all the functions required for the
+ * intended normal use.
  */
-

@@ -26,30 +26,45 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
- *      LHC-FASER_lepton_distributions.hpp
- *      LHC-FASER_lepton_distributions.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -86,7 +101,7 @@ namespace LHC_FASER
     << std::endl
     << "debugging: squareGrid() finished, value at ( 200.0, 200.0 ) = "
     << valueAt( 200.0,
-                 200.0 );
+                200.0 );
     std::cout << std::endl;**/
   }
 
@@ -99,7 +114,7 @@ namespace LHC_FASER
   // this constructor uses the other constructor to make another squareGrid
   // with the scaling factors, which is then used to construct this instance.
   {
-    squareGrid* scalingGrid = NULL;
+    squareGrid* scalingGrid( NULL );
     if( !(scalingGridFileLocation.empty()) )
     {
       scalingGrid = new squareGrid( &scalingGridFileLocation,
@@ -119,13 +134,14 @@ namespace LHC_FASER
   {
     // delete all the vectors held as pointers by the vector of vectors:
     for( std::vector< std::vector< double >* >::iterator
-         deletionIterator = gridValues.begin();
+         deletionIterator( gridValues.begin() );
          gridValues.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
     }
   }
+
 
   void
   squareGrid::readIn( std::string const* const gridFileLocation,
@@ -325,7 +341,6 @@ namespace LHC_FASER
                 ( 0.5 * ( lowestXCoordinate + highestXCoordinate ) + 0.3 ) );
     std::cout << std::endl;**/
   }
-
 
   double
   squareGrid::valueAt( double const xCoordinate,
@@ -919,15 +934,15 @@ namespace LHC_FASER
   crossSectionTableSet::~crossSectionTableSet()
   {
     for( std::vector< squareGrid* >::iterator
-         deletionIterator( grids.begin() );
-         grids.end() > deletionIterator;
+         deletionIterator( gridSet.begin() );
+         gridSet.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
     }
     for( std::vector< crossSectionTable* >::iterator
-         deletionIterator( tables.begin() );
-         tables.end() > deletionIterator;
+         deletionIterator( tableSet.begin() );
+         tableSet.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -1355,8 +1370,8 @@ namespace LHC_FASER
     squareGrid* returnPointer( NULL );
     // this starts as NULL so that we know if it wasn't found among the
     // existing instances.
-    for( std::vector< squareGrid* >::iterator gridIterator( grids.begin() );
-         grids.end() > gridIterator;
+    for( std::vector< squareGrid* >::iterator gridIterator( gridSet.begin() );
+         gridSet.end() > gridIterator;
          ++gridIterator )
     {
       if( 0 == (*gridIterator)->getName()->compare( *gridName ) )
@@ -1364,7 +1379,7 @@ namespace LHC_FASER
       {
         returnPointer = *gridIterator;
         // note the table.
-        gridIterator = grids.end();
+        gridIterator = gridSet.end();
         // stop looking.
       }
     }
@@ -1436,7 +1451,7 @@ namespace LHC_FASER
         << "debugging: return_pointer = " << return_pointer;
         std::cout << std::endl;**/
 
-      grids.push_back( returnPointer );
+      gridSet.push_back( returnPointer );
     }
     // debugging:
     /**std::cout
@@ -1450,7 +1465,7 @@ namespace LHC_FASER
 
   crossSectionTable*
   crossSectionTableSet::getTable(
-                  signedParticleShortcutPair const* const requestedChannel )
+                     signedParticleShortcutPair const* const requestedChannel )
   // this returns the crossSectionTable for the requested pair.
   {
     // debugging:
@@ -1470,8 +1485,8 @@ namespace LHC_FASER
     // existing instances.
 
     for( std::vector< crossSectionTable* >::iterator
-         tableIterator( tables.begin() );
-         tables.end() > tableIterator;
+         tableIterator( tableSet.begin() );
+         tableSet.end() > tableIterator;
          ++tableIterator )
     {
       if( requestedChannel == (*tableIterator)->getPair() )
@@ -1479,13 +1494,13 @@ namespace LHC_FASER
       {
         // debugging:
         /**std::cout
-            << std::endl
-            << "found existing table.";
-            std::cout << std::endl;**/
+        << std::endl
+        << "found existing table.";
+        std::cout << std::endl;**/
 
         returnPointer = *tableIterator;
         // note the table to return.
-        tableIterator = tables.end();
+        tableIterator = tableSet.end();
         // stop looking.
       }
     }
@@ -1537,7 +1552,7 @@ namespace LHC_FASER
          * never calls any of the squareGrid's member functions.
          */
       }
-      tables.push_back( returnPointer );
+      tableSet.push_back( returnPointer );
     }
     return returnPointer;
   }

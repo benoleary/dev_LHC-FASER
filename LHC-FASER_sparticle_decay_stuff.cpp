@@ -87,84 +87,13 @@ namespace LHC_FASER
 
 
 
-  directDecayChecker::directDecayChecker(
-                                        particlePointer const decayingParticle,
-                                        particleVectorPointer const productSet,
-                                          readierForNewPoint* const readier ) :
-    getsReadiedForNewPoint( readier ),
-    decayingParticle( decayingParticle ),
-    productSet( productSet ),
-    decayerDoesDecayToAtLeastOneProduct( false )
-  {
-    // just an initialization list.
-  }
-
-  directDecayChecker::~directDecayChecker()
-  {
-    // does nothing.
-  }
-
-
-
-  decayCheckerHandler::decayCheckerHandler(
-                                          readierForNewPoint* const readier ) :
-    readier( readier )
-  {
-    // just an initialization list.
-  }
-
-  decayCheckerHandler::~decayCheckerHandler()
-  {
-    for( std::vector< directDecayChecker* >::iterator
-         deletionIterator = decayCheckers.begin();
-         decayCheckers.end() > deletionIterator;
-         ++deletionIterator )
-    {
-      delete *deletionIterator;
-    }
-  }
-
-
-  directDecayChecker*
-  decayCheckerHandler::getDecayChecker( particlePointer const decayingParticle,
-                                       particleVectorPointer const productSet )
-  {
-    directDecayChecker* returnPointer( NULL );
-    for( std::vector< directDecayChecker* >::const_iterator
-         checkerIterator = decayCheckers.begin();
-         decayCheckers.end() > checkerIterator;
-         ++checkerIterator )
-    {
-      if( ( decayingParticle == (*checkerIterator)->getDecayer() )
-          &&
-          ( productSet == (*checkerIterator)->getProducts() ) )
-        // if we find a perfect match...
-      {
-        returnPointer = *checkerIterator;
-        // return this exclusiveBrCalculator.
-        checkerIterator = decayCheckers.end();
-        // stop looking.
-      }
-    }
-    if( NULL == returnPointer )
-      // if we didn't find a pre-existing match...
-    {
-      returnPointer = addDecayChecker( decayingParticle,
-                                       productSet );
-      // add this calculator to the collection.
-    }
-    return returnPointer;
-  }
-
-
-
   exclusiveBrCalculator::exclusiveBrCalculator(
                                         particlePointer const decayingParticle,
                                          particlePointer const productParticle,
                                            bool const productIsNotAntiparticle,
                                    std::list< int > const* const exclusionList,
-                                          readierForNewPoint* const readier ) :
-    getsReadiedForNewPoint( readier ),
+                                   readierForNewPoint* const readierPointer ) :
+    getsReadiedForNewPoint( readierPointer ),
     decayingParticle( decayingParticle ),
     productParticle( productParticle ),
     exclusionList( exclusionList ),
@@ -189,14 +118,15 @@ namespace LHC_FASER
 
 
 
-  exclusiveBrHandler::exclusiveBrHandler( particleVectorPointer const sdowns,
-                                          particleVectorPointer const sups,
-                                          readierForNewPoint* const readier ) :
-    readier( readier )
+  exclusiveBrHandler::exclusiveBrHandler(
+                                        particleVectorPointer const sdownTypes,
+                                          particleVectorPointer const supTypes,
+                                   readierForNewPoint* const readierPointer ) :
+    readierPointer( readierPointer )
   {
     for( std::vector< particlePointer >::const_iterator
-         sdownIterator = sdowns->begin();
-         sdowns->end() > sdownIterator;
+         sdownIterator( sdownTypes->begin() );
+         sdownTypes->end() > sdownIterator;
          ++sdownIterator )
     {
       alwaysNeglectedDecays.push_back( new std::pair< int,
@@ -209,8 +139,8 @@ namespace LHC_FASER
                                            CppSLHA::PDG_code::chargino_two ) );
     }
     for( std::vector< particlePointer >::const_iterator
-         supIterator = sups->begin();
-         sups->end() > supIterator;
+         supIterator( supTypes->begin() );
+         supTypes->end() > supIterator;
          ++supIterator )
     {
       alwaysNeglectedDecays.push_back( new std::pair< int,
@@ -227,7 +157,7 @@ namespace LHC_FASER
   exclusiveBrHandler::~exclusiveBrHandler()
   {
     for( std::vector< exclusiveBrCalculator* >::iterator
-         deletionIterator = exclusiveBrs.begin();
+         deletionIterator( exclusiveBrs.begin() );
          exclusiveBrs.end() > deletionIterator;
          ++deletionIterator )
     {
@@ -235,11 +165,11 @@ namespace LHC_FASER
     }
     for( std::vector< std::pair< int,
                                  int >* >::iterator
-         deletion_iterator = alwaysNeglectedDecays.begin();
-         alwaysNeglectedDecays.end() > deletion_iterator;
-         ++deletion_iterator )
+         deletionIterator( alwaysNeglectedDecays.begin() );
+         alwaysNeglectedDecays.end() > deletionIterator;
+         ++deletionIterator )
     {
-      delete *deletion_iterator;
+      delete *deletionIterator;
     }
   }
 
@@ -263,7 +193,7 @@ namespace LHC_FASER
     bool notAlwaysNeglected( true );
     for( std::vector< std::pair< int,
                                  int >* >::iterator
-         neglectionIterator = alwaysNeglectedDecays.begin();
+         neglectionIterator( alwaysNeglectedDecays.begin() );
          alwaysNeglectedDecays.end() > neglectionIterator;
          ++neglectionIterator )
       // check whether this decay is always neglected because it cannot happen
@@ -282,7 +212,7 @@ namespace LHC_FASER
     if( notAlwaysNeglected )
     {
       for( std::vector< exclusiveBrCalculator* >::iterator
-           brIterator = exclusiveBrs.begin();
+           brIterator( exclusiveBrs.begin() );
            exclusiveBrs.end() > brIterator;
            ++brIterator )
       {
@@ -313,4 +243,5 @@ namespace LHC_FASER
     // NULL is returned. we should always check whether we got a NULL!
     return returnPointer;
   }
+
 }  // end of LHC_FASER namespace

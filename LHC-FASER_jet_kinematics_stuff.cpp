@@ -835,59 +835,59 @@ namespace LHC_FASER
     }
 
     // now we specify the various cases:
-    gridMatrixRow = gridsMatrix.getPointer( (int)gx );
-    gridMatrixElement = gridMatrixRow->getPointer( (int)gx );
+    gridMatrixRow = gridsMatrix.getPointer( (int)directGluino );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)directGluino );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &heavierThanGluinoSquarkMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)sx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)directSquark );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useSecondMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)gsx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gluinoToSquark );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useSecondMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)sgx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)squarkToGluino );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useSecondMass;
 
-    gridMatrixRow = gridsMatrix.getPointer( (int)sx );
-    gridMatrixElement = gridMatrixRow->getPointer( (int)gx );
+    gridMatrixRow = gridsMatrix.getPointer( (int)directSquark );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)directGluino );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useFirstMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)sx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)directSquark );
     gridMatrixElement->first = squarkAntisquarkGrid;
     gridMatrixElement->second = &useAverageMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)gsx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gluinoToSquark );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useAverageMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)sgx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)squarkToGluino );
     gridMatrixElement->first = squarkAntisquarkGrid;
     gridMatrixElement->second = &useFirstMass;
 
-    gridMatrixRow = gridsMatrix.getPointer( (int)gsx );
-    gridMatrixElement = gridMatrixRow->getPointer( (int)gx );
+    gridMatrixRow = gridsMatrix.getPointer( (int)gluinoToSquark );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)directGluino );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useFirstMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)sx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)directSquark );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useAverageMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)gsx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gluinoToSquark );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useAverageMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)sgx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)squarkToGluino );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useFirstMass;
 
-    gridMatrixRow = gridsMatrix.getPointer( (int)sgx );
-    gridMatrixElement = gridMatrixRow->getPointer( (int)gx );
+    gridMatrixRow = gridsMatrix.getPointer( (int)squarkToGluino );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)directGluino );
     gridMatrixElement->first = squarkGluinoGrid;
     gridMatrixElement->second = &useFirstMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)sx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)directSquark );
     gridMatrixElement->first = squarkAntisquarkGrid;
     gridMatrixElement->second = &useSecondMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)gsx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)gluinoToSquark );
     gridMatrixElement->first = gluinoGluinoGrid;
     gridMatrixElement->second = &useSecondMass;
-    gridMatrixElement = gridMatrixRow->getPointer( (int)sgx );
+    gridMatrixElement = gridMatrixRow->getPointer( (int)squarkToGluino );
     gridMatrixElement->first = squarkAntisquarkGrid;
     gridMatrixElement->second = &useAverageMass;
 
@@ -923,7 +923,7 @@ namespace LHC_FASER
       << "counts as gluinoToEwino";
       std::cout << std::endl;**/
 
-      typeToCountAs = gx;
+      typeToCountAs = directGluino;
       *squarkFromCascade = NULL;
     }
     else if( fullCascade::squarkToEwino
@@ -935,7 +935,7 @@ namespace LHC_FASER
       << "counts as squarkToEwino";
       std::cout << std::endl;**/
 
-      typeToCountAs = sx;
+      typeToCountAs = directSquark;
       *squarkFromCascade = givenCascade->getInitialSparticle();
     }
     else if( fullCascade::squarkToSquarkThenMore
@@ -947,7 +947,7 @@ namespace LHC_FASER
       << "counts as squarkToEwino";
       std::cout << std::endl;**/
 
-      typeToCountAs = sx;
+      typeToCountAs = directSquark;
       *squarkFromCascade = givenCascade->getCascadeDefiner()->at( 1 )->first;
     }
     else if( fullCascade::squarkToGauginoThenMore
@@ -956,7 +956,7 @@ namespace LHC_FASER
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "counts as sgx";
+      << "counts as squarkToGluino";
       std::cout << std::endl;**/
 
       // debugging:
@@ -979,7 +979,7 @@ namespace LHC_FASER
       }
       std::cout << std::endl;**/
 
-      typeToCountAs = sgx;
+      typeToCountAs = squarkToGluino;
       *squarkFromCascade = givenCascade->getInitialSparticle();
     }
     else
@@ -987,10 +987,10 @@ namespace LHC_FASER
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "counts as gsx";
+      << "counts as gluinoToSquark";
       std::cout << std::endl;**/
 
-      typeToCountAs = gsx;
+      typeToCountAs = gluinoToSquark;
       *squarkFromCascade = givenCascade->getCascadeDefiner()->at( 1 )->first;
     }
     // debugging:

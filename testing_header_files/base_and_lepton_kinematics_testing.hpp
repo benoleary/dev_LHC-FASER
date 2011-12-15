@@ -73,7 +73,7 @@
 
 #include "basic_testing_stuff.hpp"
 #include "input_testing.hpp"
-#include "BOL_useful_stuff/BOL_useful_stuff.hpp"
+//#include "BOL_useful_stuff/BOL_useful_stuff.hpp"
 #include "../LHC-FASER_lepton_kinematics_stuff.hpp"
 
 namespace LHC_FASER
@@ -227,7 +227,7 @@ namespace LHC_FASER
       << " testPseudorapidityAcceptance = " << testPseudorapidityAcceptance;
       std::cout << std::endl;
 
-      BOL::twoDimensionalDataPlotter*
+      /**BOL::twoDimensionalDataPlotter*
       testPlotter
       = new BOL::twoDimensionalDataPlotter( "/opt/local/bin/gnuplot",
                               "lepton_acceptance_from_SPS1a_sdownRS_neu2.eps");
@@ -248,7 +248,7 @@ namespace LHC_FASER
       std::cout
       << std::endl << "testPlotter->plotData() seems to have been successful.";
       std::cout << std::endl;
-      delete testPlotter;
+      delete testPlotter;**/
 
       leptonAcceptanceParameterSet
       testLeptonAcceptanceParameterSet( testInputHandler,

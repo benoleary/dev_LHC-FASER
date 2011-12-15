@@ -58,12 +58,12 @@
 namespace LHC_FASER
 {
   electroweakCascadeSet::electroweakCascadeSet(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                        inputHandler const* const inputShortcut,
                       effectiveSquarkMassHolder* effectiveSquarkMassPointer ) :
-    kinematics( kinematics ),
+    kinematicsTable( kinematicsTable ),
     inputShortcut( inputShortcut ),
     coloredDecayer( coloredDecayer ),
     electroweakDecayer( electroweakDecayer ),
@@ -74,7 +74,7 @@ namespace LHC_FASER
     {
       if( coloredDecayer == inputShortcut->getGluino() )
       {
-        effectiveSquarkMassPointer = kinematics;
+        effectiveSquarkMassPointer = kinematicsTable;
       }
       else
       {
@@ -87,59 +87,59 @@ namespace LHC_FASER
         == electroweakDecayer->get_PDG_code() )
     {
       currentCascade = new lightestNeutralinoCascade( inputShortcut );
-      cascades.push_back( currentCascade );
+      cascadeSet.push_back( currentCascade );
     }
     else if( inputShortcut->isIn( electroweakDecayer->get_PDG_code(),
                                   inputShortcut->getUnstableNeutralinos() ) )
     {
-      currentCascade = new neutralinoToSemuCascade( kinematics,
+      currentCascade = new neutralinoToSemuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
                                                 inputShortcut->getSelectronL(),
                                                     inputShortcut );
-      cascades.push_back( currentCascade );
-      currentCascade = new neutralinoToSemuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new neutralinoToSemuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
                                                 inputShortcut->getSelectronR(),
                                                     inputShortcut );
-      cascades.push_back( currentCascade );
-      currentCascade = new neutralinoToSemuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new neutralinoToSemuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
                                                     inputShortcut->getSmuonL(),
                                                     inputShortcut );
-      cascades.push_back( currentCascade );
-      currentCascade = new neutralinoToSemuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new neutralinoToSemuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
                                                     inputShortcut->getSmuonR(),
                                                     inputShortcut );
-      cascades.push_back( currentCascade );
-      currentCascade = new neutralinoToStauCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new neutralinoToStauCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
                                                    inputShortcut->getStauOne(),
                                                     inputShortcut );
-      cascades.push_back( currentCascade );
-      currentCascade = new neutralinoToStauCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new neutralinoToStauCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                     coloredDecayer,
                                                     electroweakDecayer,
                                                    inputShortcut->getStauTwo(),
                                                     inputShortcut );
-      cascades.push_back( currentCascade );
-      currentCascade = new neutralinoToZCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new neutralinoToZCascade( kinematicsTable,
                                                  effectiveSquarkMassPointer,
                                                  coloredDecayer,
                                                  electroweakDecayer,
                                                  inputShortcut );
-      cascades.push_back( currentCascade );
+      cascadeSet.push_back( currentCascade );
       for( std::vector< particlePointer >::const_iterator
            bosonIterator(
              inputShortcut->getNeutralEwsbScalarsAndPseudoscalars()->begin() );
@@ -147,150 +147,150 @@ namespace LHC_FASER
            > bosonIterator;
            ++bosonIterator )
       {
-        currentCascade = new neutralinoToHiggsCascade( kinematics,
+        currentCascade = new neutralinoToHiggsCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                        coloredDecayer,
                                                        electroweakDecayer,
                                                        *bosonIterator,
                                                        inputShortcut );
-        cascades.push_back( currentCascade );
+        cascadeSet.push_back( currentCascade );
       }
-      currentCascade = new neutralinoVirtualCascade( kinematics,
+      currentCascade = new neutralinoVirtualCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                      coloredDecayer,
                                                      electroweakDecayer,
                                                      inputShortcut );
-      cascades.push_back( currentCascade );
+      cascadeSet.push_back( currentCascade );
     }
     else if( inputShortcut->isIn( electroweakDecayer->get_PDG_code(),
                                   inputShortcut->getCharginos() ) )
     {
-      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
+      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                                 inputShortcut->getSelectronL(),
                                                           inputShortcut,
                                                           false );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                                 inputShortcut->getSelectronR(),
                                                           inputShortcut,
                                                           false );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                         inputShortcut->getElectronSneutrinoL(),
                                                           inputShortcut,
                                                           true );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                         inputShortcut->getElectronSneutrinoR(),
                                                           inputShortcut,
                                                           true );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                                     inputShortcut->getSmuonL(),
                                                           inputShortcut,
                                                           false );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                                     inputShortcut->getSmuonR(),
                                                           inputShortcut,
                                                           false );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                             inputShortcut->getMuonSneutrinoL(),
                                                           inputShortcut,
                                                           true );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToSemuOrEmuSnuCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                             inputShortcut->getMuonSneutrinoR(),
                                                           inputShortcut,
                                                           true );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToStauOrTauSnuCascade( kinematicsTable,
                                           effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                                    inputShortcut->getStauOne(),
                                                           inputShortcut,
                                                           false );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToStauOrTauSnuCascade( kinematicsTable,
                                           effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                                    inputShortcut->getStauTwo(),
                                                           inputShortcut,
                                                           false );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToStauOrTauSnuCascade( kinematicsTable,
                                           effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                              inputShortcut->getTauSneutrinoL(),
                                                           inputShortcut,
                                                           true );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToStauOrTauSnuCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToStauOrTauSnuCascade( kinematicsTable,
                                           effectiveSquarkMassPointer,
                                                           coloredDecayer,
                                                           electroweakDecayer,
                                              inputShortcut->getTauSneutrinoR(),
                                                           inputShortcut,
                                                           true );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToWCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToWCascade( kinematicsTable,
                                                effectiveSquarkMassPointer,
                                                coloredDecayer,
                                                electroweakDecayer,
                                                inputShortcut );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoToHiggsCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoToHiggsCascade( kinematicsTable,
                                                    effectiveSquarkMassPointer,
                                                    coloredDecayer,
                                                    electroweakDecayer,
                                          inputShortcut->getChargedEwsbScalar(),
                                                    inputShortcut );
-      cascades.push_back( currentCascade );
-      currentCascade = new charginoVirtualCascade( kinematics,
+      cascadeSet.push_back( currentCascade );
+      currentCascade = new charginoVirtualCascade( kinematicsTable,
                                                    effectiveSquarkMassPointer,
                                                    coloredDecayer,
                                                    electroweakDecayer,
                                                    inputShortcut );
-      cascades.push_back( currentCascade );
+      cascadeSet.push_back( currentCascade );
     }
   }
 
   electroweakCascadeSet::electroweakCascadeSet(
-                                leptonAcceptanceParameterSet* const kinematics,
+                           leptonAcceptanceParameterSet* const kinematicsTable,
                                           particlePointer const coloredDecayer,
                                       particlePointer const electroweakDecayer,
                                          particlePointer const lighterScolored,
                                        inputHandler const* const inputShortcut,
                       effectiveSquarkMassHolder* effectiveSquarkMassPointer ) :
-    kinematics( kinematics ),
+    kinematicsTable( kinematicsTable ),
     inputShortcut( inputShortcut ),
     coloredDecayer( coloredDecayer ),
     electroweakDecayer( electroweakDecayer ),
@@ -301,7 +301,7 @@ namespace LHC_FASER
     {
       if( coloredDecayer == inputShortcut->getGluino() )
       {
-        effectiveSquarkMassPointer = kinematics;
+        effectiveSquarkMassPointer = kinematicsTable;
       }
       else
       {
@@ -312,57 +312,57 @@ namespace LHC_FASER
 
     if( CppSLHA::PDG_code::W_plus == electroweakDecayer->get_PDG_code() )
     {
-      currentCascade = new scoloredToWPlusScoloredCascade( kinematics,
+      currentCascade = new scoloredToWPlusScoloredCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                            coloredDecayer,
                                                            electroweakDecayer,
                                                            lighterScolored,
                                                            inputShortcut );
-      cascades.push_back( currentCascade );
+      cascadeSet.push_back( currentCascade );
     }
     else if( CppSLHA::PDG_code::Z == electroweakDecayer->get_PDG_code() )
     {
-      currentCascade = new scoloredToZPlusScoloredCascade( kinematics,
+      currentCascade = new scoloredToZPlusScoloredCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                            coloredDecayer,
                                                            lighterScolored,
                                                            inputShortcut );
-      cascades.push_back( currentCascade );
+      cascadeSet.push_back( currentCascade );
     }
     else if( CppSLHA::PDG_code::charged_EWSB_scalar
              == electroweakDecayer->get_PDG_code() )
     {
-      currentCascade = new scoloredToHiggsPlusScoloredCascade( kinematics,
+      currentCascade = new scoloredToHiggsPlusScoloredCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                                coloredDecayer,
                                                                lighterScolored,
                                                             electroweakDecayer,
                                                                inputShortcut );
-      cascades.push_back( currentCascade );
+      cascadeSet.push_back( currentCascade );
     }
     else if( inputShortcut->isIn( electroweakDecayer->get_PDG_code(),
                      inputShortcut->getNeutralEwsbScalarsAndPseudoscalars() ) )
     {
-      currentCascade = new scoloredToHiggsPlusScoloredCascade( kinematics,
+      currentCascade = new scoloredToHiggsPlusScoloredCascade( kinematicsTable,
                                                     effectiveSquarkMassPointer,
                                                                coloredDecayer,
                                                                lighterScolored,
                                                             electroweakDecayer,
                                                                inputShortcut );
-      cascades.push_back( currentCascade );
+      cascadeSet.push_back( currentCascade );
     }
     // debugging:
     /**std::cout << std::endl << "debugging:"
     << std::endl
-    << "cascades.size() = " << cascades.size();
+    << "cascadeSet.size() = " << cascadeSet.size();
     std::cout << std::endl;**/
   }
 
   electroweakCascadeSet::~electroweakCascadeSet()
   {
     for( std::vector< electroweakCascade* >::iterator
-         deletionIterator = cascades.begin();
-         cascades.end() > deletionIterator;
+         deletionIterator( cascadeSet.begin() );
+         cascadeSet.end() > deletionIterator;
          ++deletionIterator )
     {
       delete *deletionIterator;
@@ -373,7 +373,7 @@ namespace LHC_FASER
 
   electroweakCascadesForOneBeamEnergy::electroweakCascadesForOneBeamEnergy(
                                leptonAcceptanceHandler* const kinematicsSource,
-                                                        int const beamEnergy,
+                                                          int const beamEnergy,
                                     inputHandler const* const inputShortcut ) :
     kinematicsTable( kinematicsSource->getLeptonAcceptancesForOneBeamEnergy(
                                                                 beamEnergy ) ),
@@ -443,7 +443,8 @@ namespace LHC_FASER
     {
       returnPointer
       = new electroweakCascadeSet( kinematicsTable->getParameterSets(
-                                             coloredDecayer )->getParameterSet(
+                                                                 coloredDecayer
+                                                            )->getParameterSet(
                                                           electroweakDecayer ),
                                    coloredDecayer,
                                    electroweakDecayer,

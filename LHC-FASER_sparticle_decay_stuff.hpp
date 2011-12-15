@@ -26,30 +26,45 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
- *      LHC-FASER_lepton_distributions.hpp
- *      LHC-FASER_lepton_distributions.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -73,104 +88,35 @@ namespace LHC_FASER
     signedParticleShortcutPair( particlePointer const firstParticlePointer,
                                 bool const firstIsNotAntiparticleFlag,
                                 particlePointer const secondParticlePointer,
-                                bool const secondIsNotAntiparticleFlag )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                bool const secondIsNotAntiparticleFlag );
     signedParticleShortcutPair(
-                           signedParticleShortcutPair const* const copySource )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~signedParticleShortcutPair()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                          signedParticleShortcutPair const* const copySource );
+    ~signedParticleShortcutPair();
 
     particlePointer
     getFirstParticle()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     bool
     firstIsNotAntiparticle()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getSecondParticle()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     bool
     secondIsNotAntiparticle()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
 
   protected:
     particlePointer firstParticlePointer;
     bool firstIsNotAntiparticleFlag;
     particlePointer secondParticlePointer;
     bool secondIsNotAntiparticleFlag;
-  };  // end of signedParticleShortcutPair class.
+  };
 
 
-  // this class just checks whether the given particle can decay directly to
-  // any of the particles in the given vector, or their antiparticles.
-  class directDecayChecker : public getsReadiedForNewPoint
-  {
-  public:
-    directDecayChecker( particlePointer const decayingParticle,
-                        particleVectorPointer const productSet,
-                        readierForNewPoint* const readier )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~directDecayChecker()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    particlePointer
-    getDecayer()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    particleVectorPointer
-    getProducts()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    bool
-    hasDirectDecay()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-    particlePointer decayingParticle;
-    particleVectorPointer productSet;
-    bool decayerDoesDecayToAtLeastOneProduct;
-
-    bool
-    checkForDecay()
-    // this checks the particles to see if the decay exists for this point.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-  };  // end of directDecayChecker class.
-
-
-  // this class holds a set of directDecayCheckers & passes out pointers to
-  // them.
-  class decayCheckerHandler
-  {
-  public:
-    decayCheckerHandler( readierForNewPoint* const readier )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~decayCheckerHandler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-    directDecayChecker*
-    getDecayChecker( particlePointer const decayingParticle,
-                     particleVectorPointer const productSet )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-
-  protected:
-    std::vector< directDecayChecker* > decayCheckers;
-    readierForNewPoint* readier;
-
-    directDecayChecker*
-    addDecayChecker( particlePointer const decayingParticle,
-                     particleVectorPointer const productSet  )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-  };  // end of decayCheckerHandler class.
-
-
-  /* this class calculates the branching ratio for the given decayingParticle into the
-   * given productParticle for all channels *excluding* those which also have any of
-   * the particles in the exclusion list.
+  /* this class calculates the branching ratio for the given decaying particle
+   * into the given product particle for all channels *excluding* those which
+   * also have any of the particles in the exclusion list.
    */
   class exclusiveBrCalculator : public getsReadiedForNewPoint
   {
@@ -179,26 +125,20 @@ namespace LHC_FASER
                            particlePointer const productParticle,
                            bool const productIsNotAntiparticle,
                            std::list< int > const* const exclusionList,
-                           readierForNewPoint* const readier )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~exclusiveBrCalculator()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                           readierForNewPoint* const readierPointer );
+    ~exclusiveBrCalculator();
 
     particlePointer
     getDecayer()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     particlePointer
     getProduct()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     std::list< int > const*
     getExcluded()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
-    getBr()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getBr();
 
   protected:
     particlePointer decayingParticle;
@@ -209,34 +149,29 @@ namespace LHC_FASER
 
     double
     calculateBranchingRatio()
-    const
+    const;
     // this calculates the branching ratio for this point.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-  };  // end of exclusiveBrCalculator class.
+  };
 
 
-  // this class holds a set of exclusiveBrs & passes out pointers to
-  // them.
+  // this class holds a set of exclusiveBrs & passes out pointers to them.
   class exclusiveBrHandler
   {
   public:
-    exclusiveBrHandler( particleVectorPointer const sdowns,
-                        particleVectorPointer const sups,
-                        readierForNewPoint* const readier )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~exclusiveBrHandler()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    exclusiveBrHandler( particleVectorPointer const sdownTypes,
+                        particleVectorPointer const supTypes,
+                        readierForNewPoint* const readierPointer );
+    ~exclusiveBrHandler();
 
     exclusiveBrCalculator*
     getBrCalculator( particlePointer const decayingParticle,
                      particlePointer const productParticle,
                      bool const productIsNotAntiparticle,
-                     std::list< int > const* const exclusionList )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                     std::list< int > const* const exclusionList );
 
   protected:
     std::vector< exclusiveBrCalculator* > exclusiveBrs;
-    readierForNewPoint* readier;
+    readierForNewPoint* readierPointer;
     std::vector< std::pair< int,
                             int >* > alwaysNeglectedDecays;
 
@@ -244,9 +179,8 @@ namespace LHC_FASER
     addBrCalculator( particlePointer const decayingParticle,
                      particlePointer const productParticle,
                      bool const productIsNotAntiparticle,
-                     std::list< int > const* const exclusionList )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-  };  // end of exclusiveBrHandler class.
+                     std::list< int > const* const exclusionList );
+  };
 
 
 
@@ -281,69 +215,6 @@ namespace LHC_FASER
   const
   {
     return secondIsNotAntiparticleFlag;
-  }
-
-
-
-  inline particlePointer
-  directDecayChecker::getDecayer()
-  const
-  {
-    return decayingParticle;
-  }
-
-  inline particleVectorPointer
-  directDecayChecker::getProducts()
-  const
-  {
-    return productSet;
-  }
-
-  inline bool
-  directDecayChecker::hasDirectDecay()
-  {
-    if( needsToPrepareForThisPoint() )
-    {
-      decayerDoesDecayToAtLeastOneProduct = checkForDecay();
-    }
-    return decayerDoesDecayToAtLeastOneProduct;
-  }
-
-  inline bool
-  directDecayChecker::checkForDecay()
-  // this checks the particles to see if the decay exists for this point.
-  {
-    bool returnBool( false );
-    // check each possible decay mode:
-    for( std::vector< particlePointer >::const_iterator
-         productIterator = productSet->begin();
-         productSet->end() > productIterator;
-         ++productIterator )
-      {
-        if( decayingParticle->get_absolute_mass()
-            > (*productIterator)->get_absolute_mass() )
-          // if the decayingParticle can decay into this productParticle...
-          {
-            // note that the decayingParticle decays to at least 1 of the productSet in
-            // productSet with a 2-body decay:
-            returnBool = true;
-            productIterator = productSet->end();
-            // stop searching.
-          }
-      }
-    return returnBool;
-  }
-
-
-
-  inline directDecayChecker*
-  decayCheckerHandler::addDecayChecker( particlePointer const decayingParticle,
-                                       particleVectorPointer const productSet )
-  {
-    decayCheckers.push_back( new directDecayChecker( decayingParticle,
-                                                     productSet,
-                                                     readier ) );
-    return decayCheckers.back();
   }
 
 
@@ -411,9 +282,10 @@ namespace LHC_FASER
                                                        productParticle,
                                                       productIsNotAntiparticle,
                                                        exclusionList,
-                                                       readier ) );
+                                                       readierPointer ) );
     return exclusiveBrs.back();
   }
+
 }  // end of LHC_FASER namespace
 
 

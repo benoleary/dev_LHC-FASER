@@ -26,32 +26,45 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
  *      LHC-FASER_base_lepton_distribution_stuff.hpp
  *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
  *      LHC-FASER_derived_lepton_distributions.hpp
  *      LHC-FASER_derived_lepton_distributions.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -75,11 +88,9 @@ namespace LHC_FASER
                      CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
-                    CppSLHA::particle_property_set const* const thirdParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                   CppSLHA::particle_property_set const* const thirdParticle );
     virtual
-    ~flatNearMuonPlusAntimuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~flatNearMuonPlusAntimuon();
 
   protected:
     segmentTermSet minToMaxSegment;
@@ -88,8 +99,7 @@ namespace LHC_FASER
     // the term constant with respect to inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -107,11 +117,9 @@ namespace LHC_FASER
                      CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
-                    CppSLHA::particle_property_set const* const thirdParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                   CppSLHA::particle_property_set const* const thirdParticle );
     virtual
-    ~sameChiralityNearMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~sameChiralityNearMuon();
 
   protected:
     segmentTermSet minToMaxSegment;
@@ -122,8 +130,7 @@ namespace LHC_FASER
     // the term linear in inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -141,11 +148,9 @@ namespace LHC_FASER
                      CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
-                    CppSLHA::particle_property_set const* const thirdParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                   CppSLHA::particle_property_set const* const thirdParticle );
     virtual
-    ~oppositeChiralityNearMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~oppositeChiralityNearMuon();
 
   protected:
     segmentTermSet minToMaxSegment;
@@ -156,8 +161,7 @@ namespace LHC_FASER
     // the term linear in inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -174,11 +178,9 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
-                   CppSLHA::particle_property_set const* const fourthParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                  CppSLHA::particle_property_set const* const fourthParticle );
     virtual
-    ~flatFarMuonPlusAntimuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~flatFarMuonPlusAntimuon();
 
   protected:
     double Elk;
@@ -204,8 +206,7 @@ namespace LHC_FASER
     // the term linear in the logarithm of inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -225,11 +226,9 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
-                   CppSLHA::particle_property_set const* const fourthParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                  CppSLHA::particle_property_set const* const fourthParticle );
     virtual
-    ~sameChiralityFarMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~sameChiralityFarMuon();
 
   protected:
     double Elk;
@@ -268,8 +267,7 @@ namespace LHC_FASER
     // the term linear in inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
   /* this derived class sets up the energy distribution for a light lepton
@@ -289,11 +287,9 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
-                   CppSLHA::particle_property_set const* const fourthParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                  CppSLHA::particle_property_set const* const fourthParticle );
     virtual
-    ~oppositeChiralityFarMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~oppositeChiralityFarMuon();
 
 
   protected:
@@ -333,8 +329,7 @@ namespace LHC_FASER
     // the term linear in inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
   /* the negatively- & positively-charged leptons from neutral EWSB scalar
@@ -356,11 +351,9 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
-                   CppSLHA::particle_property_set const* const fourthParticle )
-      /* code after the classes in this .hpp file, or in the .cpp file. */;
+                  CppSLHA::particle_property_set const* const fourthParticle );
       virtual
-      ~HiggsMuonPlusAntimuon()
-      /* code after the classes in this .hpp file, or in the .cpp file. */;
+      ~HiggsMuonPlusAntimuon();
 
   protected:
       double Elk;
@@ -386,8 +379,7 @@ namespace LHC_FASER
       // the term linear in the logarithm of inputEnergy in the above segment.
 
       void
-      calculateCoefficients()
-      /* code after the classes in this .hpp file, or in the .cpp file. */;
+      calculateCoefficients();
   };
 
   /* this derived class to act as a base class for both Z & W^- boson-based
@@ -404,11 +396,9 @@ namespace LHC_FASER
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
                     CppSLHA::particle_property_set const* const fourthParticle,
-                               bool const negativeMuonIsSameHandednessAsJet )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                               bool const negativeMuonIsSameHandednessAsJet );
     virtual
-    ~weakVectorBosonHandedMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~weakVectorBosonHandedMuon();
 
   protected:
     bool const negativeMuonIsSameHandednessAsJet;
@@ -561,32 +551,23 @@ namespace LHC_FASER
     // the term quadratic in inputEnergy in the above segment.
 
     void
-    calculateEnergiesAndFactors()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateEnergiesAndFactors();
     void
-    calculateVvPlusJjAaAllSqSymCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateVvPlusJjAaAllSqSymCoefficients();
     void
-    calculateTwiceVvAaSymCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateTwiceVvAaSymCoefficients();
     void
-    calculateVvSqMinusAaSqSymCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateVvSqMinusAaSqSymCoefficients();
     void
-    calculateVvPlusJjAaAllSqAntiCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateVvPlusJjAaAllSqAntiCoefficients();
     void
-    calculateVvSqPlusAaSqAntiCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateVvSqPlusAaSqAntiCoefficients();
     void
-    calculateVvSqMinusAaSqAntiCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateVvSqMinusAaSqAntiCoefficients();
     void
-    setCurrentCoefficientsAsTotals()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setCurrentCoefficientsAsTotals();
     void
-    addCurrentCoefficientsToTotals()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    addCurrentCoefficientsToTotals();
   };
 
 
@@ -609,11 +590,9 @@ namespace LHC_FASER
                  CppSLHA::particle_property_set const* const thirdParticle,
                  CppSLHA::particle_property_set const* const fourthParticle,
                  bool const negativeMuonIsSameHandednessAsJet,
-                 bool const shouldSumOverHandedness )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                 bool const shouldSumOverHandedness );
     virtual
-    ~zHandedMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~zHandedMuon();
 
   protected:
     bool const shouldNotSumOverHandedness;
@@ -622,12 +601,10 @@ namespace LHC_FASER
     bool couplesAsAxialNotVector;
 
     void
-    flipSignsOfCurrentCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    flipSignsOfCurrentCoefficients();
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
 
@@ -647,11 +624,9 @@ namespace LHC_FASER
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
                     CppSLHA::particle_property_set const* const fourthParticle,
-                      bool const jetIsLeftHanded )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                      bool const jetIsLeftHanded );
     virtual
-    ~wMinusHandedMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~wMinusHandedMuon();
 
   protected:
     int whichChargino;
@@ -689,12 +664,10 @@ namespace LHC_FASER
     // Jj * ( Vv^2 + Aa^2 ).
 
     void
-    scaleCurrentCoefficients( double const scalingFactor )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    scaleCurrentCoefficients( double const scalingFactor );
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
 
@@ -710,11 +683,9 @@ namespace LHC_FASER
               CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
-             CppSLHA::particle_property_set const* const thirdParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+             CppSLHA::particle_property_set const* const thirdParticle );
     virtual
-    ~vectorFromSquarkToMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~vectorFromSquarkToMuon();
 
   protected:
     // these are for ease of calculating the coefficients (referring to the
@@ -744,8 +715,7 @@ namespace LHC_FASER
     // the term quadratic in inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
 
@@ -761,11 +731,9 @@ namespace LHC_FASER
               CppSLHA::particle_property_set const* const firstParticle,
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
-             CppSLHA::particle_property_set const* const thirdParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+             CppSLHA::particle_property_set const* const thirdParticle );
     virtual
-    ~scalarFromSquarkToMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~scalarFromSquarkToMuon();
 
   protected:
     // these are for ease of calculating the coefficients (referring to the
@@ -789,8 +757,7 @@ namespace LHC_FASER
     // the term constant with respect to inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
   // averaging over both jets from the Z boson produces the same distribution
@@ -804,11 +771,9 @@ namespace LHC_FASER
                 effectiveSquarkMassHolder* const effectiveSquarkMass,
                 CppSLHA::particle_property_set const* const secondParticle,
                 CppSLHA::particle_property_set const* const thirdParticle,
-                CppSLHA::particle_property_set const* const fourthParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                CppSLHA::particle_property_set const* const fourthParticle );
     virtual
-    ~zDirectJet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~zDirectJet();
 
   //protected:
     // nothing.
@@ -825,11 +790,9 @@ namespace LHC_FASER
                      effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
-                   CppSLHA::particle_property_set const* const fourthParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                  CppSLHA::particle_property_set const* const fourthParticle );
     virtual
-    ~wMinusDirectJet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~wMinusDirectJet();
 
     //protected:
       // nothing.
@@ -868,11 +831,9 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
-                   CppSLHA::particle_property_set const* const fourthParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                  CppSLHA::particle_property_set const* const fourthParticle );
     virtual
-    ~negativelyChargedHiggsMuon()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~negativelyChargedHiggsMuon();
 
     //protected:
       // nothing.
@@ -894,11 +855,9 @@ namespace LHC_FASER
                           effectiveSquarkMassHolder* const effectiveSquarkMass,
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
-                   CppSLHA::particle_property_set const* const fourthParticle )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                  CppSLHA::particle_property_set const* const fourthParticle );
     virtual
-    ~negativelyChargedHiggsJet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~negativelyChargedHiggsJet();
 
     //protected:
       // nothing.
@@ -925,11 +884,9 @@ namespace LHC_FASER
                     CppSLHA::particle_property_set const* const secondParticle,
                      CppSLHA::particle_property_set const* const thirdParticle,
                       CppSLHA::particle_property_set const* const leftSfermion,
-                    CppSLHA::particle_property_set const* const rightSfermion )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                   CppSLHA::particle_property_set const* const rightSfermion );
     virtual
-    ~neutralinoThreeBodyDecay()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~neutralinoThreeBodyDecay();
 
   protected:
     CppSLHA::particle_property_set const* const leftSfermion;
@@ -941,8 +898,7 @@ namespace LHC_FASER
     // the term constant with respect to inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
   /* this needs to know the 2 sfermions which appear off-shell in the process.
@@ -966,11 +922,9 @@ namespace LHC_FASER
              CppSLHA::particle_property_set const* const leftUpIsospinSfermion,
             CppSLHA::particle_property_set const* const rightUpIsospinSfermion,
            CppSLHA::particle_property_set const* const leftDownIsospinSfermion,
-         CppSLHA::particle_property_set const* const rightDownIsospinSfermion )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+        CppSLHA::particle_property_set const* const rightDownIsospinSfermion );
     virtual
-    ~charginoThreeBodyDecay()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~charginoThreeBodyDecay();
 
   protected:
     CppSLHA::particle_property_set const* const leftUpIsospinSfermion;
@@ -984,8 +938,7 @@ namespace LHC_FASER
     // the term constant with respect to inputEnergy in the above segment.
 
     void
-    calculateCoefficients()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    calculateCoefficients();
   };
 
 

@@ -64,7 +64,7 @@
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -115,25 +115,22 @@ namespace LHC_FASER
   {
   public:
     /* constructor with specified CppSLHA & user-defined path to grids,
-     * whether returned event rates should be in nb, pb or fb& whether to use
+     * whether returned event rates should be in nb, pb or fb, & whether to use
      * LO or NLO:
      */
     lhcFaser( CppSLHA::CppSLHA0* const spectrumData,
               std::string const pathToGrids = "./grids/",
               std::string const crossSectionUnit = "fb",
-              bool const usingNlo = true )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+              bool const usingNlo = true );
     /* constructor with specified SLHA file & user-defined path to grids,
-     * whether returned event rates should be in nb, pb or fb& whether to use
+     * whether returned event rates should be in nb, pb or fb, & whether to use
      * LO or NLO:
      */
     lhcFaser( std::string const slhaFileName,
               std::string const pathToGrids = "./grids/",
               std::string const crossSectionUnit = "fb",
-              bool const usingNlo = true )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~lhcFaser()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+              bool const usingNlo = true );
+    ~lhcFaser();
 
     lhcFaser*
     overridePathToCrossSectionGrids(
@@ -152,35 +149,28 @@ namespace LHC_FASER
      */
 
     signalHandler*
-    addSignal( std::string const signalName )
+    addSignal( std::string const signalName );
     // this adds a new signal to the set of signals based on its name.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     signalHandler*
-    getSignal( std::string const signalName )
+    getSignal( std::string const signalName );
     // this returns the handler object for the requested signal name.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    updateForUpdatedSpectrum()
+    updateForUpdatedSpectrum();
     /* this assumes that the CppSLHA was updated & so sets each signal to be
      * recalculated next time its value is requested. I expect that I could do
      * this more elegantly with throwing exceptions, but I'll leave that for
      * another day.
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    updateForNewSlha()
+    updateForNewSlha();
     // this reads in the CppSLHA's target file & recalculates all required
     // signals.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    updateForNewSlha( std::string const slhaFileName )
+    updateForNewSlha( std::string const slhaFileName );
     // this reads in the new file & recalculates all required signals.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
     void
-    setVerbosity( bool const isVerbose )
-    {
-      inputSource->setVerbosity( isVerbose );
-    }
+    setVerbosity( bool const isVerbose );
+
 
   protected:
     CppSLHA::CppSLHA0* spectrumData;
@@ -225,9 +215,8 @@ namespace LHC_FASER
     initialize( CppSLHA::CppSLHA0* const spectrumData,
                 std::string const pathToGrids,
                 std::string const crossSectionUnit,
-                bool const usingNlo )
+                bool const usingNlo );
     // this is used by all the constructors to do most of the construction.
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   };  // end of lhcFaser class.
 
@@ -321,6 +310,12 @@ namespace LHC_FASER
   {
     spectrumData->read_file( slhaFileName );
     updateForUpdatedSpectrum();
+  }
+
+  inline void
+  lhcFaser::setVerbosity( bool const isVerbose )
+  {
+    inputSource->setVerbosity( isVerbose );
   }
 
 }  // end of LHC_FASER namespace.

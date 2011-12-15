@@ -26,30 +26,45 @@
  *      the files of LHC-FASER are:
  *      LHC-FASER.hpp
  *      LHC-FASER.cpp
- *      LHC-FASER_electroweak_cascade_stuff.hpp
- *      LHC-FASER_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_base_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_base_kinematics_stuff.hpp
+ *      LHC-FASER_base_kinematics_stuff.cpp
+ *      LHC-FASER_base_lepton_distribution_stuff.hpp
+ *      LHC-FASER_base_lepton_distribution_stuff.cpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_charged_electroweak_cascade_stuff.cpp
+ *      LHC-FASER_cross-section_stuff.hpp
+ *      LHC-FASER_cross-section_stuff.cpp
+ *      LHC-FASER_derived_lepton_distributions.hpp
+ *      LHC-FASER_derived_lepton_distributions.cpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.hpp
+ *      LHC-FASER_electroweak_cascade_collection_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER_global_stuff.hpp
  *      LHC-FASER_global_stuff.cpp
  *      LHC-FASER_input_handling_stuff.hpp
  *      LHC-FASER_input_handling_stuff.cpp
- *      LHC-FASER_kinematics_stuff.hpp
- *      LHC-FASER_kinematics_stuff.cpp
- *      LHC-FASER_lepton_distributions.hpp
- *      LHC-FASER_lepton_distributions.cpp
+ *      LHC-FASER_jet_kinematics_stuff.hpp
+ *      LHC-FASER_jet_kinematics_stuff.cpp
+ *      LHC-FASER_lepton_kinematics_stuff.hpp
+ *      LHC-FASER_lepton_kinematics_stuff.cpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.hpp
+ *      LHC-FASER_neutral_electroweak_cascade_stuff.cpp
  *      LHC-FASER_signal_calculator_stuff.hpp
  *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
  *      LHC-FASER_sparticle_decay_stuff.hpp
  *      LHC-FASER_sparticle_decay_stuff.cpp
+ *      LHC-FASER_template_classes.hpp
  *      and README.LHC-FASER.txt which describes the package.
  *
  *      LHC-FASER also requires CppSLHA. It should be found in a subdirectory
  *      included with this package.
  *
- *      LHC-FASER also requires grids of lookup acceptanceValues. These should also be
+ *      LHC-FASER also requires grids of lookup values. These should also be
  *      found in a subdirectory included with this package.
  */
 
@@ -65,8 +80,7 @@ namespace LHC_FASER
 {
   /* this class holds a pointer to an inputHandler instance along with
    * various pointers to cross-section, kinematics, & cascade handlers, for
-   * ease of reference. it also keeps an instance of the sQCD_to_EWino_handler
-   * class.
+   * ease of reference.
    */
   class signalShortcuts
   {
@@ -74,47 +88,34 @@ namespace LHC_FASER
     signalShortcuts( inputHandler const* const inputShortcuts,
                      crossSectionHandler* const crossSections,
                      jetPlusMetAcceptanceHandler* const jetPlusMetAcceptances,
-                     //leptonAcceptanceHandler* const leptonAcceptances,
-                     fullCascadeSetFactory* const cascadeSets )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~signalShortcuts()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                     fullCascadeSetFactory* const cascadeSets );
+    ~signalShortcuts();
 
     inputHandler const*
     getInputShortcuts()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     crossSectionHandler*
     getCrossSections()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     jetPlusMetAcceptanceHandler*
     getJetPlusMetAcceptances()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    //leptonAcceptanceHandler*
-    //getLeptonAcceptances()
-    //const
-    /* code after the classes in this .hpp file, or in the .cpp file. *///;
+    const;
     fullCascadeSetFactory*
     getCascadeSets()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
-    getUncertainty()
+    getUncertainty();
     /* this looks at the various mass differences in the hierarchy & then
      * guesses how uncertain the signal value is (as a multiplicative factor
      * > 1.0).
      */
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
 
   protected:
     inputHandler const* const inputShortcuts;
     crossSectionHandler* const crossSections;
     jetPlusMetAcceptanceHandler* const jetPlusMetAcceptances;
-    //leptonAcceptanceHandler* const leptonAcceptances;
     fullCascadeSetFactory* const cascadeSets;
-  };  // end of signalShortcuts class.
+  };
 
 
   /* this holds together the various doubles & pointers that store information
@@ -127,36 +128,26 @@ namespace LHC_FASER
   class signalDefinitionSet : public acceptanceCutSet
   {
   public:
-    signalDefinitionSet( signalShortcuts* const inputShortcut )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    signalDefinitionSet( signalDefinitionSet* const copySource )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    signalDefinitionSet( signalShortcuts* const inputShortcut );
+    signalDefinitionSet( signalDefinitionSet* const copySource );
     virtual
-    ~signalDefinitionSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    ~signalDefinitionSet();
 
     signalShortcuts*
-    getShortcuts()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getShortcuts();
     void
-    setBeamEnergy( int const inputValue )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setBeamEnergy( int const inputValue );
     crossSectionTableSet*
-    getCrossSections()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getCrossSections();
     jetAcceptanceTable*
-    getJetPlusMetAcceptance()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getJetPlusMetAcceptance();
     void
-    setJetPlusMetAcceptance( jetAcceptanceTable* const inputTable )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    setJetPlusMetAcceptance( jetAcceptanceTable* const inputTable );
     void
     setExcludedStandardModelProducts(
-                                  std::list< int > const* const exclusionList )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                                 std::list< int > const* const exclusionList );
     fullCascadeSetsForOneBeamEnergy*
-    getCascadeSets()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getCascadeSets();
 
   protected:
     signalShortcuts* const inputShortcut;
@@ -180,31 +171,25 @@ namespace LHC_FASER
   {
   public:
     productionChannelPointerSet( signalDefinitionSet* const signalDefinitions,
-                         signedParticleShortcutPair const* const scoloredPair )
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
-    ~productionChannelPointerSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+                        signedParticleShortcutPair const* const scoloredPair );
+    ~productionChannelPointerSet();
 
     signedParticleShortcutPair const*
     getScoloredPair()
-    const
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    const;
     double
-    getCrossSection()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getCrossSection();
     fullCascadeSet*
-    getFirstCascadeSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getFirstCascadeSet();
     fullCascadeSet*
-    getSecondCascadeSet()
-    /* code after the classes in this .hpp file, or in the .cpp file. */;
+    getSecondCascadeSet();
 
   protected:
     //signalShortcuts* const inputShortcut;
     crossSectionTable* crossSection;
     fullCascadeSet* firstCascadeSet;
     fullCascadeSet* secondCascadeSet;
-  };  // end of productionChannelPointerSet class.
+  };
 
 
 
@@ -233,13 +218,6 @@ namespace LHC_FASER
   {
     return jetPlusMetAcceptances;
   }
-
-  /*inline leptonAcceptanceHandler*
-  signalShortcuts::getLeptonAcceptances()
-  const
-  {
-    return leptonAcceptances;
-  }*/
 
   inline fullCascadeSetFactory*
   signalShortcuts::getCascadeSets()
