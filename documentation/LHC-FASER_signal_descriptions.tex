@@ -1,0 +1,260 @@
+\documentclass[article]
+\pdfoutput=1
+%\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage[mathscr]{eucal}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage{color}
+
+\newcommand{\eg}[0]{\textit{e.g.}\xspace}
+\newcommand{\ie}[0]{\textit{e.g.}\xspace}
+\newcommand{\sec}[1]{section~\ref{#1}\xspace}
+\newcommand{\faser}[0]{\texttt{LHC-FASER}\xspace}
+\newcommand{\cpp}[0]{\texttt{C$++$}\xspace}
+\newcommand{\lf}[1]{\texttt{LHC_FASER::#1}}
+\newcommand{\BOL}[1]{\color{blue}{\textbf{BOL:}#1}}
+\newcommand{\JL}[1]{\color{green}{\textbf{JL:}#1}}
+\newcommand{\CR}[1]{\color{red}{\textbf{CR:}#1}}
+
+%opening
+% ==============================================================================
+\title{Description Of The Signals Implemented In \faser}
+
+
+\author{
+Ben O'Leary${}^{1,a}$ \\
+${}^{1}$Institut f{\"{u}}r Theoretische Physik und Astrophysik,
+ Universit{\"{a}}t W{\"{u}}rzburg, \\
+${}^{a}$Email: \email{benjamin.oleary@gmail.com} \\
+}
+% 
+\abstract{
+In this document the various signals that are implemented in \faser
+ are described. The various approximations are also described, and possible
+ improvements are identified.
+ }
+
+\begin{document}
+\maketitle
+\tableofcontents
+% ==============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+The \cpp code \faser reads in a spectrum for the Minimal Supersymmetric Standard
+ Model (MSSM) from a file in the SUSY Les Houches Accords (SLHA) format and
+ returns approximate event rates for various signals. The code and accompanying
+ lookup tables were created by Michael Kr{\"{a}}mer, Jonas Lindert, Ben O'Leary,
+ and Carsten Robens.
+
+\section{\faser Flow}
+\label{sec:flow}
+
+There are two stages in the intended workflow of \faser: the setup stage, and
+ the calculation of rates for each point.
+
+\subsection{Setup stage}
+\label{subsec:setupflow}
+
+\begin{itemize}
+
+\item[1:] The \texttt{LHC-FASER.hpp} header file is included.
+
+\item[2:] An \lf{lhcFaser} object is constructed.
+
+\item[3:] The required signals are added by the
+          \lf{lhcFaser::addSignal( std::string const )} function. The given
+          string is interpretted by the \lf{lhcFaser} object as one of the
+          signals described in \sec{sec:signals}.
+          This function returns a pointer to the \lf{signalHandler} object which
+          calculates the event rate for this particular signal.
+          In adding the signal, certain objects are constructed and lookup grids
+          are loaded:
+
+  \begin{itemize}
+
+  \item[a:] If the cross-section grids for the production of the colored
+            sparticles at the signal's energy have not yet been loaded, they are
+            loaded.
+
+  \item[b:] If the objects responsible for working out the acceptances for the
+            various Standard Model (SM) particles that are produced by the
+            cascade decays of the colored sparticles at the signal's energy have
+            not yet been constructed, they are constructed.
+
+  \item[c:] If the jet and Missing Transverse Energy (MET) cut acceptance grids
+            for the signal's energy have not yet been loaded, they are loaded.
+
+  \end{itemize}
+
+          Signals share grids, and only one instance of any grid is loaded into
+          memory within a given \lf{lhcFaser} object.
+
+\end{itemize}
+
+
+\subsection{Workflow for a new point}
+\label{subsec:pointflow}
+
+Once the \lf{signalHandler} objects have been constructed, they are used to
+ calculate rates for different MSSM spectra as given in SLHA files. However,
+ since \faser is not responsible for the generation of the SLHA files, the
+ \lf{lhcFaser} object needs to be informed when to read in a new SLHA file.
+
+\begin{itemize}
+
+\item[1:] The \lf{lhcFaser} object is told to read in the SLHA file with its
+          \lf{lhcFaser::updateForNewSlha( std::string const )} function. The
+          string provides the name of the SLHA file. It does not matter if the
+          name of the SLHA file is different for the new point or not, though
+          the function may be used without an argument, and in this case the
+          last name used is used again.
+          When either version of this function is called, all the internal
+          objects that are used in the calculation of the rates erase their
+          cached values and prepare to re-calculate their values if required for
+          this new point.
+
+\item[2:] The \lf{signalHandler} pointers are then used to call their
+          \lf{signalHandler::getValue()} functions. These functions collect
+          various cached values from internal objects and combine them to obtain
+          a final approximate event rate. Each cached value is re-calculated the
+          first time it is sought after the \lf{lhcFaser} object performs its
+          \lf{lhcFaser::updateForNewSlha( std::string const )} function.
+          The flow of calculating the event rate is follows:
+
+  \begin{itemize}
+
+  \item[a:] Each pair of colored sparticles that can be directly produced is
+            iterated through, and the (cached) interpolated cross-section from
+            the appropriate grid is used to determine whether this channel is
+            worth calculating fully: if the cross-section is too low, the
+            subsequent cascades are not calculated.
+
+  \item[b:] If cross-section for a channel is significant, all the (cached)
+            possible yet non-negligible cascades for each of the sparticles are
+            considered.
+            This is to say that as the cascades are built from following direct
+            decays of sparticles, at each stage of the cascade, any decays of
+            the last sparticle in the cascade which result in a total branching
+            ratio that is below a threshold are ignored when building the next
+            stage of the cascade.
+
+  \item[c:] If branching ratios of the pair of cascades combined with the
+            cross-section of the channel, \ie the partial cross-section into
+            the final state defined by the cascades, is not below a threshold,
+            the (cached) acceptances for the appropriate numbers of leptons and
+            jets from the cascades are combined with the (cached) interpolated
+            value of the acceptance for the jet plus MET cut to obtain a final
+            value to be returned.
+
+  \end{itemize}
+
+\item[3:] Other signals from the same \lf{lhcFaser} object benefit from using
+          the cached values which are calculated for the new point when
+          requested by the first \lf{signalHandler} pointer's
+          \lf{signalHandler::getValue()} function. However, some cached values
+          may only be relevant to some signals, and they are only be calculated
+          when first required (in the context of a single SLHA file's data).
+
+\end{itemize}
+
+
+\section{\faser Signals}
+\label{sec:signals}
+
+The \faser signals are essentially a combination of which jet$+$MET cut set to
+ use with which combination of leptons to use.
+
+
+\subsection{Jet$+$MET cut sets}
+\label{subsec:jetPlusMetSets}
+
+\begin{itemize}
+
+\item[No cut:] No jet or MET cuts are set. The total cross-section is only
+               reduced by the lepton cuts.
+
+\item[CMS 2-jet:] The signal is multiplied by the acceptance for two hard jets
+                  with a cut on ${\alpha}_{T}$ as described by \BOL{Carsten,
+                  what's the reference?}. The leading jet has to have
+                  $p_{T} > $ \BOL{100?} GeV, the other $p_{T} > $ \BOL{80?} GeV.
+                  The MET comes indirectly from ${\alpha}_{T} > $ \BOL{0.55?}.
+
+\item[Atlas 3-jet:] The signal is multiplied by the acceptance for three hard
+                    jets plus MET with a cut on $M_{\text{eff}}$ as described by
+                    \BOL{Carsten, what's the reference?}. The leading jet has to
+                    have $p_{T} > $ \BOL{100?} GeV, the others
+                    $p_{T} > $ \BOL{40?} GeV. The MET must be $> $ \BOL{500?}
+                    GeV. Additionally, the $M_{\text{eff}}$ must be
+                    $> $ \BOL{500?} GeV. There are also cuts on the angular
+                    separation of the jets.
+
+\item[Atlas 4-jet:] As above for the Atlas 3-jet signal, but now \em{four} hard
+                    jets are required, again with
+                    $p_{T} > $ \BOL{100, 40, 40, 40?} GeV.
+
+\end{itemize}
+
+
+\subsection{Lepton cut sets}
+\label{subsec:leptonSets}
+
+Any combination of any number of any charge of either electrons or muons may be
+ specified, though only a single acceptance cut and a single vetoing cut may be
+ specified per signal. The acceptance and vetoing cuts are to say that for a
+ signal requiring $n$ positrons for example, only events with exactly
+ $n$ positrons with $p_{T} >$ acceptance cut \em{and} exactly zero positrons
+ with $p_{T} <$ acceptance cut but $>$ vetoing cut, and \em{any} number of
+ positrons with $p_{T} <$ vetoing cut are counted. For example, if the
+ acceptance cut is 20 GeV and the vetoing cut is 10 GeV, and exactly 1 lepton
+ of either charge and either flavor is required, an event with 1 ${\mu}^{+}$
+ with $p_{T} = 25$ GeV and no other leptons will count; an event with 1 $e^{-}$
+ with $p_{T} = 122$ GeV and 18 other leptons all with $p_{T} < 10$ GeV will
+ count; an event with 1 ${\mu}^{+}$ with $p_{T} = 15$ GeV and no other leptons
+ will not count; an event with 1 ${\mu}^{-}$ with $p_{T} = 32$ GeV,
+ 1 ${\mu}^{+}$ with $p_{T} = 12$ GeV and no other leptons will not count.
+
+However, the signals are restricted to a finite number of combinations of
+ jet$+$MET cuts with lepton cuts, so the current lepton cuts used are:
+\begin{itemize}
+
+\item[0:] Exactly zero leptons may pass the vetoing cut.
+
+\item[1:] Exactly one (${\mu}^{\pm}, e^{\pm}$) must pass the acceptance cut
+          and exactly zero further leptons may pass the vetoing cut.
+
+\item[OSSF-OSDF:] Exactly two leptons, both of the opposite electric
+                  charge \em{and} of the same flavor, must pass the acceptance
+                  cut and exactly zero further leptons may pass the vetoing cut.
+
+\item[same-sign dilepton:] Exactly two leptons, both of the same electric
+                           charge, must pass the acceptance cut and exactly zero
+                           further leptons may pass the vetoing cut.
+
+\end{itemize}
+
+
+\section{Approximations used}
+\label{sect:approximations}
+
+
+\section{Conclusions}
+\label{sect:conclusions}
+
+\begin{appendix}
+
+\section{Improvements still to come}
+\label{app:improvements}
+
+
+\end{appendix}
+
+\bibliography{LHCFASERbib}
+
+
+
+\end{document}
