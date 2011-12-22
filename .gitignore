@@ -1119,3 +1119,21 @@ Debug/LHC-FASER_charged_electroweak_cascade_stuff.o
 LHC-FASER_base_electroweak_cascade_stuff.cpp
 
 Debug/LHC-FASER_derived_lepton_distributions.o
+
+.DS_Store
+
+documentation/LHC-FASER_signal_descriptions.aux
+
+documentation/LHC-FASER_signal_descriptions.bbl
+
+documentation/LHC-FASER_signal_descriptions.blg
+
+documentation/LHC-FASER_signal_descriptions.dvi
+
+documentation/LHC-FASER_signal_descriptions.log
+
+documentation/LHC-FASER_signal_descriptions.ps
+
+documentation/LHC-FASER_signal_descriptions.toc
+
+.DS_Store

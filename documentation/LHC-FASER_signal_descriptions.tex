@@ -1,5 +1,5 @@
-\documentclass[article]
-\pdfoutput=1
+\documentclass[10pt]{article}
+%\pdfoutput=1
 %\usepackage[utf8x]{inputenc}
 \usepackage{graphicx}
 \usepackage{graphics}
@@ -9,34 +9,37 @@
 \usepackage{xspace}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{cite}
+
+\bibliographystyle{unsrt}
 
 \newcommand{\eg}[0]{\textit{e.g.}\xspace}
 \newcommand{\ie}[0]{\textit{e.g.}\xspace}
-\newcommand{\sec}[1]{section~\ref{#1}\xspace}
+\newcommand{\sect}[1]{section~\ref{#1}\xspace}
 \newcommand{\faser}[0]{\texttt{LHC-FASER}\xspace}
 \newcommand{\cpp}[0]{\texttt{C$++$}\xspace}
-\newcommand{\lf}[1]{\texttt{LHC_FASER::#1}}
-\newcommand{\BOL}[1]{\color{blue}{\textbf{BOL:}#1}}
-\newcommand{\JL}[1]{\color{green}{\textbf{JL:}#1}}
-\newcommand{\CR}[1]{\color{red}{\textbf{CR:}#1}}
+\newcommand{\lf}[1]{\texttt{LHC\_FASER::#1}}
+\newcommand{\BOL}[1]{{\color{blue}{\textbf{BOL:}#1}}}
+\newcommand{\JL}[1]{{\color{green}{\textbf{JL:}#1}}}
+\newcommand{\CR}[1]{{\color{red}{\textbf{CR:}#1}}}
 
 %opening
 % ==============================================================================
 \title{Description Of The Signals Implemented In \faser}
 
 
-\author{
-Ben O'Leary${}^{1,a}$ \\
-${}^{1}$Institut f{\"{u}}r Theoretische Physik und Astrophysik,
- Universit{\"{a}}t W{\"{u}}rzburg, \\
-${}^{a}$Email: \email{benjamin.oleary@gmail.com} \\
-}
+%\author{
+%Ben O'Leary${}^{1,a}$ \\
+%${}^{1}$Institut f{\"{u}}r Theoretische Physik und Astrophysik,
+% Universit{\"{a}}t W{\"{u}}rzburg, \\
+%${}^{a}$Email: \email{benjamin.oleary@gmail.com} \\
+%}
 % 
-\abstract{
-In this document the various signals that are implemented in \faser
- are described. The various approximations are also described, and possible
- improvements are identified.
- }
+%\abstract{
+%In this document the various signals that are implemented in \faser
+% are described. The various approximations are also described, and possible
+% improvements are identified.
+% }
 
 \begin{document}
 \maketitle
@@ -69,7 +72,7 @@ There are two stages in the intended workflow of \faser: the setup stage, and
 \item[3:] The required signals are added by the
           \lf{lhcFaser::addSignal( std::string const )} function. The given
           string is interpretted by the \lf{lhcFaser} object as one of the
-          signals described in \sec{sec:signals}.
+          signals described in \sect{sec:signals}.
           This function returns a pointer to the \lf{signalHandler} object which
           calculates the event rate for this particular signal.
           In adding the signal, certain objects are constructed and lookup grids
@@ -118,11 +121,11 @@ Once the \lf{signalHandler} objects have been constructed, they are used to
           cached values and prepare to re-calculate their values if required for
           this new point.
 
-\item[2:] The \lf{signalHandler} pointers are then used to call their
+\item[2:] The \lf{signalHandler} pointers are then used to call their\\
           \lf{signalHandler::getValue()} functions. These functions collect
           various cached values from internal objects and combine them to obtain
           a final approximate event rate. Each cached value is re-calculated the
-          first time it is sought after the \lf{lhcFaser} object performs its
+          first time it is sought after the \lf{lhcFaser} object performs its\\
           \lf{lhcFaser::updateForNewSlha( std::string const )} function.
           The flow of calculating the event rate is follows:
 
@@ -155,7 +158,7 @@ Once the \lf{signalHandler} objects have been constructed, they are used to
 
 \item[3:] Other signals from the same \lf{lhcFaser} object benefit from using
           the cached values which are calculated for the new point when
-          requested by the first \lf{signalHandler} pointer's
+          requested by the first \lf{signalHandler} pointer's\\
           \lf{signalHandler::getValue()} function. However, some cached values
           may only be relevant to some signals, and they are only be calculated
           when first required (in the context of a single SLHA file's data).
@@ -179,23 +182,25 @@ The \faser signals are essentially a combination of which jet$+$MET cut set to
                reduced by the lepton cuts.
 
 \item[CMS 2-jet:] The signal is multiplied by the acceptance for two hard jets
-                  with a cut on ${\alpha}_{T}$ as described by \BOL{Carsten,
-                  what's the reference?}. The leading jet has to have
-                  $p_{T} > $ \BOL{100?} GeV, the other $p_{T} > $ \BOL{80?} GeV.
-                  The MET comes indirectly from ${\alpha}_{T} > $ \BOL{0.55?}.
+                  with a cut on ${\alpha}_{T}$ as described by
+                  \cite{Khachatryan:2011tk}. The both jets have to have
+                  $p_{T} > 100$ GeV.
+                  The MET comes indirectly from ${\alpha}_{T} > 0.55$.
+                  If the event has more than two hard jets, they are clustered
+                  into two pseudo-jets according to the reference.
 
 \item[Atlas 3-jet:] The signal is multiplied by the acceptance for three hard
                     jets plus MET with a cut on $M_{\text{eff}}$ as described by
-                    \BOL{Carsten, what's the reference?}. The leading jet has to
-                    have $p_{T} > $ \BOL{100?} GeV, the others
-                    $p_{T} > $ \BOL{40?} GeV. The MET must be $> $ \BOL{500?}
-                    GeV. Additionally, the $M_{\text{eff}}$ must be
-                    $> $ \BOL{500?} GeV. There are also cuts on the angular
+                    \cite{ATLAS:1278474}. The leading jet has to
+                    have $p_{T} > 100$ GeV, the others
+                    $p_{T} > 40$ GeV. The MET must be $> 80 $ GeV and also
+                    $>0.25 M_{\text{eff}}$. There are also cuts on the angular
                     separation of the jets.
 
-\item[Atlas 4-jet:] As above for the Atlas 3-jet signal, but now \em{four} hard
-                    jets are required, again with
-                    $p_{T} > $ \BOL{100, 40, 40, 40?} GeV.
+\item[Atlas 4-jet:] As above for the Atlas 3-jet signal, but now {\em{four}} hard
+                    jets are required, again with $p_{T} > 100, 40, 40, 40$ GeV.
+                    Also, the MET is now required to be only
+                    $> 0.2 M_{\text{eff}}$ in addition to $> 80 $ GeV.
 
 \end{itemize}
 
@@ -207,8 +212,8 @@ Any combination of any number of any charge of either electrons or muons may be
  specified, though only a single acceptance cut and a single vetoing cut may be
  specified per signal. The acceptance and vetoing cuts are to say that for a
  signal requiring $n$ positrons for example, only events with exactly
- $n$ positrons with $p_{T} >$ acceptance cut \em{and} exactly zero positrons
- with $p_{T} <$ acceptance cut but $>$ vetoing cut, and \em{any} number of
+ $n$ positrons with $p_{T} >$ acceptance cut {\em{and}} exactly zero positrons
+ with $p_{T} <$ acceptance cut but $>$ vetoing cut, and {\em{any}} number of
  positrons with $p_{T} <$ vetoing cut are counted. For example, if the
  acceptance cut is 20 GeV and the vetoing cut is 10 GeV, and exactly 1 lepton
  of either charge and either flavor is required, an event with 1 ${\mu}^{+}$
@@ -228,8 +233,10 @@ However, the signals are restricted to a finite number of combinations of
           and exactly zero further leptons may pass the vetoing cut.
 
 \item[OSSF-OSDF:] Exactly two leptons, both of the opposite electric
-                  charge \em{and} of the same flavor, must pass the acceptance
-                  cut and exactly zero further leptons may pass the vetoing cut.
+                  charge, must pass the acceptance cut and exactly zero further
+                  leptons may pass the vetoing cut. The total with different
+                  flavor (OSDF) is subtracted from the total with same flavor
+                  (OSSF).
 
 \item[same-sign dilepton:] Exactly two leptons, both of the same electric
                            charge, must pass the acceptance cut and exactly zero
@@ -238,12 +245,58 @@ However, the signals are restricted to a finite number of combinations of
 \end{itemize}
 
 
+\subsection{Currently-implemented signals}
+\label{subsec:currentSignals}
+
+\begin{itemize}
+
+\item[Atlas4jMET0l:] Atlas 4-jet cut $+$ 0-lepton cut;
+                     reference \cite{ATLAS:1278474}
+
+\item[Atlas3jMET1l:] Atlas 3-jet cut $+$ 1-lepton cut;
+                     reference \cite{ATLAS:1278474}
+
+\item[sameSignDilepton:] generic same-sign dilepton cut with a 20 GeV cut for
+                         both acceptance and vetoing, no jet or MET cut;
+                         based on a paper I cannot find any more, probably
+                         should change it to be similar to reference
+                         \cite{Chatrchyan:2011wba}, or maybe that can become
+                         ``CMSsamesigndilepton''.
+
+\end{itemize}
+
+
+\subsection{Soon-to-be-implemented signals}
+\label{subsec:soonSignals}
+
+\begin{itemize}
+
+\item[Atlas4jMET1l:] Atlas 4-jet cut $+$ 1-lepton cut.
+
+\item[Atlas4jMETOSSFOSDF:] Atlas 4-jet cut $+$ OSSF-OSDF cut.
+
+\item[Atlas3jMET0l:] Atlas 3-jet cut $+$ 0-lepton cut.
+
+\item[Atlas3jMETOSSFOSDF:] Atlas 3-jet cut $+$ OSSF-OSDF cut.
+
+\item[CMS2jMETanyl:] CMS 2-jet cut with no lepton cut.
+
+\item[CMS2jMETOSSFOSDF:] CMS 2-jet cut $+$ OSSF-OSDF cut.
+
+\item[CMSsamesigndilepton:] reference \cite{Chatrchyan:2011wba}.
+
+\end{itemize}
+
+
 \section{Approximations used}
-\label{sect:approximations}
+\label{sec:approximations}
+
+I should get around to writing this soon.
 
 
 \section{Conclusions}
-\label{sect:conclusions}
+\label{sec:conclusions}
+
 
 \begin{appendix}
 
@@ -253,7 +306,7 @@ However, the signals are restricted to a finite number of combinations of
 
 \end{appendix}
 
-\bibliography{LHCFASERbib}
+\bibliography{BOLbib}
 
 
 
