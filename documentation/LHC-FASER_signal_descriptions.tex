@@ -181,26 +181,31 @@ The \faser signals are essentially a combination of which jet$+$MET cut set to
 \item[No cut:] No jet or MET cuts are set. The total cross-section is only
                reduced by the lepton cuts.
 
-\item[CMS 2-jet:] The signal is multiplied by the acceptance for two hard jets
-                  with a cut on ${\alpha}_{T}$ as described by
+\item[CMS 2-jet:] The signal is multiplied by the acceptance for at least two
+                  hard jets with a cut on ${\alpha}_{T}$ as described by
                   \cite{Khachatryan:2011tk}. The both jets have to have
                   $p_{T} > 100$ GeV.
                   The MET comes indirectly from ${\alpha}_{T} > 0.55$.
-                  If the event has more than two hard jets, they are clustered
+                  If the event has more than two hard jets (any jets with
+                  $p_{T} > 50$ GeV are counted), they are clustered
                   into two pseudo-jets according to the reference.
 
 \item[Atlas 3-jet:] The signal is multiplied by the acceptance for three hard
                     jets plus MET with a cut on $M_{\text{eff}}$ as described by
                     \cite{ATLAS:1278474}. The leading jet has to
-                    have $p_{T} > 100$ GeV, the others
-                    $p_{T} > 40$ GeV. The MET must be $> 80 $ GeV and also
+                    have $p_{T} > 120$ GeV, the others
+                    $p_{T} > 40$ GeV. The MET must be $> 100 $ GeV and also
                     $>0.25 M_{\text{eff}}$. There are also cuts on the angular
                     separation of the jets.
+                    This is not quite what is described in \cite{ATLAS:1278474}.
 
-\item[Atlas 4-jet:] As above for the Atlas 3-jet signal, but now {\em{four}} hard
-                    jets are required, again with $p_{T} > 100, 40, 40, 40$ GeV.
-                    Also, the MET is now required to be only
-                    $> 0.2 M_{\text{eff}}$ in addition to $> 80 $ GeV.
+\item[Atlas 4-jet:] As above for the Atlas 3-jet signal, but now {\em{four}}
+                    hard jets are required, again with
+                    $p_{T} > 120, 40, 40, 40$ GeV. Also, the MET is now required
+                    to be only $> 0.2 M_{\text{eff}}$ in addition to
+                    $> 100 $ GeV. Again,
+                    this is not quite what is described in \cite{ATLAS:1278474}.
+
 
 \end{itemize}
 
