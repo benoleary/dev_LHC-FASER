@@ -1141,3 +1141,7 @@ documentation/LHC-FASER_signal_descriptions.toc
 documentation/LHC-FASER_signal_descriptions.tex
 
 .DS_Store
+
+Debug/LHC-FASER.o
+
+Debug/LHC-FASER.o

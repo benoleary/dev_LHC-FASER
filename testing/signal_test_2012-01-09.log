@@ -1,0 +1,306 @@
+
+error! this program requires an integer as its argument, as the number of times to re-calculate all the points. defaulting to 10.
+
+CppSLHA::read_file() (using "SPS1a_spectrum.out") has been called
+
+testSignalShortcutsPointer->getUncertainty() = 1.3
+
+signalShortcuts class seems to be OK.
+
+testSignalDefinitionSetPointer->getBeamEnergy() = -1
+
+signalDefinitionSet class seems to be OK.
+
+testProductionChannelPointerSet->getCrossSection() = 0.348692
+
+deleted testProductionChannelPointerSet without problem.
+
+gluinoWithSdownLPointerSet.getCrossSection() = 0.348692
+
+sbottomOneWithGluinoPointerSet.getCrossSection() = 0
+
+gluinoPairPointerSet.getCrossSection() = 0.365999
+
+sbottomTwoWithAntisbottomTwoPointerSet.getCrossSection() = 0.0172775
+
+sdownLWithSdownLPointerSet.getCrossSection() = 0.0566551
+
+productionChannelPointerSet class seems to be OK.
+
+testReallyWrongCalculator->calculateValue( 0x7fff5fbff188, 0x7fff5fbff180 ) = 0
+now signalValue = nan, uncertaintyFactor = nan
+
+
+reallyWrongCalculator class seems to be OK.
+
+channel: gluino + gluino
+BR total: 0.998076
+
+channel: down_squark_L + gluino
+BR total: 0.999038
+
+channel: down_squark_L + down_antisquark_L
+BR total: 1
+
+channel: down_squark_L + down_squark_L
+BR total: 1
+
+channel: down_squark_R + gluino
+BR total: 0.999032
+
+channel: down_squark_R + down_antisquark_R
+BR total: 0.999989
+
+channel: down_squark_R + down_squark_R
+BR total: 0.999989
+
+channel: up_squark_L + gluino
+BR total: 0.999038
+
+channel: up_squark_L + up_antisquark_L
+BR total: 1
+
+channel: up_squark_L + up_squark_L
+BR total: 1
+
+channel: up_squark_R + gluino
+BR total: 0.999037
+
+channel: up_squark_R + up_antisquark_R
+BR total: 1
+
+channel: up_squark_R + up_squark_R
+BR total: 1
+
+channel: strange_squark_L + strange_antisquark_L
+BR total: 1
+
+channel: strange_squark_R + strange_antisquark_R
+BR total: 0.999998
+
+channel: charm_squark_L + charm_antisquark_L
+BR total: 1
+
+channel: charm_squark_R + charm_antisquark_R
+BR total: 1
+
+channel: bottom_squark_one + bottom_antisquark_one
+BR total: 0.999999
+
+channel: bottom_squark_two + bottom_antisquark_two
+BR total: 0.999997
+
+channel: top_squark_one + top_antisquark_one
+BR total: 0.999991
+
+channel: top_squark_two + top_antisquark_two
+BR total: 0.999998
+
+channel: down_squark_L + down_antisquark_R
+BR total: 0.999995
+
+channel: down_squark_R + down_antisquark_L
+BR total: 0.999995
+
+channel: down_squark_L + up_antisquark_R
+BR total: 1
+
+channel: down_squark_R + up_antisquark_L
+BR total: 0.999995
+
+channel: up_squark_L + down_antisquark_R
+BR total: 0.999995
+
+channel: up_squark_R + down_antisquark_L
+BR total: 1
+
+channel: up_squark_L + up_antisquark_R
+BR total: 1
+
+channel: up_squark_R + up_antisquark_L
+BR total: 1
+
+channel: down_squark_L + up_squark_L
+BR total: 1
+
+channel: down_squark_R + up_squark_R
+BR total: 0.999995
+
+SPS1a: testSignalHandlerPointer->getValue() (in *fb*) = 4728.12
+
+sigmaBreakdownTest seems OK.
+
+debugging:
+atlasFourJetMetNLeptons::getCalculator( _0l_07TeV, ... ) called.
+
+debugging:
+atlasFourJetMetNLeptons constructing with primary lepton cut = 10, secondary lepton cut = 10, numberOfLeptons = 0
+
+SPS1a: testAtlasFourJetMetZeroLepton.getValue() (in *pb*) = 0.754032
+
+atlasFourJetMetZeroLepton seems OK.
+
+debugging:
+atlasFourJetMetNLeptons::getCalculator( _0l_07TeV_pTl50.0GeV, ... ) called.
+
+debugging:
+atlasFourJetMetNLeptons constructing with primary lepton cut = 50, secondary lepton cut = 50, numberOfLeptons = 0
+
+SPS1a: testAtlasFourJetMetZeroLeptonHighCut.getValue() (in *pb*) = 0.9188
+
+atlasFourJetMetZeroLepton seems OK.
+
+debugging:
+atlasThreeJetMetNLeptons::getCalculator( _1l_07TeV, ... ) called.
+
+debugging:
+atlasThreeJetMetNLeptons constructing with primary lepton cut = 20, secondary lepton cut = 10, numberOfLeptons = 1
+
+SPS1a: testAtlasThreeJetMetOneLepton.getValue() (in *pb*) = 0.169433
+
+atlasThreeJetMetOneLepton seems OK.
+
+debugging:
+atlasThreeJetMetNLeptons::getCalculator( _1l_07TeV_pTl60.8GeV_pTl18.5GeV, ... ) called.
+
+debugging:
+atlasThreeJetMetNLeptons constructing with primary lepton cut = 60.8, secondary lepton cut = 18.5, numberOfLeptons = 1
+
+SPS1a: testAtlasThreeJetMetOneLeptonHighCuts.getValue() (in *pb*) = 0.0425658
+
+atlasThreeJetMetOneLeptonHighCuts seems OK.
+
+SPS1a: testSameSignDilepton.getValue() (in *pb*) = 0.0104702
+
+sameSignDilepton seems OK.
+
+changing spectrum.
+
+CppSLHA::read_file() (using "SPS2_spectrum.out") has been called
+
+channel: gluino + gluino
+BR total: 0.291154
+
+channel: down_squark_L + gluino
+BR total: 0.355253
+
+channel: down_squark_R + gluino
+BR total: 0.295277
+
+channel: up_squark_L + gluino
+BR total: 0.355674
+
+channel: up_squark_R + gluino
+BR total: 0.306947
+
+SPS2: testSigmaBreakdownTest.getValue() (in *fb*) = 18.5852
+
+again sigmaBreakdownTest seems OK.
+
+SPS2: testAtlasFourJetMetZeroLepton.getValue() (in *pb*) = 0.00146287
+
+atlasFourJetMetZeroLepton seems OK.
+
+SPS2: testAtlasFourJetMetZeroLeptonHighCut.getValue() (in *pb*) = 0.00176472
+
+atlasFourJetMetZeroLepton seems OK.
+
+SPS2: testAtlasThreeJetMetOneLepton.getValue() (in *pb*) = 0.000839852
+
+atlasThreeJetMetOneLepton seems OK.
+
+SPS2: testAtlasThreeJetMetOneLeptonHighCuts.getValue() (in *pb*) = 0.000531339
+
+atlasThreeJetMetOneLeptonHighCuts seems OK.
+
+SPS2: testSameSignDilepton.getValue() (in *pb*) = 0.000115694
+
+sameSignDilepton seems OK.
+
+CppSLHA::read_file() (using "convoluted_spectrum.out") has been called
+
+channel: gluino + gluino
+BR total: 1.00065
+
+channel: down_squark_L + gluino
+BR total: 1.0015
+
+channel: down_squark_L + down_antisquark_L
+BR total: 1.00236
+
+channel: down_squark_L + down_squark_L
+BR total: 1.00236
+
+channel: down_squark_R + gluino
+BR total: 1.0006
+
+channel: down_squark_R + down_squark_R
+BR total: 1.00056
+
+channel: up_squark_L + gluino
+BR total: 1.02919
+
+channel: up_squark_L + up_antisquark_L
+BR total: 1.05856
+
+channel: up_squark_L + up_squark_L
+BR total: 1.05856
+
+channel: up_squark_R + gluino
+BR total: 1.00069
+
+channel: up_squark_R + up_squark_R
+BR total: 1.00074
+
+channel: bottom_squark_one + bottom_antisquark_one
+BR total: 1
+
+channel: bottom_squark_two + bottom_antisquark_two
+BR total: 1.03035
+
+channel: top_squark_one + top_antisquark_one
+BR total: 1
+
+channel: top_squark_two + top_antisquark_two
+BR total: 1.30352
+
+channel: down_squark_L + down_antisquark_R
+BR total: 1.00146
+
+channel: down_squark_R + down_antisquark_L
+BR total: 1.00146
+
+channel: down_squark_L + up_antisquark_R
+BR total: 1.00155
+
+channel: down_squark_R + up_antisquark_L
+BR total: 1.02915
+
+channel: up_squark_L + down_antisquark_R
+BR total: 1.02915
+
+channel: up_squark_R + down_antisquark_L
+BR total: 1.00155
+
+channel: up_squark_L + up_antisquark_R
+BR total: 1.02924
+
+channel: up_squark_R + up_antisquark_L
+BR total: 1.02924
+
+channel: down_squark_L + up_squark_L
+BR total: 1.03008
+
+channel: down_squark_R + up_squark_R
+BR total: 1.00065
+
+convoluted: convolutedSigmaBreakdownTest.getValue() (in *fb*) = 8949.53
+
+don't worry about the BRs adding up to over 100% for the convoluted point from sigmaBreakdownTest, since it overcounts channels where the electroweakino can decay back into a colored cascade, for example (so the assumption of sigmaBreakdownTest that the EW decays of the charginos are 100% is wrong).
+
+CppSLHA::read_file() (using "SPS1a_spectrum.out") has been called
+
+
+ended successfully, I hope
+
+

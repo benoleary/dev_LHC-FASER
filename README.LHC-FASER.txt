@@ -118,9 +118,9 @@ exampleLhcFaser( "~/exampleWorkingDirectory/exampleSlhaFile.txt",
   * values in units of picobarns of cross-section.
   */
  LHC_FASER::signalHandler*
- exampleRateForAtlas4j0l( exampleLhcFaser.addSignal( "Atlas4jMET0l7TeV" ) );
+ exampleRateForAtlas4j0l( exampleLhcFaser.addSignal( "Atlas4jMET_0l_7TeV" ) );
  LHC_FASER::signalHandler*
- exampleRateForAtlas3j1l( exampleLhcFaser.addSignal( "Atlas3jMET1l7TeV" ) );
+ exampleRateForAtlas3j1l( exampleLhcFaser.addSignal( "Atlas3jMET_1l_7TeV" ) );
  /* exampleRateForAtlas4j0l is now a pointer to an LHC_FASER::signalHandler
   * which calculates the rate of SUSY events which pass the Atlas 4-jet, MET,
   * 0-lepton cuts based on the spectrum found in

@@ -143,6 +143,25 @@ namespace LHC_FASER
 
 
   protected:
+    static int
+    parseNumberOfLeptons( std::string const& argumentString );
+    // this looks for "_0l", "_1l", or "_2l", & returns the appropriate int.
+    // returns -1 if it could not find any.
+    static bool
+    parseBeamEnergy( std::string const& argumentString,
+                     signalDefinitionSet* const signalDefinitions );
+    // this looks for "_7TeV", "_07TeV", "_10TeV", or "_14TeV", & sets the beam
+    // energy appropriately. returns false if it could not find any.
+    static void
+    parseLeptonTransverseMomentumCuts( std::string const& argumentString,
+                                signalDefinitionSet* const signalDefinitions,
+                                       double const defaultPrimaryLeptonCut,
+                                      double const defaultSecondaryLeptonCut );
+    /* this looks for "_pTl" then a double then "GeV", then a subsequent
+     * "_pTl", a subsequent double, & a subsequent "GeV", interpretted as the
+     * primary & secondary lepton cuts respectively.
+     */
+
     signalDefinitionSet signalDefinitions;
     inputHandler const* const inputShortcut;
     std::vector< productionChannelPointerSet* > productionChannels;
@@ -180,15 +199,6 @@ namespace LHC_FASER
                                double* uncertaintyFactor );
     // this calls valueForCurrentCascades(...) for each pair of cascades for
     // each production channel.
-    void
-    parseLeptonTransverseMomentumCuts( std::string const& cutString,
-                                signalDefinitionSet* const signalDefinitions,
-                                       double const defaultPrimaryLeptonCut,
-                                      double const defaultSecondaryLeptonCut );
-    /* this looks for "pTl" then a double, then a subsequent "pTl" & a
-     * subsequent double, interpretted as the primary & secondary lepton cuts
-     * respectively.
-     */
   };
 
 

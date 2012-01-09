@@ -273,7 +273,7 @@ namespace LHC_FASER
       << "sigmaBreakdownTest seems OK.";
       std::cout << std::endl;
       signalHandler
-      testAtlasFourJetMetZeroLepton( "Atlas4jMET0l07TeV",
+      testAtlasFourJetMetZeroLepton( "Atlas4jMET_0l_07TeV",
                                      1.0,
                                      &testSignalDefinitionSet );
       std::cout
@@ -286,7 +286,7 @@ namespace LHC_FASER
       << "atlasFourJetMetZeroLepton seems OK.";
       std::cout << std::endl;
       signalHandler
-      testAtlasFourJetMetZeroLeptonHighCut( "Atlas4jMET0l07TeVpTl50.0",
+      testAtlasFourJetMetZeroLeptonHighCut( "Atlas4jMET_0l_07TeV_pTl50.0GeV",
                                             1.0,
                                             &testSignalDefinitionSet );
       std::cout
@@ -299,7 +299,7 @@ namespace LHC_FASER
       << "atlasFourJetMetZeroLepton seems OK.";
       std::cout << std::endl;
       signalHandler
-      testAtlasThreeJetMetOneLepton( "Atlas3jMET1l07TeV",
+      testAtlasThreeJetMetOneLepton( "Atlas3jMET_1l_07TeV",
                                      1.0,
                                      &testSignalDefinitionSet );
       std::cout
@@ -312,7 +312,8 @@ namespace LHC_FASER
       << "atlasThreeJetMetOneLepton seems OK.";
       std::cout << std::endl;
       signalHandler
-      testAtlasThreeJetMetOneLeptonHighCuts( "Atlas3jMET1l07TeVpTl60.8pTl18.5",
+      testAtlasThreeJetMetOneLeptonHighCuts(
+                                   "Atlas3jMET_1l_07TeV_pTl60.8GeV_pTl18.5GeV",
                                              1.0,
                                              &testSignalDefinitionSet );
       std::cout
@@ -325,7 +326,7 @@ namespace LHC_FASER
       << "atlasThreeJetMetOneLeptonHighCuts seems OK.";
       std::cout << std::endl;
       signalHandler
-      testSameSignDilepton( "sameSignDilepton07TeV",
+      testSameSignDilepton( "sameSignDilepton_07TeV",
                             1.0,
                             &testSignalDefinitionSet );
       std::cout

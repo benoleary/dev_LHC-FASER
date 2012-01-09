@@ -281,7 +281,7 @@ namespace LHC_FASER
 
       gettimeofday( &startTime,
                     NULL );
-      signalName.assign( "Atlas4jMET0l7TeV" );
+      signalName.assign( "Atlas4jMET_0l_7TeV" );
       std::cout
       << std::endl << "adding " << signalName;
       testLhcFaser.addSignal( signalName );
@@ -297,7 +297,7 @@ namespace LHC_FASER
 
       gettimeofday( &startTime,
                     NULL );
-      signalName.assign( "Atlas3jMET1l7TeV" );
+      signalName.assign( "Atlas3jMET_1l_7TeV" );
       std::cout
       << std::endl << "adding " << signalName;
       signalVector.push_back( testLhcFaser.addSignal( signalName ) );
@@ -312,7 +312,7 @@ namespace LHC_FASER
 
       gettimeofday( &startTime,
                     NULL );
-      signalName.assign( "sameSignDilepton7TeV" );
+      signalName.assign( "sameSignDilepton_7TeV" );
       std::cout
       << std::endl << "adding " << signalName;
       signalVector.push_back( testLhcFaser.addSignal( signalName ) );

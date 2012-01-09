@@ -98,7 +98,7 @@ namespace LHC_FASER
     {
       lhcFaser* testLhcFaserPointer( new lhcFaser( "SPS1a_spectrum.out" ) );
       testLhcFaserPointer->addSignal( "sigmaBreakdownTest" );
-      testLhcFaserPointer->addSignal( "Atlas4jMET0l7TeV" );
+      testLhcFaserPointer->addSignal( "Atlas4jMET_0l_7TeV" );
       testLhcFaserPointer->addSignal( "badSignalName" );
       std::cout
       << std::endl
@@ -118,15 +118,15 @@ namespace LHC_FASER
       signalHandler*
       sps2Sigma( sps2LhcFaser.addSignal( "sigmaBreakdownTest" ) );
       signalHandler*
-      sps1aAtlas4j0l( sps1aLhcFaser.addSignal( "Atlas4jMET0l7TeV" ) );
-      sps2LhcFaser.addSignal( "Atlas4jMET0l7TeV" );
+      sps1aAtlas4j0l( sps1aLhcFaser.addSignal( "Atlas4jMET_0l_7TeV" ) );
+      sps2LhcFaser.addSignal( "Atlas4jMET_0l_7TeV" );
       signalHandler*
-      sps2Atlas4j0l( sps2LhcFaser.getSignal( "Atlas4jMET0l7TeV" ) );
-      sps1aLhcFaser.addSignal( "Atlas3jMET1l7TeV" );
+      sps2Atlas4j0l( sps2LhcFaser.getSignal( "Atlas4jMET_0l_7TeV" ) );
+      sps1aLhcFaser.addSignal( "Atlas3jMET_1l_7TeV" );
       signalHandler*
-      sps1aAtlas3j1l( sps1aLhcFaser.getSignal( "Atlas3jMET1l7TeV" ) );
+      sps1aAtlas3j1l( sps1aLhcFaser.getSignal( "Atlas3jMET_1l_7TeV" ) );
       signalHandler*
-      sps2Atlas3j1l( sps2LhcFaser.addSignal( "Atlas3jMET1l7TeV" ) );
+      sps2Atlas3j1l( sps2LhcFaser.addSignal( "Atlas3jMET_1l_7TeV" ) );
       signalHandler*
       sps1aBad( sps1aLhcFaser.addSignal( "badSignalName" ) );
       sps2LhcFaser.addSignal( "badSignalName" );

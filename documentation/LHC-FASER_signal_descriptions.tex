@@ -237,6 +237,9 @@ However, the signals are restricted to a finite number of combinations of
 \item[1:] Exactly one (${\mu}^{\pm}, e^{\pm}$) must pass the acceptance cut
           and exactly zero further leptons may pass the vetoing cut.
 
+\item[2:] Exactly two (${\mu}^{\pm}, e^{\pm}$) must pass the acceptance cut
+          and exactly zero further leptons may pass the vetoing cut.
+
 \item[OSSF-OSDF:] Exactly two leptons, both of the opposite electric
                   charge, must pass the acceptance cut and exactly zero further
                   leptons may pass the vetoing cut. The total with different
@@ -258,7 +261,19 @@ However, the signals are restricted to a finite number of combinations of
 \item[Atlas4jMET0l:] Atlas 4-jet cut $+$ 0-lepton cut;
                      reference \cite{ATLAS:1278474}
 
+\item[Atlas4jMET1l:] Atlas 4-jet cut $+$ 1-lepton cut;
+                     reference \cite{ATLAS:1278474}
+
+\item[Atlas4jMET2l:] Atlas 4-jet cut $+$ 2-lepton cut;
+                     reference \cite{ATLAS:1278474}
+
+\item[Atlas3jMET0l:] Atlas 3-jet cut $+$ 0-lepton cut;
+                     reference \cite{ATLAS:1278474}
+
 \item[Atlas3jMET1l:] Atlas 3-jet cut $+$ 1-lepton cut;
+                     reference \cite{ATLAS:1278474}
+
+\item[Atlas3jMET2l:] Atlas 3-jet cut $+$ 2-lepton cut;
                      reference \cite{ATLAS:1278474}
 
 \item[sameSignDilepton:] generic same-sign dilepton cut with a 20 GeV cut for
@@ -270,17 +285,25 @@ However, the signals are restricted to a finite number of combinations of
 
 \end{itemize}
 
+The strings to passwhen adding these signals are now in a format for parsing the
+ number of leptons, beam energy, and lepton cuts ``easily''. For example,
+ \texttt{Atlas4jMET\_0l\_7TeV\_pTl12.5GeV} is the signal with the Atlas 4-jet cut
+ $+$ 0-lepton cut for LHC beam energy of 7 TeV with a user-defined lepton
+ $p_{T}$ cut of $12.5$ GeV, and
+ \texttt{Atlas3jMET\_1l\_7TeV\_pTl27.0GeV\_pTl12.5GeV} is the signal with the
+ Atlas 3-jet cut $+$ 1-lepton cut for LHC beam energy of 7 TeV with a
+ user-defined lepton acceptance $p_{T}$ cut of $27.0$ GeV and lepton veto
+ $p_{T}$ cut of $12.5$ GeV. These signals with default lepton $p_{T}$ cuts are
+ specified with the same strings but without the ``\texttt{\_pTl12.5GeV}'' and
+ so on.
+
 
 \subsection{Soon-to-be-implemented signals}
 \label{subsec:soonSignals}
 
 \begin{itemize}
 
-\item[Atlas4jMET1l:] Atlas 4-jet cut $+$ 1-lepton cut.
-
 \item[Atlas4jMETOSSFOSDF:] Atlas 4-jet cut $+$ OSSF-OSDF cut.
-
-\item[Atlas3jMET0l:] Atlas 3-jet cut $+$ 0-lepton cut.
 
 \item[Atlas3jMETOSSFOSDF:] Atlas 3-jet cut $+$ OSSF-OSDF cut.
 
