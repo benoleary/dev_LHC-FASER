@@ -234,6 +234,86 @@ namespace LHC_FASER
     return true;
   }
 
+  void
+  signalCalculator::parseLeptonTransverseMomentumCuts(
+                                                  std::string const& cutString,
+                                  signalDefinitionSet* const signalDefinitions,
+                                          double const defaultPrimaryLeptonCut,
+                                       double const defaultSecondaryLeptonCut )
+  /* this looks for "pTl" then a double, then a subsequent "pTl" & a
+   * subsequent double, interpretted as the primary & secondary lepton cuts
+   * respectively.
+   */
+  {
+    if( 0 == cutString.compare( 0,
+                                3,
+                                "pTl" ) )
+      // if the 1st 3 characters denote a non-default primary lepton
+      // transverse momentum cut...
+    {
+      /* the argument should be
+       * "pTl[primary lepton cut]pTl[secondary lepton cut]
+       * with the 2nd cut optional.
+       */
+      double leptonCut;
+      std::string leptonCutSubstring( cutString,
+                                      3 );
+      // leptonCutSubstring is arguments with the
+      // "pTl" bit removed.
+      int failingLeptonCutPosition( leptonCutSubstring.find( "pTl" ) );
+      // failingLeptonCutPosition is now the number of characters in
+      // leptonCutSubstring before "pTl" (the 2nd "pTl" in arguments).
+      if( std::string::npos != failingLeptonCutPosition )
+      {
+        std::stringstream
+        leptonCutStream( leptonCutSubstring.substr( 0,
+                                                failingLeptonCutPosition ) );
+        // the substring provided to leptonCutStream is just all the
+        // characters in leptonCutSubstring before "pTl".
+        leptonCutStream >> leptonCut;
+        signalDefinitions->setPrimaryLeptonCut( leptonCut );
+        // these characters are now translated into a number which is passed
+        // to signalDefinitions as the primary lepton cut.
+        leptonCutStream.clear();
+        leptonCutStream.str( leptonCutSubstring.substr(
+                                          ( failingLeptonCutPosition + 3 ) ) );
+        /* the substring now provided to leptonCutStream is all the
+         * characters in leptonCutSubstring after "pTl", which should just be
+         * the secondary lepton transverse momentum cut.
+         */
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "for secondary cut, leptonCutStream.str() = "
+        << leptonCutStream.str();
+        std::cout << std::endl;**/
+
+        leptonCutStream >> leptonCut;
+      }
+      else
+      {
+        std::stringstream
+        leptonCutStream( leptonCutSubstring );
+        // if there is no subsequent "pTl", the remaining characters should
+        // just define the lepton cut used for both.
+        leptonCutStream >> leptonCut;
+        signalDefinitions->setPrimaryLeptonCut( leptonCut );
+        // these characters are now translated into a number which is passed
+        // to signalDefinitions as the primary lepton cut.
+      }
+      /* if there was a secondary lepton cut specified, it is now in leptonCut,
+       * otherwise leptonCut is still the same value as specified for the
+       * primary cut.
+       */
+      signalDefinitions->setSecondaryLeptonCut( leptonCut );
+    }
+    else
+    {
+      signalDefinitions->setPrimaryLeptonCut( defaultPrimaryLeptonCut );
+      signalDefinitions->setSecondaryLeptonCut( defaultSecondaryLeptonCut );
+    }
+  }
+
 
 
   signalHandler::signalHandler( std::string const signalName,
@@ -250,15 +330,15 @@ namespace LHC_FASER
   {
     std::string calculatorArgument( "error" );
     if( 0 == signalName.compare( 0,
-                                 12,
-                                 "Atlas4jMET0l" ) )
+                                 10,
+                                 "Atlas4jMET" ) )
       // if the signal is the Atlas 4-jet, missing transverse momentum,
       // 0 leptons event rate...
     {
-      calculatorArgument.assign( ( signalName.begin() + 12 ),
+      calculatorArgument.assign( ( signalName.begin() + 10 ),
                                  signalName.end() );
       rateCalculator
-      = signalCalculatorClasses::atlasFourJetMetZeroLepton::getCalculator(
+      = signalCalculatorClasses::atlasFourJetMetNLeptons::getCalculator(
                                                            &calculatorArgument,
                                                 signalPreparationDefinitions );
     }
@@ -271,7 +351,7 @@ namespace LHC_FASER
       calculatorArgument.assign( ( signalName.begin() + 12 ),
                                  signalName.end() );
       rateCalculator
-      = signalCalculatorClasses::atlasThreeJetMetOneLepton::getCalculator(
+      = signalCalculatorClasses::atlasThreeJetMetNLeptons::getCalculator(
                                                            &calculatorArgument,
                                                 signalPreparationDefinitions );
     }
@@ -485,21 +565,21 @@ namespace LHC_FASER
 
 
     int const
-    atlasFourJetMetZeroLepton::jetAcceptanceGridTableColumn( 10 );
+    atlasFourJetMetNLeptons::jetAcceptanceGridTableColumn( 10 );
     // this is dependent on the format of the grids.
     double const
-    atlasFourJetMetZeroLepton::defaultExtraJetCut( 40.0 );
+    atlasFourJetMetNLeptons::defaultExtraJetCut( 40.0 );
     // this is the standard cut for the jets beyond the hardest cut for this
     // signal as implemented in this code.
     double const
-    atlasFourJetMetZeroLepton::defaultLeptonCut( 10.0 );
+    atlasFourJetMetNLeptons::defaultLeptonCut( 10.0 );
     // the default Atlas4jMET0l lepton transverse momentum cut is 10.0 GeV.
 
     signalCalculator*
-    atlasFourJetMetZeroLepton::getCalculator(
+    atlasFourJetMetNLeptons::getCalculator(
                                        std::string const* const argumentString,
                                  signalDefinitionSet* const signalDefinitions )
-    /* this either returns a pointer to a new atlasFourJetMetZeroLepton with
+    /* this either returns a pointer to a new atlasFourJetMetNLeptons with
      * cuts decided by the given string, or a pointer to a
      * reallyWrongCalculator.
      */
@@ -507,47 +587,40 @@ namespace LHC_FASER
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "atlasFourJetMetZeroLepton::getCalculator( " << *argumentString
+      << "atlasFourJetMetNLeptons::getCalculator( " << *argumentString
       << ", ... ) called.";
       std::cout << std::endl;**/
 
       signalDefinitions->setExcludedStandardModelProducts(
                           signalDefinitions->getShortcuts()->getInputShortcuts(
                                                           )->getNotInJets5() );
+      int numberOfLeptons;
       signalCalculator* returnPointer( NULL );
-      int characterSkipper;
+      unsigned int characterSkipper;
       // this is used in interpreting the arguments string.
       if( 0 == argumentString->compare( 0,
-                                        4,
-                                        "7TeV" ) )
-        //for a beam energy of 7 TeV...
+                                        2,
+                                        "0l" ) )
+        // for zero leptons...
       {
-        signalDefinitions->setBeamEnergy( 7 );
-        characterSkipper = 4;
+        numberOfLeptons = 0;
+        characterSkipper = 2;
       }
       else if( 0 == argumentString->compare( 0,
-                                             5,
-                                             "07TeV" ) )
-        //for a beam energy of 7 TeV...
+                                             2,
+                                             "1l" ) )
+        // for exactly one lepton...
       {
-        signalDefinitions->setBeamEnergy( 7 );
-        characterSkipper = 5;
+        numberOfLeptons = 1;
+        characterSkipper = 2;
       }
       else if( 0 == argumentString->compare( 0,
-                                             5,
-                                             "10TeV" ) )
-        //for a beam energy of 10 TeV...
+                                             2,
+                                             "2l" ) )
+        // for exactly two leptons...
       {
-        signalDefinitions->setBeamEnergy( 10 );
-        characterSkipper = 5;
-      }
-      else if( 0 == argumentString->compare( 0,
-                                             5,
-                                             "14TeV" ) )
-        //for a beam energy of 14 TeV...
-      {
-        signalDefinitions->setBeamEnergy( 14 );
-        characterSkipper = 5;
+        numberOfLeptons = 1;
+        characterSkipper = 2;
       }
       else
       {
@@ -555,12 +628,70 @@ namespace LHC_FASER
         << std::endl
         << "LHC-FASER::error! signalHandler::signalHandler( "
         << argumentString << ", " <<  signalDefinitions << " ) was passed"
-        << " a name it does not know (started with \"Atlas4jMET0l\","
-        << " but then \"7TeV\", \"07TeV\", \"10TeV\" or \"14TeV\" are expected"
-        << " as the next characters). its calculator is being set to return "
-        << CppSLHA::CppSLHA_global::really_wrong_value_string << " for"
-        << " every point.";
+        << " a name it does not know (started with \"Atlas4jMET\", but then"
+        << " \"0l\", \"1l\", or \"2l\" are expected as the next characters,"
+        << " before the energy). its calculator is being set to return "
+        << CppSLHA::CppSLHA_global::really_wrong_value_string
+        << " for every point.";
         returnPointer = new reallyWrongCalculator( signalDefinitions );
+      }
+      if( NULL == returnPointer )
+        // if the signalCalculator hasn't been set to a reallyWrongCalculator...
+      {
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "characterSkipper = " << characterSkipper
+        << ", substring = " << argumentString->substr( characterSkipper,
+                                                       2 );
+        std::cout << std::endl;**/
+
+        if( 0 == argumentString->compare( characterSkipper,
+                                          4,
+                                          "7TeV" ) )
+          // for a beam energy of 7 TeV...
+        {
+          signalDefinitions->setBeamEnergy( 7 );
+          characterSkipper += 4;
+        }
+        else if( 0 == argumentString->compare( characterSkipper,
+                                               5,
+                                               "07TeV" ) )
+          // for a beam energy of 7 TeV...
+        {
+          signalDefinitions->setBeamEnergy( 7 );
+          characterSkipper += 5;
+        }
+        else if( 0 == argumentString->compare( characterSkipper,
+                                               5,
+                                               "10TeV" ) )
+          // for a beam energy of 10 TeV...
+        {
+          signalDefinitions->setBeamEnergy( 10 );
+          characterSkipper += 5;
+        }
+        else if( 0 == argumentString->compare( characterSkipper,
+                                               5,
+                                               "14TeV" ) )
+          // for a beam energy of 14 TeV...
+        {
+          signalDefinitions->setBeamEnergy( 14 );
+          characterSkipper += 5;
+        }
+        else
+        {
+          std::cout
+          << std::endl
+          << "LHC-FASER::error! signalHandler::signalHandler( "
+          << argumentString << ", " <<  signalDefinitions << " ) was passed"
+          << " a name it does not know (started with \"Atlas4jMET"
+          << numberOfLeptons << "l\", but then \"7TeV\", \"07TeV\", \"10TeV\""
+          << " or \"14TeV\" are expected as the next characters). its"
+          << " calculator is being set to return "
+          << CppSLHA::CppSLHA_global::really_wrong_value_string
+          << " for every point.";
+          returnPointer = new reallyWrongCalculator( signalDefinitions );
+        }
       }
       if( NULL == returnPointer )
         // if the signalCalculator hasn't been set to a reallyWrongCalculator...
@@ -573,32 +704,22 @@ namespace LHC_FASER
                                                        3 );
         std::cout << std::endl;**/
 
-        if( 0 == argumentString->compare( characterSkipper,
-                                          3,
-                                          "pTl" ) )
-          // if the next 3 characters denote a non-default lepton
-          // transverse momentum cut...
-        {
-          double leptonCut;
-          characterSkipper += 3;
-          std::stringstream leptonCutStream( *argumentString );
-          leptonCutStream.ignore( characterSkipper );
-          leptonCutStream >> leptonCut;
-          signalDefinitions->setLeptonCut( leptonCut );
-        }
-        else
-        {
-          signalDefinitions->setLeptonCut( defaultLeptonCut );
-        }
+        parseLeptonTransverseMomentumCuts(
+                                    argumentString->substr( characterSkipper ),
+                                           signalDefinitions,
+                                           defaultPrimaryLeptonCut,
+                                           defaultSecondaryLeptonCut );
         signalDefinitions->setJetCut( defaultExtraJetCut );
-        returnPointer = new atlasFourJetMetZeroLepton( signalDefinitions );
+        returnPointer = new atlasFourJetMetNLeptons( signalDefinitions );
       }
       return returnPointer;
     }
 
-    atlasFourJetMetZeroLepton::atlasFourJetMetZeroLepton(
-                               signalDefinitionSet* const signalDefinitions ) :
-        signalCalculator( signalDefinitions )
+    atlasFourJetMetNLeptons::atlasFourJetMetNLeptons(
+                               signalDefinitionSet* const signalDefinitions,
+                                                  int const numberOfLeptons ) :
+        signalCalculator( signalDefinitions ),
+        numberOfLeptons( numberOfLeptons )
     {
       std::string jetGridName( "Atlas4jMET" );
       fourJetKinematics
@@ -618,67 +739,69 @@ namespace LHC_FASER
       excludedFinalStateParticles.push_back( -(CppSLHA::PDG_code::top) );
     }
 
-    atlasFourJetMetZeroLepton::~atlasFourJetMetZeroLepton()
+    atlasFourJetMetNLeptons::~atlasFourJetMetNLeptons()
     {
       // does nothing.
     }
 
 
     double
-    atlasFourJetMetZeroLepton::valueForCurrentCascades(
+    atlasFourJetMetNLeptons::valueForCurrentCascades(
                                                      fullCascade* firstCascade,
                                                    fullCascade* secondCascade )
     // see base version's description.
     {
-      subchannelZeroOrMoreJetsZeroLeptons
-      = ( firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
+      subchannelZeroOrMoreJetsNLeptons = 0.0;
+      subchannelOneOrMoreJetsNLeptons = 0.0;
+      for( int leptonsInFirstCascade( 0 );
+           numberOfLeptons > leptonsInFirstCascade;
+           ++leptonsInFirstCascade )
+      {
+        subchannelZeroOrMoreJetsNLeptons
+        += ( firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
-                                                                     0 )
-          * secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                        leptonsInFirstCascade )
+             * secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
-                                                                        0 ) );
-      // chance of both cascades not producing any leptons which pass the cut &
-      // thus cause the event to be rejected.
+                               ( numberOfLeptons - leptonsInFirstCascade ) ) );
+        // chance of the pair of cascades producing the correct number of
+        // leptons between them.
 
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "subchannelZeroOrMoreJetsZeroLeptons = "
-      << subchannelZeroOrMoreJetsZeroLeptons;
-      std::cout << std::endl;**/
-
-      subchannelOneOrMoreJetsZeroLeptons
-      = ( subchannelZeroOrMoreJetsZeroLeptons
-          - ( firstCascade->specifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                       0,
-                                                                       0 )
-              * secondCascade->specifiedJetsSpecifiedChargeSummedLeptons(
+        subchannelOneOrMoreJetsNLeptons
+        += ( subchannelZeroOrMoreJetsNLeptons
+             - ( firstCascade->specifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
                                                                           0,
-                                                                       0 ) ) );
-      // chance of no lepton rejection removing the portion without any extra
-      // jet passing the cut.
+                                                        leptonsInFirstCascade )
+                 * secondCascade->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                             0,
+                             ( numberOfLeptons - leptonsInFirstCascade ) ) ) );
+        // chance of no lepton rejection removing the portion without any extra
+        // jet passing the cut.
+      }
 
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "subchannelOneOrMoreJetsZeroLeptons = "
-      << subchannelOneOrMoreJetsZeroLeptons;
+      << "subchannelZeroOrMoreJetsNLeptons = "
+      << subchannelZeroOrMoreJetsNLeptons
+      << ", subchannelOneOrMoreJetsNLeptons = "
+      << subchannelOneOrMoreJetsNLeptons;
       std::cout << std::endl;**/
 
-      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJetsZeroLeptons )
+      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJetsNLeptons )
       {
         fourJetAcceptance = fourJetKinematics->getAcceptance( initialPair,
                                                               firstCascade,
                                                               secondCascade );
         subchannelValue = ( subchannelCrossSectionTimesBrToEwinos
-                            * subchannelZeroOrMoreJetsZeroLeptons
+                            * subchannelZeroOrMoreJetsNLeptons
                             * fourJetAcceptance );
 
         // debugging:
         /**if( 0.05 < ( subchannelCrossSectionTimesBrToEwinos
-                         * subchannelZeroOrMoreJetsZeroLeptons ) )
+                         * subchannelZeroOrMoreJetsNLeptons ) )
         {
           std::cout << std::endl << "debugging:"
           << std::endl
@@ -702,18 +825,18 @@ namespace LHC_FASER
           << "subchannelCrossSectionTimesBrToEwinos = "
           << subchannelCrossSectionTimesBrToEwinos
           << std::endl
-          << "subchannelZeroOrMoreJetsZeroLeptons = "
-          << subchannelZeroOrMoreJetsZeroLeptons;
+          << "subchannelZeroOrMoreJetsNLeptons = "
+          << subchannelZeroOrMoreJetsNLeptons;
           std::cout << std::endl;
         }**/
 
         // it's not going to ever be the case where the acceptance for 1+ jets
         // is greater than 0+ jets...
-        if( lhcFaserGlobal::negligibleBr < subchannelOneOrMoreJetsZeroLeptons )
+        if( lhcFaserGlobal::negligibleBr < subchannelOneOrMoreJetsNLeptons )
         {
           subchannelValue
           += ( subchannelCrossSectionTimesBrToEwinos
-               * subchannelOneOrMoreJetsZeroLeptons
+               * subchannelOneOrMoreJetsNLeptons
                * ( threeJetKinematics->getAcceptance( initialPair,
                                                       firstCascade,
                                                       secondCascade )
@@ -727,20 +850,20 @@ namespace LHC_FASER
         << "subchannelCrossSectionTimesBrToEwinos = "
         << subchannelCrossSectionTimesBrToEwinos
         << std::endl
-        << "subchannelZeroOrMoreJetsZeroLeptons = "
-        << subchannelZeroOrMoreJetsZeroLeptons
+        << "subchannelZeroOrMoreJetsNLeptons = "
+        << subchannelZeroOrMoreJetsNLeptons
         << std::endl
         << "fourJetAcceptance = " << fourJetAcceptance
         << std::endl
         << "=> adding subchannelValue = " << subchannelValue;
         std::cout << std::endl;**/
-        if( !( ( 1.0 >= subchannelZeroOrMoreJetsZeroLeptons )
+        if( !( ( 1.0 >= subchannelZeroOrMoreJetsNLeptons )
                &&
-               ( 0.0 <= subchannelZeroOrMoreJetsZeroLeptons )
+               ( 0.0 <= subchannelZeroOrMoreJetsNLeptons )
                &&
-               ( 1.0 >= subchannelOneOrMoreJetsZeroLeptons )
+               ( 1.0 >= subchannelOneOrMoreJetsNLeptons )
                &&
-               ( 0.0 <= subchannelOneOrMoreJetsZeroLeptons )
+               ( 0.0 <= subchannelOneOrMoreJetsNLeptons )
                &&
                ( 1.0 >= fourJetAcceptance )
                &&
@@ -757,13 +880,13 @@ namespace LHC_FASER
                                            secondSparticleIsNotAntiparticle ));
           std::cout
           << std::endl
-          << "1st: " << firstCascade->getAsString() << "; 0+j, 0l = "
+          << "1st: " << firstCascade->getAsString() << "; 0+j, Nl = "
           << firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
                                                                         0 );
           std::cout
           << std::endl
-          << "2nd: " << secondCascade->getAsString() << "; 0+j, 0l = "
+          << "2nd: " << secondCascade->getAsString() << "; 0+j, Nl = "
           << secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
                                                                          0 );
@@ -771,9 +894,9 @@ namespace LHC_FASER
           std::cout
           << std::endl
           << "produced subchannelZeroOrMoreJetsZeroLeptons = "
-          << subchannelZeroOrMoreJetsZeroLeptons
+          << subchannelZeroOrMoreJetsNLeptons
           << ", subchannelOneOrMoreJetsZeroLeptons = "
-          << subchannelOneOrMoreJetsZeroLeptons
+          << subchannelOneOrMoreJetsNLeptons
           << ", & fourJetAcceptance = "
           << fourJetAcceptance
           << ", all of which should be >= 0.0 & <= 1.0 for valid"
@@ -791,18 +914,18 @@ namespace LHC_FASER
 
 
 
-    int const atlasThreeJetMetOneLepton::jetAcceptanceGridTableColumn( 10 );
+    int const atlasThreeJetMetNLeptons::jetAcceptanceGridTableColumn( 10 );
     // this is dependent on the format of the grids.
-    double const atlasThreeJetMetOneLepton::defaultExtraJetCut( 40.0 );
+    double const atlasThreeJetMetNLeptons::defaultExtraJetCut( 40.0 );
     // this is the standard cut for the jets beyond the hardest cut for this
     // signal as implemented in this code.
-    double const atlasThreeJetMetOneLepton::defaultPrimaryLeptonCut( 20.0 );
-    double const atlasThreeJetMetOneLepton::defaultSecondaryLeptonCut( 10.0 );
+    double const atlasThreeJetMetNLeptons::defaultPrimaryLeptonCut( 20.0 );
+    double const atlasThreeJetMetNLeptons::defaultSecondaryLeptonCut( 10.0 );
     // the default Atlas4jMET0l lepton transverse momentum cuts are 20.0 GeV
     // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
 
     signalCalculator*
-    atlasThreeJetMetOneLepton::getCalculator(
+    atlasThreeJetMetNLeptons::getCalculator(
                                        std::string const* const argumentString,
                                  signalDefinitionSet* const signalDefinitions )
     {
@@ -850,73 +973,32 @@ namespace LHC_FASER
         << std::endl
         << "LHC-FASER::error! signalHandler::signalHandler( "
         << argumentString << ", " <<  signalDefinitions << " ) was passed"
-        << " a name it does not know (started with \"Atlas3jMET1l\","
-        << " but then \"7TeV\", \"07TeV\", \"10TeV\" or \"14TeV\" are expected"
-        << " as the next characters). its calculator is being set to return "
-        << CppSLHA::CppSLHA_global::really_wrong_value_string << " for"
-        << " every point.";
+        << " a name it does not know (started with \"Atlas3jMET\", but then"
+        << " \"0l\", \"1l\", or \"2l\" are expected as the next characters,"
+        << " before the energy). its calculator is being set to return "
+        << CppSLHA::CppSLHA_global::really_wrong_value_string
+        << " for every point.";
         returnPointer = new reallyWrongCalculator( signalDefinitions );
       }
       if( NULL == returnPointer )
         // if the signalCalculator hasn't been set to a reallyWrongCalculator...
       {
-        if( 0 == argumentString->compare( characterSkipper,
-                                          3,
-                                          "pTl" ) )
-          // if the next 3 characters denote a non-default primary lepton
-          // transverse momentum cut...
-        {
-          // the argument should be
-          // "[whatever]TeVpTl[primary lepton cut]pTl[secondary lepton cut]
-          double leptonCut;
-          characterSkipper += 3;
-          std::string leptonCutSubstring( *argumentString,
-                                          characterSkipper );
-          // leptonCutSubstring is arguments with the
-          // "Atlas3j1l[whatever]TeVpTl" bit removed.
-          int failingLeptonCutPosition( leptonCutSubstring.find( "pTl" ) );
-          // failingLeptonCutPosition is now the number of characters in
-          // leptonCutSubstring before "pTl" (the 2nd "pTl" in arguments).
-          std::stringstream
-          leptonCutStream( leptonCutSubstring.substr( 0,
-                                                  failingLeptonCutPosition ) );
-          // the substring provided to leptonCutStream is just all the
-          // characters in leptonCutSubstring before "pTl".
-          leptonCutStream >> leptonCut;
-          signalDefinitions->setPrimaryLeptonCut( leptonCut );
-          // these characters are now translated into a number which is passed
-          // to signalDefinitions as the primary lepton cut.
-          leptonCutStream.clear();
-          leptonCutStream.str( leptonCutSubstring.substr(
-                                          ( failingLeptonCutPosition + 3 ) ) );
-          /* the substring now provided to leptonCutStream is all the
-           * characters in leptonCutSubstring after "pTl", which should just be
-           * the secondary lepton transverse momentum cut.
-           */
-          // debugging:
-          /**std::cout << std::endl << "debugging:"
-          << std::endl
-          << "for secondary cut, leptonCutStream.str() = "
-          << leptonCutStream.str();
-          std::cout << std::endl;**/
-
-          leptonCutStream >> leptonCut;
-          signalDefinitions->setSecondaryLeptonCut( leptonCut );
-        }
-        else
-        {
-          signalDefinitions->setPrimaryLeptonCut( defaultPrimaryLeptonCut );
-          signalDefinitions->setSecondaryLeptonCut( defaultSecondaryLeptonCut );
-        }
+        parseLeptonTransverseMomentumCuts(
+                                    argumentString->substr( characterSkipper ),
+                                           signalDefinitions,
+                                           defaultPrimaryLeptonCut,
+                                           defaultSecondaryLeptonCut );
         signalDefinitions->setJetCut( defaultExtraJetCut );
-        returnPointer = new atlasThreeJetMetOneLepton( signalDefinitions );
+        returnPointer = new atlasThreeJetMetNLeptons( signalDefinitions );
       }
       return returnPointer;
     }
 
-    atlasThreeJetMetOneLepton::atlasThreeJetMetOneLepton(
-                               signalDefinitionSet* const signalDefinitions ) :
-        signalCalculator( signalDefinitions )
+    atlasThreeJetMetNLeptons::atlasThreeJetMetNLeptons(
+                                  signalDefinitionSet* const signalDefinitions,
+                                                  int const numberOfLeptons ) :
+        signalCalculator( signalDefinitions ),
+        numberOfLeptons( numberOfLeptons )
     {
       std::string jetGridName( "Atlas3jMET" );
       this->signalDefinitions.setJetPlusMetAcceptance(
@@ -929,14 +1011,14 @@ namespace LHC_FASER
       excludedFinalStateParticles.push_back( -(CppSLHA::PDG_code::top) );
     }
 
-    atlasThreeJetMetOneLepton::~atlasThreeJetMetOneLepton()
+    atlasThreeJetMetNLeptons::~atlasThreeJetMetNLeptons()
     {
       // does nothing.
     }
 
 
     double
-    atlasThreeJetMetOneLepton::valueForCurrentCascades(
+    atlasThreeJetMetNLeptons::valueForCurrentCascades(
                                                      fullCascade* firstCascade,
                                                    fullCascade* secondCascade )
     // see base version's description.
@@ -964,11 +1046,11 @@ namespace LHC_FASER
       << "subchannelCrossSectionTimesBrToEwinos = "
       << subchannelCrossSectionTimesBrToEwinos
       << std::endl
-      << "subchannelZeroOrMoreJetsOneLepton = "
-      << subchannelZeroOrMoreJetsOneLepton;
+      << "subchannelZeroOrMoreJetsNLeptons = "
+      << subchannelZeroOrMoreJetsNLeptons;
       std::cout << std::endl;**/
 
-      subchannelZeroOrMoreJetsOneLepton
+      subchannelZeroOrMoreJetsNLeptons
       = ( firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
                                                             &signalDefinitions,
                                                                      1 )
@@ -988,7 +1070,7 @@ namespace LHC_FASER
        */
       // debugging:
       /**if( 0.01 < ( subchannelCrossSectionTimesBrToEwinos
-                       * subchannelZeroOrMoreJetsOneLepton ) )
+                       * subchannelZeroOrMoreJetsNLeptons ) )
       {
         std::cout << std::endl << "debugging:"
         << std::endl
@@ -1012,15 +1094,15 @@ namespace LHC_FASER
         << "subchannelCrossSectionTimesBrToEwinos = "
         << subchannelCrossSectionTimesBrToEwinos
         << std::endl
-        << "subchannelZeroOrMoreJetsOneLepton = "
-        << subchannelZeroOrMoreJetsOneLepton;
+        << "subchannelZeroOrMoreJetsNLeptons = "
+        << subchannelZeroOrMoreJetsNLeptons;
         std::cout << std::endl;
       }**/
 
-      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJetsOneLepton )
+      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJetsNLeptons )
       {
         return ( subchannelCrossSectionTimesBrToEwinos
-                 * subchannelZeroOrMoreJetsOneLepton
+                 * subchannelZeroOrMoreJetsNLeptons
                  * signalDefinitions.getJetPlusMetAcceptance()->getAcceptance(
                                                                    initialPair,
                                                                   firstCascade,

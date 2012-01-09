@@ -180,6 +180,15 @@ namespace LHC_FASER
                                double* uncertaintyFactor );
     // this calls valueForCurrentCascades(...) for each pair of cascades for
     // each production channel.
+    void
+    parseLeptonTransverseMomentumCuts( std::string const& cutString,
+                                signalDefinitionSet* const signalDefinitions,
+                                       double const defaultPrimaryLeptonCut,
+                                      double const defaultSecondaryLeptonCut );
+    /* this looks for "pTl" then a double, then a subsequent "pTl" & a
+     * subsequent double, interpretted as the primary & secondary lepton cuts
+     * respectively.
+     */
   };
 
 
@@ -283,11 +292,11 @@ namespace LHC_FASER
 
 
     /* this is a derived class to calculateValue the "Atlas 4 jets plus missing
-     * transverse momentum plus 0 leptons" signal.
+     * transverse momentum plus N leptons" signal.
      * it takes the kinematics from the Atlas4jMET grid & combines them with
-     * cascade decays leading to 0 leptons passing the cut.
+     * cascade decays leading to N leptons passing the cut.
      */
-    class atlasFourJetMetZeroLepton : public signalCalculator
+    class atlasFourJetMetNLeptons : public signalCalculator
     {
     public:
       static int const jetAcceptanceGridTableColumn;
@@ -295,21 +304,24 @@ namespace LHC_FASER
       static double const defaultExtraJetCut;
       // this is the standard cut for the jets beyond the hardest cut for this
       // signal as implemented in this code.
-      static double const defaultLeptonCut;
-      // the default Atlas4jMET0l lepton transverse momentum cut is 10.0 GeV.
+      static double const defaultPrimaryLeptonCut;
+      static double const defaultSecondaryLeptonCut;
+      // the default Atlas lepton transverse momentum cuts are 20.0 GeV
+      // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
 
       static signalCalculator*
       getCalculator( std::string const* const argumentString,
                      signalDefinitionSet* const signalDefinitions );
-      /* this either returns a pointer to a new atlasFourJetMetZeroLepton with
+      /* this either returns a pointer to a new atlasFourJetMetNLeptons with
        * cuts decided by the given string, or a pointer to a
        * reallyWrongCalculator.
        */
 
-      ~atlasFourJetMetZeroLepton();
+      ~atlasFourJetMetNLeptons();
 
 
     protected:
+      int const numberOfLeptons;
       jetAcceptanceTable* fourJetKinematics;
       jetAcceptanceTable* threeJetKinematics;
       /* the 4-jet signal is complicated enough that we also consider only 3 of
@@ -322,11 +334,11 @@ namespace LHC_FASER
       // these are used as each pairing of cascades from each production
       // channel is calculated:
       double subchannelValue;
-      double subchannelZeroOrMoreJetsZeroLeptons;
-      double subchannelOneOrMoreJetsZeroLeptons;
+      double subchannelZeroOrMoreJetsNLeptons;
+      double subchannelOneOrMoreJetsNLeptons;
 
-      atlasFourJetMetZeroLepton(
-                                signalDefinitionSet* const signalDefinitions );
+      atlasFourJetMetNLeptons( signalDefinitionSet* const signalDefinitions,
+                               int const numberOfLeptons );
 
       virtual double
       valueForCurrentCascades( fullCascade* firstCascade,
@@ -340,7 +352,7 @@ namespace LHC_FASER
      * it takes the kinematics from the Atlas3jMET grid & combines them with
      * cascade decays leading to 1 lepton passing the cut.
      */
-    class atlasThreeJetMetOneLepton : public signalCalculator
+    class atlasThreeJetMetNLeptons : public signalCalculator
     {
     public:
       static int const jetAcceptanceGridTableColumn;
@@ -356,19 +368,20 @@ namespace LHC_FASER
       static signalCalculator*
       getCalculator( std::string const* const argumentString,
                      signalDefinitionSet* const signalDefinitions );
-      // this either returns a pointer to a new atlasThreeJetMetOneLepton with
+      // this either returns a pointer to a new atlasThreeJetMetNLeptons with
       // cuts decided by the given string, or a reallyWrongCalculator pointer.
 
-      ~atlasThreeJetMetOneLepton();
+      ~atlasThreeJetMetNLeptons();
 
 
     protected:
+      int const numberOfLeptons;
       // this is used as each pairing of cascades from each production
       // channel is calculated.
-      double subchannelZeroOrMoreJetsOneLepton;
+      double subchannelZeroOrMoreJetsNLeptons;
 
-      atlasThreeJetMetOneLepton(
-                                signalDefinitionSet* const signalDefinitions );
+      atlasThreeJetMetNLeptons( signalDefinitionSet* const signalDefinitions,
+                                int const numberOfLeptons );
 
       virtual double
       valueForCurrentCascades( fullCascade* firstCascade,
