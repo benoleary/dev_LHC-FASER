@@ -301,6 +301,232 @@ namespace LHC_FASER
     };
 
 
+    class leptonAcceptanceForCascadePair
+    {
+    public:
+      leptonAcceptanceForCascadePair(
+                                signalDefinitionSet* const signalDefinitions );
+      virtual
+      ~leptonAcceptanceForCascadePair();
+
+      virtual double
+      withAtLeastNJets( int const minimumNumberOfJets,
+                        fullCascade* firstCascade,
+                        fullCascade* secondCascade ) = 0;
+      virtual double
+      withExactlyNJets( int const exactNumberOfJets,
+                        fullCascade* firstCascade,
+                        fullCascade* secondCascade ) = 0;
+
+
+    protected:
+      signalDefinitionSet* const signalDefinitions;
+    };
+
+    namespace leptonAcceptanceStyle
+    {
+      class fullySpecified : public leptonAcceptanceForCascadePair
+      {
+      public:
+        fullySpecified( signalDefinitionSet* const signalDefinitions,
+                        int const numberOfNegativeElectrons,
+                        int const numberOfPositiveElectrons,
+                        int const numberOfNegativeMuons,
+                        int const numberOfPositiveMuons );
+        virtual
+        ~fullySpecified();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        bool
+        isSameAs( fullySpecified const* const comparisonPointer );
+
+
+      protected:
+        int const numberOfNegativeElectrons;
+        int const numberOfPositiveElectrons;
+        int const numberOfNegativeMuons;
+        int const numberOfPositiveMuons;
+      };
+
+
+      class noLeptonCut : public leptonAcceptanceForCascadePair
+      {
+      public:
+        noLeptonCut( signalDefinitionSet* const signalDefinitions );
+        virtual
+        ~noLeptonCut();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        bool
+        isSameAs( noLeptonCut const* const comparisonPointer );
+
+
+      //protected:
+        // nothing.
+      };
+
+
+      class chargeAndFlavorSummed : public leptonAcceptanceForCascadePair
+      {
+      public:
+        chargeAndFlavorSummed( signalDefinitionSet* const signalDefinitions,
+                               int const numberOfLeptons );
+        virtual
+        ~chargeAndFlavorSummed();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        bool
+        isSameAs( chargeAndFlavorSummed const* const comparisonPointer );
+
+
+      protected:
+        int const numberOfLeptons;
+      };
+
+
+      class chargeSummed : public leptonAcceptanceForCascadePair
+      {
+      public:
+        chargeSummed( signalDefinitionSet* const signalDefinitions,
+                      int const numberOfElectrons,
+                      int const numberOfMuons );
+        virtual
+        ~chargeSummed();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        bool
+        isSameAs( chargeSummed const* const comparisonPointer );
+
+
+      protected:
+        int const numberOfElectrons;
+        int const numberOfMuons;
+      };
+
+
+      class flavorSummed : public leptonAcceptanceForCascadePair
+      {
+      public:
+        flavorSummed( signalDefinitionSet* const signalDefinitions,
+                      int const numberOfNegativeLeptons,
+                      int const numberOfPositiveLeptons );
+        virtual
+        ~flavorSummed();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        bool
+        isSameAs( flavorSummed const* const comparisonPointer );
+
+
+      protected:
+        int const numberOfNegativeLeptons;
+        int const numberOfPositiveLeptons;
+      };
+
+
+      class ossfMinusOsdf : public leptonAcceptanceForCascadePair
+      {
+      public:
+        ossfMinusOsdf( signalDefinitionSet* const signalDefinitions,
+                       bool const restrictedToOnePair );
+        virtual
+        ~ossfMinusOsdf();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade ) = 0;
+        bool
+        isSameAs( ossfMinusOsdf const* const comparisonPointer );
+
+
+      protected:
+        bool const restrictedToOnePair;
+      };
+
+    }  // end of leptonAcceptanceStyle namespace
+
+
+    class leptonAcceptanceForCascadePairFactory
+    {
+    public:
+      leptonAcceptanceForCascadePairFactory();
+      ~leptonAcceptanceForCascadePairFactory();
+
+      leptonAcceptanceForCascadePair*
+      getFullySpecified( signalDefinitionSet* const signalDefinitions,
+                         int const numberOfNegativeElectrons,
+                         int const numberOfPositiveElectrons,
+                         int const numberOfNegativeMuons,
+                         int const numberOfPositiveMuons );
+      leptonAcceptanceForCascadePair*
+      getNoLeptonCut( signalDefinitionSet* const signalDefinitions );
+      leptonAcceptanceForCascadePair*
+      getChargeAndFlavorSummed( signalDefinitionSet* const signalDefinitions,
+                                int const numberOfLeptons );
+      leptonAcceptanceForCascadePair*
+      getChargeSummed( signalDefinitionSet* const signalDefinitions,
+                       int const numberOfElectrons,
+                       int const numberOfMuons );
+      leptonAcceptanceForCascadePair*
+      getFlavorSummed( signalDefinitionSet* const signalDefinitions,
+                       int const numberOfNegativeLeptons,
+                       int const numberOfPositiveLeptons );
+      leptonAcceptanceForCascadePair*
+      getOssfMinusOsdf( signalDefinitionSet* const signalDefinitions,
+                        bool const restrictedToOnePair );
+
+
+    protected:
+      std::vector< leptonAcceptanceStyle::fullySpecified* > fullySpecifiedSet;
+      std::vector< leptonAcceptanceStyle::noLeptonCut* > noLeptonCutSet;
+      std::vector< leptonAcceptanceStyle::chargeAndFlavorSummed* >
+      chargeAndFlavorSummedSet;
+      std::vector< leptonAcceptanceStyle::chargeSummed* > chargeSummedSet;
+      std::vector< leptonAcceptanceStyle::flavorSummed* > flavorSummedSet;
+      std::vector< leptonAcceptanceStyle::ossfMinusOsdf* > ossfMinusOsdfSet;
+    };
+
+
     /* this is a derived class to calculateValue the "Atlas 4 jets plus missing
      * transverse momentum plus N leptons" signal.
      * it takes the kinematics from the Atlas4jMET grid & combines them with
