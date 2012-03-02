@@ -310,18 +310,25 @@ namespace LHC_FASER
       ~leptonAcceptanceForCascadePair();
 
       virtual double
-      withAtLeastNJets( int const minimumNumberOfJets,
-                        fullCascade* firstCascade,
-                        fullCascade* secondCascade ) = 0;
-      virtual double
       withExactlyNJets( int const exactNumberOfJets,
                         fullCascade* firstCascade,
-                        fullCascade* secondCascade ) = 0;
+                        bool firstIsNotAntiparticle,
+                        fullCascade* secondCascade,
+                        bool secondIsNotAntiparticle ) = 0;
+      virtual double
+      withAtLeastNJets( int const minimumNumberOfJets,
+                        fullCascade* firstCascade,
+                        bool firstIsNotAntiparticle,
+                        fullCascade* secondCascade,
+                        bool secondIsNotAntiparticle );
 
 
     protected:
+      static int const maximumNumberOfJets;
+
       signalDefinitionSet* const signalDefinitions;
     };
+
 
     namespace leptonAcceptanceStyle
     {
@@ -337,13 +344,11 @@ namespace LHC_FASER
         ~fullySpecified();
 
         virtual double
-        withAtLeastNJets( int const minimumNumberOfJets,
-                          fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
-        virtual double
         withExactlyNJets( int const exactNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
         bool
         isSameAs( fullySpecified const* const comparisonPointer );
 
@@ -356,23 +361,26 @@ namespace LHC_FASER
       };
 
 
-      class noLeptonCut : public leptonAcceptanceForCascadePair
+      class noLeptonCutNorExtraJetCut : public leptonAcceptanceForCascadePair
       {
       public:
-        noLeptonCut( signalDefinitionSet* const signalDefinitions );
+        noLeptonCutNorExtraJetCut(
+                                signalDefinitionSet* const signalDefinitions );
         virtual
-        ~noLeptonCut();
+        ~noLeptonCutNorExtraJetCut();
 
-        virtual double
-        withAtLeastNJets( int const minimumNumberOfJets,
-                          fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
         virtual double
         withExactlyNJets( int const exactNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
-        bool
-        isSameAs( noLeptonCut const* const comparisonPointer );
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
 
 
       //protected:
@@ -391,11 +399,15 @@ namespace LHC_FASER
         virtual double
         withAtLeastNJets( int const minimumNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
         virtual double
         withExactlyNJets( int const exactNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
         bool
         isSameAs( chargeAndFlavorSummed const* const comparisonPointer );
 
@@ -417,11 +429,15 @@ namespace LHC_FASER
         virtual double
         withAtLeastNJets( int const minimumNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
         virtual double
         withExactlyNJets( int const exactNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
         bool
         isSameAs( chargeSummed const* const comparisonPointer );
 
@@ -444,11 +460,15 @@ namespace LHC_FASER
         virtual double
         withAtLeastNJets( int const minimumNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
         virtual double
         withExactlyNJets( int const exactNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
         bool
         isSameAs( flavorSummed const* const comparisonPointer );
 
@@ -470,11 +490,15 @@ namespace LHC_FASER
         virtual double
         withAtLeastNJets( int const minimumNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
         virtual double
         withExactlyNJets( int const exactNumberOfJets,
                           fullCascade* firstCascade,
-                          fullCascade* secondCascade ) = 0;
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle );
         bool
         isSameAs( ossfMinusOsdf const* const comparisonPointer );
 
@@ -518,7 +542,7 @@ namespace LHC_FASER
 
     protected:
       std::vector< leptonAcceptanceStyle::fullySpecified* > fullySpecifiedSet;
-      std::vector< leptonAcceptanceStyle::noLeptonCut* > noLeptonCutSet;
+      leptonAcceptanceStyle::noLeptonCutNorExtraJetCut* noLeptonOrExtraJetCuts;
       std::vector< leptonAcceptanceStyle::chargeAndFlavorSummed* >
       chargeAndFlavorSummedSet;
       std::vector< leptonAcceptanceStyle::chargeSummed* > chargeSummedSet;
@@ -764,6 +788,7 @@ namespace LHC_FASER
 
 
 
+
   namespace signalCalculatorClasses
   {
     inline bool
@@ -809,6 +834,157 @@ namespace LHC_FASER
       return 0.0;
     }
 
+
+    inline double
+    leptonAcceptanceForCascadePair::withAtLeastNJets(
+                                                 int const minimumNumberOfJets,
+                                                     fullCascade* firstCascade,
+                                                   bool firstIsNotAntiparticle,
+                                                    fullCascade* secondCascade,
+                                                 bool secondIsNotAntiparticle )
+    {
+      double returnValue( 0.0 );
+      for( int numberOfJets( minimumNumberOfJets );
+           maximumNumberOfJets >= numberOfJets;
+           ++numberOfJets )
+      {
+        returnValue += withExactlyNJets( numberOfJets,
+                                         firstCascade,
+                                         firstIsNotAntiparticle,
+                                         secondCascade,
+                                         secondIsNotAntiparticle );
+      }
+      return returnValue;
+    }
+
+
+    namespace leptonAcceptanceStyle
+    {
+      inline double
+      noLeptonCutNorExtraJetCut::withExactlyNJets( int const exactNumberOfJets,
+                                                   fullCascade* firstCascade,
+                                                   bool firstIsNotAntiparticle,
+                                                   fullCascade* secondCascade,
+                                                 bool secondIsNotAntiparticle )
+      {
+        return 1.0;
+      }
+
+      inline double
+      noLeptonCutNorExtraJetCut::withAtLeastNJets( int const exactNumberOfJets,
+                                                   fullCascade* firstCascade,
+                                                   bool firstIsNotAntiparticle,
+                                                   fullCascade* secondCascade,
+                                                 bool secondIsNotAntiparticle )
+      {
+        return 1.0;
+      }
+
+
+      class chargeAndFlavorSummed : public leptonAcceptanceForCascadePair
+      {
+      public:
+        chargeAndFlavorSummed( signalDefinitionSet* const signalDefinitions,
+                               int const numberOfLeptons );
+        virtual
+        ~chargeAndFlavorSummed();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade );
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade );
+        bool
+        isSameAs( chargeAndFlavorSummed const* const comparisonPointer );
+
+
+      protected:
+        int const numberOfLeptons;
+      };
+
+
+      class chargeSummed : public leptonAcceptanceForCascadePair
+      {
+      public:
+        chargeSummed( signalDefinitionSet* const signalDefinitions,
+                      int const numberOfElectrons,
+                      int const numberOfMuons );
+        virtual
+        ~chargeSummed();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade );
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade );
+        bool
+        isSameAs( chargeSummed const* const comparisonPointer );
+
+
+      protected:
+        int const numberOfElectrons;
+        int const numberOfMuons;
+      };
+
+
+      class flavorSummed : public leptonAcceptanceForCascadePair
+      {
+      public:
+        flavorSummed( signalDefinitionSet* const signalDefinitions,
+                      int const numberOfNegativeLeptons,
+                      int const numberOfPositiveLeptons );
+        virtual
+        ~flavorSummed();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade );
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade );
+        bool
+        isSameAs( flavorSummed const* const comparisonPointer );
+
+
+      protected:
+        int const numberOfNegativeLeptons;
+        int const numberOfPositiveLeptons;
+      };
+
+
+      class ossfMinusOsdf : public leptonAcceptanceForCascadePair
+      {
+      public:
+        ossfMinusOsdf( signalDefinitionSet* const signalDefinitions,
+                       bool const restrictedToOnePair );
+        virtual
+        ~ossfMinusOsdf();
+
+        virtual double
+        withAtLeastNJets( int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade );
+        virtual double
+        withExactlyNJets( int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          fullCascade* secondCascade );
+        bool
+        isSameAs( ossfMinusOsdf const* const comparisonPointer );
+
+
+      protected:
+        bool const restrictedToOnePair;
+      };
+
+    }  // end of leptonAcceptanceStyle namespace
 
 
     inline double

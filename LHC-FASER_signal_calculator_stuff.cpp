@@ -685,6 +685,131 @@ namespace LHC_FASER
     }
 
 
+    int const leptonAcceptanceForCascadePair::maximumNumberOfJets( 2
+                                     * fullCascade::maximumJetsFromEwCascade );
+
+    leptonAcceptanceForCascadePair::leptonAcceptanceForCascadePair(
+                                 signalDefinitionSet* const signalDefinitions ) :
+        signalDefinitions( signalDefinitions )
+    {
+      // just an initialization list.
+    }
+
+    leptonAcceptanceForCascadePair::~leptonAcceptanceForCascadePair()
+    {
+      // does nothing.
+    }
+
+
+    namespace leptonAcceptanceStyle
+    {
+      fullySpecified::fullySpecified(
+                                  signalDefinitionSet* const signalDefinitions,
+                                      int const numberOfNegativeElectrons,
+                                      int const numberOfPositiveElectrons,
+                                      int const numberOfNegativeMuons,
+                                      int const numberOfPositiveMuons ) :
+        leptonAcceptanceForCascadePair( signalDefinitions ),
+        numberOfNegativeElectrons( numberOfNegativeElectrons ),
+        numberOfPositiveElectrons( numberOfPositiveElectrons ),
+        numberOfNegativeMuons( numberOfNegativeMuons ),
+        numberOfPositiveMuons( numberOfPositiveMuons )
+      {
+        // just an initialization list.
+      }
+
+      fullySpecified::~fullySpecified()
+      {
+        // does nothing.
+      }
+
+
+      double
+      fullySpecified::withExactlyNJets( int const exactNumberOfJets,
+                                        fullCascade* firstCascade,
+                                        bool firstIsNotAntiparticle,
+                                        fullCascade* secondCascade,
+                                        bool secondIsNotAntiparticle )
+      {
+        double returnValue( 0.0 );
+
+        for( int negativeElectronsFromFirst( numberOfNegativeElectrons );
+             0 <= negativeElectronsFromFirst;
+             --negativeElectronsFromFirst )
+        {
+          for( int positiveElectronsFromFirst( numberOfPositiveElectrons );
+               0 <= positiveElectronsFromFirst;
+               --positiveElectronsFromFirst )
+          {
+            for( int negativeMuonsFromFirst( numberOfNegativeMuons );
+                 0 <= negativeMuonsFromFirst;
+                 --negativeMuonsFromFirst )
+            {
+              for( int positiveMuonsFromFirst( numberOfPositiveMuons );
+                   0 <= positiveMuonsFromFirst;
+                   --positiveMuonsFromFirst )
+              {
+                returnValue
+                += ( firstCascade->getAcceptance( firstIsNotAntiparticle,
+                                                  signalDefinitions,
+                                                  negativeElectronsFromFirst,
+                                                  positiveElectronsFromFirst,
+                                                  negativeMuonsFromFirst,
+                                                  positiveMuonsFromFirst )
+                     * secondCascade->getAcceptance( secondIsNotAntiparticle,
+                                                     signalDefinitions,
+                    ( numberOfNegativeElectrons - negativeElectronsFromFirst ),
+                    ( numberOfPositiveElectrons - positiveElectronsFromFirst ),
+                            ( numberOfNegativeMuons - negativeMuonsFromFirst ),
+                        ( numberOfPositiveMuons - positiveMuonsFromFirst ) ) );
+              }
+            }
+          }
+        }
+        return returnValue;
+      }
+
+      bool
+      fullySpecified::isSameAs( fullySpecified const* const comparisonPointer )
+      {
+        if( comparisonPointer->signalDefinitions->isSameAcceptanceCutSet(
+                                                            signalDefinitions )
+            &&
+            ( comparisonPointer->numberOfNegativeElectrons
+              == numberOfNegativeElectrons )
+            &&
+            ( comparisonPointer->numberOfPositiveElectrons
+              == numberOfPositiveElectrons )
+            &&
+            ( comparisonPointer->numberOfNegativeMuons
+              == numberOfNegativeMuons )
+            &&
+            ( comparisonPointer->numberOfPositiveMuons
+              == numberOfPositiveMuons ) )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+
+      noLeptonCutNorExtraJetCut::noLeptonCutNorExtraJetCut(
+                               signalDefinitionSet* const signalDefinitions ) :
+          leptonAcceptanceForCascadePair( signalDefinitions )
+      {
+        // just an initialization list.
+      }
+
+      noLeptonCutNorExtraJetCut::~noLeptonCutNorExtraJetCut()
+      {
+        // does nothing.
+      }
+
+    }  // end of leptonAcceptanceStyle namespace
+
 
     int const
     atlasFourJetMetNLeptons::jetAcceptanceGridTableColumn( 10 );

@@ -139,6 +139,9 @@ namespace LHC_FASER
       sizeOfEnumPlusOne /* possibly useful */
     };
 
+    static int const maximumJetsFromEwCascade;
+    static int const maximumLeptonsOfEachTypeFromEwCascade;
+
     fullCascade( colorfulCascadeType const typeOfColorfulCascade,
                  int const firstDecayBodyNumber,
                  int const maximumSmFermionsFromElectroweakCascades = 0,
@@ -257,9 +260,6 @@ namespace LHC_FASER
 
 
   protected:
-    static int const maximumJetsFromEwCascade;
-    static int const maximumLeptonsOfEachTypeFromEwCascade;
-
     inputHandler const* inputShortcut;
     particlePointer initialSparticle;
     double beamEnergy;
