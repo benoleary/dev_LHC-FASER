@@ -703,13 +703,11 @@ namespace LHC_FASER
 
     namespace leptonAcceptanceStyle
     {
-      fullySpecified::fullySpecified(
-                                  signalDefinitionSet* const signalDefinitions,
-                                      int const numberOfNegativeElectrons,
+      fullySpecified::fullySpecified( int const numberOfNegativeElectrons,
                                       int const numberOfPositiveElectrons,
                                       int const numberOfNegativeMuons,
                                       int const numberOfPositiveMuons ) :
-        leptonAcceptanceForCascadePair( signalDefinitions ),
+        leptonAcceptanceForCascadePair(),
         numberOfNegativeElectrons( numberOfNegativeElectrons ),
         numberOfPositiveElectrons( numberOfPositiveElectrons ),
         numberOfNegativeMuons( numberOfNegativeMuons ),
@@ -725,7 +723,9 @@ namespace LHC_FASER
 
 
       double
-      fullySpecified::withExactlyNJets( int const exactNumberOfJets,
+      fullySpecified::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                        int const exactNumberOfJets,
                                         fullCascade* firstCascade,
                                         bool firstIsNotAntiparticle,
                                         fullCascade* secondCascade,
@@ -769,41 +769,45 @@ namespace LHC_FASER
         return returnValue;
       }
 
-      bool
-      fullySpecified::isSameAs( fullySpecified const* const comparisonPointer )
-      {
-        if( comparisonPointer->signalDefinitions->isSameAcceptanceCutSet(
-                                                            signalDefinitions )
-            &&
-            ( comparisonPointer->numberOfNegativeElectrons
-              == numberOfNegativeElectrons )
-            &&
-            ( comparisonPointer->numberOfPositiveElectrons
-              == numberOfPositiveElectrons )
-            &&
-            ( comparisonPointer->numberOfNegativeMuons
-              == numberOfNegativeMuons )
-            &&
-            ( comparisonPointer->numberOfPositiveMuons
-              == numberOfPositiveMuons ) )
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
 
-
-      noLeptonCutNorExtraJetCut::noLeptonCutNorExtraJetCut(
-                               signalDefinitionSet* const signalDefinitions ) :
-          leptonAcceptanceForCascadePair( signalDefinitions )
+      noLeptonCutNorExtraJetCut::noLeptonCutNorExtraJetCut() :
+          leptonAcceptanceForCascadePair()
       {
         // just an initialization list.
       }
 
       noLeptonCutNorExtraJetCut::~noLeptonCutNorExtraJetCut()
+      {
+        // does nothing.
+      }
+
+
+
+      chargeAndFlavorSummed::chargeAndFlavorSummed(
+                                                  int const numberOfLeptons ) :
+          leptonAcceptanceForCascadePair(),
+          numberOfLeptons( numberOfLeptons )
+      {
+        // just an initialization list.
+      }
+
+      chargeAndFlavorSummed::~chargeAndFlavorSummed()
+      {
+        // does nothing.
+      }
+
+
+
+      chargeSummed::chargeSummed( int const numberOfElectrons,
+                                  int const numberOfMuons ) :
+          leptonAcceptanceForCascadePair(),
+          numberOfElectrons( numberOfElectrons ),
+          numberOfMuons( numberOfMuons )
+      {
+        // just an initialization list.
+      }
+
+      chargeSummed::~chargeSummed()
       {
         // does nothing.
       }
