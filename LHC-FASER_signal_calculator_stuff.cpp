@@ -688,11 +688,9 @@ namespace LHC_FASER
     int const leptonAcceptanceForCascadePair::maximumNumberOfJets( 2
                                      * fullCascade::maximumJetsFromEwCascade );
 
-    leptonAcceptanceForCascadePair::leptonAcceptanceForCascadePair(
-                                 signalDefinitionSet* const signalDefinitions ) :
-        signalDefinitions( signalDefinitions )
+    leptonAcceptanceForCascadePair::leptonAcceptanceForCascadePair()
     {
-      // just an initialization list.
+      // does nothing.
     }
 
     leptonAcceptanceForCascadePair::~leptonAcceptanceForCascadePair()
@@ -733,35 +731,42 @@ namespace LHC_FASER
       {
         double returnValue( 0.0 );
 
-        for( int negativeElectronsFromFirst( numberOfNegativeElectrons );
-             0 <= negativeElectronsFromFirst;
-             --negativeElectronsFromFirst )
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
         {
-          for( int positiveElectronsFromFirst( numberOfPositiveElectrons );
-               0 <= positiveElectronsFromFirst;
-               --positiveElectronsFromFirst )
+          for( int negativeElectronsFromFirst( numberOfNegativeElectrons );
+               0 <= negativeElectronsFromFirst;
+               --negativeElectronsFromFirst )
           {
-            for( int negativeMuonsFromFirst( numberOfNegativeMuons );
-                 0 <= negativeMuonsFromFirst;
-                 --negativeMuonsFromFirst )
+            for( int positiveElectronsFromFirst( numberOfPositiveElectrons );
+                 0 <= positiveElectronsFromFirst;
+                 --positiveElectronsFromFirst )
             {
-              for( int positiveMuonsFromFirst( numberOfPositiveMuons );
-                   0 <= positiveMuonsFromFirst;
-                   --positiveMuonsFromFirst )
+              for( int negativeMuonsFromFirst( numberOfNegativeMuons );
+                   0 <= negativeMuonsFromFirst;
+                   --negativeMuonsFromFirst )
               {
-                returnValue
-                += ( firstCascade->getAcceptance( firstIsNotAntiparticle,
-                                                  signalDefinitions,
-                                                  negativeElectronsFromFirst,
-                                                  positiveElectronsFromFirst,
-                                                  negativeMuonsFromFirst,
-                                                  positiveMuonsFromFirst )
-                     * secondCascade->getAcceptance( secondIsNotAntiparticle,
-                                                     signalDefinitions,
+                for( int positiveMuonsFromFirst( numberOfPositiveMuons );
+                     0 <= positiveMuonsFromFirst;
+                     --positiveMuonsFromFirst )
+                {
+                  returnValue
+                  += ( firstCascade->getAcceptance( firstIsNotAntiparticle,
+                                                    signalDefinitions,
+                                                    jetsFromFirst,
+                                                    negativeElectronsFromFirst,
+                                                    positiveElectronsFromFirst,
+                                                    negativeMuonsFromFirst,
+                                                    positiveMuonsFromFirst )
+                       * secondCascade->getAcceptance( secondIsNotAntiparticle,
+                                                       signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
                     ( numberOfNegativeElectrons - negativeElectronsFromFirst ),
                     ( numberOfPositiveElectrons - positiveElectronsFromFirst ),
                             ( numberOfNegativeMuons - negativeMuonsFromFirst ),
                         ( numberOfPositiveMuons - positiveMuonsFromFirst ) ) );
+                }
               }
             }
           }
@@ -797,6 +802,40 @@ namespace LHC_FASER
       }
 
 
+      double
+      chargeAndFlavorSummed::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                               int const exactNumberOfJets,
+                                               fullCascade* firstCascade,
+                                               bool firstIsNotAntiparticle,
+                                               fullCascade* secondCascade,
+                                               bool secondIsNotAntiparticle )
+      {
+        double returnValue( 0.0 );
+
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
+        {
+          for( int leptonsFromFirst( numberOfLeptons );
+               0 <= leptonsFromFirst;
+               --leptonsFromFirst )
+          {
+            returnValue
+            += ( firstCascade->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                             signalDefinitions,
+                                                             exactNumberOfJets,
+                                                             leptonsFromFirst )
+                 * secondCascade->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                             signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
+                                    ( numberOfLeptons - leptonsFromFirst ) ) );
+          }
+        }
+        return returnValue;
+      }
+
+
 
       chargeSummed::chargeSummed( int const numberOfElectrons,
                                   int const numberOfMuons ) :
@@ -812,7 +851,324 @@ namespace LHC_FASER
         // does nothing.
       }
 
+
+      double
+      chargeSummed::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                      int const exactNumberOfJets,
+                                      fullCascade* firstCascade,
+                                      bool firstIsNotAntiparticle,
+                                      fullCascade* secondCascade,
+                                      bool secondIsNotAntiparticle )
+      {
+        double returnValue( 0.0 );
+
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
+        {
+          for( int electronsFromFirst( numberOfElectrons );
+               0 <= electronsFromFirst;
+               --electronsFromFirst )
+          {
+            for( int muonsFromFirst( numberOfMuons );
+                 0 <= muonsFromFirst;
+                 --muonsFromFirst )
+            {
+              returnValue
+              += ( firstCascade->leptonChargeSummedWithSpecifiedJets(
+                                                        firstIsNotAntiparticle,
+                                                             signalDefinitions,
+                                                                 jetsFromFirst,
+                                                            electronsFromFirst,
+                                                            muonsFromFirst )
+                 * secondCascade->leptonChargeSummedWithSpecifiedJets(
+                                                       secondIsNotAntiparticle,
+                                                             signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
+                                    ( numberOfElectrons - electronsFromFirst ),
+                                        ( numberOfMuons - muonsFromFirst ) ) );
+            }
+          }
+        }
+        return returnValue;
+      }
+
+
+
+      flavorSummed::flavorSummed( int const numberOfNegativeLeptons,
+                                  int const numberOfPositiveLeptons ) :
+          leptonAcceptanceForCascadePair(),
+          numberOfNegativeLeptons( numberOfNegativeLeptons ),
+          numberOfPositiveLeptons( numberOfPositiveLeptons )
+      {
+        // just an initialization list.
+      }
+
+      flavorSummed::~flavorSummed()
+      {
+        // does nothing.
+      }
+
+
+      double
+      flavorSummed::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                      int const exactNumberOfJets,
+                                      fullCascade* firstCascade,
+                                      bool firstIsNotAntiparticle,
+                                      fullCascade* secondCascade,
+                                      bool secondIsNotAntiparticle )
+      {
+        double returnValue( 0.0 );
+
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
+        {
+          for( int negativeLeptonsFromFirst( numberOfNegativeLeptons );
+               0 <= negativeLeptonsFromFirst;
+               --negativeLeptonsFromFirst )
+          {
+            for( int positiveLeptonsFromFirst( numberOfPositiveLeptons );
+                 0 <= positiveLeptonsFromFirst;
+                 --positiveLeptonsFromFirst )
+            {
+              returnValue
+              += ( firstCascade->leptonChargeSummedWithSpecifiedJets(
+                                                        firstIsNotAntiparticle,
+                                                             signalDefinitions,
+                                                             jetsFromFirst,
+                                                      negativeLeptonsFromFirst,
+                                                     positiveLeptonsFromFirst )
+                   * secondCascade->leptonChargeSummedWithSpecifiedJets(
+                                                       secondIsNotAntiparticle,
+                                                             signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
+                        ( numberOfNegativeLeptons - negativeLeptonsFromFirst ),
+                    ( numberOfPositiveLeptons - positiveLeptonsFromFirst ) ) );
+            }
+          }
+        }
+        return returnValue;
+      }
+
+
+
+      ossfMinusOsdf::ossfMinusOsdf() :
+          leptonAcceptanceForCascadePair()
+      {
+        // just an initialization list.
+      }
+
+      ossfMinusOsdf::~ossfMinusOsdf()
+      {
+        // does nothing.
+      }
+
+
+      double
+      ossfMinusOsdf::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                       int const exactNumberOfJets,
+                                       fullCascade* firstCascade,
+                                       bool firstIsNotAntiparticle,
+                                       fullCascade* secondCascade,
+                                       bool secondIsNotAntiparticle )
+      {
+        double returnValue( 0.0 );
+
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
+        {
+          returnValue
+          = ( ( firstCascade->specifiedJetsOneOssfMinusOsdfPair(
+                                                             signalDefinitions,
+                                                         exactNumberOfJets )
+                * secondCascade->getAcceptance( secondIsNotAntiparticle,
+                                                signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
+                                                0,
+                                                0,
+                                                0,
+                                                0 ) )
+              + ( firstCascade->getAcceptance( firstIsNotAntiparticle,
+                                               signalDefinitions,
+                                               jetsFromFirst,
+                                               0,
+                                               0,
+                                               0,
+                                               0 )
+                  * secondCascade->specifiedJetsOneOssfMinusOsdfPair(
+                                                            signalDefinitions,
+                                   ( exactNumberOfJets - jetsFromFirst ) ) ) );
+        }
+        return returnValue;
+      }
+
     }  // end of leptonAcceptanceStyle namespace
+
+
+
+    leptonAcceptanceForPairFactory::leptonAcceptanceForPairFactory() :
+        fullySpecifiedSet(),
+        noLeptonOrExtraJetCutInstance(),
+        chargeAndFlavorSummedSet(),
+        chargeSummedSet(),
+        flavorSummedSet(),
+        ossfMinusOsdfInstance()
+    {
+      // just an initialization list.
+    }
+
+    leptonAcceptanceForPairFactory::~leptonAcceptanceForPairFactory()
+    {
+      for( int deletionIndex( fullySpecifiedSet.size() - 1 );
+           0 <= deletionIndex;
+           --deletionIndex )
+      {
+        delete fullySpecifiedSet[ deletionIndex ];
+      }
+      for( int deletionIndex( chargeAndFlavorSummedSet.size() - 1 );
+           0 <= deletionIndex;
+           --deletionIndex )
+      {
+        delete chargeAndFlavorSummedSet[ deletionIndex ];
+      }
+      for( int deletionIndex( chargeSummedSet.size() - 1 );
+           0 <= deletionIndex;
+           --deletionIndex )
+      {
+        delete chargeSummedSet[ deletionIndex ];
+      }
+      for( int deletionIndex( flavorSummedSet.size() - 1 );
+           0 <= deletionIndex;
+           --deletionIndex )
+      {
+        delete flavorSummedSet[ deletionIndex ];
+      }
+    }
+
+
+    leptonAcceptanceForCascadePair*
+    leptonAcceptanceForPairFactory::getFullySpecified(
+                                           int const numberOfNegativeElectrons,
+                                           int const numberOfPositiveElectrons,
+                                           int const numberOfNegativeMuons,
+                                           int const numberOfPositiveMuons )
+    {
+      leptonAcceptanceForCascadePair* returnPointer( NULL );
+      for( int searchIndex( fullySpecifiedSet.size() - 1 );
+           0 <= searchIndex;
+           --searchIndex )
+      {
+        if( fullySpecifiedSet[ searchIndex ]->isSameAs(
+                                                     numberOfNegativeElectrons,
+                                                     numberOfPositiveElectrons,
+                                                        numberOfNegativeMuons,
+                                                      numberOfPositiveMuons ) )
+        {
+          returnPointer = fullySpecifiedSet[ searchIndex ];
+          searchIndex = -1;
+          // stop looking.
+        }
+      }
+      if( NULL == returnPointer )
+      {
+        fullySpecifiedSet.push_back( new leptonAcceptanceStyle::fullySpecified(
+                                                     numberOfNegativeElectrons,
+                                                     numberOfPositiveElectrons,
+                                                         numberOfNegativeMuons,
+                                                     numberOfPositiveMuons ) );
+        returnPointer = fullySpecifiedSet.back();
+      }
+      return returnPointer;
+    }
+
+    leptonAcceptanceForCascadePair*
+    leptonAcceptanceForPairFactory::getChargeAndFlavorSummed(
+                                                    int const numberOfLeptons )
+    {
+      leptonAcceptanceForCascadePair* returnPointer( NULL );
+      for( int searchIndex( chargeAndFlavorSummedSet.size() - 1 );
+           0 <= searchIndex;
+           --searchIndex )
+      {
+        if( chargeAndFlavorSummedSet[ searchIndex ]->isSameAs(
+                                                            numberOfLeptons ) )
+        {
+          returnPointer = chargeAndFlavorSummedSet[ searchIndex ];
+          searchIndex = -1;
+          // stop looking.
+        }
+      }
+      if( NULL == returnPointer )
+      {
+        chargeAndFlavorSummedSet.push_back(
+                              new leptonAcceptanceStyle::chargeAndFlavorSummed(
+                                                           numberOfLeptons ) );
+        returnPointer = chargeAndFlavorSummedSet.back();
+      }
+      return returnPointer;
+    }
+
+    leptonAcceptanceForCascadePair*
+    leptonAcceptanceForPairFactory::getChargeSummed(
+                                                   int const numberOfElectrons,
+                                                      int const numberOfMuons )
+    {
+      leptonAcceptanceForCascadePair* returnPointer( NULL );
+      for( int searchIndex( chargeSummedSet.size() - 1 );
+           0 <= searchIndex;
+           --searchIndex )
+      {
+        if( chargeSummedSet[ searchIndex ]->isSameAs( numberOfElectrons,
+                                                      numberOfMuons ) )
+        {
+          returnPointer = chargeSummedSet[ searchIndex ];
+          searchIndex = -1;
+          // stop looking.
+        }
+      }
+      if( NULL == returnPointer )
+      {
+        chargeSummedSet.push_back( new leptonAcceptanceStyle::chargeSummed(
+                                                             numberOfElectrons,
+                                                             numberOfMuons ) );
+        returnPointer = chargeSummedSet.back();
+      }
+      return returnPointer;
+    }
+
+    leptonAcceptanceForCascadePair*
+    leptonAcceptanceForPairFactory::getFlavorSummed(
+                                             int const numberOfNegativeLeptons,
+                                            int const numberOfPositiveLeptons )
+    {
+      leptonAcceptanceForCascadePair* returnPointer( NULL );
+      for( int searchIndex( flavorSummedSet.size() - 1 );
+           0 <= searchIndex;
+           --searchIndex )
+      {
+        if( flavorSummedSet[ searchIndex ]->isSameAs( numberOfNegativeLeptons,
+                                                    numberOfPositiveLeptons ) )
+        {
+          returnPointer = flavorSummedSet[ searchIndex ];
+          searchIndex = -1;
+          // stop looking.
+        }
+      }
+      if( NULL == returnPointer )
+      {
+        flavorSummedSet.push_back( new leptonAcceptanceStyle::flavorSummed(
+                                                       numberOfNegativeLeptons,
+                                                   numberOfPositiveLeptons ) );
+        returnPointer = flavorSummedSet.back();
+      }
+      return returnPointer;
+    }
+
 
 
     int const
