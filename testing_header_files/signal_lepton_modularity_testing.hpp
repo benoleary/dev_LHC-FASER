@@ -37,33 +37,33 @@ namespace LHC_FASER
     {
       signalCalculatorClasses::leptonAcceptanceForPairFactory testFactory;
 
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       testFullySpecified( testFactory.getFullySpecified( 1,
                                                          0,
                                                          0,
                                                          1 ) );
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       testNoLeptonCutNorExtraJetCut( testFactory.getNoLeptonCut() );
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       testChargeAndFlavorSummed( testFactory.getChargeAndFlavorSummed( 2 ) );
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       singleLepton( testFactory.getChargeAndFlavorSummed( 1 ) );
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       testChargeSummed( testFactory.getChargeSummed( 0,
                                                      1 ) );
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       singleMuon( testFactory.getChargeSummed( 0,
                                                1 ) );
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       testFlavorSummed( testFactory.getFlavorSummed( 0,
                                                      1 ) );
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       singleNegative( testFactory.getFlavorSummed( 1,
                                                    0 ) );
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       singlePositive( testFactory.getFlavorSummed( 0,
                                                    1 ) );
-      signalCalculatorClasses::leptonAcceptanceForCascadePair*
+      signalCalculatorClasses::leptonAcceptanceForCascadePair const*
       testOssfMinusOsdf( testFactory.getOssfMinusOsdf() );
 
       std::cout
