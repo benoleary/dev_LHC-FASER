@@ -440,8 +440,7 @@ namespace LHC_FASER
 
   signalHandler::signalHandler( std::string const signalName,
                                 double const crossSectionUnitFactor,
-                    signalDefinitionSet* const signalPreparationDefinitions,
-              leptonAcceptanceForPairFactory& leptonAcceptanceForPairSource ) :
+                    signalDefinitionSet* const signalPreparationDefinitions ) :
     getsReadiedForNewPoint( signalPreparationDefinitions->getShortcuts(
                                         )->getInputShortcuts()->getReadier() ),
     signalName( signalName ),
@@ -451,6 +450,37 @@ namespace LHC_FASER
     uncertaintyFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
     crossSectionUnitFactor( crossSectionUnitFactor )
   {
+    std::vector< signalCalculatorCreator > creationFunctions;
+    creationFunctions.push_back(
+       &(signalClasses::atlasFourJetMetPlusGivenLeptonCuts::getCalculator()) );
+    for( int whichFunction( (int)(creationFunctions.size()) - 1 );
+         ( ( 0 <= whichFunction )
+           &&
+         ( NULL == rateCalculator ) );
+         --whichFunction )
+    {
+      rateCalculator = (*(creationFunctions[ whichFunction ]))( signalName,
+                                                signalPreparationDefinitions );
+    }
+    if( NULL == rateCalculator )
+    {
+      std::cout
+      << std::endl
+      << "LHC-FASER::error! signalHandler::signalHandler( "
+      << signalName << ", " <<  inputShortcut << " ) was passed a"
+      << " name it does not know ( \"" << signalName
+      << "\" ). its calculator is being set to return only "
+      << CppSLHA::CppSLHA_global::really_wrong_value_string << " for"
+      << " every point.";
+      std::cout << std::endl;
+
+      rateCalculator = new signalClasses::reallyWrongCalculator(
+                                                signalPreparationDefinitions );
+    }
+
+    below is just for reference while making getCalculator() for the derived
+        classes:
+
     std::string calculatorArgument( "error" );
     if( 0 == signalName.compare( 0,
                                  10,
@@ -461,7 +491,7 @@ namespace LHC_FASER
       calculatorArgument.assign( ( signalName.begin() + 10 ),
                                  signalName.end() );
       rateCalculator
-      = signalCalculatorClasses::atlasFourJetMetNLeptons::getCalculator(
+      = signalClasses::atlasFourJetMetNLeptons::getCalculator(
                                                            &calculatorArgument,
                                                 signalPreparationDefinitions );
     }
@@ -474,7 +504,7 @@ namespace LHC_FASER
       calculatorArgument.assign( ( signalName.begin() + 10 ),
                                  signalName.end() );
       rateCalculator
-      = signalCalculatorClasses::atlasThreeJetMetNLeptons::getCalculator(
+      = signalClasses::atlasThreeJetMetNLeptons::getCalculator(
                                                            &calculatorArgument,
                                                 signalPreparationDefinitions );
     }
@@ -492,7 +522,7 @@ namespace LHC_FASER
       << " for every point instead.";
 
       rateCalculator
-      = new signalCalculatorClasses::reallyWrongCalculator(
+      = new signalClasses::reallyWrongCalculator(
                                                 signalPreparationDefinitions );
     }
     else if( 0 == signalName.compare( 0,
@@ -503,7 +533,7 @@ namespace LHC_FASER
       calculatorArgument.assign( ( signalName.begin() + 16 ),
                                  signalName.end() );
       rateCalculator
-      = signalCalculatorClasses::sameSignDilepton::getCalculator(
+      = signalClasses::sameSignDilepton::getCalculator(
                                                            &calculatorArgument,
                                                 signalPreparationDefinitions );
     }
@@ -513,7 +543,7 @@ namespace LHC_FASER
     {
       signalPreparationDefinitions->setBeamEnergy( 7 );
       rateCalculator
-      = new signalCalculatorClasses::sigmaBreakdownTest(
+      = new signalClasses::sigmaBreakdownTest(
                                                 signalPreparationDefinitions );
     }
     else
@@ -530,7 +560,7 @@ namespace LHC_FASER
       std::cout << std::endl;
 
       rateCalculator
-      = new signalCalculatorClasses::reallyWrongCalculator(
+      = new signalClasses::reallyWrongCalculator(
                                                 signalPreparationDefinitions );
     }
   }
@@ -542,7 +572,7 @@ namespace LHC_FASER
 
 
 
-  namespace signalCalculatorClasses
+  namespace signalClasses
   {
     reallyWrongCalculator::reallyWrongCalculator(
                                signalDefinitionSet* const signalDefinitions ) :
@@ -2035,6 +2065,6 @@ namespace LHC_FASER
                * subchannelDileptonAcceptance );
     }
 
-  }  // end of signalCalculatorClasses namespace.
+  }  // end of signalClasses namespace.
 
 }  // end of LHC_FASER namespace.

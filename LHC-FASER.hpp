@@ -199,7 +199,6 @@ namespace LHC_FASER
     electroweakCascadeHandler* electroweakCascadeSource;
     fullCascadeSetFactory* fullCascadeSetSource;
     // this handles the cascade decays of colored sparticles.
-    leptonAcceptanceForPairFactory leptonAcceptanceForPairSource;
     signalDefinitionSet* signalPreparationDefinitions;
     std::vector< signalHandler* > signalSet;
     // this tracks the various signals of LHC supersymmetric events & their

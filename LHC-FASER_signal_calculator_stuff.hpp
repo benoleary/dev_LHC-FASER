@@ -119,7 +119,8 @@ namespace LHC_FASER
     = 0;*/
     /* this should be over-written in each derived class to construct a new
      * instance of the derived class based on arguments, & return a pointer to
-     * the new instance of the derived class.
+     * the new instance of the derived class, or NULL if the string could not
+     * be parsed as a correct key for the derived class.
      */
     virtual bool
     calculateValue( double* signalValue,
@@ -202,7 +203,7 @@ namespace LHC_FASER
   };
 
 
-  namespace signalCalculatorClasses
+  namespace signalClasses
   {
     /* this is a derived class which just always returns
      * CppSLHA::CppSLHA_global::really_wrong_value as its value. it is used for
@@ -471,18 +472,17 @@ namespace LHC_FASER
 
       static signalCalculator*
       getCalculator( std::string const* const argumentString,
-        leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator,
                      signalDefinitionSet* const signalDefinitions );
       /* this either returns a pointer to a new atlasFourJetMetNLeptons with
-       * cuts decided by the given string, or a pointer to a
-       * reallyWrongCalculator.
+       * cuts decided by the given string, or NULL if the string could not be
+       * parsed properly.
        */
 
       ~atlasFourJetMetPlusGivenLeptonCuts();
 
 
     protected:
-      leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator;
+      leptonAcceptanceForCascadePair* leptonAcceptanceCalculator;
       jetAcceptanceTable* fourJetKinematics;
       jetAcceptanceTable* threeJetKinematics;
       /* the 4-jet signal is complicated enough that we also consider only 3 of
@@ -500,7 +500,7 @@ namespace LHC_FASER
 
       atlasFourJetMetPlusGivenLeptonCuts(
                                   signalDefinitionSet* const signalDefinitions,
-      leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator );
+            leptonAcceptanceForCascadePair* const leptonAcceptanceCalculator );
 
       virtual double
       valueForCurrentCascades( fullCascade* firstCascade,
@@ -651,44 +651,7 @@ namespace LHC_FASER
       // see base version's description.
     };
 
-  }  // end of signalCalculatorClasses namespace.
-
-
-  class leptonAcceptanceForPairFactory
-  {
-  public:
-    leptonAcceptanceForPairFactory();
-    ~leptonAcceptanceForPairFactory();
-
-    leptonAcceptanceForCascadePair const*
-    getFullySpecified( int const numberOfNegativeElectrons,
-                       int const numberOfPositiveElectrons,
-                       int const numberOfNegativeMuons,
-                       int const numberOfPositiveMuons );
-    leptonAcceptanceForCascadePair const*
-    getNoLeptonCut();
-    leptonAcceptanceForCascadePair const*
-    getChargeAndFlavorSummed( int const numberOfLeptons );
-    leptonAcceptanceForCascadePair const*
-    getChargeSummed( int const numberOfElectrons,
-                     int const numberOfMuons );
-    leptonAcceptanceForCascadePair const*
-    getFlavorSummed( int const numberOfNegativeLeptons,
-                     int const numberOfPositiveLeptons );
-    leptonAcceptanceForCascadePair const*
-    getOssfMinusOsdf();
-
-
-  protected:
-    std::vector< leptonAcceptanceStyle::fullySpecified* > fullySpecifiedSet;
-    leptonAcceptanceStyle::noLeptonCutNorExtraJetCut
-    noLeptonOrExtraJetCutInstance;
-    std::vector< leptonAcceptanceStyle::chargeAndFlavorSummed* >
-    chargeAndFlavorSummedSet;
-    std::vector< leptonAcceptanceStyle::chargeSummed* > chargeSummedSet;
-    std::vector< leptonAcceptanceStyle::flavorSummed* > flavorSummedSet;
-    leptonAcceptanceStyle::ossfMinusOsdf ossfMinusOsdfInstance;
-  };
+  }  // end of signalClasses namespace.
 
 
   /* this is a class to handle each individual signal to be calculated.
@@ -702,10 +665,12 @@ namespace LHC_FASER
   class signalHandler : public getsReadiedForNewPoint
   {
   public:
+    typedef signalCalculator* (*signalCalculatorCreator)( std::string const&,
+                                                  signalDefinitionSet* const );
+
     signalHandler( std::string const signalName,
                    double const crossSectionUnitFactor,
-                   signalDefinitionSet* const signalPreparationDefinitions,
-               leptonAcceptanceForPairFactory& leptonAcceptanceForPairSource );
+                   signalDefinitionSet* const signalPreparationDefinitions );
     ~signalHandler();
 
     std::string const*
@@ -829,7 +794,7 @@ namespace LHC_FASER
 
 
 
-  namespace signalCalculatorClasses
+  namespace signalClasses
   {
     inline bool
     reallyWrongCalculator::calculateValue( double* signalValue,
@@ -1054,7 +1019,7 @@ namespace LHC_FASER
                                                              0 ) );
     }
 
-  }  // end of signalCalculatorClasses namespace
+  }  // end of signalClasses namespace
 
 }  // end of LHC_FASER namespace.
 
