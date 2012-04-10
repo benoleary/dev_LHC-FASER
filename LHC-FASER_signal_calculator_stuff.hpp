@@ -150,9 +150,13 @@ namespace LHC_FASER
     // returns -1 if it could not find any.
     static bool
     parseBeamEnergy( std::string const& argumentString,
-                     signalDefinitionSet* const signalDefinitions );
-    // this looks for "_7TeV", "_07TeV", "_10TeV", or "_14TeV", & sets the beam
-    // energy appropriately. returns false if it could not find any.
+                     signalDefinitionSet* const signalDefinitions,
+                     std::string& argumentRemainder );
+    /* this looks for "_7TeV_", "_07TeV_", "_10TeV_", or "_14TeV_", & sets the
+     * beam energy appropriately, putting argumentString from the 2nd '_'
+     * onwards into argumentRemainder. returns false if it could not find any
+     * (& does not modify argumentRemainder in this case).
+     */
     static void
     parseLeptonTransverseMomentumCuts( std::string const& argumentString,
                                 signalDefinitionSet* const signalDefinitions,
@@ -973,20 +977,6 @@ namespace LHC_FASER
       }
 
     }  // end of leptonAcceptanceStyle namespace
-
-
-
-    inline leptonAcceptanceForCascadePair const*
-    leptonAcceptanceForPairFactory::getNoLeptonCut()
-    {
-      return &noLeptonOrExtraJetCutInstance;
-    }
-
-    inline leptonAcceptanceForCascadePair const*
-    leptonAcceptanceForPairFactory::getOssfMinusOsdf()
-    {
-      return &ossfMinusOsdfInstance;
-    }
 
 
 
