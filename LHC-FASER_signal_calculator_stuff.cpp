@@ -108,6 +108,7 @@ namespace LHC_FASER
     {
       delete *deletionIterator;
     }
+    delete signalDefinitions;
   }
 
 
@@ -234,58 +235,6 @@ namespace LHC_FASER
     return true;
   }
 
-  int
-  signalCalculator::parseLeptonCutType( std::string const& argumentString )
-  // this looks for "_0l", "_1l", or "_2l", & returns the appropriate int.
-  // returns -1 if it could not find any.
-  {
-    if( std::string::npos != argumentString.find( "_0l" ) )
-      // zero leptons...
-    {
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "signalCalculator::parseLeptonCutType returning 0 leptons.";
-      std::cout << std::endl;**/
-
-      return 0;
-    }
-    else if( std::string::npos != argumentString.find( "_1l" ) )
-      // one lepton...
-    {
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "signalCalculator::parseLeptonCutType returning 1 lepton.";
-      std::cout << std::endl;**/
-
-      return 1;
-    }
-    else if( std::string::npos != argumentString.find( "_2l" ) )
-      // two leptons
-    {
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "signalCalculator::parseLeptonCutType returning 2 leptons.";
-      std::cout << std::endl;**/
-
-      return 2;
-    }
-    else
-    {
-      std::cout
-      << std::endl
-      << "LHC-FASER::error! signalHandler::signalHandler( "
-      << argumentString << " ) was passed a name it does not know (could not"
-      << " find \"_0l\", \"_1l\", or \"_2l\", which are appropriate for this"
-      << " type of signal). its calculator is being set to return "
-      << CppSLHA::CppSLHA_global::really_wrong_value_string
-      << " for every point.";
-      return -1;
-    }
-  }
-
   bool
   signalCalculator::parseBeamEnergy( std::string const& argumentString,
                                  signalDefinitionSet* const signalDefinitions,
@@ -296,7 +245,9 @@ namespace LHC_FASER
    * modify argumentRemainder in this case).
    */
   {
-    if( 0 == argumentString.compare( "_7TeV_" ) )
+    if( 0 == argumentString.compare( 0,
+                                     6,
+                                     "_7TeV_" ) )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -309,7 +260,9 @@ namespace LHC_FASER
                                 5 );
       return true;
     }
-    else if( 0 == argumentString.compare( "_07TeV_" ) )
+    else if( 0 == argumentString.compare( 0,
+                                          7,
+                                          "_07TeV_" ) )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -322,7 +275,9 @@ namespace LHC_FASER
                                 6 );
       return true;
     }
-    else if( 0 == argumentString.compare( "_10TeV_" ) )
+    else if( 0 == argumentString.compare( 0,
+                                          7,
+                                          "_10TeV_" ) )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -335,7 +290,9 @@ namespace LHC_FASER
                                 6 );
       return true;
     }
-    else if( 0 == argumentString.compare( "_14TeV_" ) )
+    else if( 0 == argumentString.compare( 0,
+                                          7,
+                                          "_14TeV_" ) )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -354,28 +311,209 @@ namespace LHC_FASER
     }
   }
 
+  signalClasses::leptonAcceptanceForCascadePair*
+  signalCalculator::parseLeptonAcceptance( std::string const& argumentString,
+                                 signalDefinitionSet* const signalDefinitions )
+  /* this looks for strings encoding the type of lepton cuts to use. the
+   * strings are, where # stands for any string representing an integer, in the
+   * order in which they are checked:
+   * "_ossf" : ossfMinusOsdf
+   * "_noExtraCut" : noLeptonCutNorExtraJetCut
+   * "_#l" : chargeAndFlavorSummed
+   * "_#lm#lp" : flavorSummed
+   * "_#epm#mpm" : chargeSummed
+   * "_#em#ep#mm#mp" : fullySpecified
+   * parseLeptonTransverseMomentumCuts is then called on the remainder of
+   * argumentString. finally, it creates a new leptonAcceptanceForCascadePair
+   * & returns a pointer to it. NULL is returned if argumentString could not
+   * be properly interpretted.
+   */
+  {
+    signalClasses::leptonAcceptanceForCascadePair* returnPointer( NULL );
+
+    // 1st look for the easy cases:
+    if( 0 == argumentString.compare( 0,
+                                     5,
+                                     "_ossf" ) )
+    {
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "signalCalculator::parseLeptonAcceptance found \"_ossf\".";
+      std::cout << std::endl;/**/
+      returnPointer
+      = new signalClasses::leptonAcceptanceStyle::ossfMinusOsdf();
+    }
+    else if( 0 == argumentString.compare( 0,
+                                          11,
+                                          "_noExtraCut" ) )
+    {
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "signalCalculator::parseLeptonAcceptance found \"_noExtraCut\".";
+      std::cout << std::endl;/**/
+      returnPointer
+      = new signalClasses::leptonAcceptanceStyle::ossfMinusOsdf();
+      argumentRemainder.assign( argumentString,
+                                11 );
+    }
+    else if( 0 == argumentString.compare( 0,
+                                          1,
+                                          "_" ) )
+      // otherwise look for a string of numeric characters...
+    {
+      size_t charPosition( 1 );
+      std::string integerString( "" );
+      int leptonNumber( parseOutLeptonNumber( argumentString,
+                                              charPosition ) );
+      // ... followed by...
+      if( 'l' == argumentString[ charPosition ] )
+      {
+        if( ( argumentString.size() == charPosition )
+            ||
+            ( '_' == argumentString[ ( charPosition + 1 ) ] ) )
+          // if argumentString ends with "_#l" or continues with "_", it's
+          // chargeAndFlavorSummed.
+        {
+          // debugging:
+          /**/std::cout << std::endl << "debugging:"
+          << std::endl
+          << "signalCalculator::parseLeptonAcceptance found \"_"
+          << leptonNumber << "l\"...";
+          std::cout << std::endl;/**/
+
+          returnPointer
+          = new signalClasses::leptonAcceptanceStyle::chargeAndFlavorSummed(
+                                                                leptonNumber );
+        }
+        else if( 'm' == argumentString[ ( charPosition + 1 ) ] )
+        {
+          charPosition += 2;
+          int secondLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                        charPosition ) );
+          if( 0 == argumentString.compare( charPosition,
+                                           2,
+                                           "lp" ) )
+          {
+            // debugging:
+            /**/std::cout << std::endl << "debugging:"
+            << std::endl
+            << "signalCalculator::parseLeptonAcceptance found \"_"
+            << leptonNumber << "lm"
+            << secondLeptonNumber << "lp\"...";
+            std::cout << std::endl;/**/
+
+            returnPointer
+            = new signalClasses::leptonAcceptanceStyle::flavorSummed(
+                                                                  leptonNumber,
+                                                          secondLeptonNumber );
+          }
+        }
+      }
+      else if( 'e' == argumentString[ charPosition ] )
+      {
+        if( 0 == argumentString.compare( charPosition,
+                                         3,
+                                         "epm" ) )
+        {
+          charPosition += 3;
+          int secondLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                        charPosition ) );
+          if( 0 == argumentString.compare( charPosition,
+                                           3,
+                                           "mpm" ) )
+          {
+            // debugging:
+            /**/std::cout << std::endl << "debugging:"
+            << std::endl
+            << "signalCalculator::parseLeptonAcceptance found \"_"
+            << leptonNumber << "epm"
+            << secondLeptonNumber << "mpm\"...";
+            std::cout << std::endl;/**/
+
+            returnPointer
+            = new signalClasses::leptonAcceptanceStyle::chargeSummed(
+                                                                  leptonNumber,
+                                                          secondLeptonNumber );
+          }
+        }
+        else if( 0 == argumentString.compare( charPosition,
+                                              2,
+                                              "em" ) )
+        {
+          charPosition += 2;
+          int secondLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                        charPosition ) );
+          if( 0 == argumentString.compare( charPosition,
+                                           2,
+                                           "ep" ) )
+          {
+            charPosition += 2;
+            int thirdLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                         charPosition ) );
+            if( 0 == argumentString.compare( charPosition,
+                                             2,
+                                             "mm" ) )
+            {
+              charPosition += 2;
+              int fourthLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                            charPosition ) );
+              if( 0 == argumentString.compare( charPosition,
+                                               2,
+                                               "mm" ) )
+              {
+                // debugging:
+                /**/std::cout << std::endl << "debugging:"
+                << std::endl
+                << "signalCalculator::parseLeptonAcceptance found \"_"
+                << leptonNumber << "em"
+                << secondLeptonNumber << "ep"
+                << thirdLeptonNumber << "mm"
+                << fourthLeptonNumber << "mp\"...";
+                std::cout << std::endl;/**/
+
+                returnPointer
+                = new signalClasses::leptonAcceptanceStyle::fullySpecified(
+                                                                  leptonNumber,
+                                                            secondLeptonNumber,
+                                                             thirdLeptonNumber,
+                                                          fourthLeptonNumber );
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if( NULL != returnPointer )
+    {
+      parseLeptonTransverseMomentumCuts( argumentString,
+                                         signalDefinitions );
+    }
+    /* this takes care of if there were lepton transverse momentum cuts
+     * specified. it's OK to only set them after the new
+     * leptonAcceptanceForCascadePair has been constructed because
+     * signalDefinitions is still a pointer to the signalDefinitionSet that
+     * returnPointer uses.
+     */
+    return returnPointer;
+  }
+
   void
   signalCalculator::parseLeptonTransverseMomentumCuts(
                                              std::string const& argumentString,
-                                  signalDefinitionSet* const signalDefinitions,
-                                          double const defaultPrimaryLeptonCut,
-                                       double const defaultSecondaryLeptonCut )
+                                 signalDefinitionSet* const signalDefinitions )
   /* this looks for "_pTl" then a double then "GeV", then a subsequent "_pTl",
    * a subsequent double, & a subsequent "GeV", interpretted as the primary &
    * secondary lepton cuts respectively.
    */
   {
-    signalDefinitions->setPrimaryLeptonCut( defaultPrimaryLeptonCut );
-    signalDefinitions->setSecondaryLeptonCut( defaultSecondaryLeptonCut );
-    // set the cuts to the defaults in case we don't find any cuts in the
-    // string.
-
     // debugging:
     /**std::cout << std::endl << "debugging:"
     << std::endl
     << "signalCalculator::parseLeptonTransverseMomentumCuts( "
-    << argumentString << ", " << signalDefinitions << ", "
-    << defaultPrimaryLeptonCut << ", " << defaultSecondaryLeptonCut
+    << argumentString << ", " << signalDefinitions
     << " ) called. no further output implies that no cuts were found.";
     std::cout << std::endl;**/
 
@@ -450,16 +588,18 @@ namespace LHC_FASER
 
   signalHandler::signalHandler( std::string const signalName,
                                 double const crossSectionUnitFactor,
-                    signalDefinitionSet* const signalPreparationDefinitions ) :
+                                signalShortcuts const* const inputShortcut ) :
     getsReadiedForNewPoint( signalPreparationDefinitions->getShortcuts(
                                         )->getInputShortcuts()->getReadier() ),
     signalName( signalName ),
     rateCalculator( NULL ),
-    inputShortcut( signalPreparationDefinitions->getShortcuts() ),
+    inputShortcut( inputShortcut ),
     signalValue( CppSLHA::CppSLHA_global::really_wrong_value ),
     uncertaintyFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
     crossSectionUnitFactor( crossSectionUnitFactor )
   {
+    signalDefinitionSet*
+    signalPreparationDefinitions( new signalDefinitionSet( inputShortcut ) );
     std::vector< signalCalculatorCreator > creationFunctions;
     creationFunctions.push_back(
        &(signalClasses::atlasFourJetMetPlusGivenLeptonCuts::getCalculator()) );
@@ -489,53 +629,9 @@ namespace LHC_FASER
     }
 
     below is just for reference while making getCalculator() for the derived
-        classes:
+      classes:
 
-    std::string calculatorArgument( "error" );
     if( 0 == signalName.compare( 0,
-                                 10,
-                                 "Atlas4jMET" ) )
-      // if the signal is the Atlas 4-jet, missing transverse momentum,
-      // 0 leptons event rate...
-    {
-      calculatorArgument.assign( ( signalName.begin() + 10 ),
-                                 signalName.end() );
-      rateCalculator
-      = signalClasses::atlasFourJetMetNLeptons::getCalculator(
-                                                           &calculatorArgument,
-                                                signalPreparationDefinitions );
-    }
-    else if( 0 == signalName.compare( 0,
-                                      10,
-                                      "Atlas3jMET" ) )
-      // if the signal is the Atlas 3-jet, missing transverse momentum,
-      // 1 lepton event rate...
-    {
-      calculatorArgument.assign( ( signalName.begin() + 10 ),
-                                 signalName.end() );
-      rateCalculator
-      = signalClasses::atlasThreeJetMetNLeptons::getCalculator(
-                                                           &calculatorArgument,
-                                                signalPreparationDefinitions );
-    }
-    else if( 0 == signalName.compare( "CMS2jMET_anyl_14TeV" ) )
-      // if the signal is the CMS 2-jet, missing transverse momentum,
-      // any amount of leptons event rate, for a beam energy of 14 TeV...
-    {
-      std::cout
-      << std::endl
-      << "LHC-FASER::error! signalHandler::signalHandler( "
-      << signalName << ", "<<  inputShortcut << " ) was passed"
-      << " CMS2jMET_anyl_14TeV, but unfortunately it has not yet been"
-      << " implemented. its calculator is being set to return only "
-      << CppSLHA::CppSLHA_global::really_wrong_value_string
-      << " for every point instead.";
-
-      rateCalculator
-      = new signalClasses::reallyWrongCalculator(
-                                                signalPreparationDefinitions );
-    }
-    else if( 0 == signalName.compare( 0,
                                       16,
                                       "sameSignDilepton" ) )
       // if the signal is the same-sign dilepton event rate...
@@ -1095,6 +1191,11 @@ namespace LHC_FASER
         << "validArguments = \"" << validArguments << "\"";
         std::cout << std::endl;/**/
 
+        // the lepton transverse momentum cuts are set to their defaults so
+        // that parseLeptonAcceptance can over-write them if necessary.
+        signalDefinitions->setPrimaryLeptonCut( defaultPrimaryLeptonCut );
+        signalDefinitions->setSecondaryLeptonCut( defaultSecondaryLeptonCut );
+
         std::string argumentRemainder;
         if( parseBeamEnergy( validArguments,
                              signalDefinitions,
@@ -1162,7 +1263,6 @@ namespace LHC_FASER
                                 bool const secondDoesNotStartWithAntiparticle )
     // see base version's description.
     {
-      subchannelZeroOrMoreJetsNLeptons = 0.0;
       subchannelOneOrMoreJetsNLeptons = 0.0;
       subchannelZeroOrMoreJetsNLeptons
       = leptonAcceptanceCalculator->withAtLeastNJets( &signalDefinitions,
@@ -1174,19 +1274,16 @@ namespace LHC_FASER
         // chance of the pair of cascades producing the correct number of
         // leptons between them.
 
-      sort out rest:
-        subchannelOneOrMoreJetsNLeptons
-        -= ( firstCascade->specifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                      0,
-                                                        leptonsInFirstCascade )
-             * secondCascade->specifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                         0,
-                               ( numberOfLeptons - leptonsInFirstCascade ) ) );
-        // 1st we sum up the overlap that needs to be taken away.
-      subchannelOneOrMoreJetsNLeptons += subchannelZeroOrMoreJetsNLeptons;
-      // then we specify the value minus the overlap with the totals.
+      subchannelOneOrMoreJetsNLeptons
+      = ( subchannelZeroOrMoreJetsNLeptons
+         - leptonAcceptanceCalculator->withExactlyNJets( &signalDefinitions,
+                                                         0,
+                                                         firstCascade,
+                                             firstDoesNotStartWithAntiparticle,
+                                                         secondCascade,
+                                        secondDoesNotStartWithAntiparticle ) );
+      // subchannelOneOrMoreJetsNLeptons = subchannelZeroOrMoreJetsNLeptons
+      // minus the amount with zero cascade jets.
 
       // debugging:
       /**std::cout << std::endl << "debugging:"

@@ -199,7 +199,6 @@ namespace LHC_FASER
     electroweakCascadeHandler* electroweakCascadeSource;
     fullCascadeSetFactory* fullCascadeSetSource;
     // this handles the cascade decays of colored sparticles.
-    signalDefinitionSet* signalPreparationDefinitions;
     std::vector< signalHandler* > signalSet;
     // this tracks the various signals of LHC supersymmetric events & their
     // rates.
@@ -254,7 +253,7 @@ namespace LHC_FASER
   {
     signalSet.push_back( new signalHandler( signalName,
                                             crossSectionUnitFactor,
-                                            signalPreparationDefinitions,
+                                            inputShortcut,
                                             leptonAcceptanceForPairSource ) );
     return signalSet.back();
   }

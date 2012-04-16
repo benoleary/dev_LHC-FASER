@@ -92,7 +92,6 @@ namespace LHC_FASER
     jetPlusMetAcceptanceSource( NULL ),
     electroweakCascadeSource( NULL ),
     fullCascadeSetSource( NULL ),
-    signalPreparationDefinitions( NULL ),
     signalSet(),
     inputShortcut( NULL ),
     readierObject()

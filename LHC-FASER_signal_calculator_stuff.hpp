@@ -103,7 +103,7 @@ namespace LHC_FASER
   class signalCalculator
   {
   public:
-    signalCalculator( signalDefinitionSet* signalDefinitions );
+    signalCalculator( signalDefinitionSet* const signalDefinitions );
     virtual
     ~signalCalculator();
 
@@ -144,10 +144,6 @@ namespace LHC_FASER
 
 
   protected:
-    static int
-    parseLeptonCutType( std::string const& argumentString );
-    // this looks for "_0l", "_1l", or "_2l", & returns the appropriate int.
-    // returns -1 if it could not find any.
     static bool
     parseBeamEnergy( std::string const& argumentString,
                      signalDefinitionSet* const signalDefinitions,
@@ -157,17 +153,40 @@ namespace LHC_FASER
      * onwards into argumentRemainder. returns false if it could not find any
      * (& does not modify argumentRemainder in this case).
      */
+    static leptonAcceptanceForCascadePair*
+    parseLeptonAcceptance( std::string const& argumentString,
+                           signalDefinitionSet* const signalDefinitions );
+    /* this looks for strings encoding the type of lepton cuts to use. the
+     * strings are, where # stands for any string representing an integer, in the
+     * order in which they are checked:
+     * "_ossf" : ossfMinusOsdf
+     * "_noExtraCut" : noLeptonCutNorExtraJetCut
+     * "_#l" : chargeAndFlavorSummed
+     * "_#lm#lp" : flavorSummed
+     * "_#epm#mpm" : chargeSummed
+     * "_#em#ep#mm#mp" : fullySpecified
+     * parseLeptonTransverseMomentumCuts is then called on the remainder of
+     * argumentString. finally, it creates a new leptonAcceptanceForCascadePair
+     * & returns a pointer to it. NULL is returned if argumentString could not
+     * be properly interpretted.
+     */
+    static int
+    parseOutLeptonNumber( std::string const& argumentString,
+                          size_t charPosition );
+    /* this returns the int made from the characters starting from charPosition
+     * up to the first non-numeric character. charPosition is set to the
+     * position of the first non-numeric character. -1 is returned if no
+     * numeric characters were found.
+     */
     static void
     parseLeptonTransverseMomentumCuts( std::string const& argumentString,
-                                signalDefinitionSet* const signalDefinitions,
-                                       double const defaultPrimaryLeptonCut,
-                                      double const defaultSecondaryLeptonCut );
+                                signalDefinitionSet* const signalDefinitions );
     /* this looks for "_pTl" then a double then "GeV", then a subsequent
      * "_pTl", a subsequent double, & a subsequent "GeV", interpretted as the
      * primary & secondary lepton cuts respectively.
      */
 
-    signalDefinitionSet signalDefinitions;
+    signalDefinitionSet* const signalDefinitions;
     inputHandler const* const inputShortcut;
     std::vector< productionChannelPointerSet* > productionChannels;
     //fullCascade* firstCascade;
@@ -674,7 +693,7 @@ namespace LHC_FASER
 
     signalHandler( std::string const signalName,
                    double const crossSectionUnitFactor,
-                   signalDefinitionSet* const signalPreparationDefinitions );
+                   signalShortcuts const* const inputShortcut );
     ~signalHandler();
 
     std::string const*
@@ -733,6 +752,33 @@ namespace LHC_FASER
   {
     return goThroughCascadesNormally( signalValue,
                                       uncertaintyFactor );
+  }
+
+  inline int
+  signalCalculator::parseOutLeptonNumber( std::string const& argumentString,
+                                          size_t charPosition )
+  /* this returns the int made from the characters starting from charPosition
+   * up to the first non-numeric character. charPosition is set to the
+   * position of the first non-numeric character. -1 is returned if no
+   * numeric characters were found.
+   */
+  {
+    int leptonNumber( -1 );
+    std::string integerString( "" );
+    while( ( '0' <= argumentString[ charPosition ] )
+           &&
+           ( '9' >= argumentString[ charPosition ] ) )
+    {
+      integerString.append( 1,
+                            argumentString[ charPosition ] );
+      ++charPosition;
+    }
+    if( !(integerString.empty()) )
+    {
+      std::stringstream numberParser( integerString );
+      numberParser >> leptonNumber;
+    }
+    return leptonNumber;
   }
 
 
