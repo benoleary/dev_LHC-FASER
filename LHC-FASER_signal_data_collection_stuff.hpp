@@ -104,7 +104,7 @@ namespace LHC_FASER
     getCascadeSets()
     const;
     double
-    getUncertainty();
+    getUncertainty() const;
     /* this looks at the various mass differences in the hierarchy & then
      * guesses how uncertain the signal value is (as a multiplicative factor
      * > 1.0).
@@ -129,13 +129,13 @@ namespace LHC_FASER
   class signalDefinitionSet : public acceptanceCutSet
   {
   public:
-    signalDefinitionSet( signalShortcuts* const inputShortcut );
-    signalDefinitionSet( signalDefinitionSet* const copySource );
+    signalDefinitionSet( signalShortcuts const* const inputShortcut );
+    signalDefinitionSet( signalDefinitionSet const* const copySource );
     virtual
     ~signalDefinitionSet();
 
-    signalShortcuts*
-    getShortcuts();
+    signalShortcuts const*
+    getShortcuts() const;
     void
     setBeamEnergy( int const inputValue );
     crossSectionTableSet*
@@ -152,7 +152,7 @@ namespace LHC_FASER
 
 
   protected:
-    signalShortcuts* const inputShortcut;
+    signalShortcuts const* const inputShortcut;
 
     // each signal needs to look up specific tables, based on the beam energy:
     crossSectionTableSet* crossSections;
@@ -230,8 +230,8 @@ namespace LHC_FASER
 
 
 
-  inline signalShortcuts*
-  signalDefinitionSet::getShortcuts()
+  inline signalShortcuts const*
+  signalDefinitionSet::getShortcuts() const
   {
     return inputShortcut;
   }

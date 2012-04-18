@@ -229,8 +229,7 @@ namespace LHC_FASER
       std::cout << std::endl;
 
       signalClasses::reallyWrongCalculator*
-      testReallyWrongCalculator(
-                            new signalClasses::reallyWrongCalculator(
+      testReallyWrongCalculator( new signalClasses::reallyWrongCalculator(
                                                   &testSignalDefinitionSet ) );
       double signalValue;
       double uncertaintyFactor;
@@ -262,6 +261,12 @@ namespace LHC_FASER
       testSignalHandlerPointer( new signalHandler( "sigmaBreakdownTest",
                                                    1000.0,
                                                   &testSignalDefinitionSet ) );
+
+      std::cout
+      << std::endl
+      << "sigmaBreakdownTest constructed without problem.";
+      std::cout << std::endl;
+
       std::cout
       << std::endl
       << "SPS1a: testSignalHandlerPointer->getValue() (in *fb*) = "
@@ -272,10 +277,9 @@ namespace LHC_FASER
       << std::endl
       << "sigmaBreakdownTest seems OK.";
       std::cout << std::endl;
-      signalHandler
-      testAtlasFourJetMetZeroLepton( "Atlas4jMET_0l_07TeV",
-                                     1.0,
-                                     &testSignalDefinitionSet );
+      signalHandler testAtlasFourJetMetZeroLepton( "Atlas4jMET_0l_07TeV",
+                                                   1.0,
+                                                   &testSignalDefinitionSet );
       std::cout
       << std::endl
       << "SPS1a: testAtlasFourJetMetZeroLepton.getValue() (in *pb*) = "
@@ -298,10 +302,9 @@ namespace LHC_FASER
       << std::endl
       << "atlasFourJetMetZeroLepton seems OK.";
       std::cout << std::endl;
-      signalHandler
-      testAtlasThreeJetMetOneLepton( "Atlas3jMET_1l_07TeV",
-                                     1.0,
-                                     &testSignalDefinitionSet );
+      signalHandler testAtlasThreeJetMetOneLepton( "Atlas3jMET_1l_07TeV",
+                                                   1.0,
+                                                   &testSignalDefinitionSet );
       std::cout
       << std::endl
       << "SPS1a: testAtlasThreeJetMetOneLepton.getValue() (in *pb*) = "
@@ -311,11 +314,10 @@ namespace LHC_FASER
       << std::endl
       << "atlasThreeJetMetOneLepton seems OK.";
       std::cout << std::endl;
-      signalHandler
-      testAtlasThreeJetMetOneLeptonHighCuts(
-                                   "Atlas3jMET_1l_07TeV_pTl60.8GeV_pTl18.5GeV",
-                                             1.0,
-                                             &testSignalDefinitionSet );
+      signalHandler testAtlasThreeJetMetOneLeptonHighCuts(
+                                       "Atlas3jMET_1l_07TeV_pTl60.8GeV18.5GeV",
+                                                           1.0,
+                                                    &testSignalDefinitionSet );
       std::cout
       << std::endl
       << "SPS1a: testAtlasThreeJetMetOneLeptonHighCuts.getValue() (in *pb*) = "
@@ -325,10 +327,9 @@ namespace LHC_FASER
       << std::endl
       << "atlasThreeJetMetOneLeptonHighCuts seems OK.";
       std::cout << std::endl;
-      signalHandler
-      testSameSignDilepton( "sameSignDilepton_07TeV",
-                            1.0,
-                            &testSignalDefinitionSet );
+      signalHandler testSameSignDilepton( "noJetOrMETCut_sssf_07TeV",
+                                          1.0,
+                                          &testSignalDefinitionSet );
       std::cout
       << std::endl
       << "SPS1a: testSameSignDilepton.getValue() (in *pb*) = "
@@ -412,11 +413,13 @@ namespace LHC_FASER
                                  &cascadeSets );
       signalDefinitionSet
       convolutedSignalDefinitionSet( &convolutedSignalShortcuts );
+      convolutedSignalDefinitionSet.setBeamEnergy( 7 );
       convolutedSignalDefinitionSet.setExcludedStandardModelProducts(
                                            testInputHandler->getNotInJets5() );
       convolutedSignalDefinitionSet.setJetCut( 40.0 );
       convolutedSignalDefinitionSet.setPrimaryLeptonCut( 20.0 );
       convolutedSignalDefinitionSet.setSecondaryLeptonCut( 10.0 );
+
       signalHandler convolutedSigmaBreakdownTest( "sigmaBreakdownTest",
                                                   1000.0,
                                               &convolutedSignalDefinitionSet );

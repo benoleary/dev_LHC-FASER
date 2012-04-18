@@ -138,10 +138,10 @@
 #include "testing_header_files/full_electroweak_cascade_testing.hpp"
 #include "testing_header_files/full_cascade_testing.hpp"
 #include "testing_header_files/jet_kinematics_testing.hpp"
+#include "testing_header_files/signal_lepton_modularity_testing.hpp"
 #include "testing_header_files/signal_testing.hpp"
 #include "testing_header_files/signal_timing_testing.hpp"
 #include "testing_header_files/lhcFaser_testing.hpp"
-#include "testing_header_files/signal_lepton_modularity_testing.hpp"
 
 // future includes:
 // none, since we're done!
@@ -239,20 +239,20 @@ int main( int argumentCount,
   **/
 
 
-
-  /* testing the signal stuff:
-   * (works)*//**
-  LHC_FASER::signalTesting signalTester( &basicStuffTester,
-                                         &inputTester );
-  signalTester.performTest();
-  **/
-
   /* testing the lepton modularity stuff:
-   * (probably doesn't work)*//**/
+   * (works)*//**
   LHC_FASER::signalLeptonModularityTesting
   leptonModularityTester( &basicStuffTester,
                           &inputTester );
   leptonModularityTester.performTest();
+  **/
+
+
+  /* testing the signal stuff:
+   * (doesn't work)*//**/
+  LHC_FASER::signalTesting signalTester( &basicStuffTester,
+                                         &inputTester );
+  signalTester.performTest();
   /**/
 
   /* finally, testing the lhcFaser itself:
