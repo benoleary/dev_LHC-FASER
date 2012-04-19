@@ -139,9 +139,9 @@ namespace LHC_FASER
     void
     setBeamEnergy( int const inputValue );
     crossSectionTableSet*
-    getCrossSections();
+    getCrossSections() const;
     jetAcceptanceTable*
-    getJetPlusMetAcceptance();
+    getJetPlusMetAcceptance() const;
     void
     setJetPlusMetAcceptance( jetAcceptanceTable* const inputTable );
     void
@@ -172,7 +172,8 @@ namespace LHC_FASER
   class productionChannelPointerSet
   {
   public:
-    productionChannelPointerSet( signalDefinitionSet* const signalDefinitions,
+    productionChannelPointerSet(
+                            signalDefinitionSet const* const signalDefinitions,
                         signedParticleShortcutPair const* const scoloredPair );
     ~productionChannelPointerSet();
 
@@ -248,13 +249,13 @@ namespace LHC_FASER
   }
 
   inline crossSectionTableSet*
-  signalDefinitionSet::getCrossSections()
+  signalDefinitionSet::getCrossSections() const
   {
     return crossSections;
   }
 
   inline jetAcceptanceTable*
-  signalDefinitionSet::getJetPlusMetAcceptance()
+  signalDefinitionSet::getJetPlusMetAcceptance() const
   {
     return jetPlusMetAcceptance;
   }

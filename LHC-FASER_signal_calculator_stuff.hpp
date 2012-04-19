@@ -105,14 +105,14 @@ namespace LHC_FASER
     ~leptonAcceptanceForCascadePair();
 
     virtual double
-    withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+    withExactlyNJets( signalDefinitionSet const* const signalDefinitions,
                       int const exactNumberOfJets,
                       fullCascade* const firstCascade,
                       bool const firstIsNotAntiparticle,
                       fullCascade* const secondCascade,
                       bool const secondIsNotAntiparticle ) const = 0;
     virtual double
-    withAtLeastNJets( signalDefinitionSet* const signalDefinitions,
+    withAtLeastNJets( signalDefinitionSet const* const signalDefinitions,
                       int const minimumNumberOfJets,
                       fullCascade* const firstCascade,
                       bool const firstIsNotAntiparticle,
@@ -140,7 +140,7 @@ namespace LHC_FASER
       ~fullySpecified();
 
       virtual double
-      withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+      withExactlyNJets( signalDefinitionSet const* const signalDefinitions,
                         int const exactNumberOfJets,
                         fullCascade* const firstCascade,
                         bool const firstIsNotAntiparticle,
@@ -166,14 +166,14 @@ namespace LHC_FASER
       ~noLeptonCutNorExtraJetCut();
 
       virtual double
-      withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+      withExactlyNJets( signalDefinitionSet const* const signalDefinitions,
                         int const minimumNumberOfJets,
                         fullCascade* const firstCascade,
                         bool const firstIsNotAntiparticle,
                         fullCascade* const secondCascade,
                         bool const secondIsNotAntiparticle ) const;
       virtual double
-      withAtLeastNJets( signalDefinitionSet* const signalDefinitions,
+      withAtLeastNJets( signalDefinitionSet const* const signalDefinitions,
                         int const minimumNumberOfJets,
                         fullCascade* const firstCascade,
                         bool firstIsNotAntiparticle,
@@ -192,7 +192,7 @@ namespace LHC_FASER
       ~chargeAndFlavorSummed();
 
       virtual double
-      withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+      withExactlyNJets( signalDefinitionSet const* const signalDefinitions,
                         int const exactNumberOfJets,
                         fullCascade* const firstCascade,
                         bool const firstIsNotAntiparticle,
@@ -216,7 +216,7 @@ namespace LHC_FASER
       ~chargeSummed();
 
       virtual double
-      withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+      withExactlyNJets( signalDefinitionSet const* const signalDefinitions,
                         int const exactNumberOfJets,
                         fullCascade* const firstCascade,
                         bool const firstIsNotAntiparticle,
@@ -241,7 +241,7 @@ namespace LHC_FASER
       ~flavorSummed();
 
       virtual double
-      withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+      withExactlyNJets( signalDefinitionSet const* const signalDefinitions,
                         int const exactNumberOfJets,
                         fullCascade* const firstCascade,
                         bool const firstIsNotAntiparticle,
@@ -265,7 +265,7 @@ namespace LHC_FASER
       ~ossfMinusOsdf();
 
       virtual double
-      withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+      withExactlyNJets( signalDefinitionSet const* const signalDefinitions,
                         int const exactNumberOfJets,
                         fullCascade* const firstCascade,
                         bool const firstIsNotAntiparticle,
@@ -284,7 +284,7 @@ namespace LHC_FASER
       ~sameSignSameFlavor();
 
       virtual double
-      withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+      withExactlyNJets( signalDefinitionSet const* const signalDefinitions,
                         int const exactNumberOfJets,
                         fullCascade* const firstCascade,
                         bool const firstIsNotAntiparticle,
@@ -304,7 +304,7 @@ namespace LHC_FASER
   class signalCalculator
   {
   public:
-    signalCalculator( signalDefinitionSet* const signalDefinitions );
+    signalCalculator( signalDefinitionSet const* const signalDefinitions );
     virtual
     ~signalCalculator();
 
@@ -316,7 +316,7 @@ namespace LHC_FASER
     /*virtual static
     signalCalculator*
     getCalculator( std::string const* const argumentString,
-                   signalDefinitionSet* const signalDefinitions )
+                   signalDefinitionSet const* const signalDefinitions )
     = 0;*/
     /* this should be over-written in each derived class to construct a new
      * instance of the derived class based on arguments, & return a pointer to
@@ -406,7 +406,7 @@ namespace LHC_FASER
      * untouched & false is returned.
      */
 
-    signalDefinitionSet* const signalDefinitions;
+    signalDefinitionSet const* const signalDefinitions;
     inputHandler const* const inputShortcut;
     std::vector< productionChannelPointerSet* > productionChannels;
     //fullCascade* firstCascade;
@@ -455,7 +455,8 @@ namespace LHC_FASER
     class reallyWrongCalculator : public signalCalculator
     {
     public:
-      reallyWrongCalculator( signalDefinitionSet* const signalDefinitions );
+      reallyWrongCalculator(
+                          signalDefinitionSet const* const signalDefinitions );
       virtual
       ~reallyWrongCalculator();
 
@@ -501,7 +502,7 @@ namespace LHC_FASER
     protected:
       double channelBrTotal;
 
-      sigmaBreakdownTest( signalDefinitionSet* const signalDefinitions );
+      sigmaBreakdownTest( signalDefinitionSet const* const signalDefinitions );
 
       virtual double
       valueForCurrentCascades( fullCascade* firstCascade,
@@ -562,7 +563,7 @@ namespace LHC_FASER
       double subchannelTwoOrMoreJets;
 
       atlasFourJetMetPlusGivenLeptonCuts(
-                                  signalDefinitionSet* const signalDefinitions,
+                            signalDefinitionSet const* const signalDefinitions,
       leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator );
 
       virtual double
@@ -619,7 +620,7 @@ namespace LHC_FASER
       double subchannelOneOrMoreJets;
 
       atlasThreeJetMetPlusGivenLeptonCuts(
-                                  signalDefinitionSet* const signalDefinitions,
+                            signalDefinitionSet const* const signalDefinitions,
       leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator );
 
       virtual double
@@ -659,7 +660,8 @@ namespace LHC_FASER
       // channel is calculated:
       double subchannelValue;
 
-      noJetMetButGivenLeptonCuts( signalDefinitionSet* const signalDefinitions,
+      noJetMetButGivenLeptonCuts(
+                            signalDefinitionSet const* const signalDefinitions,
       leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator );
 
       virtual double
@@ -727,7 +729,7 @@ namespace LHC_FASER
 
   inline double
   leptonAcceptanceForCascadePair::withAtLeastNJets(
-                                  signalDefinitionSet* const signalDefinitions,
+                            signalDefinitionSet const* const signalDefinitions,
                                                  int const minimumNumberOfJets,
                                                fullCascade* const firstCascade,
                                              bool const firstIsNotAntiparticle,
@@ -754,7 +756,7 @@ namespace LHC_FASER
   {
     inline double
     noLeptonCutNorExtraJetCut::withExactlyNJets(
-                                  signalDefinitionSet* const signalDefinitions,
+                            signalDefinitionSet const* const signalDefinitions,
                                                  int const exactNumberOfJets,
                                                fullCascade* const firstCascade,
                                              bool const firstIsNotAntiparticle,
@@ -766,7 +768,7 @@ namespace LHC_FASER
 
     inline double
     noLeptonCutNorExtraJetCut::withAtLeastNJets(
-                                  signalDefinitionSet* const signalDefinitions,
+                            signalDefinitionSet const* const signalDefinitions,
                                                  int const minimumNumberOfJets,
                                                fullCascade* const firstCascade,
                                              bool const firstIsNotAntiparticle,
@@ -908,6 +910,9 @@ namespace LHC_FASER
                                        18,
                                        "sigmaBreakdownTest" ) )
       {
+        signalDefinitions->setExcludedStandardModelProducts(
+                          signalDefinitions->getShortcuts()->getInputShortcuts(
+                                                          )->getNotInJets5() );
         return new sigmaBreakdownTest( signalDefinitions );
       }
       else

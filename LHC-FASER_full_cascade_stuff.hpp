@@ -189,7 +189,7 @@ namespace LHC_FASER
     const;
     virtual double
     getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                   acceptanceCutSet* const acceptanceCuts,
+                   acceptanceCutSet const* const acceptanceCuts,
                    int const numberOfAdditionalJets,
                    int numberOfNegativeElectrons,
                    int numberOfPositiveElectrons,
@@ -203,7 +203,7 @@ namespace LHC_FASER
      */
     double
     getAcceptanceWithMinimumJets( bool const initialSparticleIsNotAntiparticle,
-                                  acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                   int const minimumNumberOfAdditionalJets,
                                   int const numberOfNegativeElectrons,
                                   int const numberOfPositiveElectrons,
@@ -220,7 +220,7 @@ namespace LHC_FASER
     double
     leptonChargeSummedWithSpecifiedJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets,
                                          int const numberOfElectrons,
                                          int const numberOfMuons );
@@ -229,7 +229,7 @@ namespace LHC_FASER
     double
     leptonFlavorSummedWithSpecifiedJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets,
                                          int const numberOfNegativeLeptons,
                                          int const numberOfPositiveLeptons );
@@ -240,35 +240,36 @@ namespace LHC_FASER
     double
     leptonFlavorSummedWithMinimumJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                        int const minimumNumberOfAdditionalJets,
-                                             int const numberOfNegativeLeptons,
-                                           int const numberOfPositiveLeptons );
+                                       int const numberOfNegativeLeptons,
+                                       int const numberOfPositiveLeptons );
     /* this sums up getAcceptanceWithMinimumJets for numberOfNegativeLeptons &
      * numberOfPositiveLeptons split between electrons & muons in every
      * combination.
      */
     virtual double
-    specifiedJetsOneOssfMinusOsdfPair( acceptanceCutSet* const acceptanceCuts,
+    specifiedJetsOneOssfMinusOsdfPair(
+                                  acceptanceCutSet const* const acceptanceCuts,
                                        int const numberOfAdditionalJets )
     = 0;
     // this should add up all combinations of jets while looking only for
     // one OSSF-OSDF pair.
     virtual double
     unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs )
     = 0;
     // this should add up all appropriate OSSF-OSDF pair combinations.
     // the following just call various combinations of getAcceptance(...):
     double
     specifiedJetsSpecifiedChargeSummedLeptons(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                                int const numberOfLeptons );
     double
     unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                  int const numberOfLeptons );
     std::string
     getAsString()
@@ -348,7 +349,7 @@ namespace LHC_FASER
        */
       virtual double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
 
@@ -380,7 +381,7 @@ namespace LHC_FASER
          */
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -392,7 +393,7 @@ namespace LHC_FASER
          */
         virtual double
         specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                            int const numberOfAdditionalJets );
         // this should add up all combinations of jets while looking only for
         // one OSSF-OSDF pair.
@@ -427,7 +428,7 @@ namespace LHC_FASER
          */
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -440,7 +441,7 @@ namespace LHC_FASER
          */
         virtual double
         specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                            int const numberOfAdditionalJets );
         // this should add up all combinations of jets while looking only for
         // one OSSF-OSDF pair.
@@ -461,7 +462,7 @@ namespace LHC_FASER
         // this returns true if the decay involving a W boson is not
         // negligible, also setting up the relevant fractions, false otherwise.
         double
-        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+        getCombinedAcceptance( acceptanceCutSet const* const acceptanceCuts,
                                int const numberOfAdditionalJets,
                                int const numberOfNegativeElectrons,
                                int const numberOfPositiveElectrons,
@@ -501,7 +502,7 @@ namespace LHC_FASER
       const;
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
+                     acceptanceCutSet const* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
                      int numberOfPositiveElectrons,
@@ -513,13 +514,13 @@ namespace LHC_FASER
        */
       virtual double
       specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets );
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
       virtual double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
 
@@ -546,7 +547,7 @@ namespace LHC_FASER
                      fullCascade* const subcascadePointer );
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
+                     acceptanceCutSet const* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
                      int numberOfPositiveElectrons,
@@ -559,13 +560,13 @@ namespace LHC_FASER
        */
       virtual double
       specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets );
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
       virtual double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
 
@@ -594,7 +595,7 @@ namespace LHC_FASER
       = 0;
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
+                     acceptanceCutSet const* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
                      int numberOfPositiveElectrons,
@@ -607,7 +608,7 @@ namespace LHC_FASER
        */
       double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                      acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
 
@@ -637,7 +638,7 @@ namespace LHC_FASER
                        electroweakCascadeSource = NULL );
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -649,7 +650,7 @@ namespace LHC_FASER
          */
         double
         specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                            int const numberOfAdditionalJets );
         // this should add up all combinations of jets while looking only for
         // one OSSF-OSDF pair.
@@ -677,7 +678,7 @@ namespace LHC_FASER
          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -690,7 +691,7 @@ namespace LHC_FASER
          */
         double
         specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                            int const numberOfAdditionalJets );
         // this should add up all combinations of jets while looking only for
         // one OSSF-OSDF pair.
@@ -711,7 +712,7 @@ namespace LHC_FASER
         // this returns true if the decay involving a W boson is not
         // negligible, also setting up the relevant fractions, false otherwise.
         double
-        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+        getCombinedAcceptance( acceptanceCutSet const* const acceptanceCuts,
                                int const numberOfAdditionalJets,
                                int const numberOfNegativeElectrons,
                                int const numberOfPositiveElectrons,
@@ -737,13 +738,13 @@ namespace LHC_FASER
 
       virtual double
       specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets );
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
       virtual double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
 
@@ -779,7 +780,7 @@ namespace LHC_FASER
          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -798,7 +799,7 @@ namespace LHC_FASER
         // this returns true if the decay involving a W boson is not
         // negligible, also setting up the relevant fractions, false otherwise.
         double
-        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+        getCombinedAcceptance( acceptanceCutSet const* const acceptanceCuts,
                                int const numberOfAdditionalJets,
                                int const numberOfNegativeElectrons,
                                int const numberOfPositiveElectrons,
@@ -824,7 +825,7 @@ namespace LHC_FASER
          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -847,7 +848,7 @@ namespace LHC_FASER
         // this returns true if the decay involving a W boson is not
         // negligible, also setting up the relevant fractions, false otherwise.
         double
-        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+        getCombinedAcceptance( acceptanceCutSet const* const acceptanceCuts,
                                int const numberOfAdditionalJets,
                                int const numberOfNegativeElectrons,
                                int const numberOfPositiveElectrons,
@@ -1393,7 +1394,7 @@ namespace LHC_FASER
   inline double
   fullCascade::getAcceptanceWithMinimumJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                        int const minimumNumberOfAdditionalJets,
                                            int const numberOfNegativeElectrons,
                                            int const numberOfPositiveElectrons,
@@ -1431,7 +1432,7 @@ namespace LHC_FASER
   inline double
   fullCascade::leptonChargeSummedWithSpecifiedJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                                    int const numberOfElectrons,
                                                     int const numberOfMuons )
@@ -1463,7 +1464,7 @@ namespace LHC_FASER
   inline double
   fullCascade::leptonFlavorSummedWithSpecifiedJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                              int const numberOfNegativeLeptons,
                                             int const numberOfPositiveLeptons )
@@ -1497,7 +1498,7 @@ namespace LHC_FASER
   inline double
   fullCascade::leptonFlavorSummedWithMinimumJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                        int const minimumNumberOfAdditionalJets,
                                              int const numberOfNegativeLeptons,
                                             int const numberOfPositiveLeptons )
@@ -1614,7 +1615,7 @@ namespace LHC_FASER
 
     inline double
     squarkDirectlyToElectroweak::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                 int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {
@@ -1657,7 +1658,7 @@ namespace LHC_FASER
 
       inline double
       sdownType::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
@@ -1737,7 +1738,7 @@ namespace LHC_FASER
 
     inline double
     gluinoDirectlyToElectroweak::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                 int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {
@@ -1757,7 +1758,7 @@ namespace LHC_FASER
 
     inline double
     gluinoDirectlyToElectroweak::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
     // this should add up all combinations of jets while looking only for
     // one OSSF-OSDF pair.
@@ -1798,7 +1799,7 @@ namespace LHC_FASER
 
     inline double
     squarkByJetToCompound::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                 int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {
@@ -1826,7 +1827,7 @@ namespace LHC_FASER
 
       inline double
       sdownType::getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                                acceptanceCutSet* const acceptanceCuts,
+                                acceptanceCutSet const* const acceptanceCuts,
                                 int const numberOfAdditionalJets,
                                 int numberOfNegativeElectrons,
                                 int numberOfPositiveElectrons,
@@ -1853,7 +1854,7 @@ namespace LHC_FASER
 
       inline double
       sdownType::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
@@ -1900,7 +1901,7 @@ namespace LHC_FASER
 
     inline double
   gluinoOrElectroweakinoToCompound::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                 int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {

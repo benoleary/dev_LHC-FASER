@@ -109,6 +109,8 @@
  *      LHC-FASER_jet_kinematics_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
+ *      LHC-FASER_signal_calculator_stuff.hpp
+ *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER.hpp
@@ -116,13 +118,11 @@
  *
  *
  * still to test:
- *      LHC-FASER_signal_calculator_stuff.hpp
- *      LHC-FASER_signal_calculator_stuff.cpp
+ *      nothing! we're done. well, the accuracy of the approximations has to be
+ *      tested...
  *
  *
  * not yet:
- *      nothing! we're done. well, the accuracy of the approximations has to be
- *      tested...
  */
 
 
@@ -249,7 +249,7 @@ int main( int argumentCount,
 
 
   /* testing the signal stuff:
-   * (doesn't work)*//**/
+   * (seems to work, but the numbers seem wrong)*//**/
   LHC_FASER::signalTesting signalTester( &basicStuffTester,
                                          &inputTester );
   signalTester.performTest();

@@ -131,7 +131,7 @@ namespace LHC_FASER
 
 
   productionChannelPointerSet::productionChannelPointerSet(
-                                  signalDefinitionSet* const signalDefinitions,
+                            signalDefinitionSet const* const signalDefinitions,
                        signedParticleShortcutPair const* const scoloredPair ) :
     crossSection( signalDefinitions->getCrossSections()->getTable(
                                                               scoloredPair ) ),

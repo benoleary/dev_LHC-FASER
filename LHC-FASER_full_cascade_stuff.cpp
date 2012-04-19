@@ -107,10 +107,18 @@ namespace LHC_FASER
 
   double
   fullCascade::specifiedJetsSpecifiedChargeSummedLeptons(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                                     int const numberOfLeptons )
   {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "fullCascade::specifiedJetsSpecifiedChargeSummedLeptons( "
+    << acceptanceCuts << ", " << numberOfAdditionalJets << ", "
+    << numberOfLeptons << " ) called.";
+    std::cout << std::endl;**/
+
     if( ( 0 > numberOfAdditionalJets )
         ||
         ( 0 > numberOfLeptons )
@@ -152,13 +160,22 @@ namespace LHC_FASER
           }  // end of loop over negative muons.
         }  // end of loop over positive electrons.
       }  // end of loop over negative electrons.
+
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "fullCascade::specifiedJetsSpecifiedChargeSummedLeptons( "
+      << acceptanceCuts << ", " << numberOfAdditionalJets << ", "
+      << numberOfLeptons << " ) returning " << returnDouble;
+      std::cout << std::endl;**/
+
       return returnDouble;
     }  // end of if numberOfLeptons was in the allowed range.
   }
 
   double
   fullCascade::unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                     int const numberOfLeptons )
   {
     if( ( 0 > numberOfLeptons )
@@ -254,7 +271,7 @@ namespace LHC_FASER
 
       double
       sdownType::getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                                acceptanceCutSet* const acceptanceCuts,
+                                acceptanceCutSet const* const acceptanceCuts,
                                 int const numberOfAdditionalJets,
                                 int numberOfNegativeElectrons,
                                 int numberOfPositiveElectrons,
@@ -355,7 +372,7 @@ namespace LHC_FASER
 
       double
       supType::getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                              acceptanceCutSet* const acceptanceCuts,
+                              acceptanceCutSet const* const acceptanceCuts,
                               int const numberOfAdditionalJets,
                               int numberOfNegativeElectrons,
                               int numberOfPositiveElectrons,
@@ -410,7 +427,7 @@ namespace LHC_FASER
 
       double
       supType::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
@@ -448,7 +465,8 @@ namespace LHC_FASER
       }
 
       double
-      supType::getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+      supType::getCombinedAcceptance(
+                                  acceptanceCutSet const* const acceptanceCuts,
                                       int const numberOfAdditionalJets,
                                       int const numberOfNegativeElectrons,
                                       int const numberOfPositiveElectrons,
@@ -600,7 +618,7 @@ namespace LHC_FASER
     double
     gluinoDirectlyToElectroweak::getAcceptance(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                                 int numberOfNegativeElectrons,
                                                 int numberOfPositiveElectrons,
@@ -699,7 +717,7 @@ namespace LHC_FASER
     double
     squarkByBosonToCompound::getAcceptance(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                             int const numberOfAdditionalJets,
                                             int numberOfNegativeElectrons,
                                             int numberOfPositiveElectrons,
@@ -806,27 +824,27 @@ namespace LHC_FASER
                      0 <= ewinoPositiveMuons;
                      --ewinoPositiveMuons )
                 {
-                returnDouble
-                += ( bosonCascades->getAcceptance( acceptanceCuts,
+                  returnDouble
+                  += ( bosonCascades->getAcceptance( acceptanceCuts,
                                         ( numberOfAdditionalJets - ewinoJets ),
                         ( numberOfNegativeElectrons - ewinoNegativeElectrons ),
                         ( numberOfPositiveElectrons - ewinoPositiveElectrons ),
                                 ( numberOfNegativeMuons - ewinoNegativeMuons ),
                                ( numberOfPositiveMuons - ewinoPositiveMuons ) )
-                     * subcascadePointer->getAcceptance( !bosonFlipsCharge,
-                                                         acceptanceCuts,
-                                                         ewinoJets,
+                       * subcascadePointer->getAcceptance( !bosonFlipsCharge,
+                                                           acceptanceCuts,
+                                                           ewinoJets,
                                                         ewinoNegativeElectrons,
                                                         ewinoPositiveElectrons,
-                                                         ewinoNegativeMuons,
+                                                           ewinoNegativeMuons,
                                                         ewinoPositiveMuons ) );
-                /* in the used conventions, an incoming squark decays to a
-                 * boson plus a squark, hence the same bool is used for both.
-                 * also, initialSparticleIsNotAntiparticle was used to swap the
-                 * numbers of charged leptons sought, & now should be replaced
-                 * by the opposite of bosonFlipsCharge, for reasons outlined
-                 * above.
-                 */
+                  /* in the used conventions, an incoming squark decays to a
+                   * boson plus a squark, hence the same bool is used for both.
+                   * also, initialSparticleIsNotAntiparticle was used to swap
+                   * the numbers of charged leptons sought, & now should be
+                   * replaced by the opposite of bosonFlipsCharge, for reasons
+                   * outlined above.
+                   */
                 }  // end of loop over positive electrons.
               }  // end of loop over negative muons.
             }  // end of loop over positive electrons.
@@ -838,7 +856,7 @@ namespace LHC_FASER
 
     double
     squarkByBosonToCompound::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                 int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {
@@ -879,7 +897,7 @@ namespace LHC_FASER
 
     double
     squarkByBosonToCompound::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
     // this should add up all combinations of jets while looking only for
     // one OSSF-OSDF pair.
@@ -972,7 +990,7 @@ namespace LHC_FASER
 
       double
       supType::getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                              acceptanceCutSet* const acceptanceCuts,
+                              acceptanceCutSet const* const acceptanceCuts,
                               int const numberOfAdditionalJets,
                               int numberOfNegativeElectrons,
                               int numberOfPositiveElectrons,
@@ -1030,7 +1048,7 @@ namespace LHC_FASER
 
       double
       supType::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
@@ -1158,7 +1176,8 @@ namespace LHC_FASER
       }
 
       double
-      supType::getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+      supType::getCombinedAcceptance(
+                                  acceptanceCutSet const* const acceptanceCuts,
                                       int const numberOfAdditionalJets,
                                       int const numberOfNegativeElectrons,
                                       int const numberOfPositiveElectrons,
@@ -1274,7 +1293,7 @@ namespace LHC_FASER
 
     double
     gluinoOrElectroweakinoToCompound::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
     // this should add up all combinations of jets while looking only for
     // one OSSF-OSDF pair.
@@ -1395,7 +1414,7 @@ namespace LHC_FASER
       double
       gluinoOrNeutralinoSet::getAcceptance(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                             int const numberOfAdditionalJets,
                                             int numberOfNegativeElectrons,
                                             int numberOfPositiveElectrons,
@@ -1526,7 +1545,7 @@ namespace LHC_FASER
 
       double
       gluinoOrNeutralinoSet::getCombinedAcceptance(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                            int const numberOfNegativeElectrons,
                                            int const numberOfPositiveElectrons,
@@ -1685,7 +1704,7 @@ namespace LHC_FASER
 
       double
       charginoSet::getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                                  acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                   int const numberOfAdditionalJets,
                                   int numberOfNegativeElectrons,
                                   int numberOfPositiveElectrons,
@@ -1779,7 +1798,7 @@ namespace LHC_FASER
 
       double
       charginoSet::getCombinedAcceptance(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                           int const numberOfAdditionalJets,
                                           int const numberOfNegativeElectrons,
                                           int const numberOfPositiveElectrons,
