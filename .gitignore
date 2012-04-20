@@ -1,4 +1,3 @@
-
 Debug/subdir.mk
 
 Debug/sources.mk
@@ -14,32 +13,6 @@ Debug/CppSLHA/subdir.mk
 .project
 
 .cproject
-
-.DS_Store
-
-.DS_Store
-
-.DS_Store
-
-LHC-FASER_kinematics_stuff.hpp
-
-LHC-FASER_kinematics_stuff.cpp
-
-LHC-FASER_kinematics_stuff.hpp
-
-LHC-FASER_kinematics_stuff.cpp
-
-LHC-FASER_kinematics_stuff.hpp
-
-LHC-FASER_kinematics_stuff.cpp
-
-LHC-FASER_kinematics_stuff.cpp
-
-LHC-FASER_kinematics_stuff.hpp
-
-.DS_Store
-
-.DS_Store
 
 .DS_Store
 
@@ -1010,13 +983,9 @@ Debug/LHC-FASER.o
 
 Debug/LHC-FASER.o
 
-LHC-FASER_full_cascade_stuff.hpp
-
 Debug/LHC-FASER_base_electroweak_cascade_stuff.o
 
 Debug/LHC-FASER_base_kinematics_stuff.o
-
-LHC-FASER_base_lepton_distribution_stuff.hpp
 
 Debug/LHC-FASER_charged_electroweak_cascade_stuff.o
 
@@ -1040,8 +1009,6 @@ Debug/LHC-FASER.o
 
 Debug/LHC-FASER_derived_lepton_distributions.o
 
-LHC-FASER_full_cascade_stuff.hpp
-
 Debug/LHC-FASER.o
 
 Debug/LHC-FASER.o
@@ -1112,11 +1079,7 @@ Debug/LHC-FASER_base_electroweak_cascade_stuff.o
 
 Debug/LHC-FASER_base_kinematics_stuff.o
 
-LHC-FASER_base_kinematics_stuff.cpp
-
 Debug/LHC-FASER_charged_electroweak_cascade_stuff.o
-
-LHC-FASER_base_electroweak_cascade_stuff.cpp
 
 Debug/LHC-FASER_derived_lepton_distributions.o
 
@@ -1137,8 +1100,6 @@ documentation/LHC-FASER_signal_descriptions.ps
 documentation/LHC-FASER_signal_descriptions.toc
 
 .DS_Store
-
-documentation/LHC-FASER_signal_descriptions.tex
 
 .DS_Store
 
@@ -1190,28 +1151,16 @@ Debug/LHC-FASER_base_electroweak_cascade_stuff.o
 
 Debug/LHC-FASER_base_kinematics_stuff.o
 
-LHC-FASER.hpp
-
-LHC-FASER.cpp
-
 .DS_Store
 
 Debug/LHC-FASER.o
 
 Debug/LHC-FASER_base_electroweak_cascade_stuff.o
 
-LHC-FASER.cpp
-
 Debug/LHC-FASER_cross-section_stuff.o
 
 Debug/LHC-FASER_charged_electroweak_cascade_stuff.o
 
 Debug/LHC-FASER.o
-
-LHC-FASER_for_JL.cpp
-
-LHC-FASER_electroweak_cascade_collection_stuff.hpp
-
-LHC-FASER_base_electroweak_cascade_stuff.hpp
 
 Debug/LHC-FASER_cross-section_stuff.o
