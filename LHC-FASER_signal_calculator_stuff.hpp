@@ -305,6 +305,8 @@ namespace LHC_FASER
   {
   public:
     signalCalculator( signalDefinitionSet const* const signalDefinitions );
+    signalCalculator();
+    // the version without any argument is used for reallyWrongCalculator.
     virtual
     ~signalCalculator();
 
@@ -455,8 +457,7 @@ namespace LHC_FASER
     class reallyWrongCalculator : public signalCalculator
     {
     public:
-      reallyWrongCalculator(
-                          signalDefinitionSet const* const signalDefinitions );
+      reallyWrongCalculator();
       virtual
       ~reallyWrongCalculator();
 
@@ -913,6 +914,7 @@ namespace LHC_FASER
         signalDefinitions->setExcludedStandardModelProducts(
                           signalDefinitions->getShortcuts()->getInputShortcuts(
                                                           )->getNotInJets5() );
+        signalDefinitions->setBeamEnergy( 7 );
         return new sigmaBreakdownTest( signalDefinitions );
       }
       else

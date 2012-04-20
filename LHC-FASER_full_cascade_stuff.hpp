@@ -71,6 +71,7 @@
 #ifndef LHC_FASER_FULL_CASCADE_STUFF_HPP_
 #define LHC_FASER_FULL_CASCADE_STUFF_HPP_
 
+#include "LHC-FASER_global_stuff.hpp"
 #include "LHC-FASER_input_handling_stuff.hpp"
 #include "LHC-FASER_sparticle_decay_stuff.hpp"
 #include "LHC-FASER_lepton_kinematics_stuff.hpp"
@@ -175,7 +176,7 @@ namespace LHC_FASER
      * to exclude unwanted parts of the BR. by default, it multiplies the BR
      * for the initial decay by subcascadePointer->getBrToEwino.
      */
-    double
+    virtual double
     getTotalBrToEwino();
     /* this works out the branching ratio for the decays of colored
      * sparticles down to the 1st electroweakino in the cascade (including
@@ -319,7 +320,8 @@ namespace LHC_FASER
   {
     // this is derived class for direct squark to electroweakino fullCascades.
     // it should be further specified to be sdown-type or sup-type.
-    class squarkDirectlyToElectroweak : public fullCascade
+    class squarkDirectlyToElectroweak : public fullCascade,
+                                        public getsReadiedForNewPoint
     {
     public:
       squarkDirectlyToElectroweak( inputHandler const* const inputShortcut,
@@ -352,6 +354,12 @@ namespace LHC_FASER
                                   acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
+      virtual double
+      getTotalBrToEwino();
+      /* this works out the branching ratio for the decays of colored
+       * sparticles down to the 1st electroweakino in the cascade (including
+       * any decays to bosons + squarks), without excluding any particles.
+       */
 
 
     protected:
@@ -475,7 +483,8 @@ namespace LHC_FASER
 
     // this is derived class for direct gluino to electroweakino
     // fullCascades..
-    class gluinoDirectlyToElectroweak : public fullCascade
+    class gluinoDirectlyToElectroweak : public fullCascade,
+                                        public getsReadiedForNewPoint
     {
     public:
       gluinoDirectlyToElectroweak( inputHandler const* const inputShortcut,
@@ -486,7 +495,7 @@ namespace LHC_FASER
 
       bool
       isOpen();
-      /* this returns true if the squark is heavy enough to decay into the
+      /* this returns true if the gluino is heavy enough to decay into the
        * electroweakino, false otherwise. it also sorts out whether it should
        * be using the decays involving a W boson.
        */
@@ -523,6 +532,12 @@ namespace LHC_FASER
                                   acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
+      virtual double
+      getTotalBrToEwino();
+      /* this works out the branching ratio for the decays of colored
+       * sparticles down to the 1st electroweakino in the cascade (including
+       * any decays to bosons + squarks), without excluding any particles.
+       */
 
 
     protected:
@@ -1633,6 +1648,24 @@ namespace LHC_FASER
       }
     }
 
+    inline double
+    squarkDirectlyToElectroweak::getTotalBrToEwino()
+    /* this works out the branching ratio for the decays of colored
+     * sparticles down to the 1st electroweakino in the cascade (including
+     * any decays to bosons + squarks), without excluding any particles.
+     */
+    {
+      if( needsToPrepareForThisPoint() )
+      {
+        cachedBranchingRatio
+        = initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                               inputShortcut->getEmptyList() );
+      }
+      return cachedBranchingRatio;
+    }
+
 
 
     namespace squarkDirectlyToElectroweakType
@@ -1793,6 +1826,24 @@ namespace LHC_FASER
       {
         return false;
       }
+    }
+
+    inline double
+    gluinoDirectlyToElectroweak::getTotalBrToEwino()
+    /* this works out the branching ratio for the decays of colored
+     * sparticles down to the 1st electroweakino in the cascade (including
+     * any decays to bosons + squarks), without excluding any particles.
+     */
+    {
+      if( needsToPrepareForThisPoint() )
+      {
+        cachedBranchingRatio
+        = initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                               inputShortcut->getEmptyList() );
+      }
+      return cachedBranchingRatio;
     }
 
 

@@ -312,7 +312,7 @@ namespace LHC_FASER
 
       gettimeofday( &startTime,
                     NULL );
-      signalName.assign( "sameSignDilepton_7TeV" );
+      signalName.assign( "noJetOrMETCut_sssf_7TeV" );
       std::cout
       << std::endl << "adding " << signalName;
       signalVector.push_back( testLhcFaser.addSignal( signalName ) );

@@ -218,6 +218,7 @@ namespace LHC_FASER
                      inputShortcut,
                      initialSquark,
                      beamEnergy ),
+        getsReadiedForNewPoint( inputShortcut->getReadier() ),
         directEwinoCascades( directEwinoCascades )
     {
       cascadeSegment = cascadeDefiner.addNewAtEnd();
@@ -599,6 +600,7 @@ namespace LHC_FASER
                      inputShortcut,
                      inputShortcut->getGluino(),
                      beamEnergy ),
+        getsReadiedForNewPoint( inputShortcut->getReadier() ),
         ewinoCascades( ewinoCascades )
     {
       cascadeSegment = cascadeDefiner.addNewAtEnd();
@@ -2136,6 +2138,12 @@ namespace LHC_FASER
 
         if( (*cascadeIterator)->isOpen() )
         {
+          // debugging:
+          /**std::cout << std::endl << "debugging:"
+          << std::endl
+          << "it was open.";
+          std::cout << std::endl;**/
+
           openCascades.push_back( *cascadeIterator );
         }
       }
@@ -2571,6 +2579,12 @@ namespace LHC_FASER
 
           if( (*cascadeIterator)->isOpen() )
           {
+            // debugging:
+            /**std::cout << std::endl << "debugging:"
+            << std::endl
+            << "it was open.";
+            std::cout << std::endl;**/
+
             openCascades.push_back( *cascadeIterator );
           }
         }
@@ -2589,6 +2603,7 @@ namespace LHC_FASER
 
         orderedCascadeSets = setOrderer->getSupTypeCascades();
         buildSquarkCompoundCascades();
+
         // debugging:
         /**std::cout << std::endl << "debugging:"
         << std::endl

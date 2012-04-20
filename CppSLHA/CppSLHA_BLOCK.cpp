@@ -207,6 +207,7 @@ namespace CppSLHA
     // otherwise the entry was not found...
       {
 
+      /** I've decided to turn off these messages.
         std::cout
         << std::endl
         << "CppSLHA::error! an SLHA_BLOCK was asked for an entry which it had"
@@ -215,7 +216,7 @@ namespace CppSLHA
         << std::endl
         << CppSLHA_global::really_wrong_value_string
         << " has been returned.";
-        std::cout << std::endl;
+        std::cout << std::endl;**/
 
         return CppSLHA_global::really_wrong_value;
 
@@ -999,6 +1000,7 @@ namespace CppSLHA
         // otherwise the entry was not found...
           {
 
+          /** I've decided to turn off these messages.
             std::cout
             << std::endl
             << "CppSLHA::error! an SLHA BLOCK was asked for an entry which it"
@@ -1007,7 +1009,7 @@ namespace CppSLHA
             << std::endl
             << CppSLHA_global::really_wrong_value_string
             << " has been returned.";
-            std::cout << std::endl;
+            std::cout << std::endl;**/
 
             return CppSLHA_global::really_wrong_value;
 
@@ -1018,6 +1020,7 @@ namespace CppSLHA
     // otherwise an entry out of range was requested.
       {
 
+      /** I've decided to turn off these messages.
         std::cout
         << std::endl
         << "CppSLHA::error! an SLHA BLOCK was asked for an entry which it"
@@ -1026,7 +1029,7 @@ namespace CppSLHA
         << std::endl
         << CppSLHA_global::really_wrong_value_string
         << " has been returned.";
-        std::cout << std::endl;
+        std::cout << std::endl;**/
 
         return CppSLHA_global::really_wrong_value;
 
@@ -1083,6 +1086,7 @@ namespace CppSLHA
     else
       {
 
+      /** I've decided to turn off these messages.
         std::cout
         << std::endl
         << "CppSLHA::error! this SLHA file has entries with negative indices"
@@ -1090,7 +1094,7 @@ namespace CppSLHA
         std::cout
         << std::endl
         << " which it SHOULD NOT have! calling exit( EXIT_FAILURE ).";
-        std::cout << std::endl;
+        std::cout << std::endl;**/
 
         exit( EXIT_FAILURE );
 
@@ -2126,6 +2130,7 @@ namespace CppSLHA
             // otherwise the entry was not recorded...
               {
 
+              /** I've decided to turn off these messages.
                 std::cout
                 << std::endl
                 << "CppSLHA::error! an SLHA BLOCK was asked for an entry"
@@ -2134,7 +2139,7 @@ namespace CppSLHA
                 << std::endl
                 << CppSLHA_global::really_wrong_value_string
                 << " has been returned.";
-                std::cout << std::endl;
+                std::cout << std::endl;**/
 
                 return CppSLHA_global::really_wrong_value;
 
@@ -2145,6 +2150,7 @@ namespace CppSLHA
         // otherwise an entry out of the column range was requested.
           {
 
+          /** I've decided to turn off these messages.
             std::cout
             << std::endl
             << "CppSLHA::error! an SLHA BLOCK was asked for an entry which it"
@@ -2153,7 +2159,7 @@ namespace CppSLHA
             << std::endl
             << CppSLHA_global::really_wrong_value_string
             << " has been returned.";
-            std::cout << std::endl;
+            std::cout << std::endl;**/
 
             return CppSLHA_global::really_wrong_value;
 
@@ -2164,6 +2170,7 @@ namespace CppSLHA
     // otherwise the entry out of the row range was requested.
       {
 
+      /** I've decided to turn off these messages.
         std::cout
         << std::endl
         << "CppSLHA::error! an SLHA BLOCK was asked for an entry which it"
@@ -2172,7 +2179,7 @@ namespace CppSLHA
         << std::endl
         << CppSLHA_global::really_wrong_value_string
         << " has been returned.";
-        std::cout << std::endl;
+        std::cout << std::endl;**/
 
         return CppSLHA_global::really_wrong_value;
 
@@ -2660,6 +2667,7 @@ namespace CppSLHA
                 // otherwise the entry was not recorded...
                   {
 
+                  /** I've decided to turn off these messages.
                     std::cout
                     << std::endl
                     << "CppSLHA::error! an SLHA BLOCK was asked for an entry"
@@ -2668,7 +2676,7 @@ namespace CppSLHA
                     << std::endl
                     << CppSLHA_global::really_wrong_value_string
                     << " has been returned.";
-                    std::cout << std::endl;
+                    std::cout << std::endl;**/
 
                     return CppSLHA_global::really_wrong_value;
 
@@ -2680,6 +2688,7 @@ namespace CppSLHA
             // thing-after-rows-and-columns-have-been-used range was requested.
               {
 
+              /** I've decided to turn off these messages.
                 std::cout
                 << std::endl
                 << "CppSLHA::error! an SLHA BLOCK was asked for an entry"
@@ -2688,7 +2697,7 @@ namespace CppSLHA
                 << std::endl
                 << CppSLHA_global::really_wrong_value_string
                 << " has been returned.";
-                std::cout << std::endl;
+                std::cout << std::endl;**/
 
                 return CppSLHA_global::really_wrong_value;
 
@@ -2699,6 +2708,7 @@ namespace CppSLHA
         // otherwise an entry out of the column range was requested.
           {
 
+          /** I've decided to turn off these messages.
             std::cout
             << std::endl
             << "CppSLHA::error! an SLHA BLOCK was asked for an entry which it"
@@ -2707,7 +2717,7 @@ namespace CppSLHA
             << std::endl
             << CppSLHA_global::really_wrong_value_string
             << " has been returned.";
-            std::cout << std::endl;
+            std::cout << std::endl;**/
 
             return CppSLHA_global::really_wrong_value;
 
@@ -2718,6 +2728,7 @@ namespace CppSLHA
     // otherwise the entry out of the row range was requested.
       {
 
+      /** I've decided to turn off these messages.
         std::cout
         << std::endl
         << "CppSLHA::error! an SLHA BLOCK was asked for an entry which it"
@@ -2726,7 +2737,7 @@ namespace CppSLHA
         << std::endl
         << CppSLHA_global::really_wrong_value_string
         << " has been returned.";
-        std::cout << std::endl;
+        std::cout << std::endl;**/
 
         return CppSLHA_global::really_wrong_value;
 

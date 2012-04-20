@@ -229,8 +229,7 @@ namespace LHC_FASER
       std::cout << std::endl;
 
       signalClasses::reallyWrongCalculator*
-      testReallyWrongCalculator( new signalClasses::reallyWrongCalculator(
-                                                  &testSignalDefinitionSet ) );
+      testReallyWrongCalculator( new signalClasses::reallyWrongCalculator() );
       double signalValue;
       double uncertaintyFactor;
       std::cout
@@ -280,6 +279,7 @@ namespace LHC_FASER
       signalHandler testAtlasFourJetMetZeroLepton( "Atlas4jMET_0l_07TeV",
                                                    1.0,
                                                    &testSignalDefinitionSet );
+
       std::cout
       << std::endl
       << "SPS1a: testAtlasFourJetMetZeroLepton.getValue() (in *pb*) = "
@@ -289,10 +289,12 @@ namespace LHC_FASER
       << std::endl
       << "atlasFourJetMetZeroLepton seems OK.";
       std::cout << std::endl;
+
       signalHandler
       testAtlasFourJetMetZeroLeptonHighCut( "Atlas4jMET_0l_07TeV_pTl50.0GeV",
                                             1.0,
                                             &testSignalDefinitionSet );
+
       std::cout
       << std::endl
       << "SPS1a: testAtlasFourJetMetZeroLeptonHighCut.getValue() (in *pb*) = "
@@ -302,9 +304,11 @@ namespace LHC_FASER
       << std::endl
       << "atlasFourJetMetZeroLepton seems OK.";
       std::cout << std::endl;
+
       signalHandler testAtlasThreeJetMetOneLepton( "Atlas3jMET_1l_07TeV",
                                                    1.0,
                                                    &testSignalDefinitionSet );
+
       std::cout
       << std::endl
       << "SPS1a: testAtlasThreeJetMetOneLepton.getValue() (in *pb*) = "
@@ -314,10 +318,12 @@ namespace LHC_FASER
       << std::endl
       << "atlasThreeJetMetOneLepton seems OK.";
       std::cout << std::endl;
+
       signalHandler testAtlasThreeJetMetOneLeptonHighCuts(
                                        "Atlas3jMET_1l_07TeV_pTl60.8GeV18.5GeV",
                                                            1.0,
                                                     &testSignalDefinitionSet );
+
       std::cout
       << std::endl
       << "SPS1a: testAtlasThreeJetMetOneLeptonHighCuts.getValue() (in *pb*) = "
@@ -327,9 +333,11 @@ namespace LHC_FASER
       << std::endl
       << "atlasThreeJetMetOneLeptonHighCuts seems OK.";
       std::cout << std::endl;
+
       signalHandler testSameSignDilepton( "noJetOrMETCut_sssf_07TeV",
                                           1.0,
                                           &testSignalDefinitionSet );
+
       std::cout
       << std::endl
       << "SPS1a: testSameSignDilepton.getValue() (in *pb*) = "

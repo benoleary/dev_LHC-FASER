@@ -105,6 +105,8 @@ namespace LHC_FASER
     bool
     secondIsNotAntiparticle()
     const;
+    std::string
+    getAsString() const;
 
   protected:
     particlePointer firstParticlePointer;
@@ -217,6 +219,18 @@ namespace LHC_FASER
     return secondIsNotAntiparticleFlag;
   }
 
+  inline std::string
+  signedParticleShortcutPair::getAsString() const
+  {
+    std::string returnString( "{ " );
+    returnString.append( *(firstParticlePointer->get_name_or_antiname(
+                                               firstIsNotAntiparticleFlag )) );
+    returnString.append( " + " );
+    returnString.append( *(secondParticlePointer->get_name_or_antiname(
+                                              secondIsNotAntiparticleFlag )) );
+    returnString.append( " }" );
+    return returnString;
+  }
 
 
   inline particlePointer

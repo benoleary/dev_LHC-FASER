@@ -540,6 +540,19 @@ namespace LHC_FASER
     firstSparticleIsNotAntiparticle( true ),
     secondSparticleIsNotAntiparticle( true )
   {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "signalCalculator::signalCalculator( " << signalDefinitions
+    << " ) called.";
+    std::cout << std::endl;
+    std::cout
+    << "signalDefinitions->getShortcuts()->getInputShortcuts("
+    << ")->getScoloredProductionCombinations() = "
+    << signalDefinitions->getShortcuts()->getInputShortcuts(
+                                        )->getScoloredProductionCombinations();
+    std::cout << std::endl;**/
+
     for( std::vector< signedParticleShortcutPair* >::const_iterator
          pairIterator( signalDefinitions->getShortcuts()->getInputShortcuts(
                              )->getScoloredProductionCombinations()->begin() );
@@ -548,10 +561,41 @@ namespace LHC_FASER
          > pairIterator;
          ++pairIterator )
     {
+      // debugging:
+      /**std::cout << std::endl << "debugging:" << std::endl;
+      std::cout
+      << "signalDefinitions->getCrossSections() = "
+      << signalDefinitions->getCrossSections();
+      std::cout << std::endl;
+      std::cout
+      << "signalDefinitions->getCrossSections()->getTable( *pairIterator ) = "
+      << signalDefinitions->getCrossSections()->getTable( *pairIterator );
+      std::cout << std::endl;
+      std::cout
+      << "signalDefinitions->getShortcuts() = "
+      << signalDefinitions->getShortcuts();
+      std::cout << std::endl;**/
+
       productionChannels.push_back( new productionChannelPointerSet(
                                                              signalDefinitions,
                                                              *pairIterator ) );
     }
+  }
+
+  // the version without any argument is used for reallyWrongCalculator:
+  signalCalculator::signalCalculator() :
+    signalDefinitions( NULL ),
+    inputShortcut( NULL ),
+    productionChannels(),
+    firstCascades( NULL ),
+    secondCascades( NULL ),
+    excludedFinalStateParticles(),
+    firstCascadeBrToEwino( CppSLHA::CppSLHA_global::really_wrong_value ),
+    secondCascadeBrToEwino( CppSLHA::CppSLHA_global::really_wrong_value ),
+    firstSparticleIsNotAntiparticle( true ),
+    secondSparticleIsNotAntiparticle( true )
+  {
+    // just an initialization list.
   }
 
   signalCalculator::~signalCalculator()
@@ -577,8 +621,8 @@ namespace LHC_FASER
     << std::endl
     << "debugging: signalCalculator::goThroughCascadesNormally( "
     << signalValue << ", " << uncertaintyFactor << " ) called."
-    << " signalDefinitions.getPrimaryLeptonCut() = "
-    << signalDefinitions.getPrimaryLeptonCut();
+    << " signalDefinitions->getPrimaryLeptonCut() = "
+    << signalDefinitions->getPrimaryLeptonCut();
     std::cout << std::endl;**/
 
     // start by setting the signal value to 0.0:
@@ -625,7 +669,8 @@ namespace LHC_FASER
           // debugging:
           /**std::cout << std::endl << "debugging:"
           << std::endl
-          << "1st: " << (*firstCascadeIterator)->getAsString();
+          << "1st: " << (*firstCascadeIterator)->getAsString()
+          << ", firstCascades->size() = " << firstCascades->size();
           std::cout << std::endl;**/
 
           firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
@@ -1227,9 +1272,8 @@ namespace LHC_FASER
 
   namespace signalClasses
   {
-    reallyWrongCalculator::reallyWrongCalculator(
-                         signalDefinitionSet const* const signalDefinitions ) :
-        signalCalculator( signalDefinitions )
+    reallyWrongCalculator::reallyWrongCalculator() :
+        signalCalculator()
     {
       // just an initialization list.
     }
@@ -1537,7 +1581,9 @@ namespace LHC_FASER
       // minus the amount with one cascade jets.
 
       // debugging:
-      /**std::cout << std::endl << "debugging:"
+      /**
+      if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
+      std::cout << std::endl << "debugging:"
       << std::endl
       << "Atlas4jMET, whichever lepton cut:"
       << std::endl
@@ -1547,13 +1593,15 @@ namespace LHC_FASER
       << "second cascade: not-anti = " << secondSparticleIsNotAntiparticle
       << ", cascade = " << secondCascade->getAsString()
       << std::endl
-      << "subchannelZeroOrMoreJets = "
+      << "subchannelCrossSectionTimesBrToEwinos = "
+      << subchannelCrossSectionTimesBrToEwinos
+      << ", subchannelZeroOrMoreJets = "
       << subchannelZeroOrMoreJets
       << ", subchannelOneOrMoreJets = "
       << subchannelOneOrMoreJets
       << ", subchannelTwoOrMoreJets = "
       << subchannelTwoOrMoreJets;
-      std::cout << std::endl;**/
+      std::cout << std::endl;}**/
 
       if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJets )
       {
@@ -1565,35 +1613,19 @@ namespace LHC_FASER
                             * fourJetAcceptance );
 
         // debugging:
-        /**if( 0.05 < ( subchannelCrossSectionTimesBrToEwinos
-                         * subchannelZeroOrMoreJets ) )
-        {
-          std::cout << std::endl << "debugging:"
-          << std::endl
-          << "adding" << std::endl;
-          if( !firstSparticleIsNotAntiparticle )
-          {
-            std::cout << "anti-";
-          }
-          std::cout
-          << firstCascade->getAsString() << " BR = "
-          << firstCascadeBrToEwino << std::endl;
-          if( !secondSparticleIsNotAntiparticle )
-          {
-            std::cout << "anti-";
-          }
-          std::cout
-          << secondCascade->getAsString() << " BR = " << secondCascadeBrToEwino
-          << std::endl
-          << " => " << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
-          << std::endl
-          << "subchannelCrossSectionTimesBrToEwinos = "
-          << subchannelCrossSectionTimesBrToEwinos
-          << std::endl
-          << "subchannelZeroOrMoreJets = "
-          << subchannelZeroOrMoreJets;
-          std::cout << std::endl;
-        }**/
+        /**
+        if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
+        std::cout << std::endl << "debugging:"
+        << std::endl
+        << "subchannelCrossSectionTimesBrToEwinos = "
+        << subchannelCrossSectionTimesBrToEwinos
+        << ", subchannelZeroOrMoreJets = " << subchannelZeroOrMoreJets
+        << ", fourJetAcceptance = " << fourJetAcceptance
+        << ", subchannelValue = " << subchannelValue
+        << ", firstCascadeBrToEwino = " << firstCascadeBrToEwino
+        << ", secondCascadeBrToEwino = " << secondCascadeBrToEwino;
+        std::cout << std::endl;}**/
+
 
         // it's not going to ever be the case where the acceptance for 1+ jets
         // is greater than 0+ jets...
@@ -1610,32 +1642,60 @@ namespace LHC_FASER
                    - fourJetAcceptance ) );
           // we assume that the 3-jet+MET acceptance from the grid is greater
           // than the 4-jet+MET acceptance.
+
+          // debugging:
+          /**
+          if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
+          std::cout << std::endl << "debugging:"
+          << std::endl
+          << "subchannelCrossSectionTimesBrToEwinos = "
+          << subchannelCrossSectionTimesBrToEwinos
+          << ", subchannelOneOrMoreJets = " << subchannelOneOrMoreJets
+          << ", threeJetAcceptance = " << threeJetAcceptance
+          << ", subchannelValue = " << subchannelValue;
+          std::cout << std::endl;}**/
+
           if( lhcFaserGlobal::negligibleBr < subchannelTwoOrMoreJets )
           {
             subchannelValue
             += ( subchannelCrossSectionTimesBrToEwinos
-                 * subchannelOneOrMoreJets
+                 * subchannelTwoOrMoreJets
                  * ( twoJetKinematics->getAcceptance( initialPair,
                                                       firstCascade,
                                                       secondCascade )
                      - threeJetAcceptance ) );
             // we assume that the 2-jet+MET acceptance from the grid is greater
             // than the 3-jet+MET acceptance.
+
+            // debugging:
+            /**
+            if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
+            std::cout << std::endl << "debugging:"
+            << std::endl
+            << "subchannelCrossSectionTimesBrToEwinos = "
+            << subchannelCrossSectionTimesBrToEwinos
+            << ", subchannelTwoOrMoreJets = " << subchannelTwoOrMoreJets
+            << ", twoJetAcceptance would be = "
+            << twoJetKinematics->getAcceptance( initialPair,
+                                                firstCascade,
+                                                secondCascade )
+            << ", subchannelValue = " << subchannelValue;
+            std::cout << std::endl;}**/
           }
         }
+        else
+        {
+          threeJetAcceptance = 0.0;
+        }
+
         // debugging:
-        /**std::cout << std::endl << "debugging:"
-        << std::endl
-        << "subchannelCrossSectionTimesBrToEwinos = "
-        << subchannelCrossSectionTimesBrToEwinos
-        << std::endl
-        << "subchannelZeroOrMoreJets = "
-        << subchannelZeroOrMoreJets
-        << std::endl
-        << "fourJetAcceptance = " << fourJetAcceptance
+        /**
+        if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
+        std::cout << std::endl << "debugging:"
         << std::endl
         << "=> adding subchannelValue = " << subchannelValue;
-        std::cout << std::endl;**/
+        std::cout << std::endl;}**/
+
         if( !( ( 1.0 >= subchannelZeroOrMoreJets )
                &&
                ( 0.0 <= subchannelZeroOrMoreJets )
@@ -2095,7 +2155,7 @@ namespace LHC_FASER
     /**std::cout << std::endl << "debugging:"
     << std::endl
     << "signalHandler::signalHandler( " << signalName << ", "
-    << crossSectionUnitFactor << ", " << inputShortcut << " ) called.";
+    << crossSectionUnitFactor << ", " << signalDefinitions << " ) called.";
     std::cout << std::endl;**/
 
     std::vector< signalCalculatorCreator > creationFunctions;
@@ -2147,8 +2207,7 @@ namespace LHC_FASER
       << " every point.";
       std::cout << std::endl;
 
-      rateCalculator = new signalClasses::reallyWrongCalculator(
-                                               &signalPreparationDefinitions );
+      rateCalculator = new signalClasses::reallyWrongCalculator();
     }
   }
 
