@@ -411,8 +411,6 @@ namespace LHC_FASER
     signalDefinitionSet const* const signalDefinitions;
     inputHandler const* const inputShortcut;
     std::vector< productionChannelPointerSet* > productionChannels;
-    //fullCascade* firstCascade;
-    //fullCascade* secondCascade;
     std::vector< fullCascade* >* firstCascades;
     std::vector< fullCascade* >* secondCascades;
     std::list< int > excludedFinalStateParticles;
