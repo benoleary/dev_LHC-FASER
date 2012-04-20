@@ -234,68 +234,19 @@ namespace LHC_FASER
     return true;
   }
 
-  int
-  signalCalculator::parseNumberOfLeptons( std::string const& argumentString )
-  // this looks for "_0l", "_1l", or "_2l", & returns the appropriate int.
-  // returns -1 if it could not find any.
-  {
-    if( std::string::npos != argumentString.find( "_0l" ) )
-      // zero leptons...
-    {
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "signalCalculator::parseNumberOfLeptons returning 0 leptons.";
-      std::cout << std::endl;**/
-
-      return 0;
-    }
-    else if( std::string::npos != argumentString.find( "_1l" ) )
-      // one lepton...
-    {
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "signalCalculator::parseNumberOfLeptons returning 1 lepton.";
-      std::cout << std::endl;**/
-
-      return 1;
-    }
-    else if( std::string::npos != argumentString.find( "_2l" ) )
-      // two leptons
-    {
-      // debugging:
-      /**std::cout << std::endl << "debugging:"
-      << std::endl
-      << "signalCalculator::parseNumberOfLeptons returning 2 leptons.";
-      std::cout << std::endl;**/
-
-      return 2;
-    }
-    else
-    {
-      std::cout
-      << std::endl
-      << "LHC-FASER::error! signalHandler::signalHandler( "
-      << argumentString << " ) was passed a name it does not know (could not"
-      << " find \"_0l\", \"_1l\", or \"_2l\", which are appropriate for this"
-      << " type of signal). its calculator is being set to return "
-      << CppSLHA::CppSLHA_global::really_wrong_value_string
-      << " for every point.";
-      return -1;
-    }
-  }
-
   bool
   signalCalculator::parseBeamEnergy( std::string const& argumentString,
-                                 signalDefinitionSet* const signalDefinitions )
-  // this looks for "_7TeV", "_07TeV", "_10TeV", or "_14TeV", & sets the beam
-  // energy appropriately. returns false if it could not find any.
+                                 signalDefinitionSet* const signalDefinitions,
+                                     std::string& argumentRemainder )
+  /* this looks for "_7TeV_", "_07TeV_", "_10TeV_", or "_14TeV_", & sets the
+   * beam energy appropriately, putting argumentString from the 2nd '_' onwards
+   * into argumentRemainder. returns false if it could not find any (& does not
+   * modify argumentRemainder in this case).
+   */
   {
-    if( ( std::string::npos != argumentString.find( "_7TeV" ) )
-        ||
-        ( std::string::npos != argumentString.find( "_07TeV" ) ) )
-      // for a beam energy of 7 TeV...
+    if( 0 == argumentString.compare( 0,
+                                     6,
+                                     "_7TeV_" ) )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -304,10 +255,28 @@ namespace LHC_FASER
       std::cout << std::endl;**/
 
       signalDefinitions->setBeamEnergy( 7 );
+      argumentRemainder.assign( argumentString,
+                                5 );
       return true;
     }
-    else if( std::string::npos != argumentString.find( "_10TeV" ) )
-      // for a beam energy of 10 TeV...
+    else if( 0 == argumentString.compare( 0,
+                                          7,
+                                          "_07TeV_" ) )
+    {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "signalCalculator::parseBeamEnergy setting to 07 TeV.";
+      std::cout << std::endl;**/
+
+      signalDefinitions->setBeamEnergy( 7 );
+      argumentRemainder.assign( argumentString,
+                                6 );
+      return true;
+    }
+    else if( 0 == argumentString.compare( 0,
+                                          7,
+                                          "_10TeV_" ) )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -316,10 +285,13 @@ namespace LHC_FASER
       std::cout << std::endl;**/
 
       signalDefinitions->setBeamEnergy( 10 );
+      argumentRemainder.assign( argumentString,
+                                6 );
       return true;
     }
-    else if( std::string::npos != argumentString.find( "_14TeV" ) )
-      // for a beam energy of 14 TeV...
+    else if( 0 == argumentString.compare( 0,
+                                          7,
+                                          "_14TeV_" ) )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -328,46 +300,221 @@ namespace LHC_FASER
       std::cout << std::endl;**/
 
       signalDefinitions->setBeamEnergy( 14 );
+      argumentRemainder.assign( argumentString,
+                                6 );
       return true;
     }
     else
     {
-      std::cout
-      << std::endl
-      << "LHC-FASER::error! signalHandler::signalHandler( "
-      << argumentString << ", " <<  signalDefinitions << " ) was passed"
-      << " a name it does not know (could not find \"_7TeV\", \"_07TeV\","
-      << " \"_10TeV\", or \"_14TeV\"). its calculator is being set to return "
-      << CppSLHA::CppSLHA_global::really_wrong_value_string
-      << " for every point.";
-      return true;
+      return false;
     }
+  }
+
+  signalClasses::leptonAcceptanceForCascadePair*
+  signalCalculator::parseLeptonAcceptance( std::string const& argumentString,
+                                 signalDefinitionSet* const signalDefinitions )
+  /* this looks for strings encoding the type of lepton cuts to use. the
+   * strings are, where # stands for any string representing an integer, in the
+   * order in which they are checked:
+   * "_ossf" : ossfMinusOsdf
+   * "_noExtraCut" : noLeptonCutNorExtraJetCut
+   * "_#l" : chargeAndFlavorSummed
+   * "_#lm#lp" : flavorSummed
+   * "_#epm#mpm" : chargeSummed
+   * "_#em#ep#mm#mp" : fullySpecified
+   * parseLeptonTransverseMomentumCuts is then called on the remainder of
+   * argumentString. finally, it creates a new leptonAcceptanceForCascadePair
+   * & returns a pointer to it. NULL is returned if argumentString could not
+   * be properly interpretted.
+   */
+  {
+    signalClasses::leptonAcceptanceForCascadePair* returnPointer( NULL );
+
+    // 1st look for the easy cases:
+    if( 0 == argumentString.compare( 0,
+                                     5,
+                                     "_ossf" ) )
+    {
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "signalCalculator::parseLeptonAcceptance found \"_ossf\".";
+      std::cout << std::endl;/**/
+      returnPointer
+      = new signalClasses::leptonAcceptanceStyle::ossfMinusOsdf();
+    }
+    else if( 0 == argumentString.compare( 0,
+                                          11,
+                                          "_noExtraCut" ) )
+    {
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "signalCalculator::parseLeptonAcceptance found \"_noExtraCut\".";
+      std::cout << std::endl;/**/
+      returnPointer
+      = new signalClasses::leptonAcceptanceStyle::ossfMinusOsdf();
+      argumentRemainder.assign( argumentString,
+                                11 );
+    }
+    else if( 0 == argumentString.compare( 0,
+                                          1,
+                                          "_" ) )
+      // otherwise look for a string of numeric characters...
+    {
+      size_t charPosition( 1 );
+      std::string integerString( "" );
+      int leptonNumber( parseOutLeptonNumber( argumentString,
+                                              charPosition ) );
+      // ... followed by...
+      if( 'l' == argumentString[ charPosition ] )
+      {
+        if( ( argumentString.size() == charPosition )
+            ||
+            ( '_' == argumentString[ ( charPosition + 1 ) ] ) )
+          // if argumentString ends with "_#l" or continues with "_", it's
+          // chargeAndFlavorSummed.
+        {
+          // debugging:
+          /**/std::cout << std::endl << "debugging:"
+          << std::endl
+          << "signalCalculator::parseLeptonAcceptance found \"_"
+          << leptonNumber << "l\"...";
+          std::cout << std::endl;/**/
+
+          returnPointer
+          = new signalClasses::leptonAcceptanceStyle::chargeAndFlavorSummed(
+                                                                leptonNumber );
+        }
+        else if( 'm' == argumentString[ ( charPosition + 1 ) ] )
+        {
+          charPosition += 2;
+          int secondLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                        charPosition ) );
+          if( 0 == argumentString.compare( charPosition,
+                                           2,
+                                           "lp" ) )
+          {
+            // debugging:
+            /**/std::cout << std::endl << "debugging:"
+            << std::endl
+            << "signalCalculator::parseLeptonAcceptance found \"_"
+            << leptonNumber << "lm"
+            << secondLeptonNumber << "lp\"...";
+            std::cout << std::endl;/**/
+
+            returnPointer
+            = new signalClasses::leptonAcceptanceStyle::flavorSummed(
+                                                                  leptonNumber,
+                                                          secondLeptonNumber );
+          }
+        }
+      }
+      else if( 'e' == argumentString[ charPosition ] )
+      {
+        if( 0 == argumentString.compare( charPosition,
+                                         3,
+                                         "epm" ) )
+        {
+          charPosition += 3;
+          int secondLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                        charPosition ) );
+          if( 0 == argumentString.compare( charPosition,
+                                           3,
+                                           "mpm" ) )
+          {
+            // debugging:
+            /**/std::cout << std::endl << "debugging:"
+            << std::endl
+            << "signalCalculator::parseLeptonAcceptance found \"_"
+            << leptonNumber << "epm"
+            << secondLeptonNumber << "mpm\"...";
+            std::cout << std::endl;/**/
+
+            returnPointer
+            = new signalClasses::leptonAcceptanceStyle::chargeSummed(
+                                                                  leptonNumber,
+                                                          secondLeptonNumber );
+          }
+        }
+        else if( 0 == argumentString.compare( charPosition,
+                                              2,
+                                              "em" ) )
+        {
+          charPosition += 2;
+          int secondLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                        charPosition ) );
+          if( 0 == argumentString.compare( charPosition,
+                                           2,
+                                           "ep" ) )
+          {
+            charPosition += 2;
+            int thirdLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                         charPosition ) );
+            if( 0 == argumentString.compare( charPosition,
+                                             2,
+                                             "mm" ) )
+            {
+              charPosition += 2;
+              int fourthLeptonNumber( parseOutLeptonNumber( argumentString,
+                                                            charPosition ) );
+              if( 0 == argumentString.compare( charPosition,
+                                               2,
+                                               "mm" ) )
+              {
+                // debugging:
+                /**/std::cout << std::endl << "debugging:"
+                << std::endl
+                << "signalCalculator::parseLeptonAcceptance found \"_"
+                << leptonNumber << "em"
+                << secondLeptonNumber << "ep"
+                << thirdLeptonNumber << "mm"
+                << fourthLeptonNumber << "mp\"...";
+                std::cout << std::endl;/**/
+
+                returnPointer
+                = new signalClasses::leptonAcceptanceStyle::fullySpecified(
+                                                                  leptonNumber,
+                                                            secondLeptonNumber,
+                                                             thirdLeptonNumber,
+                                                          fourthLeptonNumber );
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if( NULL != returnPointer )
+    {
+      parseLeptonTransverseMomentumCuts( argumentString,
+                                         signalDefinitions );
+      /* this takes care of if there were lepton transverse momentum cuts
+       * specified. it's OK to only set them after the new
+       * leptonAcceptanceForCascadePair has been constructed because
+       * signalDefinitions is still a pointer to the signalDefinitionSet that
+       * returnPointer uses.
+       */
+    }
+    return returnPointer;
   }
 
   void
   signalCalculator::parseLeptonTransverseMomentumCuts(
                                              std::string const& argumentString,
-                                  signalDefinitionSet* const signalDefinitions,
-                                          double const defaultPrimaryLeptonCut,
-                                       double const defaultSecondaryLeptonCut )
+                                 signalDefinitionSet* const signalDefinitions )
   /* this looks for "_pTl" then a double then "GeV", then a subsequent "_pTl",
    * a subsequent double, & a subsequent "GeV", interpretted as the primary &
    * secondary lepton cuts respectively.
    */
   {
-    signalDefinitions->setPrimaryLeptonCut( defaultPrimaryLeptonCut );
-    signalDefinitions->setSecondaryLeptonCut( defaultSecondaryLeptonCut );
-    // set the cuts to the defaults in case we don't find any cuts in the
-    // string.
-
     // debugging:
-    /**std::cout << std::endl << "debugging:"
+    /**/std::cout << std::endl << "debugging:"
     << std::endl
     << "signalCalculator::parseLeptonTransverseMomentumCuts( "
-    << argumentString << ", " << signalDefinitions << ", "
-    << defaultPrimaryLeptonCut << ", " << defaultSecondaryLeptonCut
+    << argumentString << ", " << signalDefinitions
     << " ) called. no further output implies that no cuts were found.";
-    std::cout << std::endl;**/
+    std::cout << std::endl;/**/
 
     size_t
     leptonCutStartPosition( argumentString.find( "_pTl" ) );
@@ -392,14 +539,14 @@ namespace LHC_FASER
         // this also sets the secondary cut, in case we don't find another.
 
         // debugging:
-        /**std::cout << std::endl << "debugging:"
+        /**/std::cout << std::endl << "debugging:"
         << std::endl
         << "primary leptonCut = " << leptonCut
         << ", argumentString.substr( " << leptonCutStartPosition
         << ", ( " << leptonCutEndPosition << " - " << leptonCutStartPosition
         << " ) ) = " << argumentString.substr( leptonCutStartPosition,
                            ( leptonCutEndPosition - leptonCutStartPosition ) );
-        std::cout << std::endl;**/
+        std::cout << std::endl;/**/
 
         std::string
         possibleSecondaryCut( argumentString.substr( leptonCutEndPosition ) );
@@ -421,7 +568,7 @@ namespace LHC_FASER
             signalDefinitions->setSecondaryLeptonCut( leptonCut );
 
             // debugging:
-            /**std::cout << std::endl << "debugging:"
+            /**/std::cout << std::endl << "debugging:"
             << std::endl
             << "secondary leptonCut = " << leptonCut
             << ", possibleSecondaryCut.substr( " << leptonCutStartPosition
@@ -429,7 +576,7 @@ namespace LHC_FASER
             << leptonCutStartPosition << " ) ) = "
             << possibleSecondaryCut.substr( leptonCutStartPosition,
                            ( leptonCutEndPosition - leptonCutStartPosition ) );
-            std::cout << std::endl;**/
+            std::cout << std::endl;/**/
           }
         }  // end of looking for a secondary cut.
       }
@@ -440,96 +587,40 @@ namespace LHC_FASER
 
   signalHandler::signalHandler( std::string const signalName,
                                 double const crossSectionUnitFactor,
-                    signalDefinitionSet* const signalPreparationDefinitions ) :
+                                signalShortcuts const* const inputShortcut ) :
     getsReadiedForNewPoint( signalPreparationDefinitions->getShortcuts(
                                         )->getInputShortcuts()->getReadier() ),
     signalName( signalName ),
     rateCalculator( NULL ),
-    inputShortcut( signalPreparationDefinitions->getShortcuts() ),
+    inputShortcut( inputShortcut ),
+    signalPreparationDefinitions( inputShortcut ),
     signalValue( CppSLHA::CppSLHA_global::really_wrong_value ),
     uncertaintyFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
     crossSectionUnitFactor( crossSectionUnitFactor )
   {
-    std::string calculatorArgument( "error" );
-    if( 0 == signalName.compare( 0,
-                                 10,
-                                 "Atlas4jMET" ) )
-      // if the signal is the Atlas 4-jet, missing transverse momentum,
-      // 0 leptons event rate...
+    std::vector< signalCalculatorCreator > creationFunctions;
+    creationFunctions.push_back(
+       &(signalClasses::atlasFourJetMetPlusGivenLeptonCuts::getCalculator()) );
+    creationFunctions.push_back(
+      &(signalClasses::atlasThreeJetMetPlusGivenLeptonCuts::getCalculator()) );
+    creationFunctions.push_back(
+               &(signalClasses::noJetMetButGivenLeptonCuts::getCalculator()) );
+    creationFunctions.push_back(
+                       &(signalClasses::sigmaBreakdownTest::getCalculator()) );
+    for( int whichFunction( (int)(creationFunctions.size()) - 1 );
+         ( ( 0 <= whichFunction )
+           &&
+           ( NULL == rateCalculator ) );
+         --whichFunction )
     {
-      calculatorArgument.assign( ( signalName.begin() + 10 ),
-                                 signalName.end() );
-      rateCalculator
-      = signalCalculatorClasses::atlasFourJetMetNLeptons::getCalculator(
-                                                           &calculatorArgument,
-                                                signalPreparationDefinitions );
+      rateCalculator = (*(creationFunctions[ whichFunction ]))( signalName,
+                                               &signalPreparationDefinitions );
     }
-    else if( 0 == signalName.compare( 0,
-                                      10,
-                                      "Atlas3jMET" ) )
-      // if the signal is the Atlas 3-jet, missing transverse momentum,
-      // 1 lepton event rate...
+    if( NULL == rateCalculator )
+      // if none of the signal calculator creation functions returned a new
+      // signalCalculator, a malformed signal name was passed:
     {
-      calculatorArgument.assign( ( signalName.begin() + 10 ),
-                                 signalName.end() );
-      rateCalculator
-      = signalCalculatorClasses::atlasThreeJetMetNLeptons::getCalculator(
-                                                           &calculatorArgument,
-                                                signalPreparationDefinitions );
-    }
-    else if( 0 == signalName.compare( "CMS2jMET_anyl_14TeV" ) )
-      // if the signal is the CMS 2-jet, missing transverse momentum,
-      // any amount of leptons event rate, for a beam energy of 14 TeV...
-    {
-      std::cout
-      << std::endl
-      << "LHC-FASER::error! signalHandler::signalHandler( "
-      << signalName << ", "<<  inputShortcut << " ) was passed"
-      << " CMS2jMET_anyl_14TeV, but unfortunately it has not yet been"
-      << " implemented. its calculator is being set to return only "
-      << CppSLHA::CppSLHA_global::really_wrong_value_string
-      << " for every point instead.";
-
-      rateCalculator
-      = new signalCalculatorClasses::reallyWrongCalculator(
-                                                signalPreparationDefinitions );
-    }
-    else if( 0 == signalName.compare( 0,
-                                      16,
-                                      "sameSignDilepton" ) )
-      // if the signal is the same-sign dilepton event rate...
-    {
-      calculatorArgument.assign( ( signalName.begin() + 16 ),
-                                 signalName.end() );
-      rateCalculator
-      = signalCalculatorClasses::sameSignDilepton::getCalculator(
-                                                           &calculatorArgument,
-                                                signalPreparationDefinitions );
-    }
-    else if( 0 == signalName.compare( "sigmaBreakdownTest" ) )
-      // if the signal is the test to see if the cross-section breakdown works
-      // as it should...
-    {
-      signalPreparationDefinitions->setBeamEnergy( 7 );
-      rateCalculator
-      = new signalCalculatorClasses::sigmaBreakdownTest(
-                                                signalPreparationDefinitions );
-    }
-    else
-      // otherwise, a malformed signal name was passed:
-    {
-      std::cout
-      << std::endl
-      << "LHC-FASER::error! signalHandler::signalHandler( "
-      << signalName << ", " <<  inputShortcut << " ) was passed a"
-      << " name it does not know ( \"" << signalName
-      << "\" ). its calculator is being set to return only "
-      << CppSLHA::CppSLHA_global::really_wrong_value_string << " for"
-      << " every point.";
-      std::cout << std::endl;
-
-      rateCalculator
-      = new signalCalculatorClasses::reallyWrongCalculator(
+      rateCalculator = new signalClasses::reallyWrongCalculator( signalName,
                                                 signalPreparationDefinitions );
     }
   }
@@ -541,13 +632,22 @@ namespace LHC_FASER
 
 
 
-  namespace signalCalculatorClasses
+  namespace signalClasses
   {
     reallyWrongCalculator::reallyWrongCalculator(
+                                                 std::string const& signalName,
                                signalDefinitionSet* const signalDefinitions ) :
         signalCalculator( signalDefinitions )
     {
-      // just an initialization list.
+      std::cout
+      << std::endl
+      << "LHC-FASER::error! signalHandler::signalHandler( "
+      << signalName << ", " <<  inputShortcut << " ) was passed a"
+      << " name it does not know ( \"" << signalName
+      << "\" ). its calculator is being set to return only "
+      << CppSLHA::CppSLHA_global::really_wrong_value_string << " for"
+      << " every point.";
+      std::cout << std::endl;
     }
 
     reallyWrongCalculator::~reallyWrongCalculator()
@@ -685,83 +785,410 @@ namespace LHC_FASER
     }
 
 
+    int const leptonAcceptanceForCascadePair::maximumNumberOfJets( 2
+                                     * fullCascade::maximumJetsFromEwCascade );
+
+    leptonAcceptanceForCascadePair::leptonAcceptanceForCascadePair()
+    {
+      // does nothing.
+    }
+
+    leptonAcceptanceForCascadePair::~leptonAcceptanceForCascadePair()
+    {
+      // does nothing.
+    }
+
+
+    namespace leptonAcceptanceStyle
+    {
+      fullySpecified::fullySpecified( int const numberOfNegativeElectrons,
+                                      int const numberOfPositiveElectrons,
+                                      int const numberOfNegativeMuons,
+                                      int const numberOfPositiveMuons ) :
+        leptonAcceptanceForCascadePair(),
+        numberOfNegativeElectrons( numberOfNegativeElectrons ),
+        numberOfPositiveElectrons( numberOfPositiveElectrons ),
+        numberOfNegativeMuons( numberOfNegativeMuons ),
+        numberOfPositiveMuons( numberOfPositiveMuons )
+      {
+        // just an initialization list.
+      }
+
+      fullySpecified::~fullySpecified()
+      {
+        // does nothing.
+      }
+
+
+      double
+      fullySpecified::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                        int const exactNumberOfJets,
+                                        fullCascade* firstCascade,
+                                        bool firstIsNotAntiparticle,
+                                        fullCascade* secondCascade,
+                                        bool secondIsNotAntiparticle ) const
+      {
+        double returnValue( 0.0 );
+
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
+        {
+          for( int negativeElectronsFromFirst( numberOfNegativeElectrons );
+               0 <= negativeElectronsFromFirst;
+               --negativeElectronsFromFirst )
+          {
+            for( int positiveElectronsFromFirst( numberOfPositiveElectrons );
+                 0 <= positiveElectronsFromFirst;
+                 --positiveElectronsFromFirst )
+            {
+              for( int negativeMuonsFromFirst( numberOfNegativeMuons );
+                   0 <= negativeMuonsFromFirst;
+                   --negativeMuonsFromFirst )
+              {
+                for( int positiveMuonsFromFirst( numberOfPositiveMuons );
+                     0 <= positiveMuonsFromFirst;
+                     --positiveMuonsFromFirst )
+                {
+                  returnValue
+                  += ( firstCascade->getAcceptance( firstIsNotAntiparticle,
+                                                    signalDefinitions,
+                                                    jetsFromFirst,
+                                                    negativeElectronsFromFirst,
+                                                    positiveElectronsFromFirst,
+                                                    negativeMuonsFromFirst,
+                                                    positiveMuonsFromFirst )
+                       * secondCascade->getAcceptance( secondIsNotAntiparticle,
+                                                       signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
+                    ( numberOfNegativeElectrons - negativeElectronsFromFirst ),
+                    ( numberOfPositiveElectrons - positiveElectronsFromFirst ),
+                            ( numberOfNegativeMuons - negativeMuonsFromFirst ),
+                        ( numberOfPositiveMuons - positiveMuonsFromFirst ) ) );
+                }
+              }
+            }
+          }
+        }
+        return returnValue;
+      }
+
+
+      noLeptonCutNorExtraJetCut::noLeptonCutNorExtraJetCut() :
+          leptonAcceptanceForCascadePair()
+      {
+        // just an initialization list.
+      }
+
+      noLeptonCutNorExtraJetCut::~noLeptonCutNorExtraJetCut()
+      {
+        // does nothing.
+      }
+
+
+
+      chargeAndFlavorSummed::chargeAndFlavorSummed(
+                                                  int const numberOfLeptons ) :
+          leptonAcceptanceForCascadePair(),
+          numberOfLeptons( numberOfLeptons )
+      {
+        // just an initialization list.
+      }
+
+      chargeAndFlavorSummed::~chargeAndFlavorSummed()
+      {
+        // does nothing.
+      }
+
+
+      double
+      chargeAndFlavorSummed::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                               int const exactNumberOfJets,
+                                               fullCascade* firstCascade,
+                                               bool firstIsNotAntiparticle,
+                                               fullCascade* secondCascade,
+                                           bool secondIsNotAntiparticle ) const
+      {
+        double returnValue( 0.0 );
+
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
+        {
+          for( int leptonsFromFirst( numberOfLeptons );
+               0 <= leptonsFromFirst;
+               --leptonsFromFirst )
+          {
+            returnValue
+            += ( firstCascade->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                             signalDefinitions,
+                                                             exactNumberOfJets,
+                                                             leptonsFromFirst )
+                 * secondCascade->specifiedJetsSpecifiedChargeSummedLeptons(
+                                                             signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
+                                    ( numberOfLeptons - leptonsFromFirst ) ) );
+          }
+        }
+        return returnValue;
+      }
+
+
+
+      chargeSummed::chargeSummed( int const numberOfElectrons,
+                                  int const numberOfMuons ) :
+          leptonAcceptanceForCascadePair(),
+          numberOfElectrons( numberOfElectrons ),
+          numberOfMuons( numberOfMuons )
+      {
+        // just an initialization list.
+      }
+
+      chargeSummed::~chargeSummed()
+      {
+        // does nothing.
+      }
+
+
+      double
+      chargeSummed::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                      int const exactNumberOfJets,
+                                      fullCascade* firstCascade,
+                                      bool firstIsNotAntiparticle,
+                                      fullCascade* secondCascade,
+                                      bool secondIsNotAntiparticle ) const
+      {
+        double returnValue( 0.0 );
+
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
+        {
+          for( int electronsFromFirst( numberOfElectrons );
+               0 <= electronsFromFirst;
+               --electronsFromFirst )
+          {
+            for( int muonsFromFirst( numberOfMuons );
+                 0 <= muonsFromFirst;
+                 --muonsFromFirst )
+            {
+              returnValue
+              += ( firstCascade->leptonChargeSummedWithSpecifiedJets(
+                                                        firstIsNotAntiparticle,
+                                                             signalDefinitions,
+                                                                 jetsFromFirst,
+                                                            electronsFromFirst,
+                                                            muonsFromFirst )
+                 * secondCascade->leptonChargeSummedWithSpecifiedJets(
+                                                       secondIsNotAntiparticle,
+                                                             signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
+                                    ( numberOfElectrons - electronsFromFirst ),
+                                        ( numberOfMuons - muonsFromFirst ) ) );
+            }
+          }
+        }
+        return returnValue;
+      }
+
+
+
+      flavorSummed::flavorSummed( int const numberOfNegativeLeptons,
+                                  int const numberOfPositiveLeptons ) :
+          leptonAcceptanceForCascadePair(),
+          numberOfNegativeLeptons( numberOfNegativeLeptons ),
+          numberOfPositiveLeptons( numberOfPositiveLeptons )
+      {
+        // just an initialization list.
+      }
+
+      flavorSummed::~flavorSummed()
+      {
+        // does nothing.
+      }
+
+
+      double
+      flavorSummed::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                      int const exactNumberOfJets,
+                                      fullCascade* firstCascade,
+                                      bool firstIsNotAntiparticle,
+                                      fullCascade* secondCascade,
+                                      bool secondIsNotAntiparticle ) const
+      {
+        double returnValue( 0.0 );
+
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
+        {
+          for( int negativeLeptonsFromFirst( numberOfNegativeLeptons );
+               0 <= negativeLeptonsFromFirst;
+               --negativeLeptonsFromFirst )
+          {
+            for( int positiveLeptonsFromFirst( numberOfPositiveLeptons );
+                 0 <= positiveLeptonsFromFirst;
+                 --positiveLeptonsFromFirst )
+            {
+              returnValue
+              += ( firstCascade->leptonChargeSummedWithSpecifiedJets(
+                                                        firstIsNotAntiparticle,
+                                                             signalDefinitions,
+                                                             jetsFromFirst,
+                                                      negativeLeptonsFromFirst,
+                                                     positiveLeptonsFromFirst )
+                   * secondCascade->leptonChargeSummedWithSpecifiedJets(
+                                                       secondIsNotAntiparticle,
+                                                             signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
+                        ( numberOfNegativeLeptons - negativeLeptonsFromFirst ),
+                    ( numberOfPositiveLeptons - positiveLeptonsFromFirst ) ) );
+            }
+          }
+        }
+        return returnValue;
+      }
+
+
+
+      ossfMinusOsdf::ossfMinusOsdf() :
+          leptonAcceptanceForCascadePair()
+      {
+        // just an initialization list.
+      }
+
+      ossfMinusOsdf::~ossfMinusOsdf()
+      {
+        // does nothing.
+      }
+
+
+      double
+      ossfMinusOsdf::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                       int const exactNumberOfJets,
+                                       fullCascade* firstCascade,
+                                       bool firstIsNotAntiparticle,
+                                       fullCascade* secondCascade,
+                                       bool secondIsNotAntiparticle ) const
+      {
+        double returnValue( 0.0 );
+
+        for( int jetsFromFirst( exactNumberOfJets );
+             0 <= jetsFromFirst;
+             --jetsFromFirst )
+        {
+          returnValue
+          = ( ( firstCascade->specifiedJetsOneOssfMinusOsdfPair(
+                                                             signalDefinitions,
+                                                         exactNumberOfJets )
+                * secondCascade->getAcceptance( secondIsNotAntiparticle,
+                                                signalDefinitions,
+                                         ( exactNumberOfJets - jetsFromFirst ),
+                                                0,
+                                                0,
+                                                0,
+                                                0 ) )
+              + ( firstCascade->getAcceptance( firstIsNotAntiparticle,
+                                               signalDefinitions,
+                                               jetsFromFirst,
+                                               0,
+                                               0,
+                                               0,
+                                               0 )
+                  * secondCascade->specifiedJetsOneOssfMinusOsdfPair(
+                                                            signalDefinitions,
+                                   ( exactNumberOfJets - jetsFromFirst ) ) ) );
+        }
+        return returnValue;
+      }
+
+    }  // end of leptonAcceptanceStyle namespace
+
+
 
     int const
-    atlasFourJetMetNLeptons::jetAcceptanceGridTableColumn( 10 );
+    atlasFourJetMetPlusGivenLeptonCuts::jetAcceptanceGridTableColumn( 10 );
     // this is dependent on the format of the grids.
     double const
-    atlasFourJetMetNLeptons::defaultExtraJetCut( 40.0 );
+    atlasFourJetMetPlusGivenLeptonCuts::defaultExtraJetCut( 40.0 );
     // this is the standard cut for the jets beyond the hardest cut for this
     // signal as implemented in this code.
     double const
-    atlasFourJetMetNLeptons::defaultPrimaryLeptonCut( 20.0 );
+    atlasFourJetMetPlusGivenLeptonCuts::defaultPrimaryLeptonCut( 20.0 );
     double const
-    atlasFourJetMetNLeptons::defaultSecondaryLeptonCut( 10.0 );
+    atlasFourJetMetPlusGivenLeptonCuts::defaultSecondaryLeptonCut( 10.0 );
     // the default Atlas lepton transverse momentum cuts are 20.0 GeV
     // (for N leptons to *pass*) & 10.0 GeV (for all others to *fail*).
 
     signalCalculator*
-    atlasFourJetMetNLeptons::getCalculator(
-                                       std::string const* const argumentString,
+    atlasFourJetMetPlusGivenLeptonCuts::getCalculator(
+                                             std::string const& argumentString,
                                  signalDefinitionSet* const signalDefinitions )
-    /* this either returns a pointer to a new atlasFourJetMetNLeptons with
-     * cuts decided by the given string, or a pointer to a
-     * reallyWrongCalculator.
+    /* this either returns a pointer to a new
+     * atlasFourJetMetPlusGivenLeptonCuts with cuts decided by the given
+     * string, or NULL if the string could not be parsed properly.
      */
     {
       // debugging:
-      /**std::cout << std::endl << "debugging:"
+      /**/std::cout << std::endl << "debugging:"
       << std::endl
-      << "atlasFourJetMetNLeptons::getCalculator( " << *argumentString
-      << ", ... ) called.";
-      std::cout << std::endl;**/
+      << "atlasFourJetMetPlusGivenLeptonCuts::getCalculator( "
+      << argumentString << ", ... ) called.";
+      std::cout << std::endl;/**/
 
-      signalDefinitions->setExcludedStandardModelProducts(
-                          signalDefinitions->getShortcuts()->getInputShortcuts(
-                                                          )->getNotInJets5() );
       signalCalculator* returnPointer( NULL );
-      int numberOfLeptons( parseNumberOfLeptons( *argumentString ) );
-      if( -1 == numberOfLeptons )
+
+      if( 0 == argumentString.compare( 0,
+                                       11,
+                                       "Atlas4jMET_" ) )
       {
-        returnPointer = new reallyWrongCalculator( signalDefinitions );
-      }
-      else
-      {
-        if( parseBeamEnergy( *argumentString,
-                             signalDefinitions ) )
+        std::string validArguments( argumentString.substr( 10 ) );
+        // debugging:
+        /**/std::cout << std::endl << "debugging:"
+        << std::endl
+        << "validArguments = \"" << validArguments << "\"";
+        std::cout << std::endl;/**/
+
+        // the lepton transverse momentum cuts are set to their defaults so
+        // that parseLeptonAcceptance can over-write them if necessary.
+        signalDefinitions->setPrimaryLeptonCut( defaultPrimaryLeptonCut );
+        signalDefinitions->setSecondaryLeptonCut( defaultSecondaryLeptonCut );
+
+        std::string argumentRemainder;
+        if( parseBeamEnergy( validArguments,
+                             signalDefinitions,
+                             argumentRemainder ) )
         {
-          double
-          defaultPrimaryCutBasedOnLeptonNumber( defaultPrimaryLeptonCut );
-          if( 0 == numberOfLeptons )
+          leptonAcceptanceForCascadePair*
+          leptonAcceptanceType( parseLeptonAcceptance( argumentRemainder,
+                                                       signalDefinitions ) );
+          if( NULL != leptonAcceptanceType )
           {
-            defaultPrimaryCutBasedOnLeptonNumber = defaultSecondaryLeptonCut;
+            returnPointer
+            = new atlasFourJetMetPlusGivenLeptonCuts( signalDefinitions,
+                                                      leptonAcceptanceType );
           }
-          parseLeptonTransverseMomentumCuts( *argumentString,
-                                             signalDefinitions,
-                                          defaultPrimaryCutBasedOnLeptonNumber,
-                                             defaultSecondaryLeptonCut );
-          signalDefinitions->setJetCut( defaultExtraJetCut );
-          returnPointer = new atlasFourJetMetNLeptons( signalDefinitions,
-                                                       numberOfLeptons );
-        }
-        else
-        {
-          returnPointer = new reallyWrongCalculator( signalDefinitions );
         }
       }
       return returnPointer;
     }
 
-    atlasFourJetMetNLeptons::atlasFourJetMetNLeptons(
-                               signalDefinitionSet* const signalDefinitions,
-                                                  int const numberOfLeptons ) :
+    atlasFourJetMetPlusGivenLeptonCuts::atlasFourJetMetPlusGivenLeptonCuts(
+                                  signalDefinitionSet* const signalDefinitions,
+     leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator ) :
         signalCalculator( signalDefinitions ),
-        numberOfLeptons( numberOfLeptons )
+        leptonAcceptanceCalculator( leptonAcceptanceCalculator )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "atlasFourJetMetNLeptons constructing with primary lepton cut = "
+      << "atlasFourJetMetPlusGivenLeptonCuts constructing with primary lepton"
+      << " cut = "
       << signalDefinitions->getPrimaryLeptonCut()
       << ", secondary lepton cut = "
       << signalDefinitions->getSecondaryLeptonCut() << ", numberOfLeptons = "
@@ -786,69 +1213,60 @@ namespace LHC_FASER
       excludedFinalStateParticles.push_back( -(CppSLHA::PDG_code::top) );
     }
 
-    atlasFourJetMetNLeptons::~atlasFourJetMetNLeptons()
+    atlasFourJetMetPlusGivenLeptonCuts::~atlasFourJetMetPlusGivenLeptonCuts()
     {
       // does nothing.
     }
 
 
     double
-    atlasFourJetMetNLeptons::valueForCurrentCascades(
+    atlasFourJetMetPlusGivenLeptonCuts::valueForCurrentCascades(
                                                      fullCascade* firstCascade,
                                                    fullCascade* secondCascade )
     // see base version's description.
     {
-      subchannelZeroOrMoreJetsNLeptons = 0.0;
-      subchannelOneOrMoreJetsNLeptons = 0.0;
-      for( int leptonsInFirstCascade( 0 );
-           numberOfLeptons >= leptonsInFirstCascade;
-           ++leptonsInFirstCascade )
-      {
-        subchannelZeroOrMoreJetsNLeptons
-        += ( firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                        leptonsInFirstCascade )
-             * secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                               ( numberOfLeptons - leptonsInFirstCascade ) ) );
+      subchannelZeroOrMoreJets
+      = leptonAcceptanceCalculator->withAtLeastNJets( &signalDefinitions,
+                                                      0,
+                                                      firstCascade,
+                                             firstDoesNotStartWithAntiparticle,
+                                                      secondCascade,
+                                          secondDoesNotStartWithAntiparticle );
         // chance of the pair of cascades producing the correct number of
         // leptons between them.
 
-        subchannelOneOrMoreJetsNLeptons
-        -= ( firstCascade->specifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                      0,
-                                                        leptonsInFirstCascade )
-             * secondCascade->specifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                                         0,
-                               ( numberOfLeptons - leptonsInFirstCascade ) ) );
-        // 1st we sum up the overlap that needs to be taken away.
-      }
-      subchannelOneOrMoreJetsNLeptons += subchannelZeroOrMoreJetsNLeptons;
-      // then we specify the value minus the overlap with the totals.
+      subchannelOneOrMoreJets
+      = ( subchannelZeroOrMoreJets
+         - leptonAcceptanceCalculator->withExactlyNJets( &signalDefinitions,
+                                                         0,
+                                                         firstCascade,
+                                             firstDoesNotStartWithAntiparticle,
+                                                         secondCascade,
+                                        secondDoesNotStartWithAntiparticle ) );
+      // subchannelOneOrMoreJets = subchannelZeroOrMoreJets
+      // minus the amount with zero cascade jets.
 
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "subchannelZeroOrMoreJetsNLeptons = "
-      << subchannelZeroOrMoreJetsNLeptons
-      << ", subchannelOneOrMoreJetsNLeptons = "
-      << subchannelOneOrMoreJetsNLeptons;
+      << "subchannelZeroOrMoreJets = "
+      << subchannelZeroOrMoreJets
+      << ", subchannelOneOrMoreJets = "
+      << subchannelOneOrMoreJets;
       std::cout << std::endl;**/
 
-      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJetsNLeptons )
+      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJets )
       {
         fourJetAcceptance = fourJetKinematics->getAcceptance( initialPair,
                                                               firstCascade,
                                                               secondCascade );
         subchannelValue = ( subchannelCrossSectionTimesBrToEwinos
-                            * subchannelZeroOrMoreJetsNLeptons
+                            * subchannelZeroOrMoreJets
                             * fourJetAcceptance );
 
         // debugging:
         /**if( 0.05 < ( subchannelCrossSectionTimesBrToEwinos
-                         * subchannelZeroOrMoreJetsNLeptons ) )
+                         * subchannelZeroOrMoreJets ) )
         {
           std::cout << std::endl << "debugging:"
           << std::endl
@@ -872,18 +1290,18 @@ namespace LHC_FASER
           << "subchannelCrossSectionTimesBrToEwinos = "
           << subchannelCrossSectionTimesBrToEwinos
           << std::endl
-          << "subchannelZeroOrMoreJetsNLeptons = "
-          << subchannelZeroOrMoreJetsNLeptons;
+          << "subchannelZeroOrMoreJets = "
+          << subchannelZeroOrMoreJets;
           std::cout << std::endl;
         }**/
 
         // it's not going to ever be the case where the acceptance for 1+ jets
         // is greater than 0+ jets...
-        if( lhcFaserGlobal::negligibleBr < subchannelOneOrMoreJetsNLeptons )
+        if( lhcFaserGlobal::negligibleBr < subchannelOneOrMoreJets )
         {
           subchannelValue
           += ( subchannelCrossSectionTimesBrToEwinos
-               * subchannelOneOrMoreJetsNLeptons
+               * subchannelOneOrMoreJets
                * ( threeJetKinematics->getAcceptance( initialPair,
                                                       firstCascade,
                                                       secondCascade )
@@ -897,20 +1315,20 @@ namespace LHC_FASER
         << "subchannelCrossSectionTimesBrToEwinos = "
         << subchannelCrossSectionTimesBrToEwinos
         << std::endl
-        << "subchannelZeroOrMoreJetsNLeptons = "
-        << subchannelZeroOrMoreJetsNLeptons
+        << "subchannelZeroOrMoreJets = "
+        << subchannelZeroOrMoreJets
         << std::endl
         << "fourJetAcceptance = " << fourJetAcceptance
         << std::endl
         << "=> adding subchannelValue = " << subchannelValue;
         std::cout << std::endl;**/
-        if( !( ( 1.0 >= subchannelZeroOrMoreJetsNLeptons )
+        if( !( ( 1.0 >= subchannelZeroOrMoreJets )
                &&
-               ( 0.0 <= subchannelZeroOrMoreJetsNLeptons )
+               ( 0.0 <= subchannelZeroOrMoreJets )
                &&
-               ( 1.0 >= subchannelOneOrMoreJetsNLeptons )
+               ( 1.0 >= subchannelOneOrMoreJets )
                &&
-               ( 0.0 <= subchannelOneOrMoreJetsNLeptons )
+               ( 0.0 <= subchannelOneOrMoreJets )
                &&
                ( 1.0 >= fourJetAcceptance )
                &&
@@ -941,9 +1359,9 @@ namespace LHC_FASER
           std::cout
           << std::endl
           << "produced subchannelZeroOrMoreJetsZeroLeptons = "
-          << subchannelZeroOrMoreJetsNLeptons
+          << subchannelZeroOrMoreJets
           << ", subchannelOneOrMoreJetsZeroLeptons = "
-          << subchannelOneOrMoreJetsNLeptons
+          << subchannelOneOrMoreJets
           << ", & fourJetAcceptance = "
           << fourJetAcceptance
           << ", all of which should be >= 0.0 & <= 1.0 for valid"
@@ -961,67 +1379,85 @@ namespace LHC_FASER
 
 
 
-    int const atlasThreeJetMetNLeptons::jetAcceptanceGridTableColumn( 10 );
+
+    int const
+    atlasThreeJetMetPlusGivenLeptonCuts::jetAcceptanceGridTableColumn( 10 );
     // this is dependent on the format of the grids.
-    double const atlasThreeJetMetNLeptons::defaultExtraJetCut( 40.0 );
+    double const
+    atlasThreeJetMetPlusGivenLeptonCuts::defaultExtraJetCut( 40.0 );
     // this is the standard cut for the jets beyond the hardest cut for this
     // signal as implemented in this code.
-    double const atlasThreeJetMetNLeptons::defaultPrimaryLeptonCut( 20.0 );
-    double const atlasThreeJetMetNLeptons::defaultSecondaryLeptonCut( 10.0 );
+    double const
+    atlasThreeJetMetPlusGivenLeptonCuts::defaultPrimaryLeptonCut( 20.0 );
+    double const
+    atlasThreeJetMetPlusGivenLeptonCuts::defaultSecondaryLeptonCut( 10.0 );
     // the default Atlas lepton transverse momentum cuts are 20.0 GeV
     // (for N leptons to *pass*) & 10.0 GeV (for all others to *fail*).
 
     signalCalculator*
-    atlasThreeJetMetNLeptons::getCalculator(
-                                       std::string const* const argumentString,
+    atlasThreeJetMetPlusGivenLeptonCuts::getCalculator(
+                                             std::string const& argumentString,
                                  signalDefinitionSet* const signalDefinitions )
+    /* this either returns a pointer to a new
+     * atlasThreeJetMetPlusGivenLeptonCuts with cuts decided by the given
+     * string, or NULL if the string could not be parsed properly.
+     */
     {
       // debugging:
-      /**std::cout << std::endl << "debugging:"
+      /**/std::cout << std::endl << "debugging:"
       << std::endl
-      << "atlasThreeJetMetNLeptons::getCalculator( " << *argumentString
-      << ", ... ) called.";
-      std::cout << std::endl;**/
-      signalDefinitions->setExcludedStandardModelProducts(
-                          signalDefinitions->getShortcuts()->getInputShortcuts(
-                                                          )->getNotInJets5() );
+      << "atlasThreeJetMetPlusGivenLeptonCuts::getCalculator( "
+      << argumentString << ", ... ) called.";
+      std::cout << std::endl;/**/
+
       signalCalculator* returnPointer( NULL );
-      int numberOfLeptons( parseNumberOfLeptons( *argumentString ) );
-      if( -1 == numberOfLeptons )
+
+      if( 0 == argumentString.compare( 0,
+                                       11,
+                                       "Atlas3jMET_" ) )
       {
-        returnPointer = new reallyWrongCalculator( signalDefinitions );
-      }
-      else
-      {
-        if( parseBeamEnergy( *argumentString,
-                             signalDefinitions ) )
+        std::string validArguments( argumentString.substr( 10 ) );
+        // debugging:
+        /**/std::cout << std::endl << "debugging:"
+        << std::endl
+        << "validArguments = \"" << validArguments << "\"";
+        std::cout << std::endl;/**/
+
+        // the lepton transverse momentum cuts are set to their defaults so
+        // that parseLeptonAcceptance can over-write them if necessary.
+        signalDefinitions->setPrimaryLeptonCut( defaultPrimaryLeptonCut );
+        signalDefinitions->setSecondaryLeptonCut( defaultSecondaryLeptonCut );
+
+        std::string argumentRemainder;
+        if( parseBeamEnergy( validArguments,
+                             signalDefinitions,
+                             argumentRemainder ) )
         {
-          parseLeptonTransverseMomentumCuts( *argumentString,
-                                             signalDefinitions,
-                                             defaultPrimaryLeptonCut,
-                                             defaultSecondaryLeptonCut );
-          signalDefinitions->setJetCut( defaultExtraJetCut );
-          returnPointer = new atlasThreeJetMetNLeptons( signalDefinitions,
-                                                       numberOfLeptons );
-        }
-        else
-        {
-          returnPointer = new reallyWrongCalculator( signalDefinitions );
+          leptonAcceptanceForCascadePair*
+          leptonAcceptanceType( parseLeptonAcceptance( argumentRemainder,
+                                                       signalDefinitions ) );
+          if( NULL != leptonAcceptanceType )
+          {
+            returnPointer
+            = new atlasFourJetMetPlusGivenLeptonCuts( signalDefinitions,
+                                                      leptonAcceptanceType );
+          }
         }
       }
       return returnPointer;
     }
 
-    atlasThreeJetMetNLeptons::atlasThreeJetMetNLeptons(
+    atlasThreeJetMetPlusGivenLeptonCuts::atlasThreeJetMetPlusGivenLeptonCuts(
                                   signalDefinitionSet* const signalDefinitions,
-                                                  int const numberOfLeptons ) :
+     leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator ) :
         signalCalculator( signalDefinitions ),
-        numberOfLeptons( numberOfLeptons )
+        leptonAcceptanceCalculator( leptonAcceptanceCalculator )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "atlasThreeJetMetNLeptons constructing with primary lepton cut = "
+      << "atlasThreeJetMetPlusGivenLeptonCuts constructing with primary lepton"
+      << " cut = "
       << signalDefinitions->getPrimaryLeptonCut()
       << ", secondary lepton cut = "
       << signalDefinitions->getSecondaryLeptonCut() << ", numberOfLeptons = "
@@ -1029,115 +1465,183 @@ namespace LHC_FASER
       std::cout << std::endl;**/
 
       std::string jetGridName( "Atlas3jMET" );
-      this->signalDefinitions.setJetPlusMetAcceptance(
-                   signalDefinitions->getShortcuts()->getJetPlusMetAcceptances(
+      threeJetKinematics
+      = signalDefinitions->getShortcuts()->getJetPlusMetAcceptances(
                                                )->getJetPlusMetAcceptanceTable(
                                             signalDefinitions->getBeamEnergy(),
                                                                   &jetGridName,
-                                              jetAcceptanceGridTableColumn ) );
+                                                jetAcceptanceGridTableColumn );
       excludedFinalStateParticles.push_back( CppSLHA::PDG_code::top );
       excludedFinalStateParticles.push_back( -(CppSLHA::PDG_code::top) );
     }
 
-    atlasThreeJetMetNLeptons::~atlasThreeJetMetNLeptons()
+    atlasThreeJetMetPlusGivenLeptonCuts::~atlasThreeJetMetPlusGivenLeptonCuts()
     {
       // does nothing.
     }
 
 
     double
-    atlasThreeJetMetNLeptons::valueForCurrentCascades(
+    atlasThreeJetMetPlusGivenLeptonCuts::valueForCurrentCascades(
                                                      fullCascade* firstCascade,
                                                    fullCascade* secondCascade )
     // see base version's description.
     {
+      subchannelZeroOrMoreJets
+      = leptonAcceptanceCalculator->withAtLeastNJets( &signalDefinitions,
+                                                      0,
+                                                      firstCascade,
+                                             firstDoesNotStartWithAntiparticle,
+                                                      secondCascade,
+                                          secondDoesNotStartWithAntiparticle );
+        // chance of the pair of cascades producing the correct number of
+        // leptons between them.
+
+      subchannelOneOrMoreJets
+      = ( subchannelZeroOrMoreJets
+         - leptonAcceptanceCalculator->withExactlyNJets( &signalDefinitions,
+                                                         0,
+                                                         firstCascade,
+                                             firstDoesNotStartWithAntiparticle,
+                                                         secondCascade,
+                                        secondDoesNotStartWithAntiparticle ) );
+      // subchannelOneOrMoreJets = subchannelZeroOrMoreJets
+      // minus the amount with zero cascade jets.
+
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "looking at " << std::endl;
-      if( !firstSparticleIsNotAntiparticle )
-      {
-        std::cout << "anti-";
-      }
-      std::cout
-      << firstCascade->getAsString() << " BR = " << firstCascadeBrToEwino
-      << std::endl;
-      if( !secondSparticleIsNotAntiparticle )
-      {
-        std::cout << "anti-";
-      }
-      std::cout
-      << secondCascade->getAsString() << " BR = " << secondCascadeBrToEwino
-      << std::endl << " => "
-      << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
-      << std::endl
-      << "subchannelCrossSectionTimesBrToEwinos = "
-      << subchannelCrossSectionTimesBrToEwinos
-      << std::endl
-      << "subchannelZeroOrMoreJetsNLeptons = "
-      << subchannelZeroOrMoreJetsNLeptons;
+      << "subchannelZeroOrMoreJets = "
+      << subchannelZeroOrMoreJets
+      << ", subchannelOneOrMoreJets = "
+      << subchannelOneOrMoreJets;
       std::cout << std::endl;**/
 
-      subchannelZeroOrMoreJetsNLeptons = 0.0;
-      for( int leptonsInFirstCascade( 0 );
-           numberOfLeptons >= leptonsInFirstCascade;
-           ++leptonsInFirstCascade )
+      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJets )
       {
-        subchannelZeroOrMoreJetsNLeptons
-        += ( firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                                                        leptonsInFirstCascade )
-             * secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                            &signalDefinitions,
-                               ( numberOfLeptons - leptonsInFirstCascade ) ) );
-        // chance of the pair of cascades producing the correct number of
-        // leptons between them.
-      }
-      // debugging:
-      /**if( 0.01 < ( subchannelCrossSectionTimesBrToEwinos
-                       * subchannelZeroOrMoreJetsNLeptons ) )
-      {
-        std::cout << std::endl << "debugging:"
-        << std::endl
-        << "adding" << std::endl;
-        if( !firstSparticleIsNotAntiparticle )
+        fourJetAcceptance = fourJetKinematics->getAcceptance( initialPair,
+                                                              firstCascade,
+                                                              secondCascade );
+        subchannelValue = ( subchannelCrossSectionTimesBrToEwinos
+                            * subchannelZeroOrMoreJets
+                            * fourJetAcceptance );
+
+        // debugging:
+        /**if( 0.05 < ( subchannelCrossSectionTimesBrToEwinos
+                         * subchannelZeroOrMoreJets ) )
         {
-          std::cout << "anti-";
-        }
-        std::cout
-        << firstCascade->getAsString() << " BR = " << firstCascadeBrToEwino
-        << std::endl;
-        if( !secondSparticleIsNotAntiparticle )
+          std::cout << std::endl << "debugging:"
+          << std::endl
+          << "adding" << std::endl;
+          if( !firstSparticleIsNotAntiparticle )
+          {
+            std::cout << "anti-";
+          }
+          std::cout
+          << firstCascade->getAsString() << " BR = "
+          << firstCascadeBrToEwino << std::endl;
+          if( !secondSparticleIsNotAntiparticle )
+          {
+            std::cout << "anti-";
+          }
+          std::cout
+          << secondCascade->getAsString() << " BR = " << secondCascadeBrToEwino
+          << std::endl
+          << " => " << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
+          << std::endl
+          << "subchannelCrossSectionTimesBrToEwinos = "
+          << subchannelCrossSectionTimesBrToEwinos
+          << std::endl
+          << "subchannelZeroOrMoreJets = "
+          << subchannelZeroOrMoreJets;
+          std::cout << std::endl;
+        }**/
+
+        // it's not going to ever be the case where the acceptance for 1+ jets
+        // is greater than 0+ jets...
+        if( lhcFaserGlobal::negligibleBr < subchannelOneOrMoreJets )
         {
-          std::cout << "anti-";
+          subchannelValue
+          += ( subchannelCrossSectionTimesBrToEwinos
+               * subchannelOneOrMoreJets
+               * ( threeJetKinematics->getAcceptance( initialPair,
+                                                      firstCascade,
+                                                      secondCascade )
+                   - fourJetAcceptance ) );
+          // we assume that the 3-jet+MET acceptance from the grid is greater
+          // than the 4-jet+MET acceptance.
         }
-        std::cout
-        << secondCascade->getAsString() << " BR = " << secondCascadeBrToEwino
-        << std::endl << " => "
-        << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
         << std::endl
         << "subchannelCrossSectionTimesBrToEwinos = "
         << subchannelCrossSectionTimesBrToEwinos
         << std::endl
-        << "subchannelZeroOrMoreJetsNLeptons = "
-        << subchannelZeroOrMoreJetsNLeptons;
-        std::cout << std::endl;
-      }**/
-
-      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJetsNLeptons )
-      {
-        return ( subchannelCrossSectionTimesBrToEwinos
-                 * subchannelZeroOrMoreJetsNLeptons
-                 * signalDefinitions.getJetPlusMetAcceptance()->getAcceptance(
-                                                                   initialPair,
-                                                                  firstCascade,
-                                                             secondCascade ) );
+        << "subchannelZeroOrMoreJets = "
+        << subchannelZeroOrMoreJets
+        << std::endl
+        << "fourJetAcceptance = " << fourJetAcceptance
+        << std::endl
+        << "=> adding subchannelValue = " << subchannelValue;
+        std::cout << std::endl;**/
+        if( !( ( 1.0 >= subchannelZeroOrMoreJets )
+               &&
+               ( 0.0 <= subchannelZeroOrMoreJets )
+               &&
+               ( 1.0 >= subchannelOneOrMoreJets )
+               &&
+               ( 0.0 <= subchannelOneOrMoreJets )
+               &&
+               ( 1.0 >= fourJetAcceptance )
+               &&
+               ( 0.0 <= fourJetAcceptance )
+               &&
+               ( 0.0 <= subchannelValue ) ) )
+        {
+          std::cout << std::endl << "LHC-FASER::error!"
+          << std::endl
+          << *(initialPair->getFirstParticle()->get_name_or_antiname(
+                                             firstSparticleIsNotAntiparticle ))
+          << " + "
+          << *(initialPair->getSecondParticle()->get_name_or_antiname(
+                                           secondSparticleIsNotAntiparticle ));
+          std::cout
+          << std::endl
+          << "1st: " << firstCascade->getAsString() << "; 0+j, Nl = "
+          << firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                        0 );
+          std::cout
+          << std::endl
+          << "2nd: " << secondCascade->getAsString() << "; 0+j, Nl = "
+          << secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
+                                                            &signalDefinitions,
+                                                                         0 );
+          std::cout << std::endl;
+          std::cout
+          << std::endl
+          << "produced subchannelZeroOrMoreJetsZeroLeptons = "
+          << subchannelZeroOrMoreJets
+          << ", subchannelOneOrMoreJetsZeroLeptons = "
+          << subchannelOneOrMoreJets
+          << ", & fourJetAcceptance = "
+          << fourJetAcceptance
+          << ", all of which should be >= 0.0 & <= 1.0 for valid"
+          << " input! subchannelValue = " << subchannelValue
+          << ", which should be >= 0.0 for valid input!";
+          std::cout << std::endl;
+        }
+        return subchannelValue;
       }
       else
       {
         return 0.0;
       }
     }
+
+
+
+
 
 
 
@@ -1278,6 +1782,6 @@ namespace LHC_FASER
                * subchannelDileptonAcceptance );
     }
 
-  }  // end of signalCalculatorClasses namespace.
+  }  // end of signalClasses namespace.
 
 }  // end of LHC_FASER namespace.

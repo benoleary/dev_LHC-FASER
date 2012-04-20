@@ -228,9 +228,9 @@ namespace LHC_FASER
       << "productionChannelPointerSet class seems to be OK.";
       std::cout << std::endl;
 
-      signalCalculatorClasses::reallyWrongCalculator*
+      signalClasses::reallyWrongCalculator*
       testReallyWrongCalculator(
-                            new signalCalculatorClasses::reallyWrongCalculator(
+                            new signalClasses::reallyWrongCalculator(
                                                   &testSignalDefinitionSet ) );
       double signalValue;
       double uncertaintyFactor;

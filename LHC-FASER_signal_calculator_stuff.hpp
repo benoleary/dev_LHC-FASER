@@ -103,7 +103,7 @@ namespace LHC_FASER
   class signalCalculator
   {
   public:
-    signalCalculator( signalDefinitionSet* signalDefinitions );
+    signalCalculator( signalDefinitionSet* const signalDefinitions );
     virtual
     ~signalCalculator();
 
@@ -119,7 +119,8 @@ namespace LHC_FASER
     = 0;*/
     /* this should be over-written in each derived class to construct a new
      * instance of the derived class based on arguments, & return a pointer to
-     * the new instance of the derived class.
+     * the new instance of the derived class, or NULL if the string could not
+     * be parsed as a correct key for the derived class.
      */
     virtual bool
     calculateValue( double* signalValue,
@@ -143,26 +144,49 @@ namespace LHC_FASER
 
 
   protected:
-    static int
-    parseNumberOfLeptons( std::string const& argumentString );
-    // this looks for "_0l", "_1l", or "_2l", & returns the appropriate int.
-    // returns -1 if it could not find any.
     static bool
     parseBeamEnergy( std::string const& argumentString,
-                     signalDefinitionSet* const signalDefinitions );
-    // this looks for "_7TeV", "_07TeV", "_10TeV", or "_14TeV", & sets the beam
-    // energy appropriately. returns false if it could not find any.
+                     signalDefinitionSet* const signalDefinitions,
+                     std::string& argumentRemainder );
+    /* this looks for "_7TeV_", "_07TeV_", "_10TeV_", or "_14TeV_", & sets the
+     * beam energy appropriately, putting argumentString from the 2nd '_'
+     * onwards into argumentRemainder. returns false if it could not find any
+     * (& does not modify argumentRemainder in this case).
+     */
+    static leptonAcceptanceForCascadePair*
+    parseLeptonAcceptance( std::string const& argumentString,
+                           signalDefinitionSet* const signalDefinitions );
+    /* this looks for strings encoding the type of lepton cuts to use. the
+     * strings are, where # stands for any string representing an integer, in the
+     * order in which they are checked:
+     * "_ossf" : ossfMinusOsdf
+     * "_noExtraCut" : noLeptonCutNorExtraJetCut
+     * "_#l" : chargeAndFlavorSummed
+     * "_#lm#lp" : flavorSummed
+     * "_#epm#mpm" : chargeSummed
+     * "_#em#ep#mm#mp" : fullySpecified
+     * parseLeptonTransverseMomentumCuts is then called on the remainder of
+     * argumentString. finally, it creates a new leptonAcceptanceForCascadePair
+     * & returns a pointer to it. NULL is returned if argumentString could not
+     * be properly interpretted.
+     */
+    static int
+    parseOutLeptonNumber( std::string const& argumentString,
+                          size_t charPosition );
+    /* this returns the int made from the characters starting from charPosition
+     * up to the first non-numeric character. charPosition is set to the
+     * position of the first non-numeric character. -1 is returned if no
+     * numeric characters were found.
+     */
     static void
     parseLeptonTransverseMomentumCuts( std::string const& argumentString,
-                                signalDefinitionSet* const signalDefinitions,
-                                       double const defaultPrimaryLeptonCut,
-                                      double const defaultSecondaryLeptonCut );
+                                signalDefinitionSet* const signalDefinitions );
     /* this looks for "_pTl" then a double then "GeV", then a subsequent
      * "_pTl", a subsequent double, & a subsequent "GeV", interpretted as the
      * primary & secondary lepton cuts respectively.
      */
 
-    signalDefinitionSet signalDefinitions;
+    signalDefinitionSet* const signalDefinitions;
     inputHandler const* const inputShortcut;
     std::vector< productionChannelPointerSet* > productionChannels;
     //fullCascade* firstCascade;
@@ -202,51 +226,7 @@ namespace LHC_FASER
   };
 
 
-  /* this is a class to handle each individual signal to be calculated.
-   * it accesses numbers common to different signals through the
-   * crossSectionHandler, kinematicsHandler & cascadeHandler classes.
-   * it takes a string encoding what it should calculate, & constructs a
-   * signalCalculator object to actually calculate the signal with the
-   * given handlers. it also takes care of updating the signal & storing its
-   * value & estimated uncertainty.
-   */
-  class signalHandler : public getsReadiedForNewPoint
-  {
-  public:
-    signalHandler( std::string const signalName,
-                   double const crossSectionUnitFactor,
-                   signalDefinitionSet* const signalPreparationDefinitions );
-    ~signalHandler();
-
-    std::string const*
-    getName()
-    const;
-    double
-    getValue();
-    double
-    getUpperUncertainty();
-    double
-    getLowerUncertainty();
-    double
-    getUpperValue();
-    double
-    getLowerValue();
-    double
-    getLogUncertainty();
-
-
-  protected:
-    std::string signalName;
-    signalCalculator* rateCalculator;
-    signalShortcuts* const inputShortcut;
-    double signalValue;
-    double uncertaintyFactor;
-    double crossSectionUnitFactor;
-    // this is to allow for the user to specify event rates in fb, pb or nb.
-  };
-
-
-  namespace signalCalculatorClasses
+  namespace signalClasses
   {
     /* this is a derived class which just always returns
      * CppSLHA::CppSLHA_global::really_wrong_value as its value. it is used for
@@ -255,7 +235,8 @@ namespace LHC_FASER
     class reallyWrongCalculator : public signalCalculator
     {
     public:
-      reallyWrongCalculator( signalDefinitionSet* const signalDefinitions );
+      reallyWrongCalculator( std::string const& signalName,
+                             signalDefinitionSet* const signalDefinitions );
       virtual
       ~reallyWrongCalculator();
 
@@ -301,12 +282,207 @@ namespace LHC_FASER
     };
 
 
+    // this abstract base class encapsulates the general lepton acceptance
+    // separate from the jet acceptance.
+    class leptonAcceptanceForCascadePair
+    {
+    public:
+      leptonAcceptanceForCascadePair();
+      virtual
+      ~leptonAcceptanceForCascadePair();
+
+      virtual double
+      withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+                        int const exactNumberOfJets,
+                        fullCascade* firstCascade,
+                        bool firstIsNotAntiparticle,
+                        fullCascade* secondCascade,
+                        bool secondIsNotAntiparticle ) const = 0;
+      virtual double
+      withAtLeastNJets( signalDefinitionSet* const signalDefinitions,
+                        int const minimumNumberOfJets,
+                        fullCascade* firstCascade,
+                        bool firstIsNotAntiparticle,
+                        fullCascade* secondCascade,
+                        bool secondIsNotAntiparticle ) const;
+
+
+    protected:
+      static int const maximumNumberOfJets;
+    };
+
+
+    namespace leptonAcceptanceStyle
+    {
+      // this class derived from leptonAcceptanceForCascadePair is the most
+      // general I could think of.
+      class fullySpecified : public leptonAcceptanceForCascadePair
+      {
+      public:
+        fullySpecified( int const numberOfNegativeElectrons,
+                        int const numberOfPositiveElectrons,
+                        int const numberOfNegativeMuons,
+                        int const numberOfPositiveMuons );
+        virtual
+        ~fullySpecified();
+
+        virtual double
+        withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+                          int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle ) const;
+        bool
+        isSameAs( int const numberOfNegativeElectrons,
+                  int const numberOfPositiveElectrons,
+                  int const numberOfNegativeMuons,
+                  int const numberOfPositiveMuons ) const;
+
+
+      protected:
+        int const numberOfNegativeElectrons;
+        int const numberOfPositiveElectrons;
+        int const numberOfNegativeMuons;
+        int const numberOfPositiveMuons;
+      };
+
+
+      // this class derived from leptonAcceptanceForCascadePair just returns
+      // 100% lepton / additional jet acceptance.
+      class noLeptonCutNorExtraJetCut : public leptonAcceptanceForCascadePair
+      {
+      public:
+        noLeptonCutNorExtraJetCut();
+        virtual
+        ~noLeptonCutNorExtraJetCut();
+
+        virtual double
+        withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+                          int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle ) const;
+        virtual double
+        withAtLeastNJets( signalDefinitionSet* const signalDefinitions,
+                          int const minimumNumberOfJets,
+                          fullCascade* firstCascade,
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle ) const;
+      };
+
+
+      // this class derived from leptonAcceptanceForCascadePair sums up over
+      // all combinations of electrons & muons & charges.
+      class chargeAndFlavorSummed : public leptonAcceptanceForCascadePair
+      {
+      public:
+        chargeAndFlavorSummed( int const numberOfLeptons );
+        virtual
+        ~chargeAndFlavorSummed();
+
+        virtual double
+        withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+                          int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle ) const;
+        bool
+        isSameAs( int const numberOfLeptons ) const;
+
+
+      protected:
+        int const numberOfLeptons;
+      };
+
+
+      // this class derived from leptonAcceptanceForCascadePair sums up over
+      // all combinations of charges, distinguishing electrons from muons.
+      class chargeSummed : public leptonAcceptanceForCascadePair
+      {
+      public:
+        chargeSummed( int const numberOfElectrons,
+                      int const numberOfMuons );
+        virtual
+        ~chargeSummed();
+
+        virtual double
+        withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+                          int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle ) const;
+        bool
+        isSameAs( int const numberOfElectrons,
+                  int const numberOfMuons ) const;
+
+
+      protected:
+        int const numberOfElectrons;
+        int const numberOfMuons;
+      };
+
+
+      // this class derived from leptonAcceptanceForCascadePair sums up over
+      // all combinations of electrons & muons charges, distinguishing charges.
+      class flavorSummed : public leptonAcceptanceForCascadePair
+      {
+      public:
+        flavorSummed( int const numberOfNegativeLeptons,
+                      int const numberOfPositiveLeptons );
+        virtual
+        ~flavorSummed();
+
+        virtual double
+        withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+                          int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle ) const;
+        bool
+        isSameAs( int const numberOfNegativeLeptons,
+                  int const numberOfPositiveLeptons ) const;
+
+
+      protected:
+        int const numberOfNegativeLeptons;
+        int const numberOfPositiveLeptons;
+      };
+
+
+      // this class derived from leptonAcceptanceForCascadePair returns the
+      // acceptance for *exactly one* OSSF-OSDF pair.
+      class ossfMinusOsdf : public leptonAcceptanceForCascadePair
+      {
+      public:
+        ossfMinusOsdf();
+        virtual
+        ~ossfMinusOsdf();
+
+        virtual double
+        withExactlyNJets( signalDefinitionSet* const signalDefinitions,
+                          int const exactNumberOfJets,
+                          fullCascade* firstCascade,
+                          bool firstIsNotAntiparticle,
+                          fullCascade* secondCascade,
+                          bool secondIsNotAntiparticle ) const;
+      };
+
+    }  // end of leptonAcceptanceStyle namespace
+
+
     /* this is a derived class to calculateValue the "Atlas 4 jets plus missing
-     * transverse momentum plus N leptons" signal.
+     * transverse momentum plus some lepton cuts" signal.
      * it takes the kinematics from the Atlas4jMET grid & combines them with
-     * cascade decays leading to N leptons passing the cut.
+     * cascade decays leading to however many leptons in whichever combination
+     * passing the cut.
      */
-    class atlasFourJetMetNLeptons : public signalCalculator
+    class atlasFourJetMetPlusGivenLeptonCuts : public signalCalculator
     {
     public:
       static int const jetAcceptanceGridTableColumn;
@@ -320,18 +496,18 @@ namespace LHC_FASER
       // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
 
       static signalCalculator*
-      getCalculator( std::string const* const argumentString,
+      getCalculator( std::string const& argumentString,
                      signalDefinitionSet* const signalDefinitions );
-      /* this either returns a pointer to a new atlasFourJetMetNLeptons with
-       * cuts decided by the given string, or a pointer to a
-       * reallyWrongCalculator.
+      /* this either returns a pointer to a new
+       * atlasFourJetMetPlusGivenLeptonCuts with cuts decided by the given
+       * string, or NULL if the string could not be parsed properly.
        */
 
-      ~atlasFourJetMetNLeptons();
+      ~atlasFourJetMetPlusGivenLeptonCuts();
 
 
     protected:
-      int const numberOfLeptons;
+      leptonAcceptanceForCascadePair* leptonAcceptanceCalculator;
       jetAcceptanceTable* fourJetKinematics;
       jetAcceptanceTable* threeJetKinematics;
       /* the 4-jet signal is complicated enough that we also consider only 3 of
@@ -344,11 +520,66 @@ namespace LHC_FASER
       // these are used as each pairing of cascades from each production
       // channel is calculated:
       double subchannelValue;
+      double subchannelZeroOrMoreJets;
+      double subchannelOneOrMoreJets;
+
+      atlasFourJetMetPlusGivenLeptonCuts(
+                                  signalDefinitionSet* const signalDefinitions,
+            leptonAcceptanceForCascadePair* const leptonAcceptanceCalculator );
+
+      virtual double
+      valueForCurrentCascades( fullCascade* firstCascade,
+                               fullCascade* secondCascade );
+      // see base version's description.
+    };
+
+
+    /* this is a derived class to calculateValue the "Atlas 3 jets plus missing
+     * transverse momentum plus some lepton cuts" signal.
+     * it takes the kinematics from the Atlas3jMET grid & combines them with
+     * cascade decays leading to however many leptons in whichever combination
+     * passing the cut.
+     */
+    class atlasThreeJetMetPlusGivenLeptonCuts : public signalCalculator
+    {
+    public:
+      static int const jetAcceptanceGridTableColumn;
+      // this is dependent on the format of the grids.
+      static double const defaultExtraJetCut;
+      // this is the standard cut for the jets beyond the hardest cut for this
+      // signal as implemented in this code.
+      static double const defaultPrimaryLeptonCut;
+      static double const defaultSecondaryLeptonCut;
+      // the default Atlas lepton transverse momentum cuts are 20.0 GeV
+      // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
+
+      static signalCalculator*
+      getCalculator( std::string const& argumentString,
+                     signalDefinitionSet* const signalDefinitions );
+      /* this either returns a pointer to a new
+       * atlasThreeJetMetPlusGivenLeptonCuts with cuts decided by the given
+       * string, or NULL if the string could not be parsed properly.
+       */
+
+      ~atlasThreeJetMetPlusGivenLeptonCuts();
+
+
+    protected:
+      int const numberOfLeptons;
+      jetAcceptanceTable* threeJetKinematics;
+      /* the 4-jet signal is complicated enough that we also consider only 3 of
+       * the 4 required hard jets coming from (showered) decays to
+       * electroweakinos, with the 4th coming from a cascade decay of the
+       * electroweakinos. hence we need an extra kinematics set (though it is
+       * only used for direct jet acceptance).
+       */
+      double subchannelValue;
       double subchannelZeroOrMoreJetsNLeptons;
       double subchannelOneOrMoreJetsNLeptons;
 
-      atlasFourJetMetNLeptons( signalDefinitionSet* const signalDefinitions,
-                               int const numberOfLeptons );
+      atlasThreeJetMetPlusGivenLeptonCuts(
+                                  signalDefinitionSet* const signalDefinitions,
+            leptonAcceptanceForCascadePair* const leptonAcceptanceCalculator );
 
       virtual double
       valueForCurrentCascades( fullCascade* firstCascade,
@@ -443,7 +674,55 @@ namespace LHC_FASER
       // see base version's description.
     };
 
-  }  // end of signalCalculatorClasses namespace.
+  }  // end of signalClasses namespace.
+
+
+  /* this is a class to handle each individual signal to be calculated.
+   * it accesses numbers common to different signals through the
+   * crossSectionHandler, kinematicsHandler & cascadeHandler classes.
+   * it takes a string encoding what it should calculate, & constructs a
+   * signalCalculator object to actually calculate the signal with the
+   * given handlers. it also takes care of updating the signal & storing its
+   * value & estimated uncertainty.
+   */
+  class signalHandler : public getsReadiedForNewPoint
+  {
+  public:
+    typedef signalCalculator* (*signalCalculatorCreator)( std::string const&,
+                                                  signalDefinitionSet* const );
+
+    signalHandler( std::string const signalName,
+                   double const crossSectionUnitFactor,
+                   signalShortcuts const* const inputShortcut );
+    ~signalHandler();
+
+    std::string const*
+    getName()
+    const;
+    double
+    getValue();
+    double
+    getUpperUncertainty();
+    double
+    getLowerUncertainty();
+    double
+    getUpperValue();
+    double
+    getLowerValue();
+    double
+    getLogUncertainty();
+
+
+  protected:
+    std::string signalName;
+    signalCalculator* rateCalculator;
+    signalShortcuts* const inputShortcut;
+    signalDefinitionSet signalPreparationDefinitions;
+    double signalValue;
+    double uncertaintyFactor;
+    double crossSectionUnitFactor;
+    // this is to allow for the user to specify event rates in fb, pb or nb.
+  };
 
 
 
@@ -474,6 +753,33 @@ namespace LHC_FASER
   {
     return goThroughCascadesNormally( signalValue,
                                       uncertaintyFactor );
+  }
+
+  inline int
+  signalCalculator::parseOutLeptonNumber( std::string const& argumentString,
+                                          size_t& charPosition )
+  /* this returns the int made from the characters starting from charPosition
+   * up to the first non-numeric character. charPosition is set to the
+   * position of the first non-numeric character. -1 is returned if no
+   * numeric characters were found.
+   */
+  {
+    int leptonNumber( -1 );
+    std::string integerString( "" );
+    while( ( '0' <= argumentString[ charPosition ] )
+           &&
+           ( '9' >= argumentString[ charPosition ] ) )
+    {
+      integerString.append( 1,
+                            argumentString[ charPosition ] );
+      ++charPosition;
+    }
+    if( !(integerString.empty()) )
+    {
+      std::stringstream numberParser( integerString );
+      numberParser >> leptonNumber;
+    }
+    return leptonNumber;
   }
 
 
@@ -538,7 +844,8 @@ namespace LHC_FASER
 
 
 
-  namespace signalCalculatorClasses
+
+  namespace signalClasses
   {
     inline bool
     reallyWrongCalculator::calculateValue( double* signalValue,
@@ -584,6 +891,141 @@ namespace LHC_FASER
     }
 
 
+    inline double
+    leptonAcceptanceForCascadePair::withAtLeastNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                                 int const minimumNumberOfJets,
+                                                     fullCascade* firstCascade,
+                                                   bool firstIsNotAntiparticle,
+                                                    fullCascade* secondCascade,
+                                           bool secondIsNotAntiparticle ) const
+    {
+      double returnValue( 0.0 );
+      for( int numberOfJets( minimumNumberOfJets );
+           maximumNumberOfJets >= numberOfJets;
+           ++numberOfJets )
+      {
+        returnValue += withExactlyNJets( signalDefinitions,
+                                         numberOfJets,
+                                         firstCascade,
+                                         firstIsNotAntiparticle,
+                                         secondCascade,
+                                         secondIsNotAntiparticle );
+      }
+      return returnValue;
+    }
+
+
+    namespace leptonAcceptanceStyle
+    {
+      inline bool
+      fullySpecified::isSameAs( int const numberOfNegativeElectrons,
+                                int const numberOfPositiveElectrons,
+                                int const numberOfNegativeMuons,
+                                int const numberOfPositiveMuons ) const
+      {
+        if( ( numberOfNegativeElectrons
+              == this->numberOfNegativeElectrons )
+            &&
+            ( numberOfPositiveElectrons
+              == this->numberOfPositiveElectrons )
+            &&
+            ( numberOfNegativeMuons
+              == this->numberOfNegativeMuons )
+            &&
+            ( numberOfPositiveMuons
+              == this->numberOfPositiveMuons ) )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+
+
+      inline double
+      noLeptonCutNorExtraJetCut::withExactlyNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                                   int const exactNumberOfJets,
+                                                   fullCascade* firstCascade,
+                                                   bool firstIsNotAntiparticle,
+                                                   fullCascade* secondCascade,
+                                           bool secondIsNotAntiparticle ) const
+      {
+        return 1.0;
+      }
+
+      inline double
+      noLeptonCutNorExtraJetCut::withAtLeastNJets(
+                                  signalDefinitionSet* const signalDefinitions,
+                                                 int const minimumNumberOfJets,
+                                                   fullCascade* firstCascade,
+                                                   bool firstIsNotAntiparticle,
+                                                   fullCascade* secondCascade,
+                                           bool secondIsNotAntiparticle ) const
+      {
+        return 1.0;
+      }
+
+
+
+      inline bool
+      chargeAndFlavorSummed::isSameAs( int const numberOfLeptons ) const
+      {
+        if( numberOfLeptons == this->numberOfLeptons )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+
+
+      inline bool
+      chargeSummed::isSameAs( int const numberOfElectrons,
+                              int const numberOfMuons ) const
+      {
+        if( ( numberOfElectrons == this->numberOfElectrons )
+          &&
+          ( numberOfMuons == this->numberOfMuons ) )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+
+
+      inline bool
+      flavorSummed::isSameAs( int const numberOfNegativeLeptons,
+                              int const numberOfPositiveLeptons ) const
+      {
+        if( ( numberOfNegativeLeptons
+              == this->numberOfNegativeLeptons )
+          &&
+          ( numberOfPositiveLeptons
+            == this->numberOfPositiveLeptons ) )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+    }  // end of leptonAcceptanceStyle namespace
+
+
 
     inline double
     sameSignDilepton::getDileptonFromSingleCascade(
@@ -614,7 +1056,7 @@ namespace LHC_FASER
                                                              0 ) );
     }
 
-  }  // end of signalCalculatorClasses namespace
+  }  // end of signalClasses namespace
 
 }  // end of LHC_FASER namespace.
 

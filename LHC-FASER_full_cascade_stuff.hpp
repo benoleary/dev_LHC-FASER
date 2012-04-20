@@ -139,6 +139,9 @@ namespace LHC_FASER
       sizeOfEnumPlusOne /* possibly useful */
     };
 
+    static int const maximumJetsFromEwCascade;
+    static int const maximumLeptonsOfEachTypeFromEwCascade;
+
     fullCascade( colorfulCascadeType const typeOfColorfulCascade,
                  int const firstDecayBodyNumber,
                  int const maximumSmFermionsFromElectroweakCascades = 0,
@@ -215,6 +218,26 @@ namespace LHC_FASER
      *      - numberOfPositiveMuons )
      */
     double
+    leptonChargeSummedWithSpecifiedJets(
+                                  bool const initialSparticleIsNotAntiparticle,
+                                        acceptanceCutSet* const acceptanceCuts,
+                                         int const numberOfAdditionalJets,
+                                         int const numberOfElectrons,
+                                         int const numberOfMuons );
+    // this sums up getAcceptance for numberOfElectrons & numberOfMuons split
+    // between charges in every combination.
+    double
+    leptonFlavorSummedWithSpecifiedJets(
+                                  bool const initialSparticleIsNotAntiparticle,
+                                        acceptanceCutSet* const acceptanceCuts,
+                                         int const numberOfAdditionalJets,
+                                         int const numberOfNegativeLeptons,
+                                         int const numberOfPositiveLeptons );
+    /* this sums up getAcceptance for numberOfNegativeLeptons &
+     * numberOfPositiveLeptons split between electrons & muons in every
+     * combination.
+     */
+    double
     leptonFlavorSummedWithMinimumJets(
                                   bool const initialSparticleIsNotAntiparticle,
                                         acceptanceCutSet* const acceptanceCuts,
@@ -257,9 +280,6 @@ namespace LHC_FASER
 
 
   protected:
-    static int const maximumJetsFromEwCascade;
-    static int const maximumLeptonsOfEachTypeFromEwCascade;
-
     inputHandler const* inputShortcut;
     particlePointer initialSparticle;
     double beamEnergy;
@@ -1404,6 +1424,72 @@ namespace LHC_FASER
                                      numberOfPositiveElectrons,
                                      numberOfNegativeMuons,
                                      numberOfPositiveMuons );
+    }
+    return returnDouble;
+  }
+
+  inline double
+  fullCascade::leptonChargeSummedWithSpecifiedJets(
+                                  bool const initialSparticleIsNotAntiparticle,
+                                        acceptanceCutSet* const acceptanceCuts,
+                                              int const numberOfAdditionalJets,
+                                                   int const numberOfElectrons,
+                                                    int const numberOfMuons )
+// this sums up getAcceptance for numberOfElectrons & numberOfMuons split
+// between charges in every combination.
+  {
+    double returnDouble( 0.0 );
+    for( int numberOfNegativeElectrons( numberOfElectrons );
+         0 <= numberOfNegativeElectrons;
+         --numberOfNegativeElectrons )
+    {
+      for( int numberOfNegativeMuons( numberOfMuons );
+           0 <= numberOfNegativeMuons;
+           --numberOfNegativeMuons )
+      {
+      returnDouble += getAcceptance( initialSparticleIsNotAntiparticle,
+                                     acceptanceCuts,
+                                     numberOfAdditionalJets,
+                                     numberOfNegativeElectrons,
+                             ( numberOfElectrons - numberOfNegativeElectrons ),
+                                     numberOfNegativeMuons,
+                                   ( numberOfMuons - numberOfNegativeMuons ) );
+      }
+    }
+    return returnDouble;
+  }
+
+
+  inline double
+  fullCascade::leptonFlavorSummedWithSpecifiedJets(
+                                  bool const initialSparticleIsNotAntiparticle,
+                                        acceptanceCutSet* const acceptanceCuts,
+                                              int const numberOfAdditionalJets,
+                                             int const numberOfNegativeLeptons,
+                                            int const numberOfPositiveLeptons )
+  /* this sums up getAcceptance for numberOfNegativeLeptons &
+   * numberOfPositiveLeptons split between electrons & muons in every
+   * combination.
+   */
+  {
+    double returnDouble( 0.0 );
+    for( int numberOfNegativeElectrons( numberOfNegativeLeptons );
+         0 <= numberOfNegativeElectrons;
+         --numberOfNegativeElectrons )
+    {
+      for( int numberOfPositiveElectrons( numberOfPositiveLeptons );
+           0 <= numberOfPositiveElectrons;
+           --numberOfPositiveElectrons )
+      {
+      returnDouble
+      += getAcceptance( initialSparticleIsNotAntiparticle,
+                        acceptanceCuts,
+                        numberOfAdditionalJets,
+                        numberOfNegativeElectrons,
+                        numberOfPositiveElectrons,
+                       ( numberOfNegativeLeptons - numberOfNegativeElectrons ),
+                     ( numberOfPositiveLeptons - numberOfPositiveElectrons ) );
+      }
     }
     return returnDouble;
   }
