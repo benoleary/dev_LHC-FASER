@@ -35,47 +35,27 @@ namespace LHC_FASER
     void
     performTest()
     {
-      signalClasses::leptonAcceptanceForPairFactory testFactory;
-
-      signalClasses::leptonAcceptanceForCascadePair const*
-      testFullySpecified( testFactory.getFullySpecified( 1,
-                                                         0,
-                                                         0,
-                                                         1 ) );
-      signalClasses::leptonAcceptanceForCascadePair const*
-      testNoLeptonCutNorExtraJetCut( testFactory.getNoLeptonCut() );
-      signalClasses::leptonAcceptanceForCascadePair const*
-      testChargeAndFlavorSummed( testFactory.getChargeAndFlavorSummed( 2 ) );
-      signalClasses::leptonAcceptanceForCascadePair const*
-      singleLepton( testFactory.getChargeAndFlavorSummed( 1 ) );
-      signalClasses::leptonAcceptanceForCascadePair const*
-      testChargeSummed( testFactory.getChargeSummed( 0,
-                                                     1 ) );
-      signalClasses::leptonAcceptanceForCascadePair const*
-      singleMuon( testFactory.getChargeSummed( 0,
-                                               1 ) );
-      signalClasses::leptonAcceptanceForCascadePair const*
-      testFlavorSummed( testFactory.getFlavorSummed( 0,
-                                                     1 ) );
-      signalClasses::leptonAcceptanceForCascadePair const*
-      singleNegative( testFactory.getFlavorSummed( 1,
-                                                   0 ) );
-      signalClasses::leptonAcceptanceForCascadePair const*
-      singlePositive( testFactory.getFlavorSummed( 0,
-                                                   1 ) );
-      signalClasses::leptonAcceptanceForCascadePair const*
-      testOssfMinusOsdf( testFactory.getOssfMinusOsdf() );
-
-      std::cout
-      << std::endl
-      << "testChargeAndFlavorSummed = " << testChargeAndFlavorSummed
-      << ", singleLepton = " << singleLepton
-      << ", testChargeSummed = " << testChargeSummed
-      << ", singleMuon = " << singleMuon
-      << ", testFlavorSummed = " << testFlavorSummed
-      << ", singleNegative = " << singleNegative
-      << ", singlePositive = " << singlePositive;
-      std::cout << std::endl;
+      leptonAcceptanceStyle::fullySpecified const testFullySpecified( 1,
+                                                                      0,
+                                                                      0,
+                                                                      1 );
+      leptonAcceptanceStyle::noLeptonCutNorExtraJetCut const
+      testNoLeptonCutNorExtraJetCut;
+      leptonAcceptanceStyle::chargeAndFlavorSummed const
+      testChargeAndFlavorSummed( 2 );
+      leptonAcceptanceStyle::chargeAndFlavorSummed const singleLepton( 1 );
+      leptonAcceptanceStyle::chargeSummed const testChargeSummed( 0,
+                                                                  1 );
+      leptonAcceptanceStyle::chargeSummed const singleMuon( 0,
+                                                            1 );
+      leptonAcceptanceStyle::flavorSummed const testFlavorSummed( 0,
+                                                                  1 );
+      leptonAcceptanceStyle::flavorSummed const singleNegative( 1,
+                                                                0 );
+      leptonAcceptanceStyle::flavorSummed const singlePositive( 0,
+                                                                1 );
+      leptonAcceptanceStyle::ossfMinusOsdf const testOssfMinusOsdf;
+      leptonAcceptanceStyle::sameSignSameFlavor const testSameSignSameFlavor;
 
 
       crossSectionHandler crossSections( testInputHandler );
@@ -148,9 +128,9 @@ namespace LHC_FASER
             std::cout << std::endl;
             std::cout
             << std::endl
-            << "testFullySpecified->withExactlyNJets( ..., " << numberOfJets
+            << "testFullySpecified.withExactlyNJets( ..., " << numberOfJets
             << ", ... ) = "
-            << testFullySpecified->withExactlyNJets( &testSignalDefinitionSet,
+            << testFullySpecified.withExactlyNJets( &testSignalDefinitionSet,
                                                      numberOfJets,
                                              gluinoCascades->at( gluinoIndex ),
                                                      true,
@@ -158,44 +138,99 @@ namespace LHC_FASER
                                                      true );
             std::cout
             << std::endl
-            << "testNoLeptonCutNorExtraJetCut->withExactlyNJets( ..., "
+            << "testNoLeptonCutNorExtraJetCut.withExactlyNJets( ..., "
             << numberOfJets << ", ... ) = "
-            << testNoLeptonCutNorExtraJetCut->withExactlyNJets(
+            << testNoLeptonCutNorExtraJetCut.withExactlyNJets(
                                                       &testSignalDefinitionSet,
-                                                                numberOfJets,
+                                                               numberOfJets,
                                              gluinoCascades->at( gluinoIndex ),
-                                                                true,
+                                                               true,
                                              sdownLCascades->at( sdownLIndex ),
-                                                                true );
+                                                               true );
 
             std::cout
             << std::endl
-            << "testChargeAndFlavorSummed->withExactlyNJets( ..., "
+            << "testChargeAndFlavorSummed.withExactlyNJets( ..., "
             << numberOfJets << ", ... ) = "
-            << testChargeAndFlavorSummed->withExactlyNJets(
+            << testChargeAndFlavorSummed.withExactlyNJets(
                                                       &testSignalDefinitionSet,
-                                                            numberOfJets,
+                                                           numberOfJets,
                                              gluinoCascades->at( gluinoIndex ),
-                                                            true,
+                                                           true,
                                              sdownLCascades->at( sdownLIndex ),
-                                                            true );
+                                                           true );
 
             std::cout
             << std::endl
-            << "singleLepton->withExactlyNJets( ..., "
+            << "singleLepton.withExactlyNJets( ..., "
             << numberOfJets << ", ... ) = "
-            << singleLepton->withExactlyNJets( &testSignalDefinitionSet,
-                                               numberOfJets,
+            << singleLepton.withExactlyNJets( &testSignalDefinitionSet,
+                                              numberOfJets,
                                              gluinoCascades->at( gluinoIndex ),
-                                               true,
+                                              true,
                                              sdownLCascades->at( sdownLIndex ),
-                                               true );
+                                              true );
 
             std::cout
             << std::endl
-            << "testChargeSummed->withExactlyNJets( ..., " << numberOfJets
+            << "testChargeSummed.withExactlyNJets( ..., " << numberOfJets
             << ", ... ) = "
-            << testChargeSummed->withExactlyNJets( &testSignalDefinitionSet,
+            << testChargeSummed.withExactlyNJets( &testSignalDefinitionSet,
+                                                  numberOfJets,
+                                             gluinoCascades->at( gluinoIndex ),
+                                                  true,
+                                             sdownLCascades->at( sdownLIndex ),
+                                                  true );
+
+            std::cout
+            << std::endl
+            << "singleMuon.withExactlyNJets( ..., " << numberOfJets
+            << ", ... ) = "
+            << singleMuon.withExactlyNJets( &testSignalDefinitionSet,
+                                            numberOfJets,
+                                            gluinoCascades->at( gluinoIndex ),
+                                            true,
+                                            sdownLCascades->at( sdownLIndex ),
+                                            true );
+
+            std::cout
+            << std::endl
+            << "testFlavorSummed.withExactlyNJets( ..., " << numberOfJets
+            << ", ... ) = "
+            << testFlavorSummed.withExactlyNJets( &testSignalDefinitionSet,
+                                                  numberOfJets,
+                                             gluinoCascades->at( gluinoIndex ),
+                                                  true,
+                                             sdownLCascades->at( sdownLIndex ),
+                                                  true );
+
+            std::cout
+            << std::endl
+            << "singleNegative.withExactlyNJets( ..., " << numberOfJets
+            << ", ... ) = "
+            << singleNegative.withExactlyNJets( &testSignalDefinitionSet,
+                                                numberOfJets,
+                                             gluinoCascades->at( gluinoIndex ),
+                                                true,
+                                             sdownLCascades->at( sdownLIndex ),
+                                                true );
+
+            std::cout
+            << std::endl
+            << "singlePositive.withExactlyNJets( ..., " << numberOfJets
+            << ", ... ) = "
+            << singlePositive.withExactlyNJets( &testSignalDefinitionSet,
+                                                numberOfJets,
+                                             gluinoCascades->at( gluinoIndex ),
+                                                true,
+                                             sdownLCascades->at( sdownLIndex ),
+                                                true );
+
+            std::cout
+            << std::endl
+            << "testOssfMinusOsdf.withExactlyNJets( ..., " << numberOfJets
+            << ", ... ) = "
+            << testOssfMinusOsdf.withExactlyNJets( &testSignalDefinitionSet,
                                                    numberOfJets,
                                              gluinoCascades->at( gluinoIndex ),
                                                    true,
@@ -204,60 +239,218 @@ namespace LHC_FASER
 
             std::cout
             << std::endl
-            << "singleMuon->withExactlyNJets( ..., " << numberOfJets
+            << "testSameSignSameFlavor.withExactlyNJets( ..., " << numberOfJets
             << ", ... ) = "
-            << singleMuon->withExactlyNJets( &testSignalDefinitionSet,
-                                             numberOfJets,
+            << testSameSignSameFlavor.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                        numberOfJets,
                                              gluinoCascades->at( gluinoIndex ),
-                                             true,
+                                                        true,
                                              sdownLCascades->at( sdownLIndex ),
-                                             true );
-
-            std::cout
-            << std::endl
-            << "testFlavorSummed->withExactlyNJets( ..., " << numberOfJets
-            << ", ... ) = "
-            << testFlavorSummed->withExactlyNJets( &testSignalDefinitionSet,
-                                                   numberOfJets,
-                                             gluinoCascades->at( gluinoIndex ),
-                                                   true,
-                                             sdownLCascades->at( sdownLIndex ),
-                                                   true );
-
-            std::cout
-            << std::endl
-            << "singleNegative->withExactlyNJets( ..., " << numberOfJets
-            << ", ... ) = "
-            << singleNegative->withExactlyNJets( &testSignalDefinitionSet,
-                                                 numberOfJets,
-                                             gluinoCascades->at( gluinoIndex ),
-                                                 true,
-                                             sdownLCascades->at( sdownLIndex ),
-                                                 true );
-
-            std::cout
-            << std::endl
-            << "singlePositive->withExactlyNJets( ..., " << numberOfJets
-            << ", ... ) = "
-            << singlePositive->withExactlyNJets( &testSignalDefinitionSet,
-                                                 numberOfJets,
-                                             gluinoCascades->at( gluinoIndex ),
-                                                 true,
-                                             sdownLCascades->at( sdownLIndex ),
-                                                 true );
-
-            std::cout
-            << std::endl
-            << "testOssfMinusOsdf->withExactlyNJets( ..., " << numberOfJets
-            << ", ... ) = "
-            << testOssfMinusOsdf->withExactlyNJets( &testSignalDefinitionSet,
-                                                    numberOfJets,
-                                             gluinoCascades->at( gluinoIndex ),
-                                                    true,
-                                             sdownLCascades->at( sdownLIndex ),
-                                                    true );
+                                                        true );
           }
         }
+      }
+
+      fullCascade* gluinoSbottomOneNeutralinoOne( NULL );
+      fullCascade* gluinoSbottomOneNeutralinoTwo( NULL );
+      fullCascade* gluinoSbottomOneNeutralinoThree( NULL );
+      particlePointer sbottomOnePointer( testInputHandler->getSbottomOne() );
+      particlePointer
+      neutralinoOnePointer( testInputHandler->getNeutralinoOne() );
+      particlePointer
+      neutralinoTwoPointer( testInputHandler->getNeutralinoTwo() );
+      particlePointer
+      neutralinoThreePointer( testInputHandler->getNeutralinoThree() );
+      std::vector< fullCascade::particleWithInt* > const* cascadeDefiner;
+
+      std::cout
+      << std::endl
+      << "sbottomOnePointer = " << sbottomOnePointer;
+      std::cout << std::endl;
+      std::cout
+      << "sbottomOnePointer->get_name() = " << sbottomOnePointer->get_name();
+      std::cout << std::endl;
+      std::cout
+      << "*(sbottomOnePointer->get_name()) = "
+      << *(sbottomOnePointer->get_name());
+      std::cout << std::endl;
+      std::cout
+      << std::endl
+      << "gluinoPointer = " << gluinoPointer;
+      std::cout << std::endl;
+      std::cout
+      << "gluinoPointer->get_name() = " << gluinoPointer->get_name();
+      std::cout << std::endl;
+      std::cout
+      << "*(gluinoPointer->get_name()) = "
+      << *(gluinoPointer->get_name());
+      std::cout << std::endl;
+
+      for( int gluinoIndex( gluinoCascades->size() - 1 );
+           0 <= gluinoIndex;
+           --gluinoIndex )
+      {
+        cascadeDefiner
+        = gluinoCascades->at( gluinoIndex )->getCascadeDefiner();
+        if( 2 == cascadeDefiner->size() )
+        {
+          if( sbottomOnePointer == cascadeDefiner->back()->first )
+          {
+            if( neutralinoOnePointer == cascadeDefiner->front()->first )
+            {
+              gluinoSbottomOneNeutralinoOne
+              = gluinoCascades->at( gluinoIndex );
+            }
+            else if( neutralinoTwoPointer == cascadeDefiner->front()->first )
+            {
+              gluinoSbottomOneNeutralinoTwo
+              = gluinoCascades->at( gluinoIndex );
+            }
+            else if( neutralinoThreePointer == cascadeDefiner->front()->first )
+            {
+              gluinoSbottomOneNeutralinoThree
+              = gluinoCascades->at( gluinoIndex );
+            }
+          }
+        }
+      }
+
+      std::cout
+      << std::endl
+      << "gluinoSbottomOneNeutralinoOne = " << gluinoSbottomOneNeutralinoOne
+      << ", gluinoSbottomOneNeutralinoTwo = " << gluinoSbottomOneNeutralinoTwo
+      << ", gluinoSbottomOneNeutralinoThree = "
+      << gluinoSbottomOneNeutralinoThree;
+      std::cout << std::endl;
+      std::cout
+      << "gluinoSbottomOneNeutralinoOne = { "
+      << gluinoSbottomOneNeutralinoOne->getAsString() << " }";
+      std::cout << std::endl;
+      std::cout
+      << "gluinoSbottomOneNeutralinoTwo = { "
+      << gluinoSbottomOneNeutralinoTwo->getAsString() << " }";
+      std::cout << std::endl;
+      std::cout
+      << "goSb1N3 = { "
+      << gluinoSbottomOneNeutralinoThree->getAsString() << " }";
+      std::cout << std::endl;
+
+      std::cout
+      << std::endl
+      << "gluinoSbottomOneNeutralinoTwo, gluinoSbottomOneNeutralinoThree, 1"
+      << " jet: "
+      << testChargeAndFlavorSummed.withExactlyNJets( &testSignalDefinitionSet,
+                                                     1,
+                                                 gluinoSbottomOneNeutralinoTwo,
+                                                     true,
+                                               gluinoSbottomOneNeutralinoThree,
+                                                     true );
+      std::cout
+      << std::endl
+      << "gluinoSbottomOneNeutralinoThree, gluinoSbottomOneNeutralinoTwo, 1"
+      << " jet: "
+      << testChargeAndFlavorSummed.withExactlyNJets( &testSignalDefinitionSet,
+                                                     1,
+                                               gluinoSbottomOneNeutralinoThree,
+                                                     true,
+                                                 gluinoSbottomOneNeutralinoTwo,
+                                                     true );
+
+      for( int numberOfJets( 0 );
+           4 >= numberOfJets;
+           ++numberOfJets )
+      {
+        std::cout
+        << std::endl
+        << "gluinoSbottomOneNeutralinoOne, gluinoSbottomOneNeutralinoOne: "
+        << testChargeAndFlavorSummed.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                       numberOfJets,
+                                                 gluinoSbottomOneNeutralinoOne,
+                                                       true,
+                                                 gluinoSbottomOneNeutralinoOne,
+                                                       true );
+        std::cout
+        << std::endl
+        << "gluinoSbottomOneNeutralinoOne, gluinoSbottomOneNeutralinoTwo: "
+        << testChargeAndFlavorSummed.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                       numberOfJets,
+                                                 gluinoSbottomOneNeutralinoOne,
+                                                       true,
+                                                 gluinoSbottomOneNeutralinoTwo,
+                                                       true );
+        std::cout
+        << std::endl
+        << "gluinoSbottomOneNeutralinoOne, gluinoSbottomOneNeutralinoThree: "
+        << testChargeAndFlavorSummed.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                       numberOfJets,
+                                                 gluinoSbottomOneNeutralinoOne,
+                                                       true,
+                                               gluinoSbottomOneNeutralinoThree,
+                                                       true );
+        std::cout
+        << std::endl
+        << "gluinoSbottomOneNeutralinoTwo, gluinoSbottomOneNeutralinoOne: "
+        << testChargeAndFlavorSummed.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                       numberOfJets,
+                                                 gluinoSbottomOneNeutralinoTwo,
+                                                       true,
+                                                 gluinoSbottomOneNeutralinoOne,
+                                                       true );
+        std::cout
+        << std::endl
+        << "gluinoSbottomOneNeutralinoTwo, gluinoSbottomOneNeutralinoTwo: "
+        << testChargeAndFlavorSummed.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                       numberOfJets,
+                                                 gluinoSbottomOneNeutralinoTwo,
+                                                       true,
+                                                 gluinoSbottomOneNeutralinoTwo,
+                                                       true );
+        std::cout
+        << std::endl
+        << "gluinoSbottomOneNeutralinoTwo, gluinoSbottomOneNeutralinoThree: "
+        << testChargeAndFlavorSummed.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                       numberOfJets,
+                                                 gluinoSbottomOneNeutralinoTwo,
+                                                       true,
+                                               gluinoSbottomOneNeutralinoThree,
+                                                       true );
+        std::cout
+        << std::endl
+        << "gluinoSbottomOneNeutralinoThree, gluinoSbottomOneNeutralinoOne: "
+        << testChargeAndFlavorSummed.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                       numberOfJets,
+                                               gluinoSbottomOneNeutralinoThree,
+                                                       true,
+                                                 gluinoSbottomOneNeutralinoOne,
+                                                       true );
+        std::cout
+        << std::endl
+        << "gluinoSbottomOneNeutralinoThree, gluinoSbottomOneNeutralinoTwo: "
+        << testChargeAndFlavorSummed.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                       numberOfJets,
+                                               gluinoSbottomOneNeutralinoThree,
+                                                       true,
+                                                 gluinoSbottomOneNeutralinoTwo,
+                                                       true );
+        std::cout
+        << std::endl
+        << "gluinoSbottomOneNeutralinoThree, gluinoSbottomOneNeutralinoThree: "
+        << testChargeAndFlavorSummed.withExactlyNJets(
+                                                      &testSignalDefinitionSet,
+                                                       numberOfJets,
+                                               gluinoSbottomOneNeutralinoThree,
+                                                       true,
+                                               gluinoSbottomOneNeutralinoThree,
+                                                       true );
       }
 
       basicStuff->getSlha()->read_file( "SPS1a_spectrum.out" );

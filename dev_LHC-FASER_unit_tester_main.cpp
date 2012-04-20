@@ -109,6 +109,8 @@
  *      LHC-FASER_jet_kinematics_stuff.cpp
  *      LHC-FASER_signal_data_collection_stuff.hpp
  *      LHC-FASER_signal_data_collection_stuff.cpp
+ *      LHC-FASER_signal_calculator_stuff.hpp
+ *      LHC-FASER_signal_calculator_stuff.cpp
  *      LHC-FASER_full_cascade_stuff.hpp
  *      LHC-FASER_full_cascade_stuff.cpp
  *      LHC-FASER.hpp
@@ -116,13 +118,11 @@
  *
  *
  * still to test:
- *      LHC-FASER_signal_calculator_stuff.hpp
- *      LHC-FASER_signal_calculator_stuff.cpp
+ *      nothing! we're done. well, the accuracy of the approximations has to be
+ *      tested...
  *
  *
  * not yet:
- *      nothing! we're done. well, the accuracy of the approximations has to be
- *      tested...
  */
 
 
@@ -138,10 +138,10 @@
 #include "testing_header_files/full_electroweak_cascade_testing.hpp"
 #include "testing_header_files/full_cascade_testing.hpp"
 #include "testing_header_files/jet_kinematics_testing.hpp"
+#include "testing_header_files/signal_lepton_modularity_testing.hpp"
 #include "testing_header_files/signal_testing.hpp"
 #include "testing_header_files/signal_timing_testing.hpp"
 #include "testing_header_files/lhcFaser_testing.hpp"
-#include "testing_header_files/signal_lepton_modularity_testing.hpp"
 
 // future includes:
 // none, since we're done!
@@ -224,7 +224,7 @@ int main( int argumentCount,
 
 
   /* testing the full cascade stuff:
-   * (needs checking for new version)*//**
+   * (works)*//**
   LHC_FASER::fullCascadeTesting fullCascadeTester( &basicStuffTester,
                                                    &inputTester );
   fullCascadeTester.performTest();
@@ -239,6 +239,14 @@ int main( int argumentCount,
   **/
 
 
+  /* testing the lepton modularity stuff:
+   * (works)*//**
+  LHC_FASER::signalLeptonModularityTesting
+  leptonModularityTester( &basicStuffTester,
+                          &inputTester );
+  leptonModularityTester.performTest();
+  **/
+
 
   /* testing the signal stuff:
    * (works)*//**
@@ -246,14 +254,6 @@ int main( int argumentCount,
                                          &inputTester );
   signalTester.performTest();
   **/
-
-  /* testing the lepton modularity stuff:
-   * (probably doesn't work)*//**/
-  LHC_FASER::signalLeptonModularityTesting
-  leptonModularityTester( &basicStuffTester,
-                          &inputTester );
-  leptonModularityTester.performTest();
-  /**/
 
   /* finally, testing the lhcFaser itself:
    * (works)*//**
@@ -264,11 +264,11 @@ int main( int argumentCount,
 
 
   /* testing adding new signals & how long it takes to load & calculate:
-   * (works) *//**
+   * (works) *//**/
   LHC_FASER::signalTimingTesting signalTimingTester( &basicStuffTester,
                                                      &inputTester );
   signalTimingTester.performTest( recalculationAmount );
-  **/
+  /**/
 
 
   std::cout << std::endl;

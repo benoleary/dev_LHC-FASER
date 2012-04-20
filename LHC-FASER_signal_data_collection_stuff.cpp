@@ -91,7 +91,7 @@ namespace LHC_FASER
 
 
   double
-  signalShortcuts::getUncertainty()
+  signalShortcuts::getUncertainty() const
   /* this looks at the various mass differences in the hierarchy & then
    * guesses how uncertain the signal value is (as a multiplicative factor
    * > 1.0).
@@ -103,23 +103,22 @@ namespace LHC_FASER
 
 
 
-  signalDefinitionSet::signalDefinitionSet( signalShortcuts* const shortcut ) :
+  signalDefinitionSet::signalDefinitionSet(
+                                 signalShortcuts const* const inputShortcut ) :
     acceptanceCutSet(),
-    inputShortcut( shortcut ),
+    inputShortcut( inputShortcut ),
     crossSections( NULL ),
-    //leptonKinematics( NULL ),
     jetPlusMetAcceptance( NULL )
   {
     // just an initialization list.
   }
 
   signalDefinitionSet::signalDefinitionSet(
-                                     signalDefinitionSet* const copySource  ) :
+                               signalDefinitionSet const* const copySource  ) :
     acceptanceCutSet( (acceptanceCutSet)copySource ),
-    inputShortcut( copySource->getShortcuts() ),
-    crossSections( copySource->getCrossSections() ),
-    //leptonKinematics( copySource->getLeptonKinematics() ),
-    jetPlusMetAcceptance( copySource->getJetPlusMetAcceptance() )
+    inputShortcut( copySource->inputShortcut ),
+    crossSections( copySource->crossSections ),
+    jetPlusMetAcceptance( copySource->jetPlusMetAcceptance )
   {
     // just an initialization list.
   }
@@ -132,7 +131,7 @@ namespace LHC_FASER
 
 
   productionChannelPointerSet::productionChannelPointerSet(
-                                  signalDefinitionSet* const signalDefinitions,
+                            signalDefinitionSet const* const signalDefinitions,
                        signedParticleShortcutPair const* const scoloredPair ) :
     crossSection( signalDefinitions->getCrossSections()->getTable(
                                                               scoloredPair ) ),

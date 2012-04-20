@@ -94,6 +94,7 @@ namespace LHC_FASER
     fullCascadeSetSource( NULL ),
     signalSet(),
     inputShortcut( NULL ),
+    signalDefinitions( NULL ),
     readierObject()
   {
     initialize( spectrumData,
@@ -122,9 +123,9 @@ namespace LHC_FASER
     jetPlusMetAcceptanceSource( NULL ),
     electroweakCascadeSource( NULL ),
     fullCascadeSetSource( NULL ),
-    signalPreparationDefinitions( NULL ),
     signalSet(),
     inputShortcut( NULL ),
+    signalDefinitions( NULL ),
     readierObject()
   {
     initialize( new CppSLHA::CppSLHA2( slhaFileName ),
@@ -146,7 +147,7 @@ namespace LHC_FASER
     {
       delete *deletionIterator;
     }
-    delete signalPreparationDefinitions;
+    delete signalDefinitions;
     delete inputShortcut;
     delete inputSource;
     delete crossSectionSource;
@@ -211,7 +212,7 @@ namespace LHC_FASER
                                          crossSectionSource,
                                          jetPlusMetAcceptanceSource,
                                          fullCascadeSetSource );
-    signalPreparationDefinitions = new signalDefinitionSet( inputShortcut );
+    signalDefinitions = new signalDefinitionSet( inputShortcut );
   }
 
 }  // end of LHC_FASER namespace.

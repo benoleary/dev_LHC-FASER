@@ -205,6 +205,7 @@ namespace LHC_FASER
     signalShortcuts* inputShortcut;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
+    signalDefinitionSet* signalDefinitions;
     readierForNewPoint readierObject;
 
     void
@@ -253,8 +254,7 @@ namespace LHC_FASER
   {
     signalSet.push_back( new signalHandler( signalName,
                                             crossSectionUnitFactor,
-                                            inputShortcut,
-                                            leptonAcceptanceForPairSource ) );
+                                            signalDefinitions ) );
     return signalSet.back();
   }
 

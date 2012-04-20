@@ -315,8 +315,34 @@ namespace LHC_FASER
       << currentCuts << ", " << numberOfAdditionalJets << ", "
       << numberOfNegativeElectrons << ", " << numberOfPositiveElectrons << ", "
       << numberOfNegativeMuons << ", " << numberOfPositiveMuons
-      << " ) returning "
-      << returnValue;
+      << " ) [ coloredDecayer = ";
+      if( NULL != coloredDecayer )
+      {
+        std::cout << *(coloredDecayer->get_name());
+      }
+      else
+      {
+        std::cout << "NULL";
+      }
+      std::cout << ", electroweakDecayer = ";
+      if( NULL != electroweakDecayer )
+      {
+        std::cout << *(electroweakDecayer->get_name());
+      }
+      else
+      {
+        std::cout << "NULL";
+      }
+      std::cout << ", intermediateDecayer = ";
+      if( NULL != intermediateDecayer )
+      {
+        std::cout << *(intermediateDecayer->get_name());
+      }
+      else
+      {
+        std::cout << "NULL";
+      }
+      std::cout << " ] returning " << returnValue;
       std::cout << std::endl;**/
 
       return returnValue;
