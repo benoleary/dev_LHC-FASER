@@ -154,7 +154,7 @@ namespace LHC_FASER
      * particle.
      */
     double
-    getOssfMinusOsdf( acceptanceCutSet* const acceptanceCuts );
+    getOssfMinusOsdf( acceptanceCutSet const* const acceptanceCuts );
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the value for acceptance * branching ratio FOR THE
@@ -357,12 +357,40 @@ namespace LHC_FASER
                                                         numberOfNegativeMuons,
                                                        numberOfPositiveMuons );
     }
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "electroweakCascadeSet::getAcceptance( "
+    << acceptanceCuts << ", " << numberOfAdditionalJets << ", "
+    << numberOfNegativeElectrons << ", " << numberOfPositiveElectrons << ", "
+    << numberOfNegativeMuons << ", " << numberOfPositiveMuons
+    << " ) [ coloredDecayer = ";
+    if( NULL != coloredDecayer )
+    {
+      std::cout << *(coloredDecayer->get_name());
+    }
+    else
+    {
+      std::cout << "NULL";
+    }
+    std::cout << ", electroweakDecayer = ";
+    if( NULL != electroweakDecayer )
+    {
+      std::cout << *(electroweakDecayer->get_name());
+    }
+    else
+    {
+      std::cout << "NULL";
+    }
+    std::cout << " ] returning " << returnValue;
+    std::cout << std::endl;**/
+
     return returnValue;
   }
 
   inline double
   electroweakCascadeSet::getOssfMinusOsdf(
-                                       acceptanceCutSet* const acceptanceCuts )
+                                 acceptanceCutSet const* const acceptanceCuts )
   /* this does the common job of checking to see if the point has been
    * updated before calling the relevant protected virtual function, which
    * returns the value for acceptance * branching ratio FOR THE

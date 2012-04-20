@@ -273,7 +273,7 @@ namespace LHC_FASER
      */
 
     double
-    getOssfMinusOsdf( acceptanceCutSet* const currentCuts );
+    getOssfMinusOsdf( acceptanceCutSet const* const currentCuts );
     /* this does the common job of checking to see if the point has been
      * updated before calling the relevant protected virtual function, which
      * returns the value for acceptance * branching ratio FOR THE
@@ -719,7 +719,8 @@ namespace LHC_FASER
   }
 
   inline double
-  electroweakCascade::getOssfMinusOsdf( acceptanceCutSet* const currentCuts )
+  electroweakCascade::getOssfMinusOsdf(
+                                    acceptanceCutSet const* const currentCuts )
   /* this does the common job of checking to see if the point has been
    * updated before calling the relevant protected virtual function, which
    * returns the set of values for acceptance * branching ratio FOR THE
