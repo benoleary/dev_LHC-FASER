@@ -71,6 +71,7 @@
 #ifndef LHC_FASER_FULL_CASCADE_STUFF_HPP_
 #define LHC_FASER_FULL_CASCADE_STUFF_HPP_
 
+#include "LHC-FASER_global_stuff.hpp"
 #include "LHC-FASER_input_handling_stuff.hpp"
 #include "LHC-FASER_sparticle_decay_stuff.hpp"
 #include "LHC-FASER_lepton_kinematics_stuff.hpp"
@@ -175,7 +176,7 @@ namespace LHC_FASER
      * to exclude unwanted parts of the BR. by default, it multiplies the BR
      * for the initial decay by subcascadePointer->getBrToEwino.
      */
-    double
+    virtual double
     getTotalBrToEwino();
     /* this works out the branching ratio for the decays of colored
      * sparticles down to the 1st electroweakino in the cascade (including
@@ -189,7 +190,7 @@ namespace LHC_FASER
     const;
     virtual double
     getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                   acceptanceCutSet* const acceptanceCuts,
+                   acceptanceCutSet const* const acceptanceCuts,
                    int const numberOfAdditionalJets,
                    int numberOfNegativeElectrons,
                    int numberOfPositiveElectrons,
@@ -203,7 +204,7 @@ namespace LHC_FASER
      */
     double
     getAcceptanceWithMinimumJets( bool const initialSparticleIsNotAntiparticle,
-                                  acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                   int const minimumNumberOfAdditionalJets,
                                   int const numberOfNegativeElectrons,
                                   int const numberOfPositiveElectrons,
@@ -220,7 +221,7 @@ namespace LHC_FASER
     double
     leptonChargeSummedWithSpecifiedJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets,
                                          int const numberOfElectrons,
                                          int const numberOfMuons );
@@ -229,7 +230,7 @@ namespace LHC_FASER
     double
     leptonFlavorSummedWithSpecifiedJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets,
                                          int const numberOfNegativeLeptons,
                                          int const numberOfPositiveLeptons );
@@ -240,35 +241,36 @@ namespace LHC_FASER
     double
     leptonFlavorSummedWithMinimumJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                        int const minimumNumberOfAdditionalJets,
-                                             int const numberOfNegativeLeptons,
-                                           int const numberOfPositiveLeptons );
+                                       int const numberOfNegativeLeptons,
+                                       int const numberOfPositiveLeptons );
     /* this sums up getAcceptanceWithMinimumJets for numberOfNegativeLeptons &
      * numberOfPositiveLeptons split between electrons & muons in every
      * combination.
      */
     virtual double
-    specifiedJetsOneOssfMinusOsdfPair( acceptanceCutSet* const acceptanceCuts,
+    specifiedJetsOneOssfMinusOsdfPair(
+                                  acceptanceCutSet const* const acceptanceCuts,
                                        int const numberOfAdditionalJets )
     = 0;
     // this should add up all combinations of jets while looking only for
     // one OSSF-OSDF pair.
     virtual double
     unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs )
     = 0;
     // this should add up all appropriate OSSF-OSDF pair combinations.
     // the following just call various combinations of getAcceptance(...):
     double
     specifiedJetsSpecifiedChargeSummedLeptons(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                                int const numberOfLeptons );
     double
     unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                  int const numberOfLeptons );
     std::string
     getAsString()
@@ -318,7 +320,8 @@ namespace LHC_FASER
   {
     // this is derived class for direct squark to electroweakino fullCascades.
     // it should be further specified to be sdown-type or sup-type.
-    class squarkDirectlyToElectroweak : public fullCascade
+    class squarkDirectlyToElectroweak : public fullCascade,
+                                        public getsReadiedForNewPoint
     {
     public:
       squarkDirectlyToElectroweak( inputHandler const* const inputShortcut,
@@ -348,9 +351,15 @@ namespace LHC_FASER
        */
       virtual double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
+      virtual double
+      getTotalBrToEwino();
+      /* this works out the branching ratio for the decays of colored
+       * sparticles down to the 1st electroweakino in the cascade (including
+       * any decays to bosons + squarks), without excluding any particles.
+       */
 
 
     protected:
@@ -380,7 +389,7 @@ namespace LHC_FASER
          */
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -392,7 +401,7 @@ namespace LHC_FASER
          */
         virtual double
         specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                            int const numberOfAdditionalJets );
         // this should add up all combinations of jets while looking only for
         // one OSSF-OSDF pair.
@@ -427,7 +436,7 @@ namespace LHC_FASER
          */
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -440,7 +449,7 @@ namespace LHC_FASER
          */
         virtual double
         specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                            int const numberOfAdditionalJets );
         // this should add up all combinations of jets while looking only for
         // one OSSF-OSDF pair.
@@ -461,7 +470,7 @@ namespace LHC_FASER
         // this returns true if the decay involving a W boson is not
         // negligible, also setting up the relevant fractions, false otherwise.
         double
-        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+        getCombinedAcceptance( acceptanceCutSet const* const acceptanceCuts,
                                int const numberOfAdditionalJets,
                                int const numberOfNegativeElectrons,
                                int const numberOfPositiveElectrons,
@@ -474,7 +483,8 @@ namespace LHC_FASER
 
     // this is derived class for direct gluino to electroweakino
     // fullCascades..
-    class gluinoDirectlyToElectroweak : public fullCascade
+    class gluinoDirectlyToElectroweak : public fullCascade,
+                                        public getsReadiedForNewPoint
     {
     public:
       gluinoDirectlyToElectroweak( inputHandler const* const inputShortcut,
@@ -485,7 +495,7 @@ namespace LHC_FASER
 
       bool
       isOpen();
-      /* this returns true if the squark is heavy enough to decay into the
+      /* this returns true if the gluino is heavy enough to decay into the
        * electroweakino, false otherwise. it also sorts out whether it should
        * be using the decays involving a W boson.
        */
@@ -501,7 +511,7 @@ namespace LHC_FASER
       const;
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
+                     acceptanceCutSet const* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
                      int numberOfPositiveElectrons,
@@ -513,15 +523,21 @@ namespace LHC_FASER
        */
       virtual double
       specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets );
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
       virtual double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
+      virtual double
+      getTotalBrToEwino();
+      /* this works out the branching ratio for the decays of colored
+       * sparticles down to the 1st electroweakino in the cascade (including
+       * any decays to bosons + squarks), without excluding any particles.
+       */
 
 
     protected:
@@ -546,7 +562,7 @@ namespace LHC_FASER
                      fullCascade* const subcascadePointer );
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
+                     acceptanceCutSet const* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
                      int numberOfPositiveElectrons,
@@ -559,13 +575,13 @@ namespace LHC_FASER
        */
       virtual double
       specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets );
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
       virtual double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
 
@@ -594,7 +610,7 @@ namespace LHC_FASER
       = 0;
       virtual double
       getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                     acceptanceCutSet* const acceptanceCuts,
+                     acceptanceCutSet const* const acceptanceCuts,
                      int const numberOfAdditionalJets,
                      int numberOfNegativeElectrons,
                      int numberOfPositiveElectrons,
@@ -607,7 +623,7 @@ namespace LHC_FASER
        */
       double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                      acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
 
@@ -637,7 +653,7 @@ namespace LHC_FASER
                        electroweakCascadeSource = NULL );
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -649,7 +665,7 @@ namespace LHC_FASER
          */
         double
         specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                            int const numberOfAdditionalJets );
         // this should add up all combinations of jets while looking only for
         // one OSSF-OSDF pair.
@@ -677,7 +693,7 @@ namespace LHC_FASER
          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -690,7 +706,7 @@ namespace LHC_FASER
          */
         double
         specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                            int const numberOfAdditionalJets );
         // this should add up all combinations of jets while looking only for
         // one OSSF-OSDF pair.
@@ -711,7 +727,7 @@ namespace LHC_FASER
         // this returns true if the decay involving a W boson is not
         // negligible, also setting up the relevant fractions, false otherwise.
         double
-        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+        getCombinedAcceptance( acceptanceCutSet const* const acceptanceCuts,
                                int const numberOfAdditionalJets,
                                int const numberOfNegativeElectrons,
                                int const numberOfPositiveElectrons,
@@ -737,13 +753,13 @@ namespace LHC_FASER
 
       virtual double
       specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                          int const numberOfAdditionalJets );
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
       virtual double
       unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                int const numberOfLeptonPairs );
       // this should add up all appropriate OSSF-OSDF pair combinations.
 
@@ -779,7 +795,7 @@ namespace LHC_FASER
          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -798,7 +814,7 @@ namespace LHC_FASER
         // this returns true if the decay involving a W boson is not
         // negligible, also setting up the relevant fractions, false otherwise.
         double
-        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+        getCombinedAcceptance( acceptanceCutSet const* const acceptanceCuts,
                                int const numberOfAdditionalJets,
                                int const numberOfNegativeElectrons,
                                int const numberOfPositiveElectrons,
@@ -824,7 +840,7 @@ namespace LHC_FASER
          electroweakCascadesForOneBeamEnergy* const electroweakCascadeSource );
         virtual double
         getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                       acceptanceCutSet* const acceptanceCuts,
+                       acceptanceCutSet const* const acceptanceCuts,
                        int const numberOfAdditionalJets,
                        int numberOfNegativeElectrons,
                        int numberOfPositiveElectrons,
@@ -847,7 +863,7 @@ namespace LHC_FASER
         // this returns true if the decay involving a W boson is not
         // negligible, also setting up the relevant fractions, false otherwise.
         double
-        getCombinedAcceptance( acceptanceCutSet* const acceptanceCuts,
+        getCombinedAcceptance( acceptanceCutSet const* const acceptanceCuts,
                                int const numberOfAdditionalJets,
                                int const numberOfNegativeElectrons,
                                int const numberOfPositiveElectrons,
@@ -1393,7 +1409,7 @@ namespace LHC_FASER
   inline double
   fullCascade::getAcceptanceWithMinimumJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                        int const minimumNumberOfAdditionalJets,
                                            int const numberOfNegativeElectrons,
                                            int const numberOfPositiveElectrons,
@@ -1431,7 +1447,7 @@ namespace LHC_FASER
   inline double
   fullCascade::leptonChargeSummedWithSpecifiedJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                                    int const numberOfElectrons,
                                                     int const numberOfMuons )
@@ -1463,7 +1479,7 @@ namespace LHC_FASER
   inline double
   fullCascade::leptonFlavorSummedWithSpecifiedJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                               int const numberOfAdditionalJets,
                                              int const numberOfNegativeLeptons,
                                             int const numberOfPositiveLeptons )
@@ -1497,7 +1513,7 @@ namespace LHC_FASER
   inline double
   fullCascade::leptonFlavorSummedWithMinimumJets(
                                   bool const initialSparticleIsNotAntiparticle,
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                        int const minimumNumberOfAdditionalJets,
                                              int const numberOfNegativeLeptons,
                                             int const numberOfPositiveLeptons )
@@ -1614,7 +1630,7 @@ namespace LHC_FASER
 
     inline double
     squarkDirectlyToElectroweak::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                 int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {
@@ -1630,6 +1646,24 @@ namespace LHC_FASER
       {
         return 0.0;
       }
+    }
+
+    inline double
+    squarkDirectlyToElectroweak::getTotalBrToEwino()
+    /* this works out the branching ratio for the decays of colored
+     * sparticles down to the 1st electroweakino in the cascade (including
+     * any decays to bosons + squarks), without excluding any particles.
+     */
+    {
+      if( needsToPrepareForThisPoint() )
+      {
+        cachedBranchingRatio
+        = initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                               inputShortcut->getEmptyList() );
+      }
+      return cachedBranchingRatio;
     }
 
 
@@ -1657,7 +1691,7 @@ namespace LHC_FASER
 
       inline double
       sdownType::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
@@ -1737,7 +1771,7 @@ namespace LHC_FASER
 
     inline double
     gluinoDirectlyToElectroweak::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                 int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {
@@ -1757,7 +1791,7 @@ namespace LHC_FASER
 
     inline double
     gluinoDirectlyToElectroweak::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
     // this should add up all combinations of jets while looking only for
     // one OSSF-OSDF pair.
@@ -1794,11 +1828,29 @@ namespace LHC_FASER
       }
     }
 
+    inline double
+    gluinoDirectlyToElectroweak::getTotalBrToEwino()
+    /* this works out the branching ratio for the decays of colored
+     * sparticles down to the 1st electroweakino in the cascade (including
+     * any decays to bosons + squarks), without excluding any particles.
+     */
+    {
+      if( needsToPrepareForThisPoint() )
+      {
+        cachedBranchingRatio
+        = initialSparticle->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                               inputShortcut->getEmptyList() );
+      }
+      return cachedBranchingRatio;
+    }
+
 
 
     inline double
     squarkByJetToCompound::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                 int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {
@@ -1826,7 +1878,7 @@ namespace LHC_FASER
 
       inline double
       sdownType::getAcceptance( bool const initialSparticleIsNotAntiparticle,
-                                acceptanceCutSet* const acceptanceCuts,
+                                acceptanceCutSet const* const acceptanceCuts,
                                 int const numberOfAdditionalJets,
                                 int numberOfNegativeElectrons,
                                 int numberOfPositiveElectrons,
@@ -1853,7 +1905,7 @@ namespace LHC_FASER
 
       inline double
       sdownType::specifiedJetsOneOssfMinusOsdfPair(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                              int const numberOfAdditionalJets )
       // this should add up all combinations of jets while looking only for
       // one OSSF-OSDF pair.
@@ -1900,7 +1952,7 @@ namespace LHC_FASER
 
     inline double
   gluinoOrElectroweakinoToCompound::unspecifiedJetsSpecifiedOssfMinusOsdfPairs(
-                                        acceptanceCutSet* const acceptanceCuts,
+                                  acceptanceCutSet const* const acceptanceCuts,
                                                 int const numberOfLeptonPairs )
     // this should add up all appropriate OSSF-OSDF pair combinations.
     {
