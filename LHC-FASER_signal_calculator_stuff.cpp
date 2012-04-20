@@ -1558,27 +1558,9 @@ namespace LHC_FASER
         // chance of the pair of cascades producing the correct number of
         // leptons between them.
 
-      subchannelOneOrMoreJets
-      = ( subchannelZeroOrMoreJets
-         - leptonAcceptanceCalculator->withExactlyNJets( signalDefinitions,
-                                                         0,
-                                                         firstCascade,
-                                               firstSparticleIsNotAntiparticle,
-                                                         secondCascade,
-                                          secondSparticleIsNotAntiparticle ) );
-      // subchannelOneOrMoreJets = subchannelZeroOrMoreJets
-      // minus the amount with zero cascade jets.
-
-      subchannelTwoOrMoreJets
-      = ( subchannelOneOrMoreJets
-         - leptonAcceptanceCalculator->withExactlyNJets( signalDefinitions,
-                                                         1,
-                                                         firstCascade,
-                                               firstSparticleIsNotAntiparticle,
-                                                         secondCascade,
-                                          secondSparticleIsNotAntiparticle ) );
-      // subchannelTwoOrMoreJets = subchannelOneOrMoreJets
-      // minus the amount with one cascade jets.
+      subchannelOneOrMoreJets = 0.0;
+      subchannelTwoOrMoreJets = 0.0;
+      // these default to zero if not calculated.
 
       // debugging:
       /**
@@ -1627,6 +1609,17 @@ namespace LHC_FASER
         std::cout << std::endl;}**/
 
 
+        subchannelOneOrMoreJets
+        = ( subchannelZeroOrMoreJets
+           - leptonAcceptanceCalculator->withExactlyNJets( signalDefinitions,
+                                                           0,
+                                                           firstCascade,
+                                               firstSparticleIsNotAntiparticle,
+                                                           secondCascade,
+                                          secondSparticleIsNotAntiparticle ) );
+        // subchannelOneOrMoreJets = subchannelZeroOrMoreJets
+        // minus the amount with zero cascade jets.
+
         // it's not going to ever be the case where the acceptance for 1+ jets
         // is greater than 0+ jets...
         if( lhcFaserGlobal::negligibleBr < subchannelOneOrMoreJets )
@@ -1655,6 +1648,17 @@ namespace LHC_FASER
           << ", subchannelValue = " << subchannelValue;
           std::cout << std::endl;}**/
 
+          subchannelTwoOrMoreJets
+          = ( subchannelOneOrMoreJets
+             - leptonAcceptanceCalculator->withExactlyNJets( signalDefinitions,
+                                                             1,
+                                                             firstCascade,
+                                               firstSparticleIsNotAntiparticle,
+                                                             secondCascade,
+                                          secondSparticleIsNotAntiparticle ) );
+          // subchannelTwoOrMoreJets = subchannelOneOrMoreJets
+          // minus the amount with one cascade jets.
+
           if( lhcFaserGlobal::negligibleBr < subchannelTwoOrMoreJets )
           {
             subchannelValue
@@ -1682,10 +1686,23 @@ namespace LHC_FASER
             << ", subchannelValue = " << subchannelValue;
             std::cout << std::endl;}**/
           }
+          else
+          {
+            subchannelTwoOrMoreJets = 0.0;
+            /* this stops false alarms due to slightly negative values instead
+             * of zero due to rounding errors, but does prevent real alarms
+             * about crazily negative values.
+             */
+          }
         }
         else
         {
+          subchannelOneOrMoreJets = 0.0;
           threeJetAcceptance = 0.0;
+          /* this stops false alarms due to slightly negative values instead
+           * of zero due to rounding errors, but does prevent real alarms
+           * about crazily negative values.
+           */
         }
 
         // debugging:

@@ -7,8 +7,7 @@ SHELL = /bin/sh
 CC=g++
 CFLAGS=-c -Wall
 LDFLAGS=
-SOURCES=dev_LHC-FASER_unit_tester_main.cpp \
- LHC-FASER.cpp \
+SOURCES=LHC-FASER.cpp \
  LHC-FASER_base_electroweak_cascade_stuff.cpp \
  LHC-FASER_base_kinematics_stuff.cpp \
  LHC-FASER_base_lepton_distribution_stuff.cpp \
@@ -34,12 +33,16 @@ SOURCES=dev_LHC-FASER_unit_tester_main.cpp \
  CppSLHA/CppSLHA_waiting_on_subprocess_executor.cpp \
  CppSLHA/CppSLHA.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=dev_LHC-FASER_unit_tester.exe
+TESTEXECUTABLE=dev_LHC-FASER_unit_tester.exe
+JONASEXECUTABLE=LHC-FASER_for_JL.exe
 
-all: $(SOURCES) $(EXECUTABLE)
+all: $(SOURCES) $(TESTEXECUTABLE) $(JONASEXECUTABLE)
 	
-$(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+$(TESTEXECUTABLE): dev_LHC-FASER_unit_tester_main.cpp $(OBJECTS) 
+	$(CC) $(LDFLAGS) $(OBJECTS) dev_LHC-FASER_unit_tester_main.cpp -o $@
+	
+$(JONASEXECUTABLE): LHC-FASER_for_JL.cpp $(OBJECTS) 
+	$(CC) $(LDFLAGS) $(OBJECTS) LHC-FASER_for_JL.cpp -o $@
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
