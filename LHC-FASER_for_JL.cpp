@@ -113,7 +113,7 @@ int main( int argumentCount,
     std::string outputFilename( argumentStrings[ 2 ] );
 
     LHC_FASER::lhcFaser comparisonLhcFaser( spectrumFilename,
-                                            "./grids/",
+                                            "./testing/grids/",
                                             "fb" );
     comparisonLhcFaser.setVerbosity( true );
     std::vector< LHC_FASER::signalHandler* > signalSet;
