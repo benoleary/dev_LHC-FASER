@@ -952,6 +952,44 @@ namespace LHC_FASER
                                                    fullCascade* secondCascade )
     // see base version's description.
     {
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "opening logStream.";
+      std::cout << std::endl;
+      std::string logFilename( signalName );
+      logFilename.append( ".log" );
+      std::ofstream logStream( logFilename.c_str(),
+                               std::ios::app );
+      if( !logStream.good() )
+      {
+        std::cout
+        << std::endl
+        << "error! could not open \"" << logFilename << "\"!";
+        std::cout << std::endl;
+        exit( EXIT_FAILURE );
+      }
+      if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
+      logStream << std::endl << "debugging:"
+      << std::endl
+      << "first cascade: not-anti = " << firstSparticleIsNotAntiparticle
+      << ", cascade = " << firstCascade->getAsString()
+      << std::endl
+      << "second cascade: not-anti = " << secondSparticleIsNotAntiparticle
+      << ", cascade = " << secondCascade->getAsString()
+      << std::endl
+      << "subchannelCrossSectionTimesBrToEwinos = "
+      << subchannelCrossSectionTimesBrToEwinos
+      << ", acceptance = "
+      << leptonAcceptanceCalculator->withAtLeastNJets( signalDefinitions,
+                                                       0,
+                                                       firstCascade,
+                                               firstSparticleIsNotAntiparticle,
+                                                       secondCascade,
+                                            secondSparticleIsNotAntiparticle );
+      std::cout << std::endl;}/**/
+
+
       return ( subchannelCrossSectionTimesBrToEwinos
                * leptonAcceptanceCalculator->withAtLeastNJets(
                                                              signalDefinitions,
