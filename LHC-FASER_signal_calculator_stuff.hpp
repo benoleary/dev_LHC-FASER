@@ -344,6 +344,8 @@ namespace LHC_FASER
      *   cross-section * BRs * acceptances, & if high enough, returns the
      *   product, or 0.0 otherwise.
      */
+    void
+    setSignalName( std::string const& signalName );
 
 
   protected:
@@ -408,6 +410,7 @@ namespace LHC_FASER
      * untouched & false is returned.
      */
 
+    std::string signalName;
     signalDefinitionSet const* const signalDefinitions;
     inputHandler const* const inputShortcut;
     std::vector< productionChannelPointerSet* > productionChannels;
@@ -776,7 +779,6 @@ namespace LHC_FASER
     {
       return 1.0;
     }
-
   }  // end of leptonAcceptanceStyle namespace
 
 
@@ -803,6 +805,12 @@ namespace LHC_FASER
   {
     return goThroughCascadesNormally( signalValue,
                                       uncertaintyFactor );
+  }
+
+  inline void
+  signalCalculator::setSignalName( std::string const& signalName )
+  {
+    this->signalName.assign( signalName );
   }
 
 

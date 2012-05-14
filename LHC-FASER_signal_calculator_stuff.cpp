@@ -529,6 +529,7 @@ namespace LHC_FASER
 
   signalCalculator::signalCalculator(
                          signalDefinitionSet const* const signalDefinitions ) :
+    signalName( "noNameYet" ),
     signalDefinitions( signalDefinitions ),
     inputShortcut( signalDefinitions->getShortcuts()->getInputShortcuts() ),
     productionChannels(),
@@ -584,6 +585,7 @@ namespace LHC_FASER
 
   // the version without any argument is used for reallyWrongCalculator:
   signalCalculator::signalCalculator() :
+    signalName( "noNameYet" ),
     signalDefinitions( NULL ),
     inputShortcut( NULL ),
     productionChannels(),
@@ -862,7 +864,7 @@ namespace LHC_FASER
       << std::endl
       << "signalCalculator::parseLeptonAcceptance found \"_noExtraCut\".";
       std::cout << std::endl;**/
-      returnPointer = new leptonAcceptanceStyle::ossfMinusOsdf();
+      returnPointer = new leptonAcceptanceStyle::noLeptonCutNorExtraJetCut();
     }
     else if( ( 0 == argumentString.compare( 0,
                                             1,
@@ -1488,6 +1490,13 @@ namespace LHC_FASER
                * signalDefinitions is still a pointer to the
                * signalDefinitionSet that returnPointer uses.
                */
+
+              // debugging:
+              /**/returnPointer->setSignalName( argumentString );
+              std::cout << std::endl << "debugging:"
+              << std::endl
+              << "set signal name to \"" << argumentString << "\".";
+              std::cout << std::endl;/**/
             }
           }
         }
@@ -1563,11 +1572,24 @@ namespace LHC_FASER
       // these default to zero if not calculated.
 
       // debugging:
-      /**
-      if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
-      std::cout << std::endl << "debugging:"
+      /**/std::cout << std::endl << "debugging:"
       << std::endl
-      << "Atlas4jMET, whichever lepton cut:"
+      << "opening logStream.";
+      std::cout << std::endl;
+      std::string logFilename( signalName );
+      logFilename.append( ".log" );
+      std::ofstream logStream( logFilename.c_str(),
+                               std::ios::app );
+      if( !logStream.good() )
+      {
+        std::cout
+        << std::endl
+        << "error! could not open \"" << logFilename << "\"!";
+        std::cout << std::endl;
+        exit( EXIT_FAILURE );
+      }
+      if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
+      logStream << std::endl << "debugging:"
       << std::endl
       << "first cascade: not-anti = " << firstSparticleIsNotAntiparticle
       << ", cascade = " << firstCascade->getAsString()
@@ -1583,7 +1605,7 @@ namespace LHC_FASER
       << subchannelOneOrMoreJets
       << ", subchannelTwoOrMoreJets = "
       << subchannelTwoOrMoreJets;
-      std::cout << std::endl;}**/
+      std::cout << std::endl;}/**/
 
       if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJets )
       {
@@ -1595,9 +1617,9 @@ namespace LHC_FASER
                             * fourJetAcceptance );
 
         // debugging:
-        /**
+        /**/
         if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
-        std::cout << std::endl << "debugging:"
+        logStream
         << std::endl
         << "subchannelCrossSectionTimesBrToEwinos = "
         << subchannelCrossSectionTimesBrToEwinos
@@ -1606,7 +1628,7 @@ namespace LHC_FASER
         << ", subchannelValue = " << subchannelValue
         << ", firstCascadeBrToEwino = " << firstCascadeBrToEwino
         << ", secondCascadeBrToEwino = " << secondCascadeBrToEwino;
-        std::cout << std::endl;}**/
+        std::cout << std::endl;}/**/
 
 
         subchannelOneOrMoreJets
@@ -1637,16 +1659,16 @@ namespace LHC_FASER
           // than the 4-jet+MET acceptance.
 
           // debugging:
-          /**
+          /**/
           if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
-          std::cout << std::endl << "debugging:"
+          logStream
           << std::endl
           << "subchannelCrossSectionTimesBrToEwinos = "
           << subchannelCrossSectionTimesBrToEwinos
           << ", subchannelOneOrMoreJets = " << subchannelOneOrMoreJets
           << ", threeJetAcceptance = " << threeJetAcceptance
           << ", subchannelValue = " << subchannelValue;
-          std::cout << std::endl;}**/
+          std::cout << std::endl;}/**/
 
           subchannelTwoOrMoreJets
           = ( subchannelOneOrMoreJets
@@ -1672,9 +1694,9 @@ namespace LHC_FASER
             // than the 3-jet+MET acceptance.
 
             // debugging:
-            /**
+            /**/
             if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
-            std::cout << std::endl << "debugging:"
+            logStream
             << std::endl
             << "subchannelCrossSectionTimesBrToEwinos = "
             << subchannelCrossSectionTimesBrToEwinos
@@ -1684,7 +1706,7 @@ namespace LHC_FASER
                                                 firstCascade,
                                                 secondCascade )
             << ", subchannelValue = " << subchannelValue;
-            std::cout << std::endl;}**/
+            std::cout << std::endl;}/**/
           }
           else
           {
@@ -1706,12 +1728,12 @@ namespace LHC_FASER
         }
 
         // debugging:
-        /**
+        /**/
         if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
-        std::cout << std::endl << "debugging:"
+        logStream
         << std::endl
         << "=> adding subchannelValue = " << subchannelValue;
-        std::cout << std::endl;}**/
+        std::cout << std::endl;}/**/
 
         if( !( ( 1.0 >= subchannelZeroOrMoreJets )
                &&
@@ -1850,6 +1872,13 @@ namespace LHC_FASER
                * signalDefinitions is still a pointer to the
                * signalDefinitionSet that returnPointer uses.
                */
+
+              // debugging:
+              /**/returnPointer->setSignalName( argumentString );
+              std::cout << std::endl << "debugging:"
+              << std::endl
+              << "set signal name to \"" << argumentString << "\".";
+              std::cout << std::endl;/**/
             }
           }
         }
@@ -2119,6 +2148,13 @@ namespace LHC_FASER
                * signalDefinitions is still a pointer to the
                * signalDefinitionSet that returnPointer uses.
                */
+
+              // debugging:
+              /**/returnPointer->setSignalName( argumentString );
+              std::cout << std::endl << "debugging:"
+              << std::endl
+              << "set signal name to \"" << argumentString << "\".";
+              std::cout << std::endl;/**/
             }
           }
         }
