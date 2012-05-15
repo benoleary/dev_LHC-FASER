@@ -447,7 +447,7 @@ namespace LHC_FASER
                                                        0,
                                                        0,
                                                        0 ) );
-          if( 0 <= numberOfAdditionalJets )
+          if( 0 == numberOfAdditionalJets )
           {
             returnValue += directFraction;
           }
@@ -455,7 +455,7 @@ namespace LHC_FASER
                    * directEwinoCascades->getOssfMinusOsdf( acceptanceCuts ) );
 
         }
-        else if( 0 <= numberOfAdditionalJets )
+        else if( 0 == numberOfAdditionalJets )
         {
           return directEwinoCascades->getOssfMinusOsdf( acceptanceCuts );
         }
@@ -1074,7 +1074,7 @@ namespace LHC_FASER
                                                                 acceptanceCuts,
                                                     numberOfAdditionalJets ) );
             // first the contribution of no jets from the boson is worked out,
-            // then any contributions
+            // then any other contributions.
             for( int jetCounter( lhcFaserGlobal::smallerInteger(
                                                         numberOfAdditionalJets,
                                                   maximumJetsFromEwCascade ) );
@@ -1315,14 +1315,14 @@ namespace LHC_FASER
                                                        0,
                                                        0,
                                                        0 )
-                      * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
-                                                              acceptanceCuts,
-                                                  numberOfAdditionalJets ) );
+                        * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                                    numberOfAdditionalJets ) );
           // first the contribution of no jets from the boson is worked out,
           // then any contributions
           for( int jetCounter( lhcFaserGlobal::smallerInteger(
-                                                      numberOfAdditionalJets,
-                                                maximumJetsFromEwCascade ) );
+                                                        numberOfAdditionalJets,
+                                                  maximumJetsFromEwCascade ) );
                0 < jetCounter;
                --jetCounter )
           {
@@ -1334,20 +1334,20 @@ namespace LHC_FASER
                                                0,
                                                0 )
                  * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
-                                                              acceptanceCuts,
-                                 ( numberOfAdditionalJets - jetCounter ) ) );
+                                                                acceptanceCuts,
+                                   ( numberOfAdditionalJets - jetCounter ) ) );
           }
           return ( ( wFraction * wContribution )
                    + ( directFraction
-                      * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
-                                                              acceptanceCuts,
-                                                numberOfAdditionalJets ) ) );
+                       * subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
+                                                                acceptanceCuts,
+                                                  numberOfAdditionalJets ) ) );
         }
         else
         {
           return subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
-                                                              acceptanceCuts,
-                                                    numberOfAdditionalJets );
+                                                                acceptanceCuts,
+                                                      numberOfAdditionalJets );
         }
       }
       else

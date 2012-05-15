@@ -398,8 +398,8 @@ namespace LHC_FASER
    * coloredDecayer to electroweakDecayer - this is dealt with by the
    * cutSpecifiedFullCascade, because it depends on what flavors of quark jet
    * are being considered for the signal).
-   * this function returns 0.0 if the cascadeSet never result in an OSSF - OSDF
-   * signal.
+   * this function returns 0.0 if the cascadeSet never results in an
+   * OSSF - OSDF signal.
    */
   {
     double returnValue( 0.0 );

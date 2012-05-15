@@ -198,7 +198,7 @@ namespace LHC_FASER
                                      bool const secondIsNotAntiparticle ) const
     {
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "chargeAndFlavorSummed::withExactlyNJets( " << signalDefinitions
       << ", " << exactNumberOfJets << ", " << firstCascade << ", "
@@ -209,7 +209,7 @@ namespace LHC_FASER
       << "firstCascade = { "
       << firstCascade->getAsString() << " }, secondCascade = { "
       << secondCascade->getAsString() << " }";
-      std::cout << std::endl;/**/
+      std::cout << std::endl;**/
 
       double returnValue( 0.0 );
 
@@ -222,7 +222,7 @@ namespace LHC_FASER
              --leptonsFromFirst )
         {
           // debugging:
-          /**/std::cout << std::endl << "debugging:"
+          /**std::cout << std::endl << "debugging:"
           << std::endl
           << "jetsFromFirst = " << jetsFromFirst
           << ", ( exactNumberOfJets - jetsFromFirst ) = "
@@ -239,7 +239,7 @@ namespace LHC_FASER
                                                              signalDefinitions,
                                          ( exactNumberOfJets - jetsFromFirst ),
                                     ( numberOfLeptons - leptonsFromFirst ) ) );
-          std::cout << std::endl;/**/
+          std::cout << std::endl;**/
 
           returnValue
           += ( firstCascade->specifiedJetsSpecifiedChargeSummedLeptons(
@@ -253,14 +253,14 @@ namespace LHC_FASER
         }
       }
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "chargeAndFlavorSummed::withExactlyNJets( " << signalDefinitions
       << ", " << exactNumberOfJets << ", { " << firstCascade->getAsString()
       << " }, " << firstIsNotAntiparticle << ", { "
       << secondCascade->getAsString() << " }, " << secondIsNotAntiparticle
       << " ) returning " << returnValue;
-      std::cout << std::endl;/**/
+      std::cout << std::endl;**/
 
       return returnValue;
     }
@@ -351,7 +351,7 @@ namespace LHC_FASER
                                     bool const secondIsNotAntiparticle ) const
     {
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "flavorSummed::withExactlyNJets( " << signalDefinitions
       << ", " << exactNumberOfJets << ", " << firstCascade << ", "
@@ -362,7 +362,7 @@ namespace LHC_FASER
       << "firstCascade = { "
       << firstCascade->getAsString() << " }, secondCascade = { "
       << secondCascade->getAsString() << " }";
-      std::cout << std::endl;/**/
+      std::cout << std::endl;**/
 
       double returnValue( 0.0 );
 
@@ -379,7 +379,7 @@ namespace LHC_FASER
                --positiveLeptonsFromFirst )
           {
             // debugging:
-            /**/std::cout << std::endl << "debugging:"
+            /**std::cout << std::endl << "debugging:"
             << std::endl
             << "jetsFromFirst = " << jetsFromFirst
             << ", ( exactNumberOfJets - jetsFromFirst ) = "
@@ -391,28 +391,28 @@ namespace LHC_FASER
             << ", ( numberOfPositiveLeptons - positiveLeptonsFromFirst ) = "
             << ( numberOfPositiveLeptons - positiveLeptonsFromFirst )
             << ", adding "
-            << ( firstCascade->leptonChargeSummedWithSpecifiedJets(
+            << ( firstCascade->leptonFlavorSummedWithSpecifiedJets(
                                                         firstIsNotAntiparticle,
                                                              signalDefinitions,
                                                                  jetsFromFirst,
                                                       negativeLeptonsFromFirst,
                                                      positiveLeptonsFromFirst )
-                 * secondCascade->leptonChargeSummedWithSpecifiedJets(
+                 * secondCascade->leptonFlavorSummedWithSpecifiedJets(
                                                        secondIsNotAntiparticle,
                                                              signalDefinitions,
                                          ( exactNumberOfJets - jetsFromFirst ),
                         ( numberOfNegativeLeptons - negativeLeptonsFromFirst ),
                     ( numberOfPositiveLeptons - positiveLeptonsFromFirst ) ) );
-            std::cout << std::endl;/**/
+            std::cout << std::endl;**/
 
             returnValue
-            += ( firstCascade->leptonChargeSummedWithSpecifiedJets(
+            += ( firstCascade->leptonFlavorSummedWithSpecifiedJets(
                                                         firstIsNotAntiparticle,
                                                              signalDefinitions,
                                                                  jetsFromFirst,
                                                       negativeLeptonsFromFirst,
                                                      positiveLeptonsFromFirst )
-                 * secondCascade->leptonChargeSummedWithSpecifiedJets(
+                 * secondCascade->leptonFlavorSummedWithSpecifiedJets(
                                                        secondIsNotAntiparticle,
                                                              signalDefinitions,
                                          ( exactNumberOfJets - jetsFromFirst ),
@@ -422,14 +422,14 @@ namespace LHC_FASER
         }
       }
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "flavorSummed::withExactlyNJets( " << signalDefinitions
       << ", " << exactNumberOfJets << ", { " << firstCascade->getAsString()
       << " }, " << firstIsNotAntiparticle << ", { "
       << secondCascade->getAsString() << " }, " << secondIsNotAntiparticle
       << " ) returning " << returnValue;
-      std::cout << std::endl;/**/
+      std::cout << std::endl;**/
 
       return returnValue;
     }
@@ -458,7 +458,7 @@ namespace LHC_FASER
                                      bool const secondIsNotAntiparticle ) const
     {
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "ossfMinusOsdf::withExactlyNJets( " << signalDefinitions
       << ", " << exactNumberOfJets << ", " << firstCascade << ", "
@@ -469,7 +469,7 @@ namespace LHC_FASER
       << "firstCascade = { "
       << firstCascade->getAsString() << " }, secondCascade = { "
       << secondCascade->getAsString() << " }";
-      std::cout << std::endl;/**/
+      std::cout << std::endl;**/
 
       double returnValue( 0.0 );
 
@@ -478,7 +478,7 @@ namespace LHC_FASER
            --jetsFromFirst )
       {
         // debugging:
-        /**/std::cout << std::endl << "debugging:"
+        /**std::cout << std::endl << "debugging:"
         << std::endl
         << "firstCascade->specifiedJetsOneOssfMinusOsdfPair( "
         << signalDefinitions << ", " << jetsFromFirst << " ) = "
@@ -509,7 +509,7 @@ namespace LHC_FASER
         << " ) = "
         << secondCascade->specifiedJetsOneOssfMinusOsdfPair( signalDefinitions,
                                        ( exactNumberOfJets - jetsFromFirst ) );
-        std::cout << std::endl;/**/
+        std::cout << std::endl;**/
 
         returnValue
         += ( ( firstCascade->specifiedJetsOneOssfMinusOsdfPair(
@@ -1600,11 +1600,11 @@ namespace LHC_FASER
                */
 
               // debugging:
-              /**/returnPointer->setSignalName( argumentString );
+              /**returnPointer->setSignalName( argumentString );
               std::cout << std::endl << "debugging:"
               << std::endl
               << "set signal name to \"" << argumentString << "\".";
-              std::cout << std::endl;/**/
+              std::cout << std::endl;**/
             }
           }
         }
@@ -1680,7 +1680,7 @@ namespace LHC_FASER
       // these default to zero if not calculated.
 
       // debugging:
-      /**/std::cout << std::endl << "debugging:"
+      /**std::cout << std::endl << "debugging:"
       << std::endl
       << "opening logStream.";
       std::cout << std::endl;
@@ -1713,7 +1713,7 @@ namespace LHC_FASER
       << subchannelOneOrMoreJets
       << ", subchannelTwoOrMoreJets = "
       << subchannelTwoOrMoreJets;
-      std::cout << std::endl;}/**/
+      std::cout << std::endl;}**/
 
       if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJets )
       {
@@ -1725,7 +1725,7 @@ namespace LHC_FASER
                             * fourJetAcceptance );
 
         // debugging:
-        /**/
+        /**
         if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
         logStream
         << std::endl
@@ -1736,7 +1736,7 @@ namespace LHC_FASER
         << ", subchannelValue = " << subchannelValue
         << ", firstCascadeBrToEwino = " << firstCascadeBrToEwino
         << ", secondCascadeBrToEwino = " << secondCascadeBrToEwino;
-        std::cout << std::endl;}/**/
+        std::cout << std::endl;}**/
 
 
         subchannelOneOrMoreJets
@@ -1767,7 +1767,7 @@ namespace LHC_FASER
           // than the 4-jet+MET acceptance.
 
           // debugging:
-          /**/
+          /**
           if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
           logStream
           << std::endl
@@ -1776,7 +1776,7 @@ namespace LHC_FASER
           << ", subchannelOneOrMoreJets = " << subchannelOneOrMoreJets
           << ", threeJetAcceptance = " << threeJetAcceptance
           << ", subchannelValue = " << subchannelValue;
-          std::cout << std::endl;}/**/
+          std::cout << std::endl;}**/
 
           subchannelTwoOrMoreJets
           = ( subchannelOneOrMoreJets
@@ -1802,7 +1802,7 @@ namespace LHC_FASER
             // than the 3-jet+MET acceptance.
 
             // debugging:
-            /**/
+            /**
             if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
             logStream
             << std::endl
@@ -1814,7 +1814,7 @@ namespace LHC_FASER
                                                 firstCascade,
                                                 secondCascade )
             << ", subchannelValue = " << subchannelValue;
-            std::cout << std::endl;}/**/
+            std::cout << std::endl;}**/
           }
           else
           {
@@ -1836,12 +1836,12 @@ namespace LHC_FASER
         }
 
         // debugging:
-        /**/
+        /**
         if( 0.0001 < subchannelCrossSectionTimesBrToEwinos ){
         logStream
         << std::endl
         << "=> adding subchannelValue = " << subchannelValue;
-        std::cout << std::endl;}/**/
+        std::cout << std::endl;}**/
 
         if( !( ( 1.0 >= subchannelZeroOrMoreJets )
                &&
@@ -1977,11 +1977,11 @@ namespace LHC_FASER
                */
 
               // debugging:
-              /**/returnPointer->setSignalName( argumentString );
+              /**returnPointer->setSignalName( argumentString );
               std::cout << std::endl << "debugging:"
               << std::endl
               << "set signal name to \"" << argumentString << "\".";
-              std::cout << std::endl;/**/
+              std::cout << std::endl;**/
             }
           }
         }
@@ -2253,11 +2253,11 @@ namespace LHC_FASER
                */
 
               // debugging:
-              /**/returnPointer->setSignalName( argumentString );
+              /**returnPointer->setSignalName( argumentString );
               std::cout << std::endl << "debugging:"
               << std::endl
               << "set signal name to \"" << argumentString << "\".";
-              std::cout << std::endl;/**/
+              std::cout << std::endl;**/
             }
           }
         }

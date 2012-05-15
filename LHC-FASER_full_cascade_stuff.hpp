@@ -1700,7 +1700,7 @@ namespace LHC_FASER
          * only get a single OSSF-OSDF pair from an electroweakino decay, which
          * cannot produce additional jets.
          */
-        if( 0 <= numberOfAdditionalJets )
+        if( 0 == numberOfAdditionalJets )
         {
           return directEwinoCascades->getOssfMinusOsdf( acceptanceCuts );
         }
@@ -1800,7 +1800,7 @@ namespace LHC_FASER
        * only get a single OSSF-OSDF pair from an electroweakino decay, which
        * cannot produce additional jets.
        */
-      if( 0 <= numberOfAdditionalJets )
+      if( 0 == numberOfAdditionalJets )
       {
         return ewinoCascades->getOssfMinusOsdf( acceptanceCuts );
       }
@@ -1914,7 +1914,7 @@ namespace LHC_FASER
          * only get a single OSSF-OSDF pair from an electroweakino decay, which
          * cannot produce additional jets.
          */
-        if( 0 <= numberOfAdditionalJets )
+        if( 0 == numberOfAdditionalJets )
         {
           return subcascadePointer->specifiedJetsOneOssfMinusOsdfPair(
                                                                 acceptanceCuts,
