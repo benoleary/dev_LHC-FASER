@@ -211,15 +211,15 @@ int main( int argumentCount,
 
     // ACC10
     signalSet.push_back(
-              comparisonLhcFaser.addSignal( "CMS2jAlphaT_noExtraCut_07TeV" ) );
+              comparisonLhcFaser.addSignal( "CMS2jalphaT_noExtraCut_07TeV" ) );
 
     // ACC11
     signalSet.push_back(
-      comparisonLhcFaser.addSignal( "CMS2jAlphaT_ossf_07TeV_pTl20GeV10GeV" ) );
+      comparisonLhcFaser.addSignal( "CMS2jalphaT_ossf_07TeV_pTl20GeV10GeV" ) );
 
     // ACC12
     signalSet.push_back(
-      comparisonLhcFaser.addSignal( "CMS2jAlphaT_sssf_07TeV_pTl20GeV20GeV" ) );
+      comparisonLhcFaser.addSignal( "CMS2jalphaT_sssf_07TeV_pTl20GeV20GeV" ) );
 
     comparisonLhcFaser.updateForNewSlha();
 

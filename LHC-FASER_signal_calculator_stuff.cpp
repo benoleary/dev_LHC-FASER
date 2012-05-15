@@ -1878,7 +1878,7 @@ namespace LHC_FASER
           << std::endl
           << "1st cascade: " << firstCascade->getAsString()
           << std::endl
-          << "2nd: " << secondCascade->getAsString();
+          << "2nd cascade: " << secondCascade->getAsString();
           std::cout << std::endl;
           std::cout
           << std::endl
@@ -2146,7 +2146,9 @@ namespace LHC_FASER
                &&
                ( 0.0 <= subchannelValue ) ) )
         {
-          std::cout << std::endl << "LHC-FASER::error!"
+          std::cout
+          << std::endl << "LHC-FASER::error! signal \""
+          << signalName << "\":"
           << std::endl
           << *(initialPair->getFirstParticle()->get_name_or_antiname(
                                              firstSparticleIsNotAntiparticle ))
@@ -2155,16 +2157,9 @@ namespace LHC_FASER
                                            secondSparticleIsNotAntiparticle ));
           std::cout
           << std::endl
-          << "1st: " << firstCascade->getAsString() << "; 0+j, Nl = "
-          << firstCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                             signalDefinitions,
-                                                                        0 );
-          std::cout
+          << "1st cascade: " << firstCascade->getAsString()
           << std::endl
-          << "2nd: " << secondCascade->getAsString() << "; 0+j, Nl = "
-          << secondCascade->unspecifiedJetsSpecifiedChargeSummedLeptons(
-                                                             signalDefinitions,
-                                                                         0 );
+          << "2nd cascade: " << secondCascade->getAsString();
           std::cout << std::endl;
           std::cout
           << std::endl
@@ -2175,6 +2170,226 @@ namespace LHC_FASER
           << ", & threeJetAcceptance = "
           << threeJetAcceptance
           << ", all of which should be >= 0.0 & <= 1.0 for valid"
+          << " input! subchannelValue = " << subchannelValue
+          << ", which should be >= 0.0 for valid input!";
+          std::cout << std::endl;
+        }
+        return subchannelValue;
+      }
+      else
+      {
+        return 0.0;
+      }
+    }
+
+
+
+    int const
+    cmsTwoJetAlphaTPlusGivenLeptonCuts::jetAcceptanceGridTableColumn( 10 );
+    // this is dependent on the format of the grids.
+    double const
+    cmsTwoJetAlphaTPlusGivenLeptonCuts::defaultPrimaryLeptonCut( 20.0 );
+    double const
+    cmsTwoJetAlphaTPlusGivenLeptonCuts::defaultSecondaryLeptonCut( 10.0 );
+    // the default CMS lepton transverse momentum cuts are 20.0 GeV
+    // (for leptons to *pass*) & 10.0 GeV (for all others to *fail*).
+
+    signalCalculator*
+    cmsTwoJetAlphaTPlusGivenLeptonCuts::getCalculator(
+                                             std::string const& argumentString,
+                                 signalDefinitionSet* const signalDefinitions )
+    /* this either returns a pointer to a new
+     * cmsTwoJetAlphaTPlusGivenLeptonCuts with cuts decided by the given
+     * string, or NULL if the string could not be parsed properly.
+     */
+    {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "cmsTwoJetAlphaTPlusGivenLeptonCuts::getCalculator( "
+      << argumentString << ", ... ) called.";
+      std::cout << std::endl;**/
+
+      signalCalculator* returnPointer( NULL );
+
+      if( 0 == argumentString.compare( 0,
+                                       12,
+                                       "CMS2jalphaT_" ) )
+      {
+        std::string validArguments( argumentString.substr( 11 ) );
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "validArguments = \"" << validArguments << "\"";
+        std::cout << std::endl;**/
+
+        // the lepton transverse momentum cuts are set to their defaults so
+        // that parseLeptonAcceptance can over-write them if necessary.
+        signalDefinitions->setPrimaryLeptonCut( defaultPrimaryLeptonCut );
+        signalDefinitions->setSecondaryLeptonCut( defaultSecondaryLeptonCut );
+
+        if( parseBeamEnergy( validArguments,
+                             signalDefinitions ) )
+        {
+          leptonAcceptanceForCascadePair*
+          leptonAcceptanceType( parseLeptonAcceptance( validArguments,
+                                                       signalDefinitions ) );
+          if( NULL != leptonAcceptanceType )
+          {
+            if( parseLeptonTransverseMomentumCuts( validArguments,
+                                                   signalDefinitions ) )
+            {
+              returnPointer
+              = new cmsTwoJetAlphaTPlusGivenLeptonCuts( signalDefinitions,
+                                                        leptonAcceptanceType );
+              /* this takes care of if there were lepton transverse momentum
+               * cuts specified. it's OK to only set them after the new
+               * leptonAcceptanceForCascadePair has been constructed because
+               * signalDefinitions is still a pointer to the
+               * signalDefinitionSet that returnPointer uses.
+               */
+
+              // debugging:
+              /**returnPointer->setSignalName( argumentString );
+              std::cout << std::endl << "debugging:"
+              << std::endl
+              << "set signal name to \"" << argumentString << "\".";
+              std::cout << std::endl;**/
+            }
+          }
+        }
+      }
+      return returnPointer;
+    }
+
+    cmsTwoJetAlphaTPlusGivenLeptonCuts::cmsTwoJetAlphaTPlusGivenLeptonCuts(
+                            signalDefinitionSet const* const signalDefinitions,
+     leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator ) :
+        signalCalculator( signalDefinitions ),
+        leptonAcceptanceCalculator( leptonAcceptanceCalculator )
+    {
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "cmsTwoJetAlphaTPlusGivenLeptonCuts constructing with primary lepton"
+      << " cut = "
+      << signalDefinitions->getPrimaryLeptonCut()
+      << ", secondary lepton cut = "
+      << signalDefinitions->getSecondaryLeptonCut();
+      std::cout << std::endl;**/
+
+      std::string jetGridName( "CMS2jalphaT" );
+      twoJetKinematics
+      = signalDefinitions->getShortcuts()->getJetPlusMetAcceptances(
+                                               )->getJetPlusMetAcceptanceTable(
+                                            signalDefinitions->getBeamEnergy(),
+                                                                  &jetGridName,
+                                                jetAcceptanceGridTableColumn );
+      excludedFinalStateParticles.push_back( CppSLHA::PDG_code::top );
+      excludedFinalStateParticles.push_back( -(CppSLHA::PDG_code::top) );
+    }
+
+    cmsTwoJetAlphaTPlusGivenLeptonCuts::~cmsTwoJetAlphaTPlusGivenLeptonCuts()
+    {
+      // does nothing.
+    }
+
+
+    double
+    cmsTwoJetAlphaTPlusGivenLeptonCuts::valueForCurrentCascades(
+                                                     fullCascade* firstCascade,
+                                                   fullCascade* secondCascade )
+    // see base version's description.
+    {
+      subchannelZeroOrMoreJets
+      = leptonAcceptanceCalculator->withAtLeastNJets( signalDefinitions,
+                                                      0,
+                                                      firstCascade,
+                                               firstSparticleIsNotAntiparticle,
+                                                      secondCascade,
+                                            secondSparticleIsNotAntiparticle );
+      // chance of the pair of cascades producing the correct number of
+      // leptons between them.
+
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "subchannelZeroOrMoreJets = "
+      << subchannelZeroOrMoreJets;
+      std::cout << std::endl;**/
+
+      if( lhcFaserGlobal::negligibleBr < subchannelZeroOrMoreJets )
+      {
+        twoJetAcceptance = twoJetKinematics->getAcceptance( initialPair,
+                                                            firstCascade,
+                                                            secondCascade );
+        subchannelValue = ( subchannelCrossSectionTimesBrToEwinos
+                            * subchannelZeroOrMoreJets
+                            * twoJetAcceptance );
+
+        // debugging:
+        /**if( 0.05 < ( subchannelCrossSectionTimesBrToEwinos
+                         * subchannelZeroOrMoreJets ) )
+        {
+          std::cout << std::endl << "debugging:"
+          << std::endl
+          << "adding" << std::endl;
+          if( !firstSparticleIsNotAntiparticle )
+          {
+            std::cout << "anti-";
+          }
+          std::cout
+          << firstCascade->getAsString() << " BR = "
+          << firstCascadeBrToEwino << std::endl;
+          if( !secondSparticleIsNotAntiparticle )
+          {
+            std::cout << "anti-";
+          }
+          std::cout
+          << secondCascade->getAsString() << " BR = " << secondCascadeBrToEwino
+          << std::endl
+          << " => " << ( firstCascadeBrToEwino * secondCascadeBrToEwino )
+          << std::endl
+          << "subchannelCrossSectionTimesBrToEwinos = "
+          << subchannelCrossSectionTimesBrToEwinos
+          << std::endl
+          << "subchannelZeroOrMoreJets = "
+          << subchannelZeroOrMoreJets;
+          std::cout << std::endl;
+        }**/
+
+        if( !( ( 1.0 >= subchannelZeroOrMoreJets )
+               &&
+               ( 0.0 <= subchannelZeroOrMoreJets )
+               &&
+               ( 1.0 >= twoJetAcceptance )
+               &&
+               ( 0.0 <= twoJetAcceptance )
+               &&
+               ( 0.0 <= subchannelValue ) ) )
+        {
+          std::cout
+          << std::endl << "LHC-FASER::error! signal \""
+          << signalName << "\":"
+          << std::endl
+          << *(initialPair->getFirstParticle()->get_name_or_antiname(
+                                             firstSparticleIsNotAntiparticle ))
+          << " + "
+          << *(initialPair->getSecondParticle()->get_name_or_antiname(
+                                           secondSparticleIsNotAntiparticle ));
+          std::cout
+          << std::endl
+          << "1st cascade: " << firstCascade->getAsString()
+          << std::endl
+          << "2nd cascade: " << secondCascade->getAsString();
+          std::cout << std::endl;
+          std::cout
+          << std::endl
+          << "produced subchannelZeroOrMoreJetsZeroLeptons = "
+          << subchannelZeroOrMoreJets
+          << ", & twoJetAcceptance = "
+          << twoJetAcceptance
+          << ", both of which should be >= 0.0 & <= 1.0 for valid"
           << " input! subchannelValue = " << subchannelValue
           << ", which should be >= 0.0 for valid input!";
           std::cout << std::endl;
@@ -2320,6 +2535,8 @@ namespace LHC_FASER
     creationFunctions.push_back(
         &(signalClasses::atlasThreeJetMetPlusGivenLeptonCuts::getCalculator) );
     creationFunctions.push_back(
+         &(signalClasses::cmsTwoJetAlphaTPlusGivenLeptonCuts::getCalculator) );
+    creationFunctions.push_back(
                  &(signalClasses::noJetMetButGivenLeptonCuts::getCalculator) );
     creationFunctions.push_back(
                          &(signalClasses::sigmaBreakdownTest::getCalculator) );
@@ -2365,6 +2582,7 @@ namespace LHC_FASER
 
       rateCalculator = new signalClasses::reallyWrongCalculator();
     }
+    rateCalculator->setSignalName( signalName );
   }
 
   signalHandler::~signalHandler()

@@ -632,6 +632,53 @@ namespace LHC_FASER
     };
 
 
+    /* this is a derived class to calculateValue the "CMS 2 jets plus missing
+     * transverse momentum indirectly through the alpha_T variable plus some
+     * lepton cut" signal.
+     * it takes the kinematics from the CMS2jalphaT grid & combines them with
+     * cascade decays leading to however many leptons passing whichever cut.
+     */
+    class cmsTwoJetAlphaTPlusGivenLeptonCuts : public signalCalculator
+    {
+    public:
+      static int const jetAcceptanceGridTableColumn;
+      // this is dependent on the format of the grids.
+      static double const defaultPrimaryLeptonCut;
+      static double const defaultSecondaryLeptonCut;
+      // the default CMS lepton transverse momentum cuts are 20.0 GeV
+      // (for a single lepton to *pass*) & 10.0 GeV (for all others to *fail*).
+
+      static signalCalculator*
+      getCalculator( std::string const& argumentString,
+                     signalDefinitionSet* const signalDefinitions );
+      /* this either returns a pointer to a new
+       * atlasThreeJetMetPlusGivenLeptonCuts with cuts decided by the given
+       * string, or NULL if the string could not be parsed properly.
+       */
+
+      ~cmsTwoJetAlphaTPlusGivenLeptonCuts();
+
+
+    protected:
+      leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator;
+      jetAcceptanceTable* twoJetKinematics;
+      // these are used as each pairing of cascades from each production
+      // channel is calculated:
+      double subchannelValue;
+      double subchannelZeroOrMoreJets;
+      double twoJetAcceptance;
+
+      cmsTwoJetAlphaTPlusGivenLeptonCuts(
+                            signalDefinitionSet const* const signalDefinitions,
+      leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator );
+
+      virtual double
+      valueForCurrentCascades( fullCascade* firstCascade,
+                               fullCascade* secondCascade );
+      // see base version's description.
+    };
+
+
     /* this is a derived class to calculateValue the "no cut on jets or missing
      * transverse momentum, but some lepton cut" signal.
      * it only takes cascade decays leading to however many leptons passing
