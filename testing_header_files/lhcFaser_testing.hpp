@@ -136,8 +136,83 @@ namespace LHC_FASER
       std::cout << std::endl;
       std::cout
       << std::endl
-      << "all 4 test signals from test lhcFasers have pointers.";
+      << "all 4 test signals from test lhcFasers have pointers:";
+      std::cout
+      << std::endl
+      << "sps1aSigma = " << sps1aSigma
+      << "sps2Sigma = " << sps2Sigma
+      << "sps1aAtlas4j0l = " << sps1aAtlas4j0l
+      << "sps2Atlas4j0l = " << sps2Atlas4j0l
+      << "sps1aAtlas3j1l = " << sps1aAtlas3j1l
+      << "sps2Atlas3j1l = " << sps2Atlas3j1l
+      << "sps1aBad = " << sps1aBad
+      << "sps2Bad = " << sps2Bad;
       std::cout << std::endl;
+
+      if( NULL == sps1aSigma )
+      {
+        sps1aSigma = new signalClasses::reallyWrongCalculator();
+        std::cout
+        << std::endl
+        << "NULL pointer, so now sps1aSigma = " << sps1aSigma;
+        std::cout << std::endl;
+      }
+      if( NULL == sps2Sigma )
+      {
+        sps2Sigma = new signalClasses::reallyWrongCalculator();
+        std::cout
+        << std::endl
+        << "NULL pointer, so now sps2Sigma = " << sps2Sigma;
+        std::cout << std::endl;
+      }
+      if( NULL == sps1aAtlas4j0l )
+      {
+        sps1aAtlas4j0l = new signalClasses::reallyWrongCalculator();
+        std::cout
+        << std::endl
+        << "NULL pointer, so now sps1aAtlas4j0l = " << sps1aAtlas4j0l;
+        std::cout << std::endl;
+      }
+      if( NULL == sps2Atlas4j0l )
+      {
+        sps2Atlas4j0l = new signalClasses::reallyWrongCalculator();
+        std::cout
+        << std::endl
+        << "NULL pointer, so now sps2Atlas4j0l = " << sps2Atlas4j0l;
+        std::cout << std::endl;
+      }
+      if( NULL == sps1aAtlas3j1l )
+      {
+        sps1aAtlas3j1l = new signalClasses::reallyWrongCalculator();
+        std::cout
+        << std::endl
+        << "NULL pointer, so now sps1aAtlas3j1l = " << sps1aAtlas3j1l;
+        std::cout << std::endl;
+      }
+      if( NULL == sps2Atlas3j1l )
+      {
+        sps2Atlas3j1l = new signalClasses::reallyWrongCalculator();
+        std::cout
+        << std::endl
+        << "NULL pointer, so now sps2Atlas3j1l = " << sps2Atlas3j1l;
+        std::cout << std::endl;
+      }
+      if( NULL == sps1aBad )
+      {
+        sps1aBad = new signalClasses::reallyWrongCalculator();
+        std::cout
+        << std::endl
+        << "NULL pointer, so now sps1aBad = " << sps1aBad;
+        std::cout << std::endl;
+      }
+      if( NULL == sps2Bad )
+      {
+        sps2Bad = new signalClasses::reallyWrongCalculator();
+        std::cout
+        << std::endl
+        << "NULL pointer, so now sps2Bad = " << sps2Bad;
+        std::cout << std::endl;
+      }
 
       sps1aLhcFaser.updateForNewSlha();
       std::cout << std::endl;

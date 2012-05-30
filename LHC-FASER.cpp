@@ -93,6 +93,7 @@ namespace LHC_FASER
     electroweakCascadeSource( NULL ),
     fullCascadeSetSource( NULL ),
     signalSet(),
+    signalPointer( NULL ),
     inputShortcut( NULL ),
     signalDefinitions( NULL ),
     readierObject()
@@ -124,6 +125,7 @@ namespace LHC_FASER
     electroweakCascadeSource( NULL ),
     fullCascadeSetSource( NULL ),
     signalSet(),
+    signalPointer( NULL ),
     inputShortcut( NULL ),
     signalDefinitions( NULL ),
     readierObject()

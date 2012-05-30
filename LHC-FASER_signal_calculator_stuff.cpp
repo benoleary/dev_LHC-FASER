@@ -2520,7 +2520,8 @@ namespace LHC_FASER
     signalPreparationDefinitions( signalDefinitions ),
     signalValue( CppSLHA::CppSLHA_global::really_wrong_value ),
     uncertaintyFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
-    crossSectionUnitFactor( crossSectionUnitFactor )
+    crossSectionUnitFactor( crossSectionUnitFactor ),
+    isGoodFlag( true )
   {
     // debugging:
     /**std::cout << std::endl << "debugging:"
@@ -2581,6 +2582,7 @@ namespace LHC_FASER
       std::cout << std::endl;
 
       rateCalculator = new signalClasses::reallyWrongCalculator();
+      isGoodFlag = false;
     }
     rateCalculator->setSignalName( signalName );
   }

@@ -756,6 +756,8 @@ namespace LHC_FASER
     getLowerValue();
     double
     getLogUncertainty();
+    bool
+    isGood() const { return isGoodFlag; }
 
 
   protected:
@@ -767,6 +769,7 @@ namespace LHC_FASER
     double uncertaintyFactor;
     double crossSectionUnitFactor;
     // this is to allow for the user to specify event rates in fb, pb or nb.
+    bool isGoodFlag;
   };
 
 

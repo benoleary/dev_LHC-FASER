@@ -252,6 +252,7 @@ namespace LHC_FASER
       double secondsTaken;
 
       std::vector< signalHandler* > signalVector;
+      signalHandler* signalPointer( NULL );
       std::string signalName;
 
       //std::string gridPath( "/home/bol/BOL_work/projects/");
@@ -285,7 +286,11 @@ namespace LHC_FASER
       std::cout
       << std::endl << "adding " << signalName;
       testLhcFaser.addSignal( signalName );
-      signalVector.push_back( testLhcFaser.getSignal( signalName ) );
+      signalPointer = testLhcFaser.getSignal( signalName );
+      if( NULL != signalPointer )
+      {
+        signalVector.push_back( signalPointer );
+      }
       gettimeofday( &endTime,
                     NULL );
       secondsTaken
@@ -300,7 +305,11 @@ namespace LHC_FASER
       signalName.assign( "Atlas3jMET_1l_7TeV" );
       std::cout
       << std::endl << "adding " << signalName;
-      signalVector.push_back( testLhcFaser.addSignal( signalName ) );
+      signalPointer = testLhcFaser.addSignal( signalName );
+      if( NULL != signalPointer )
+      {
+        signalVector.push_back( signalPointer );
+      }
       gettimeofday( &endTime,
                     NULL );
       secondsTaken
@@ -315,7 +324,11 @@ namespace LHC_FASER
       signalName.assign( "noJetOrMETCut_sssf_7TeV" );
       std::cout
       << std::endl << "adding " << signalName;
-      signalVector.push_back( testLhcFaser.addSignal( signalName ) );
+      signalPointer = testLhcFaser.addSignal( signalName );
+      if( NULL != signalPointer )
+      {
+        signalVector.push_back( signalPointer );
+      }
       gettimeofday( &endTime,
                     NULL );
       secondsTaken

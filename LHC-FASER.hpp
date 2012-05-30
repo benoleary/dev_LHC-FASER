@@ -132,6 +132,10 @@ namespace LHC_FASER
               bool const usingNlo = true );
     ~lhcFaser();
 
+    signalHandler*
+    operator[]( int const signalIndex ){ return signalSet[ signalIndex ]; }
+    // this returns the signals in the order in which they were added.
+    // starts from 0 rather than 1 (as expected?).
     lhcFaser*
     overridePathToCrossSectionGrids(
                                    std::string const pathToCrossSectionGrids );
@@ -148,7 +152,8 @@ namespace LHC_FASER
      * possibly others, if such grids are made) directories are.
      */
     signalHandler*
-    addSignal( std::string const signalName );
+    addSignal( std::string const signalName,
+               bool const returnNullsForBadSignals = false );
     // this adds a new signal to the set of signals based on its name.
     signalHandler*
     getSignal( std::string const signalName );
@@ -202,6 +207,7 @@ namespace LHC_FASER
     std::vector< signalHandler* > signalSet;
     // this tracks the various signals of LHC supersymmetric events & their
     // rates.
+    signalHandler* signalPointer;
     signalShortcuts* inputShortcut;
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
@@ -249,13 +255,25 @@ namespace LHC_FASER
   }
 
   inline signalHandler*
-  lhcFaser::addSignal( std::string const signalName )
+  lhcFaser::addSignal( std::string const signalName,
+                       bool const returnNullsForBadSignals )
   // this adds a new signal to the set of signals based on its name.
   {
-    signalSet.push_back( new signalHandler( signalName,
-                                            crossSectionUnitFactor,
-                                            signalDefinitions ) );
-    return signalSet.back();
+    signalPointer = new signalHandler( signalName,
+                                       crossSectionUnitFactor,
+                                       signalDefinitions );
+    if( !(signalPointer->isGood())
+        &&
+        returnNullsForBadSignals )
+    {
+      delete signalPointer;
+      signalPointer = NULL;
+    }
+    else
+    {
+      signalSet.push_back( signalPointer );
+    }
+    return signalPointer;
   }
 
   inline signalHandler*
