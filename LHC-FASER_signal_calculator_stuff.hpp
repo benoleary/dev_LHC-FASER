@@ -738,7 +738,8 @@ namespace LHC_FASER
 
     signalHandler( std::string const signalName,
                    double const crossSectionUnitFactor,
-                   signalDefinitionSet const* const signalDefinitions );
+                   signalDefinitionSet const* const signalDefinitions,
+                   bool const complainAboutBadSignalNames = true );
     ~signalHandler();
 
     std::string const*

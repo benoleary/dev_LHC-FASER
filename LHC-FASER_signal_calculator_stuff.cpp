@@ -2511,7 +2511,8 @@ namespace LHC_FASER
 
   signalHandler::signalHandler( std::string const signalName,
                                 double const crossSectionUnitFactor,
-                         signalDefinitionSet const* const signalDefinitions ) :
+                            signalDefinitionSet const* const signalDefinitions,
+                                bool const complainAboutBadSignalNames ) :
     getsReadiedForNewPoint( signalDefinitions->getShortcuts(
                                         )->getInputShortcuts()->getReadier() ),
     signalName( signalName ),
@@ -2571,15 +2572,18 @@ namespace LHC_FASER
     }
     if( NULL == rateCalculator )
     {
-      std::cout
-      << std::endl
-      << "LHC-FASER::error! signalHandler::signalHandler( "
-      << signalName << ", " <<  inputShortcut << " ) was passed a"
-      << " name it does not know ( \"" << signalName
-      << "\" ). its calculator is being set to return only "
-      << CppSLHA::CppSLHA_global::really_wrong_value_string << " for"
-      << " every point.";
-      std::cout << std::endl;
+      if( complainAboutBadSignalNames )
+      {
+        std::cout
+        << std::endl
+        << "LHC-FASER::error! signalHandler::signalHandler( "
+        << signalName << ", " <<  inputShortcut << " ) was passed a"
+        << " name it does not know ( \"" << signalName
+        << "\" ). its calculator is being set to return only "
+        << CppSLHA::CppSLHA_global::really_wrong_value_string << " for"
+        << " every point.";
+        std::cout << std::endl;
+      }
 
       rateCalculator = new signalClasses::reallyWrongCalculator();
       isGoodFlag = false;

@@ -114,7 +114,8 @@ int main( int argumentCount,
 
     LHC_FASER::lhcFaser comparisonLhcFaser( spectrumFilename,
                                             "./testing/grids/",
-                                            "fb" );
+                                            "fb",
+                                            false );
     comparisonLhcFaser.setVerbosity( true );
     std::vector< LHC_FASER::signalHandler* > signalSet;
 

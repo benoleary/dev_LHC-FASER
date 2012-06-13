@@ -261,7 +261,8 @@ namespace LHC_FASER
   {
     signalPointer = new signalHandler( signalName,
                                        crossSectionUnitFactor,
-                                       signalDefinitions );
+                                       signalDefinitions,
+                                       !returnNullsForBadSignals );
     if( !(signalPointer->isGood())
         &&
         returnNullsForBadSignals )
