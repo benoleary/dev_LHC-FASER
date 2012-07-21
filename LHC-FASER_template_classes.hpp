@@ -193,7 +193,6 @@ namespace LHC_FASER
   protected:
     std::vector< storedClass* > allConstructedPointers;
     std::vector< storedClass* > currentPointers;
-    void (*resetFunction)( storedClass* const );
   };
 
 
@@ -334,7 +333,16 @@ namespace LHC_FASER
   const
   // if an element out of range is asked for, this returns NULL.
   {
-    return getPointer( requestedElement );
+    if( ( 0 <= requestedElement )
+        &&
+        ( currentPointers.size() > (unsigned int)requestedElement ) )
+    {
+      return currentPointers.at( requestedElement );
+    }
+    else
+    {
+      return NULL;
+    }
   }
 
   template< class storedClass >
@@ -360,7 +368,14 @@ namespace LHC_FASER
   // this returns the 1st element deemed current. if there is none, this
   // returns NULL.
   {
-    return getFront();
+    if( 0 < currentPointers.size() )
+    {
+      return currentPointers.front();
+    }
+    else
+    {
+      return NULL;
+    }
   }
 
   template< class storedClass >
@@ -386,7 +401,14 @@ namespace LHC_FASER
   // returns NULL.
   const
   {
-    return getBack();
+    if( 0 < currentPointers.size() )
+    {
+      return currentPointers.back();
+    }
+    else
+    {
+      return NULL;
+    }
   }
 
   template< class storedClass >
@@ -531,7 +553,11 @@ namespace LHC_FASER
                                      void (*resetFunction)( storedClass* const,
                                                             keyClass* const,
                                                     keyClass const* const ) ) :
-  //currentlyStoredNumber( 0 ),
+  currentPointers(),
+  returnPointer( NULL ),
+  keyClassConstructionPointer( NULL ),
+  searchCounter( 0 ),
+  keyNotFound( true ),
   comparisonFunction( comparisonFunction ),
   constructionFunction( constructionFunction ),
   resetFunction( resetFunction )

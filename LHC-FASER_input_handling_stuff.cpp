@@ -80,7 +80,14 @@ namespace LHC_FASER
     getsReadiedForNewPoint( readierPointer ),
     smInputs( smInputs ),
     wPlusPointer( wPlusPointer ),
-    zPointer( zPointer )
+    zPointer( zPointer ),
+    electromagneticFineStructureConstant(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    hyperchargeGaugeCoupling( CppSLHA::CppSLHA_global::really_wrong_value ),
+    weakGaugeCoupling( CppSLHA::CppSLHA_global::really_wrong_value ),
+    colorGaugeCoupling( CppSLHA::CppSLHA_global::really_wrong_value ),
+    weakSine( CppSLHA::CppSLHA_global::really_wrong_value ),
+    weakCosine( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // just an initialization list.
   }
@@ -132,7 +139,8 @@ namespace LHC_FASER
                                            particlePointer const gluinoPointer,
                                    readierForNewPoint* const readierPointer ) :
     getsReadiedForNewPoint( readierPointer ),
-    gluinoPointer( gluinoPointer )
+    gluinoPointer( gluinoPointer ),
+    gluinoMass( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // just an initialization list.
   }
@@ -148,7 +156,8 @@ namespace LHC_FASER
                                         particleVectorPointer const setPointer,
                                    readierForNewPoint* const readierPointer ) :
     getsReadiedForNewPoint( readierPointer ),
-    setPointer( setPointer )
+    setPointer( setPointer ),
+    averageMass( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // just an initialization list.
   }

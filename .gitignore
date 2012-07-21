@@ -1166,3 +1166,13 @@ Debug/LHC-FASER.o
 Debug/LHC-FASER_cross-section_stuff.o
 
 .DS_Store
+
+Debug/LHC-FASER_base_lepton_distribution_stuff.o
+
+Debug/LHC-FASER_base_lepton_distribution_stuff.o
+
+LHC-FASER_electroweak_cascade_collection_stuff.cpp
+
+testing/NaN_test.log
+
+Debug/LHC-FASER_derived_lepton_distributions.o

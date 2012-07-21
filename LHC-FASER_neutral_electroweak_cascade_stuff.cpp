@@ -105,17 +105,33 @@ namespace LHC_FASER
                         electroweakDecayer,
                         intermediateDecayer,
                         true,
-                        inputShortcut )
+                        inputShortcut ),
+    muonsNotElectrons( false ),
+    nearSameDistribution( NULL ),
+    farSameDistribution( NULL ),
+    nearOppositeDistribution( NULL ),
+    farOppositeDistribution( NULL ),
+    jetLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearNegativeLeptonLeftHandedness(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearNegativeLeptonSameHandednessTimesBr(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearSamePass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearSameFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farSamePass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farSameFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearOppositePass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearOppositeFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farOppositePass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farOppositeFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    justOneNegativeLeptonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    justOnePositiveLeptonPass( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     if( ( CppSLHA::PDG_code::smuon_L == intermediateDecayer->get_PDG_code() )
         ||
         ( CppSLHA::PDG_code::smuon_R == intermediateDecayer->get_PDG_code() ) )
     {
       muonsNotElectrons = true;
-    }
-    else
-    {
-      muonsNotElectrons = false;
     }
     // we set up the BR of the (only) channel:
     firstBr = inputShortcut->getExclusiveBrCalculator( electroweakDecayer,
@@ -355,8 +371,15 @@ namespace LHC_FASER
                         intermediateDecayer,
                         true,
                         inputShortcut ),
+    muonsNotElectrons( true ),
     nearDistribution( NULL ),
-    farDistribution( NULL )
+    farDistribution( NULL ),
+    nearPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    bothPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    onePassOneFail( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     if( ( CppSLHA::PDG_code::smuon_L == intermediateDecayer->get_PDG_code() )
         ||
@@ -515,7 +538,56 @@ namespace LHC_FASER
                         electroweakDecayer,
                         intermediateDecayer,
                         false,
-                        inputShortcut )
+                        inputShortcut ),
+    nearSameTauDistribution( NULL ),
+    farSameTauDistribution( NULL ),
+    nearOppositeTauDistribution( NULL ),
+    farOppositeTauDistribution( NULL ),
+    nearSameHardMuonDistribution( NULL ),
+    nearSameSoftMuonDistribution( NULL ),
+    nearSameHardPionDistribution( NULL ),
+    nearSameSoftPionDistribution( NULL ),
+    nearOppositeHardMuonDistribution( NULL ),
+    nearOppositeSoftMuonDistribution( NULL ),
+    nearOppositeHardPionDistribution( NULL ),
+    nearOppositeSoftPionDistribution( NULL ),
+    farSameHardMuonDistribution( NULL ),
+    farSameSoftMuonDistribution( NULL ),
+    farSameHardPionDistribution( NULL ),
+    farSameSoftPionDistribution( NULL ),
+    farOppositeHardMuonDistribution( NULL ),
+    farOppositeSoftMuonDistribution( NULL ),
+    farOppositeHardPionDistribution( NULL ),
+    farOppositeSoftPionDistribution( NULL ),
+    currentNearMuonDistribution( NULL ),
+    currentNearPionDistribution( NULL ),
+    currentFarMuonDistribution( NULL ),
+    currentFarPionDistribution( NULL ),
+    currentCuts( NULL ),
+    currentAcceptance( NULL ),
+    jetLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    jetRightHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearNegativeTauLeftHandedness(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    farNegativeTauLeftHandedness(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearNegativeTauRightHandedness(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    farNegativeTauRightHandedness(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    negativeNearConfigurationBr( CppSLHA::CppSLHA_global::really_wrong_value ),
+    positiveNearConfigurationBr( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentNearFailSum( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentFarFailSum( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // we set up the BR of the (only-ish) channel:
     firstBr = inputShortcut->getExclusiveBrCalculator( electroweakDecayer,
@@ -1055,7 +1127,45 @@ namespace LHC_FASER
                         electroweakDecayer,
                         intermediateDecayer,
                         false,
-                        inputShortcut )
+                        inputShortcut ),
+    nearTauDistribution( NULL ),
+    farTauDistribution( NULL ),
+    nearHardMuonDistribution( NULL ),
+    nearSoftMuonDistribution( NULL ),
+    nearHardPionDistribution( NULL ),
+    nearSoftPionDistribution( NULL ),
+    farHardMuonDistribution( NULL ),
+    farSoftMuonDistribution( NULL ),
+    farHardPionDistribution( NULL ),
+    farSoftPionDistribution( NULL ),
+    currentNearMuonDistribution( NULL ),
+    currentNearPionDistribution( NULL ),
+    currentFarMuonDistribution( NULL ),
+    currentFarPionDistribution( NULL ),
+    currentCuts( NULL ),
+    currentAcceptance( NULL ),
+    jetLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    jetRightHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearNegativeTauLeftHandedness(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    farNegativeTauLeftHandedness(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearNegativeTauRightHandedness(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    farNegativeTauRightHandedness(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    configurationBr( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    nearPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    farPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentNearFailSum( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentFarFailSum( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // we set up the BR of the (only-ish) channel:
     firstBr = inputShortcut->getExclusiveBrCalculator( electroweakDecayer,
@@ -1401,7 +1511,40 @@ namespace LHC_FASER
                         electroweakDecayer,
                         inputShortcut->getZ(),
                         true,
-                        inputShortcut )
+                        inputShortcut ),
+    directMuonDistribution( NULL ),
+    sameHandedTauDistribution( NULL ),
+    oppositeHandedTauDistribution( NULL ),
+    sameHardMuonDistribution( NULL ),
+    sameSoftMuonDistribution( NULL ),
+    sameHardPionDistribution( NULL ),
+    sameSoftPionDistribution( NULL ),
+    oppositeHardMuonDistribution( NULL ),
+    oppositeSoftMuonDistribution( NULL ),
+    oppositeHardPionDistribution( NULL ),
+    oppositeSoftPionDistribution( NULL ),
+    currentNegativeMuonDistribution( NULL ),
+    currentPositivePionDistribution( NULL ),
+    currentPositiveMuonDistribution( NULL ),
+    currentNegativePionDistribution( NULL ),
+    negativeTauLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    jetLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    negativeTauMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    negativeTauMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    negativeTauPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    negativeTauPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    positiveTauMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    positiveTauMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    positiveTauPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    positiveTauPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    configurationBr( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentCuts( NULL ),
+    currentAcceptance( NULL )
   {
     double twiceSquareOfWeakSine( ( 2.0 * inputShortcut->getWeakSine()
                                         * inputShortcut->getWeakSine() ) );
@@ -1866,7 +2009,27 @@ namespace LHC_FASER
                         electroweakDecayer,
                         inputShortcut->getZ(),
                         true,
-                        inputShortcut )
+                        inputShortcut ),
+    directMuonDistribution( NULL ),
+    hardMuonDistribution( NULL ),
+    softMuonDistribution( NULL ),
+    hardPionDistribution( NULL ),
+    softPionDistribution( NULL ),
+    currentMuonDistribution( NULL ),
+    currentPionDistribution( NULL ),
+    negativeTauLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    configurationBr( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentCuts( NULL ),
+    currentAcceptance( NULL )
   {
     double twiceSquareOfWeakSine( ( 2.0 * inputShortcut->getWeakSine()
                                         * inputShortcut->getWeakSine() ) );
@@ -2167,8 +2330,38 @@ namespace LHC_FASER
                         intermediateDecayer,
                         true,
                         inputShortcut ),
+    directMuonDistribution( NULL ),
+    hardMuonDistribution( NULL ),
+    softMuonDistribution( NULL ),
+    hardPionDistribution( NULL ),
+    softPionDistribution( NULL ),
+    currentNegativeMuonDistribution( NULL ),
+    currentPositivePionDistribution( NULL ),
+    currentPositiveMuonDistribution( NULL ),
+    currentNegativePionDistribution( NULL ),
+    negativeTauLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    negativeTauMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    negativeTauMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    negativeTauPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    negativeTauPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    positiveTauMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    positiveTauMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    positiveTauPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    positiveTauPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    configurationBr( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentCuts( NULL ),
+    currentAcceptance( NULL ),
     intermediateDecayerDecays(
-                          intermediateDecayer->inspect_direct_decay_handler() )
+                         intermediateDecayer->inspect_direct_decay_handler() ),
+    currentBrToHadrons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentBrToElectrons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentBrToMuons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentBrToTaus( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     negativeTauLeftHandedness = 0.5;
     // here firstBr & secondBr don't work as well as just getting the branching
@@ -2546,8 +2739,39 @@ namespace LHC_FASER
                         NULL,
                         true,
                         inputShortcut ),
+    directDownDistribution( NULL ),
+    directUpDistribution( NULL ),
+    directStrangeDistribution( NULL ),
+    directCharmDistribution( NULL ),
+    directBottomDistribution( NULL ),
+    directElectronDistribution( NULL ),
+    directMuonDistribution( NULL ),
+    directTauDistribution( NULL ),
+    hardMuonDistribution( NULL ),
+    softMuonDistribution( NULL ),
+    currentJetDistribution( NULL ),
+    negativeTauLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    jetLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    hardMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    hardMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    softMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    softMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    averageMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    averageMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    hardPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    hardPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    softPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    softPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    averagePionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    averagePionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    configurationBr( CppSLHA::CppSLHA_global::really_wrong_value ),
     electroweakDecayerDecays(
-                           electroweakDecayer->inspect_direct_decay_handler() )
+                          electroweakDecayer->inspect_direct_decay_handler() ),
+    currentCuts( NULL ),
+    currentAcceptance( NULL )
   {
     negativeTauLeftHandedness = 0.5;
     // this will probably have to be changed if we ever do the off-shell decays
@@ -3085,7 +3309,27 @@ namespace LHC_FASER
                         lighterScolored,
                         inputShortcut->getZ(),
                         true,
-                        inputShortcut )
+                        inputShortcut ),
+    directMuonDistribution( NULL ),
+    hardMuonDistribution( NULL ),
+    softMuonDistribution( NULL ),
+    hardPionDistribution( NULL ),
+    softPionDistribution( NULL ),
+    currentMuonDistribution( NULL ),
+    currentPionDistribution( NULL ),
+    negativeTauLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    configurationBr( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentCuts( NULL ),
+    currentAcceptance( NULL )
   {
     double
     twiceSquareOfWeakCosine = ( 2.0 * inputShortcut->getWeakCosine()
@@ -3396,8 +3640,32 @@ namespace LHC_FASER
                         intermediateDecayer,
                         true,
                         inputShortcut ),
-     intermediateDecayerDecays(
-                          intermediateDecayer->inspect_direct_decay_handler() )
+    directMuonDistribution( NULL ),
+    hardMuonDistribution( NULL ),
+    softMuonDistribution( NULL ),
+    hardPionDistribution( NULL ),
+    softPionDistribution( NULL ),
+    currentMuonDistribution( NULL ),
+    currentPionDistribution( NULL ),
+    negativeTauLeftHandedness( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    directJetFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauMuonPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauMuonFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauPionPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    tauPionFail( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentPass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    configurationBr( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentCuts( NULL ),
+    currentAcceptance( NULL ),
+    intermediateDecayerDecays(
+                         intermediateDecayer->inspect_direct_decay_handler() ),
+    currentBrToHadrons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentBrToElectrons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentBrToMuons( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentBrToTaus( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     negativeTauLeftHandedness = 0.5;
 

@@ -174,6 +174,8 @@ namespace LHC_FASER
                               secondParticle,
                               thirdParticle,
                               fourthParticle ),
+    Elk( CppSLHA::CppSLHA_global::really_wrong_value ),
+    Ehk( CppSLHA::CppSLHA_global::really_wrong_value ),
     minToLkConst( minToLkSegment.addTerm( 0,
                                           0 ) ),
     minToLkLog( minToLkSegment.addTerm( 0,
@@ -270,6 +272,8 @@ namespace LHC_FASER
                               secondParticle,
                               thirdParticle,
                               fourthParticle ),
+    Elk( CppSLHA::CppSLHA_global::really_wrong_value ),
+    Ehk( CppSLHA::CppSLHA_global::really_wrong_value ),
     minToLkInv( minToLkSegment.addTerm( -1,
                                         0 ) ),
     minToLkConst( minToLkSegment.addTerm( 0,
@@ -437,6 +441,8 @@ namespace LHC_FASER
                               secondParticle,
                               thirdParticle,
                               fourthParticle ),
+    Elk( CppSLHA::CppSLHA_global::really_wrong_value ),
+    Ehk( CppSLHA::CppSLHA_global::really_wrong_value ),
     minToLkInv( minToLkSegment.addTerm( -1,
                                         0 ) ),
     minToLkConst( minToLkSegment.addTerm( 0,
@@ -614,6 +620,8 @@ namespace LHC_FASER
                               secondParticle,
                               thirdParticle,
                               fourthParticle ),
+    Elk( CppSLHA::CppSLHA_global::really_wrong_value ),
+    Ehk( CppSLHA::CppSLHA_global::really_wrong_value ),
     minToLkConst( minToLkSegment.addTerm( 0,
                                           0 ) ),
     minToLkLog( minToLkSegment.addTerm( 0,
@@ -725,6 +733,64 @@ namespace LHC_FASER
                               thirdParticle,
                               fourthParticle ),
     negativeMuonIsSameHandednessAsJet( negativeMuonIsSameHandednessAsJet ),
+    Elk( CppSLHA::CppSLHA_global::really_wrong_value ),
+    Ehk( CppSLHA::CppSLHA_global::really_wrong_value ),
+    cosinesLimitedByEnergy( false ),
+    gammaCQ( CppSLHA::CppSLHA_global::really_wrong_value ),
+    gammaCQSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    gammaCQCu( CppSLHA::CppSLHA_global::really_wrong_value ),
+    gammaCQQu( CppSLHA::CppSLHA_global::really_wrong_value ),
+    betaCQ( CppSLHA::CppSLHA_global::really_wrong_value ),
+    betaCQSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    oneMinusBetaCQ( CppSLHA::CppSLHA_global::really_wrong_value ),
+    oneMinusBetaCQSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    oneMinusBetaCQCu( CppSLHA::CppSLHA_global::really_wrong_value ),
+    oneMinusBetaCQQu( CppSLHA::CppSLHA_global::really_wrong_value ),
+    onePlusBetaCQ( CppSLHA::CppSLHA_global::really_wrong_value ),
+    lnOnePlusBetaCQOverOneMinusBetaCQ(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    ElMin( CppSLHA::CppSLHA_global::really_wrong_value ),
+    lnElMin( CppSLHA::CppSLHA_global::really_wrong_value ),
+    ElMinSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    ElMinCu( CppSLHA::CppSLHA_global::really_wrong_value ),
+    ElMinQu( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mQ( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mC( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mCSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mCCu( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mCX( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mXSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mVBSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mVBQu( CppSLHA::CppSLHA_global::really_wrong_value ),
+    EVB( CppSLHA::CppSLHA_global::really_wrong_value ),
+    lnmVBSqOverFourElMinSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentMinToLkInvCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentMinToLkConstCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentMinToLkLogCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentMinToLkLinCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentMinToLkLinLogCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentMinToLkSqCoefficient( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentLkToHkConstCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentLkToHkLinCoefficient( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentLkToHkSqCoefficient( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentHkToMaxInvCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentHkToMaxConstCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentHkToMaxLogCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentHkToMaxLinCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentHkToMaxLinLogCoefficient(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentHkToMaxSqCoefficient( CppSLHA::CppSLHA_global::really_wrong_value ),
+    minToLkSegment(),
     minToLkInv( minToLkSegment.addTerm( -1,
                                         0 ) ),
     minToLkConst( minToLkSegment.addTerm( 0,
@@ -737,12 +803,14 @@ namespace LHC_FASER
                                            1 ) ),
     minToLkSq( minToLkSegment.addTerm( 2,
                                        0 ) ),
+    lkToHkSegment(),
     lkToHkConst( lkToHkSegment.addTerm( 0,
                                         0 ) ),
     lkToHkLin( lkToHkSegment.addTerm( 1,
                                       0 ) ),
     lkToHkSq( lkToHkSegment.addTerm( 2,
                                      0 ) ),
+    hkToMaxSegment(),
     hkToMaxInv( hkToMaxSegment.addTerm( -1,
                                         0 ) ),
     hkToMaxConst( hkToMaxSegment.addTerm( 0,
@@ -1415,7 +1483,10 @@ namespace LHC_FASER
                                thirdParticle,
                                fourthParticle,
                                negativeMuonIsSameHandednessAsJet ),
-    shouldNotSumOverHandedness( !shouldSumOverHandedness )
+    shouldNotSumOverHandedness( !shouldSumOverHandedness ),
+    sameHandednessFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
+    axialCouplingFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
+    couplesAsAxialNotVector( true )
   {
     // just an initialization list.
   }
@@ -1660,11 +1731,24 @@ namespace LHC_FASER
                                thirdParticle,
                                fourthParticle,
                                jetIsLeftHanded
-                               /* W^- decays to left-handed mu^- */ )
+                               /* W^- decays to left-handed mu^- */ ),
+    whichChargino( 0 ),
+    whichNeutralino( 0 ),
+    NMIX( spectrumData->inspect_BLOCK( "NMIX" ) ),
+    UMIX( spectrumData->inspect_BLOCK( "UMIX" ) ),
+    VMIX( spectrumData->inspect_BLOCK( "VMIX" ) ),
+    Vv( CppSLHA::CppSLHA_global::really_wrong_value ),
+    Vvsq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    Aa( CppSLHA::CppSLHA_global::really_wrong_value ),
+    Aasq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    TwiceVvAa( CppSLHA::CppSLHA_global::really_wrong_value ),
+    VvPlusJjAaAllSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    VvSqMinusAaSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    MinusTwiceVvJjAa( CppSLHA::CppSLHA_global::really_wrong_value ),
+    JjVvPlusJjAaAllSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    JjVvSqMinusAaSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    JjVvSqPlusAaSq( CppSLHA::CppSLHA_global::really_wrong_value )
   {
-    NMIX = spectrumData->inspect_BLOCK( "NMIX" );
-    UMIX = spectrumData->inspect_BLOCK( "UMIX" );
-    VMIX = spectrumData->inspect_BLOCK( "VMIX" );
     if( CppSLHA::PDG_code::chargino_one == secondParticle->get_PDG_code() )
     {
       whichChargino = 1;
@@ -2053,6 +2137,12 @@ namespace LHC_FASER
                               secondParticle,
                               thirdParticle,
                               NULL ),
+    mQhSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mQlSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mVSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    gammaV( CppSLHA::CppSLHA_global::really_wrong_value ),
+    betaV( CppSLHA::CppSLHA_global::really_wrong_value ),
+    minToMaxSegment(),
     minToMaxConst( minToMaxSegment.addTerm( 0,
                                             0 ) ),
     minToMaxLin( minToMaxSegment.addTerm( 1,
@@ -2084,6 +2174,12 @@ namespace LHC_FASER
                               secondParticle,
                               thirdParticle,
                               NULL ),
+    mQhSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mQlSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    mSSq( CppSLHA::CppSLHA_global::really_wrong_value ),
+    gammaS( CppSLHA::CppSLHA_global::really_wrong_value ),
+    betaS( CppSLHA::CppSLHA_global::really_wrong_value ),
+    minToMaxSegment(),
     minToMaxConst( minToMaxSegment.addTerm( 0,
                                             0 ) )
   {

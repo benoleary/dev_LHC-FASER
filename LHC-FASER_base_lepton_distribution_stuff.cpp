@@ -436,6 +436,8 @@ namespace LHC_FASER
 
 
   segmentTermSet::segmentTermSet() :
+    segmentTerms(),
+    termAdder( NULL ),
     segmentStart( CppSLHA::CppSLHA_global::really_wrong_value ),
     segmentEnd( CppSLHA::CppSLHA_global::really_wrong_value )
   {
@@ -2046,11 +2048,21 @@ namespace LHC_FASER
                  CppSLHA::particle_property_set const* const fourthParticle ) :
     getsReadiedForNewPoint( readierPointer ),
     spectrumPointer( spectrumPointer ),
+    minimumEnergy( CppSLHA::CppSLHA_global::really_wrong_value ),
+    maximumEnergy( CppSLHA::CppSLHA_global::really_wrong_value ),
+    segmentSet(),
     firstParticle( firstParticle ),
     effectiveSquarkMass( effectiveSquarkMass ),
     secondParticle( secondParticle ),
     thirdParticle( thirdParticle ),
-    fourthParticle( fourthParticle )
+    fourthParticle( fourthParticle ),
+    firstMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    secondMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    thirdMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    fourthMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+    normalizingDivisor( CppSLHA::CppSLHA_global::really_wrong_value ),
+    normalizingFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
+    productionFrameEnergy( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // just an initialization list.
   }

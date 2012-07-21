@@ -140,12 +140,19 @@ namespace LHC_FASER
       std::cout
       << std::endl
       << "sps1aSigma = " << sps1aSigma
+      << std::endl
       << "sps2Sigma = " << sps2Sigma
+      << std::endl
       << "sps1aAtlas4j0l = " << sps1aAtlas4j0l
+      << std::endl
       << "sps2Atlas4j0l = " << sps2Atlas4j0l
+      << std::endl
       << "sps1aAtlas3j1l = " << sps1aAtlas3j1l
+      << std::endl
       << "sps2Atlas3j1l = " << sps2Atlas3j1l
+      << std::endl
       << "sps1aBad = " << sps1aBad
+      << std::endl
       << "sps2Bad = " << sps2Bad;
       std::cout << std::endl;
 

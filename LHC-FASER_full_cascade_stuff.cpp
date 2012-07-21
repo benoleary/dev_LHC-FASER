@@ -972,6 +972,7 @@ namespace LHC_FASER
 
       supType::supType() :
           squarkByJetToCompound(),
+          electroweakCascadeSource( NULL ),
           bosonCascades( NULL ),
           wBoson( NULL ),
           ewinoMass( CppSLHA::CppSLHA_global::really_wrong_value ),
@@ -1274,6 +1275,7 @@ namespace LHC_FASER
     gluinoOrElectroweakinoToCompound::gluinoOrElectroweakinoToCompound() :
         fullCascade( gluinoOrElectroweakinoToSquarkThenMore,
                      2 ),
+        electroweakCascadeSource( NULL ),
         bosonCascades( NULL ),
         wBoson( NULL ),
         ewinoMass( CppSLHA::CppSLHA_global::really_wrong_value ),
@@ -1663,7 +1665,11 @@ namespace LHC_FASER
 
 
       charginoSet::charginoSet() :
-          gluinoOrElectroweakinoToCompound()
+          gluinoOrElectroweakinoToCompound(),
+          squarkWithWFraction( CppSLHA::CppSLHA_global::really_wrong_value ),
+          antisquarkWithWFraction(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+          decayingToSupType( false )
       {
         // just an initialization list.
       }
@@ -1911,6 +1917,7 @@ namespace LHC_FASER
     getsReadiedForNewPoint( inputShortcut->getReadier() ),
     inputShortcut( inputShortcut ),
     initialSparticle( initialScolored ),
+    initialSparticleMass( initialScolored->get_absolute_mass() ),
     electroweakCascadeSource( electroweakCascadeSource ),
     openCascades(),
     orderedCascadeSets( NULL ),

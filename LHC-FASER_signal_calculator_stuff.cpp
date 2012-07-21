@@ -646,8 +646,11 @@ namespace LHC_FASER
     excludedFinalStateParticles(),
     firstCascadeBrToEwino( CppSLHA::CppSLHA_global::really_wrong_value ),
     secondCascadeBrToEwino( CppSLHA::CppSLHA_global::really_wrong_value ),
+    initialPair( NULL ),
     firstSparticleIsNotAntiparticle( true ),
-    secondSparticleIsNotAntiparticle( true )
+    secondSparticleIsNotAntiparticle( true ),
+    subchannelCrossSectionTimesBrToEwinos(
+                                  CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // debugging:
     /**std::cout << std::endl << "debugging:"
@@ -702,8 +705,11 @@ namespace LHC_FASER
     excludedFinalStateParticles(),
     firstCascadeBrToEwino( CppSLHA::CppSLHA_global::really_wrong_value ),
     secondCascadeBrToEwino( CppSLHA::CppSLHA_global::really_wrong_value ),
+    initialPair( NULL ),
     firstSparticleIsNotAntiparticle( true ),
-    secondSparticleIsNotAntiparticle( true )
+    secondSparticleIsNotAntiparticle( true ),
+    subchannelCrossSectionTimesBrToEwinos(
+                                  CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // just an initialization list.
   }
@@ -1397,7 +1403,8 @@ namespace LHC_FASER
 
     sigmaBreakdownTest::sigmaBreakdownTest(
                          signalDefinitionSet const* const signalDefinitions ) :
-        signalCalculator( signalDefinitions )
+        signalCalculator( signalDefinitions ),
+        channelBrTotal( CppSLHA::CppSLHA_global::really_wrong_value )
     {
       // just an initialization list.
     }
@@ -1616,7 +1623,17 @@ namespace LHC_FASER
                             signalDefinitionSet const* const signalDefinitions,
      leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator ) :
         signalCalculator( signalDefinitions ),
-        leptonAcceptanceCalculator( leptonAcceptanceCalculator )
+        leptonAcceptanceCalculator( leptonAcceptanceCalculator ),
+        fourJetKinematics( NULL ),
+        threeJetKinematics( NULL ),
+        twoJetKinematics( NULL ),
+        fourJetAcceptance( CppSLHA::CppSLHA_global::really_wrong_value ),
+        threeJetAcceptance( CppSLHA::CppSLHA_global::really_wrong_value ),
+        subchannelValue( CppSLHA::CppSLHA_global::really_wrong_value ),
+        subchannelZeroOrMoreJets(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+        subchannelOneOrMoreJets( CppSLHA::CppSLHA_global::really_wrong_value ),
+        subchannelTwoOrMoreJets( CppSLHA::CppSLHA_global::really_wrong_value )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -1993,7 +2010,14 @@ namespace LHC_FASER
                             signalDefinitionSet const* const signalDefinitions,
      leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator ) :
         signalCalculator( signalDefinitions ),
-        leptonAcceptanceCalculator( leptonAcceptanceCalculator )
+        leptonAcceptanceCalculator( leptonAcceptanceCalculator ),
+        threeJetKinematics( NULL ),
+        twoJetKinematics( NULL ),
+        threeJetAcceptance( CppSLHA::CppSLHA_global::really_wrong_value ),
+        subchannelValue( CppSLHA::CppSLHA_global::really_wrong_value ),
+        subchannelZeroOrMoreJets(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+        subchannelOneOrMoreJets( CppSLHA::CppSLHA_global::really_wrong_value )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -2266,7 +2290,12 @@ namespace LHC_FASER
                             signalDefinitionSet const* const signalDefinitions,
      leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator ) :
         signalCalculator( signalDefinitions ),
-        leptonAcceptanceCalculator( leptonAcceptanceCalculator )
+        leptonAcceptanceCalculator( leptonAcceptanceCalculator ),
+        twoJetKinematics( NULL ),
+        subchannelValue( CppSLHA::CppSLHA_global::really_wrong_value ),
+        subchannelZeroOrMoreJets(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+        twoJetAcceptance( CppSLHA::CppSLHA_global::really_wrong_value )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
@@ -2484,7 +2513,8 @@ namespace LHC_FASER
                             signalDefinitionSet const* const signalDefinitions,
      leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator ) :
         signalCalculator( signalDefinitions ),
-        leptonAcceptanceCalculator( leptonAcceptanceCalculator )
+        leptonAcceptanceCalculator( leptonAcceptanceCalculator ),
+        subchannelValue( CppSLHA::CppSLHA_global::really_wrong_value )
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"

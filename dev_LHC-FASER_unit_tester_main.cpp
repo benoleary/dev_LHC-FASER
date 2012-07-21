@@ -271,6 +271,24 @@ int main( int argumentCount,
   /**/
 
 
+  /* testing the LHC-FASER Light signal:
+   * (doesn't work) *//**/
+  std::cout
+  << std::endl << "constructing testLhcFaserLight for SPS1a.";
+  LHC_FASER::lhcFaser testLhcFaserLight( "SPS1a_spectrum.out",
+                                         "./grids/",
+                                         "fb" );
+  testLhcFaserLight.setVerbosity( true );
+  LHC_FASER::signalHandler*
+  lhcFaserLightSignal( testLhcFaserLight.addSignal( "LHC-FASER_Light" ) );
+  testLhcFaserLight.updateForNewSlha();
+  double lhcFaserLightValue( lhcFaserLightSignal->getValue() );
+  std::cout
+  << std::endl
+  << "lhcFaserLightValue = " << lhcFaserLightValue;
+  std::cout << std::endl;
+  /**/
+
   std::cout << std::endl;
   std::cout << std::endl << "ended successfully, I hope";
   std::cout << std::endl;

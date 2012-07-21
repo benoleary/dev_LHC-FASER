@@ -108,7 +108,9 @@ namespace LHC_FASER
     acceptanceCutSet(),
     inputShortcut( inputShortcut ),
     crossSections( NULL ),
-    jetPlusMetAcceptance( NULL )
+    jetPlusMetAcceptance( NULL ),
+    exclusionList( NULL ),
+    cascadeSets( NULL )
   {
     // just an initialization list.
   }
@@ -118,7 +120,9 @@ namespace LHC_FASER
     acceptanceCutSet( (acceptanceCutSet)copySource ),
     inputShortcut( copySource->inputShortcut ),
     crossSections( copySource->crossSections ),
-    jetPlusMetAcceptance( copySource->jetPlusMetAcceptance )
+    jetPlusMetAcceptance( copySource->jetPlusMetAcceptance ),
+    exclusionList( copySource->exclusionList ),
+    cascadeSets( copySource->cascadeSets )
   {
     // just an initialization list.
   }

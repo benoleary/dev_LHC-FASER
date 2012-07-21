@@ -150,7 +150,22 @@ namespace LHC_FASER
                                      std::string const* const gridFileLocation,
                                     inputHandler const* const inputShortcut ) :
       acceptanceGrid( gridFileLocation,
-                      inputShortcut )
+                      inputShortcut ),
+      lowerScoloredMass( CppSLHA::CppSLHA_global::really_wrong_value ),
+      lighterElectroweakinoMassFraction(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      heavierElectroweakinoMassFraction(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      shouldInterpolateOnElectroweakinos( true ),
+      lighterLighterElectroweakinoPointValue(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      lighterHeavierElectroweakinoPointValue(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      heavierHeavierElectroweakinoPointValue(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      heavierLighterElectroweakinoPointValue(
+                                 CppSLHA::CppSLHA_global::really_wrong_value ),
+      returnValue( CppSLHA::CppSLHA_global::really_wrong_value )
   {
     // just an initialization list.
   }
@@ -798,10 +813,22 @@ namespace LHC_FASER
     jetCutName( *jetCutName ),
     acceptanceColumn( acceptanceColumn ),
     inputShortcut( inputShortcut ),
+    gluinoGluinoGrid( NULL ),
+    squarkGluinoGrid( NULL ),
+    squarkAntisquarkGrid( NULL ),
+    squarkSquarkGrid( NULL ),
+    gridToUse( NULL ),
+    gridsMatrix(),
+    gridMatrixRow( NULL ),
+    gridMatrixElement( NULL ),
     heavierThanGluinoSquarkMass( inputShortcut ),
     useFirstMass( inputShortcut ),
     useSecondMass( inputShortcut ),
-    useAverageMass( inputShortcut )
+    useAverageMass( inputShortcut ),
+    firstCascadeType( sizeOfEnum ),
+    firstCascadeSquark( NULL ),
+    secondCascadeType( sizeOfEnum ),
+    secondCascadeSquark( NULL )
   {
     // debugging:
     /**std::cout << std::endl << "debugging:"

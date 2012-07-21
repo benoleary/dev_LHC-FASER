@@ -798,6 +798,8 @@ namespace LHC_FASER
     getsReadiedForNewPoint( inputShortcut->getReadier() ),
     inputShortcut( inputShortcut ),
     scoloredPair( scoloredPair ),
+    directlyProducedSquark( NULL ),
+    storedValue( CppSLHA::CppSLHA_global::really_wrong_value ),
     lookupTable( lookupTable ),
     flavorFactor( flavorFactor )
   {
