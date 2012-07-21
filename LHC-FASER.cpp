@@ -175,9 +175,9 @@ namespace LHC_FASER
     this->spectrumData = spectrumData;
     this->pathToGrids.assign( pathToGrids );
     pathToCrossSectionGrids.assign( pathToGrids );
-    pathToCrossSectionGrids.append( "/cross-sections/MSTW2008/" );
+    pathToCrossSectionGrids.append( "/cross-sections/" );
     pathToAcceptanceGrids.assign( pathToGrids );
-    pathToAcceptanceGrids.append( "/kinematics/PYTHIA8/" );
+    pathToAcceptanceGrids.append( "/kinematics/" );
     this->usingNlo = usingNlo;
     if( 0 == crossSectionUnit.compare( "pb" ) )
     {
