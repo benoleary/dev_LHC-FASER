@@ -638,7 +638,7 @@ namespace LHC_FASER
      * it takes the kinematics from the CMS2jalphaT grid & combines them with
      * cascade decays leading to however many leptons passing whichever cut.
      */
-    class cmsTwoJetAlphaTPlusGivenLeptonCuts : public signalCalculator
+    class cmsAlphaTPlusGivenLeptonCuts : public signalCalculator
     {
     public:
       static int const jetAcceptanceGridTableColumn;
@@ -656,7 +656,7 @@ namespace LHC_FASER
        * string, or NULL if the string could not be parsed properly.
        */
 
-      ~cmsTwoJetAlphaTPlusGivenLeptonCuts();
+      ~cmsAlphaTPlusGivenLeptonCuts();
 
 
     protected:
@@ -668,7 +668,7 @@ namespace LHC_FASER
       double subchannelZeroOrMoreJets;
       double twoJetAcceptance;
 
-      cmsTwoJetAlphaTPlusGivenLeptonCuts(
+      cmsAlphaTPlusGivenLeptonCuts(
                             signalDefinitionSet const* const signalDefinitions,
       leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator );
 

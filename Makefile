@@ -5,7 +5,9 @@
 SHELL = /bin/sh
 
 CC=g++
-CFLAGS=-c -Wall
+CCFLAGS= -Wall
+CCOBJFLAGS= -c
+CCEXEFLAGS=
 LDFLAGS=
 SOURCES=LHC-FASER.cpp \
  LHC-FASER_base_electroweak_cascade_stuff.cpp \
@@ -37,15 +39,15 @@ TESTEXECUTABLE=dev_LHC-FASER_unit_tester.exe
 JONASEXECUTABLE=LHC-FASER_for_JL.exe
 
 all: $(SOURCES) $(TESTEXECUTABLE) $(JONASEXECUTABLE)
+
+$(SOURCES):
+	$(CC) $(CCFLAGS) $(CCOBJFLAGS) $< -o $@
 	
 $(TESTEXECUTABLE): dev_LHC-FASER_unit_tester_main.cpp $(OBJECTS) 
 	$(CC) $(LDFLAGS) $(OBJECTS) dev_LHC-FASER_unit_tester_main.cpp -o $@
 	
 $(JONASEXECUTABLE): LHC-FASER_for_JL.cpp $(OBJECTS) 
 	$(CC) $(LDFLAGS) $(OBJECTS) LHC-FASER_for_JL.cpp -o $@
-
-.cpp.o:
-	$(CC) $(CFLAGS) $< -o $@
 
 clean:
 	rm -rf *o $(EXECUTABLE)

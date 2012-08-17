@@ -2225,28 +2225,28 @@ namespace LHC_FASER
 
 
     int const
-    cmsTwoJetAlphaTPlusGivenLeptonCuts::jetAcceptanceGridTableColumn( 5 );
+    cmsAlphaTPlusGivenLeptonCuts::jetAcceptanceGridTableColumn( 5 );
     // this is dependent on the format of the grids.
     double const
-    cmsTwoJetAlphaTPlusGivenLeptonCuts::defaultPrimaryLeptonCut( 20.0 );
+    cmsAlphaTPlusGivenLeptonCuts::defaultPrimaryLeptonCut( 20.0 );
     double const
-    cmsTwoJetAlphaTPlusGivenLeptonCuts::defaultSecondaryLeptonCut( 10.0 );
+    cmsAlphaTPlusGivenLeptonCuts::defaultSecondaryLeptonCut( 10.0 );
     // the default CMS lepton transverse momentum cuts are 20.0 GeV
     // (for leptons to *pass*) & 10.0 GeV (for all others to *fail*).
 
     signalCalculator*
-    cmsTwoJetAlphaTPlusGivenLeptonCuts::getCalculator(
+    cmsAlphaTPlusGivenLeptonCuts::getCalculator(
                                              std::string const& argumentString,
                                  signalDefinitionSet* const signalDefinitions )
     /* this either returns a pointer to a new
-     * cmsTwoJetAlphaTPlusGivenLeptonCuts with cuts decided by the given
+     * cmsAlphaTPlusGivenLeptonCuts with cuts decided by the given
      * string, or NULL if the string could not be parsed properly.
      */
     {
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "cmsTwoJetAlphaTPlusGivenLeptonCuts::getCalculator( "
+      << "cmsAlphaTPlusGivenLeptonCuts::getCalculator( "
       << argumentString << ", ... ) called.";
       std::cout << std::endl;**/
 
@@ -2280,7 +2280,7 @@ namespace LHC_FASER
                                                    signalDefinitions ) )
             {
               returnPointer
-              = new cmsTwoJetAlphaTPlusGivenLeptonCuts( signalDefinitions,
+              = new cmsAlphaTPlusGivenLeptonCuts( signalDefinitions,
                                                         leptonAcceptanceType );
               /* this takes care of if there were lepton transverse momentum
                * cuts specified. it's OK to only set them after the new
@@ -2302,7 +2302,7 @@ namespace LHC_FASER
       return returnPointer;
     }
 
-    cmsTwoJetAlphaTPlusGivenLeptonCuts::cmsTwoJetAlphaTPlusGivenLeptonCuts(
+    cmsAlphaTPlusGivenLeptonCuts::cmsAlphaTPlusGivenLeptonCuts(
                             signalDefinitionSet const* const signalDefinitions,
      leptonAcceptanceForCascadePair const* const leptonAcceptanceCalculator ) :
         signalCalculator( signalDefinitions ),
@@ -2316,7 +2316,7 @@ namespace LHC_FASER
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl
-      << "cmsTwoJetAlphaTPlusGivenLeptonCuts constructing with primary lepton"
+      << "cmsAlphaTPlusGivenLeptonCuts constructing with primary lepton"
       << " cut = "
       << signalDefinitions->getPrimaryLeptonCut()
       << ", secondary lepton cut = "
@@ -2331,7 +2331,7 @@ namespace LHC_FASER
         jetAcceptanceColumn = 10;
       }
 
-      std::string jetGridName( "CMS2jalphaT" );
+      std::string jetGridName( "CMSalphaT" );
       twoJetKinematics
       = signalDefinitions->getShortcuts()->getJetPlusMetAcceptances(
                                                )->getJetPlusMetAcceptanceTable(
@@ -2342,14 +2342,14 @@ namespace LHC_FASER
       excludedFinalStateParticles.push_back( -(CppSLHA::PDG_code::top) );
     }
 
-    cmsTwoJetAlphaTPlusGivenLeptonCuts::~cmsTwoJetAlphaTPlusGivenLeptonCuts()
+    cmsAlphaTPlusGivenLeptonCuts::~cmsAlphaTPlusGivenLeptonCuts()
     {
       // does nothing.
     }
 
 
     double
-    cmsTwoJetAlphaTPlusGivenLeptonCuts::valueForCurrentCascades(
+    cmsAlphaTPlusGivenLeptonCuts::valueForCurrentCascades(
                                                      fullCascade* firstCascade,
                                                    fullCascade* secondCascade )
     // see base version's description.
@@ -2591,7 +2591,7 @@ namespace LHC_FASER
     creationFunctions.push_back(
         &(signalClasses::atlasThreeJetMetPlusGivenLeptonCuts::getCalculator) );
     creationFunctions.push_back(
-         &(signalClasses::cmsTwoJetAlphaTPlusGivenLeptonCuts::getCalculator) );
+         &(signalClasses::cmsAlphaTPlusGivenLeptonCuts::getCalculator) );
     creationFunctions.push_back(
                  &(signalClasses::noJetMetButGivenLeptonCuts::getCalculator) );
     creationFunctions.push_back(
