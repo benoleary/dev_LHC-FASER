@@ -255,10 +255,7 @@ namespace LHC_FASER
       signalHandler* signalPointer( NULL );
       std::string signalName;
 
-      //std::string gridPath( "/home/bol/BOL_work/projects/");
-      //gridPath.append( "Eclipse_workspace/LHC-FASER_unit_tester/testing/" );
-      //gridPath.append( "grids/" );
-      std::string gridPath( "./grids/" );
+      std::string gridPath( "../grids/" );
 
       system( "cp LM1_spectrum.out test_spectrum.out" );
 

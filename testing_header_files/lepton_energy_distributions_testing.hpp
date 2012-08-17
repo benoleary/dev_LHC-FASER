@@ -208,7 +208,8 @@ namespace LHC_FASER
       testReadier( basicStuff->getReadier() ),
       testDistributionSet( testReadier ),
       testSpectrum( new CppSLHA::EW_scale_spectrum(
-                         basicStuff->getSlha()->inspect_particle_spectrum() ) )
+                        basicStuff->getSlha()->inspect_particle_spectrum() ) ),
+      currentDistribution( NULL )
     {
       // just an initialization list.
     }

@@ -174,93 +174,93 @@ int main( int argumentCount,
   LHC_FASER::basicStuffTesting basicStuffTester( "SPS1a_spectrum.out" );
 
   /* testing the lepton energy distributions in the squark rest frame:
-   * (works) *//**
+   * (works) *//**/
   LHC_FASER::leptonEnergyDistributionsTestingClass
   leptonEnergyDistributionsTester( &basicStuffTester );
   leptonEnergyDistributionsTester.performTest();
-  **/
+  /**/
 
 
   /* testing the means of checking if something has already been prepared for a
    * new point: (works)*//**/
   LHC_FASER::inputTesting inputTester( &basicStuffTester );
-  //inputTester.performTest();
+  inputTester.performTest();
   /**/
 
 
   /* testing the cross-section grid stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::crossSectionTesting crossSectionTester( &basicStuffTester,
                                                      &inputTester );
   crossSectionTester.performTest();
-  **/
+  /**/
 
 
   /* testing the base and lepton kinematics grid stuff:
-   * (works, but the testing needs BOL_useful_stuff, which I'm not including in
-   * the repository)*//**
+   * (works, but the full testing needs BOL_useful_stuff, which I'm not
+   * including in the repository)*//**/
   LHC_FASER::baseAndLeptonKinematicsTesting
   baseAndLeptonKinematicsTester( &basicStuffTester,
                                  &inputTester );
   baseAndLeptonKinematicsTester.performTest();
-  **/
+  /**/
 
 
   /* testing the basic electroweak cascade calculation stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::baseElectroweakCascadeTesting
   baseElectroweakCascadeTester( &basicStuffTester,
                                 &inputTester );
   baseElectroweakCascadeTester.performTest();
-  **/
+  /**/
 
   /* testing the electroweak cascade combination stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::fullElectroweakCascadeTesting
   fullElectroweakCascadeTester( &basicStuffTester,
                                 &inputTester );
   fullElectroweakCascadeTester.performTest();
-  **/
+  /**/
 
 
   /* testing the full cascade stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::fullCascadeTesting fullCascadeTester( &basicStuffTester,
                                                    &inputTester );
   fullCascadeTester.performTest();
-  **/
+  /**/
 
 
   /* testing the jet kinematics grid stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::jetKinematicsTesting jetKinematicsTester( &basicStuffTester,
                                                        &inputTester );
   jetKinematicsTester.performTest();
-  **/
+  /**/
 
 
   /* testing the lepton modularity stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::signalLeptonModularityTesting
   leptonModularityTester( &basicStuffTester,
                           &inputTester );
   leptonModularityTester.performTest();
-  **/
+  /**/
 
 
   /* testing the signal stuff:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::signalTesting signalTester( &basicStuffTester,
                                          &inputTester );
   signalTester.performTest();
-  **/
+  /**/
 
   /* finally, testing the lhcFaser itself:
-   * (works)*//**
+   * (works)*//**/
   LHC_FASER::lhcFaserTesting lhcFaserTester( &basicStuffTester,
                                              &inputTester );
   lhcFaserTester.performTest();
-  **/
+  /**/
 
 
   /* testing adding new signals & how long it takes to load & calculate:
@@ -296,5 +296,4 @@ int main( int argumentCount,
   std::cout << std::endl;
 
   return EXIT_SUCCESS;
-
 }

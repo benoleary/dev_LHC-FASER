@@ -314,9 +314,10 @@ namespace LHC_FASER
                                       readierPointer );
 
     // the default cross-sections are those generated with the MSTW2008 PDF
-    // set, & the default kinematics grids are those from PYTHIA 8.0:
-    pathToCrossSectionGrids.append( "/cross-sections/MSTW2008" );
-    pathToKinematicsGrids.append( "/kinematics/PYTHIA8" );
+    // set, & the default kinematics grids are those from PYTHIA 8.0, but
+    // neither are now specified in the path:
+    pathToCrossSectionGrids.append( "/cross-sections/" );
+    pathToKinematicsGrids.append( "/kinematics/" );
 
 
     // find all the inputShortcut pointers to particles:

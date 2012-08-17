@@ -96,7 +96,8 @@ namespace LHC_FASER
     void
     performTest()
     {
-      lhcFaser* testLhcFaserPointer( new lhcFaser( "SPS1a_spectrum.out" ) );
+      lhcFaser* testLhcFaserPointer( new lhcFaser( "SPS1a_spectrum.out",
+                                                   "../grids/" ) );
       testLhcFaserPointer->addSignal( "sigmaBreakdownTest" );
       testLhcFaserPointer->addSignal( "Atlas4jMET_0l_7TeV" );
       testLhcFaserPointer->addSignal( "badSignalName" );
@@ -110,8 +111,10 @@ namespace LHC_FASER
       << "no obvious problems in lhcFaser constructor & destructor.";
       std::cout << std::endl;
 
-      lhcFaser sps1aLhcFaser( "SPS1a_spectrum.out" );
-      lhcFaser sps2LhcFaser( "SPS2_spectrum.out" );
+      lhcFaser sps1aLhcFaser( "SPS1a_spectrum.out",
+                              "../grids/" );
+      lhcFaser sps2LhcFaser( "SPS2_spectrum.out",
+                             "../grids/" );
       sps1aLhcFaser.addSignal( "sigmaBreakdownTest" );
       signalHandler*
       sps1aSigma( sps1aLhcFaser.getSignal( "sigmaBreakdownTest" ) );
@@ -209,7 +212,7 @@ namespace LHC_FASER
         std::cout
         << std::endl
         << "sps1aBad is a NULL pointer, so something went really wrong!"
-        << " segmentation fault immeninet...";
+        << " segmentation fault imminent...";
         std::cout << std::endl;
       }
       if( NULL == sps2Bad )

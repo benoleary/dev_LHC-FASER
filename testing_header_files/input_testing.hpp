@@ -84,7 +84,7 @@ namespace LHC_FASER
       testReadier( basicStuff->getReadier() ),
       testInputHandler( slhaData,
                         slhaData->inspect_particle_spectrum(),
-                        "./grids",
+                        "../grids",
                         basicStuff->getReadier() )
     {
       testInputHandler.setVerbosity( true );
