@@ -2253,10 +2253,10 @@ namespace LHC_FASER
       signalCalculator* returnPointer( NULL );
 
       if( 0 == argumentString.compare( 0,
-                                       12,
-                                       "CMS2jalphaT_" ) )
+                                       10,
+                                       "CMSalphaT_" ) )
       {
-        std::string validArguments( argumentString.substr( 11 ) );
+        std::string validArguments( argumentString.substr( 9 ) );
         // debugging:
         /**std::cout << std::endl << "debugging:"
         << std::endl

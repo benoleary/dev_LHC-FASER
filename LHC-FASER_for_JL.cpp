@@ -212,15 +212,102 @@ int main( int argumentCount,
 
     // ACC10
     signalSet.push_back(
-              comparisonLhcFaser.addSignal( "CMS2jalphaT_noExtraCut_07TeV" ) );
+                comparisonLhcFaser.addSignal( "CMSalphaT_noExtraCut_07TeV" ) );
 
     // ACC11
     signalSet.push_back(
-      comparisonLhcFaser.addSignal( "CMS2jalphaT_ossf_07TeV_pTl20GeV10GeV" ) );
+        comparisonLhcFaser.addSignal( "CMSalphaT_ossf_07TeV_pTl20GeV10GeV" ) );
 
     // ACC12
     signalSet.push_back(
-      comparisonLhcFaser.addSignal( "CMS2jalphaT_sssf_07TeV_pTl20GeV20GeV" ) );
+        comparisonLhcFaser.addSignal( "CMSalphaT_sssf_07TeV_pTl20GeV20GeV" ) );
+
+
+    // extra pure lepton acceptances with harder cuts:
+    // ACCl0pT50
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                    "noJetOrMETCut_0l_07TeV_pTl50GeV50GeV" ) );
+    // just the cut of 0 leptons passing a 50GeV pT cut, with no cut on jet or
+    // MET
+
+    // ACCl1pT50
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                    "noJetOrMETCut_1l_07TeV_pTl50GeV50GeV" ) );
+    // just the cut of 1 lepton passing a 50GeV pT cut, with no cut on jet or
+    // MET
+
+    // ACCl2pT50
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                    "noJetOrMETCut_2l_07TeV_pTl50GeV50GeV" ) );
+    // is this just the cut of 2 leptons passing a 10GeV pT cut, with no cut on
+    // jet or MET?
+
+    // ACCos
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                "noJetOrMETCut_1lm1lp_07TeV_pTl50GeV50GeV" ) );
+    // just the cut of 1 lepton of each charge (regardless of flavor) passing a
+    // 50GeV pT cut, with no cut on jet or MET.
+
+    // ACCss
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                  "noJetOrMETCut_sssf_07TeV_pTl50GeV50GeV" ) );
+    // just the cut of 1 lepton of each charge (regardless of flavor) passing a
+    // 50GeV pT cut, with no cut on jet or MET.
+
+
+    // the whole set again, but for 14 TeV:
+    signalSet.push_back( comparisonLhcFaser.addSignal( "ACCj2" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                             "Atlas3jMET_noExtraCut_14TeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                             "Atlas4jMET_noExtraCut_14TeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                                  "noJetOrMETCut_0l_14TeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                                  "noJetOrMETCut_1l_14TeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                                  "noJetOrMETCut_2l_14TeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                              "noJetOrMETCut_1lm1lp_14TeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                                "noJetOrMETCut_sssf_14TeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                                "noJetOrMETCut_ossf_14TeV" ) );
+    signalSet.push_back(
+         comparisonLhcFaser.addSignal( "Atlas4jMET_0l_14TeV_pTl20GeV10GeV" ) );
+    signalSet.push_back(
+         comparisonLhcFaser.addSignal( "Atlas4jMET_1l_14TeV_pTl20GeV10GeV" ) );
+    signalSet.push_back(
+         comparisonLhcFaser.addSignal( "Atlas4jMET_2l_14TeV_pTl20GeV10GeV" ) );
+    signalSet.push_back(
+         comparisonLhcFaser.addSignal( "Atlas3jMET_0l_14TeV_pTl20GeV10GeV" ) );
+    signalSet.push_back(
+         comparisonLhcFaser.addSignal( "Atlas3jMET_1l_14TeV_pTl20GeV10GeV" ) );
+    signalSet.push_back(
+         comparisonLhcFaser.addSignal( "Atlas3jMET_2l_14TeV_pTl20GeV10GeV" ) );
+    signalSet.push_back(
+    comparisonLhcFaser.addSignal( "noJetOrMETCut_sssf_14TeV_pTl20GeV20GeV" ) );
+    signalSet.push_back(
+       comparisonLhcFaser.addSignal( "Atlas4jMET_ossf_14TeV_pTl20GeV10GeV" ) );
+    signalSet.push_back(
+       comparisonLhcFaser.addSignal( "Atlas3jMET_ossf_14TeV_pTl20GeV10GeV" ) );
+    signalSet.push_back(
+                comparisonLhcFaser.addSignal( "CMSalphaT_noExtraCut_14TeV" ) );
+    signalSet.push_back(
+        comparisonLhcFaser.addSignal( "CMSalphaT_ossf_14TeV_pTl20GeV10GeV" ) );
+    signalSet.push_back(
+        comparisonLhcFaser.addSignal( "CMSalphaT_sssf_14TeV_pTl20GeV20GeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                    "noJetOrMETCut_0l_14TeV_pTl50GeV50GeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                    "noJetOrMETCut_1l_14TeV_pTl50GeV50GeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                    "noJetOrMETCut_2l_14TeV_pTl50GeV50GeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                "noJetOrMETCut_1lm1lp_14TeV_pTl50GeV50GeV" ) );
+    signalSet.push_back( comparisonLhcFaser.addSignal(
+                                  "noJetOrMETCut_sssf_14TeV_pTl50GeV50GeV" ) );
+
 
     comparisonLhcFaser.updateForNewSlha();
 

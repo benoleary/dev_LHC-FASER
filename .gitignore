@@ -1176,3 +1176,11 @@ testing/NaN_test.log
 Debug/LHC-FASER_derived_lepton_distributions.o
 
 *.o
+
+LHC-FASER_for_JL.exe
+
+JL_test.out
+
+libLHC-FASER.a
+
+dev_LHC-FASER_unit_tester.exe
