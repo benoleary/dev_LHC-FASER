@@ -242,13 +242,13 @@ int main( int argumentCount,
     // is this just the cut of 2 leptons passing a 10GeV pT cut, with no cut on
     // jet or MET?
 
-    // ACCos
+    // ACCospT50
     signalSet.push_back( comparisonLhcFaser.addSignal(
                                 "noJetOrMETCut_1lm1lp_07TeV_pTl50GeV50GeV" ) );
     // just the cut of 1 lepton of each charge (regardless of flavor) passing a
     // 50GeV pT cut, with no cut on jet or MET.
 
-    // ACCss
+    // ACCsspT50
     signalSet.push_back( comparisonLhcFaser.addSignal(
                                   "noJetOrMETCut_sssf_07TeV_pTl50GeV50GeV" ) );
     // just the cut of 1 lepton of each charge (regardless of flavor) passing a
