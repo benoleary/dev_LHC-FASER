@@ -818,13 +818,13 @@ namespace LHC_FASER
     // we take the 1st squark found to ask for its mass in looking up the
     // cross-section. if no squark was provided, we keep the pointer as NULL.
     if( inputShortcut->isIn( scoloredPair->getFirstParticle()->get_PDG_code(),
-                         inputShortcut->getSquarks() ) )
+                             inputShortcut->getSquarks() ) )
     {
       directlyProducedSquark = scoloredPair->getFirstParticle();
     }
     else if( inputShortcut->isIn(
                             scoloredPair->getSecondParticle()->get_PDG_code(),
-                              inputShortcut->getSquarks() ) )
+                                  inputShortcut->getSquarks() ) )
     {
       directlyProducedSquark = scoloredPair->getSecondParticle();
     }

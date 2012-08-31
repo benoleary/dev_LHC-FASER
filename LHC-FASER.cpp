@@ -217,6 +217,75 @@ namespace LHC_FASER
     signalDefinitions = new signalDefinitionSet( inputShortcut );
   }
 
+
+
+  lhcFaserLight::lhcFaserLight( std::string const pathToGrids,
+                                std::string const crossSectionUnit,
+                                bool const usingNlo ) :
+    readierObject(),
+    spectrumData( "" ),
+    pathToGrids( pathToGrids ),
+    crossSectionUnitFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
+    usingNlo( true ),
+    inputSource( &spectrumData,
+                 spectrumData.get_particle_spectrum(),
+                 pathToGrids,
+                 &readierObject ),
+    crossSectionSource( &inputSource ),
+    particlePointers( inputSource.getSpectrum() ),
+    fullResults( "" )
+  {
+    // just an initialization list.
+  }
+
+  lhcFaserLight::~lhcFaserLight()
+  {
+    // does nothing.
+  }
+
+
+  std::string
+  lhcFaserLight::fullResultsForNewSlha( std::string const slhaFileName )
+  {
+    updateForNewSlha( slhaFileName );
+    fullResults.clear();
+    fullResults.str( "" );
+    for( std::vector< signedParticleShortcutPair* >::const_iterator
+         whichPair( inputSource.getScoloredProductionCombinations()->begin() );
+         inputSource.getScoloredProductionCombinations()->end() > whichPair;
+         ++whichPair )
+    {
+      fullResults << " ";
+      if( (*whichPair)->firstIsNotAntiparticle() )
+      {
+        fullResults << "+";
+      }
+      else
+      {
+        fullResults << "-";
+      }
+      fullResults << (*whichPair)->getFirstParticle()->get_PDG_code();
+      if( (*whichPair)->secondIsNotAntiparticle() )
+      {
+        fullResults << "  +";
+      }
+      else
+      {
+        fullResults << "  -";
+      }
+      fullResults
+      << (*whichPair)->getSecondParticle()->get_PDG_code()
+      << "   "
+      << crossSectionSource.getTable( 7,
+                                      *whichPair )->getValue()
+      << "   "
+      << crossSectionSource.getTable( 14,
+                                      *whichPair )->getValue()
+      << "\n";
+    }
+    return std::string( fullResults.str() );
+  }
+
 }  // end of LHC_FASER namespace.
 
 

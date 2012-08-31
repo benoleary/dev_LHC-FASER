@@ -140,16 +140,16 @@ namespace LHC_FASER
     overridePathToCrossSectionGrids(
                                    std::string const pathToCrossSectionGrids );
     /* this is used when the cross-section grids are not found in
-     * (pathToGrids)/cross-sections/MSTW2008, where the 7TeV & 14TeV (&
-     * possibly others, if such grids are made) directories are. an example
-     * would be to use (pathToGrids)/cross-sections/CTEQ6.6, though ONLY FOR
-     * 14 TeV UNLESS YOU HAVE PRODUCED THE 7 TeV GRIDS YOURSELF!
+     * (pathToGrids)/cross-sections/, where the 7TeV & 14TeV (& possibly
+     * others, if such grids are made) directories are. an example would be to
+     * use (pathToGrids)/cross-sections/CTEQ6.6, though ONLY FOR 14 TeV UNLESS
+     * YOU HAVE PRODUCED THE 7 TeV GRIDS YOURSELF!
      */
     lhcFaser*
     overridePathToAcceptanceGrids( std::string const pathToAcceptanceGrids );
     /* this is used when the acceptance grids are not found in
-     * (pathToGrids)/kinematics/PYTHIA8, where the 7TeV & 14TeV (&
-     * possibly others, if such grids are made) directories are.
+     * (pathToGrids)/kinematics/, where the 7TeV & 14TeV (& possibly others, if
+     * such grids are made) directories are.
      */
     signalHandler*
     addSignal( std::string const signalName,
@@ -221,6 +221,49 @@ namespace LHC_FASER
                 bool const usingNlo );
     // this is used by all the constructors to do most of the construction.
   };  // end of lhcFaser class.
+
+
+  // this is a class for printing out interpolated cross-sections for colored
+  // sparticle pair-production at the LHC.
+  class lhcFaserLight
+  {
+  public:
+    lhcFaserLight( std::string const pathToGrids = "./grids/",
+                   std::string const crossSectionUnit = "fb",
+                   bool const usingNlo = true );
+    ~lhcFaserLight();
+
+    double
+    operator()( int const beamEnergy,
+                int const firstScoloredCode,
+                int const secondScoloredCode );
+    std::string
+    fullResultsForNewSlha( std::string const slhaFileName );
+    void
+    updateForNewSlha( std::string const slhaFileName );
+    void
+    setVerbosity( bool const isVerbose );
+
+
+  protected:
+    readierForNewPoint readierObject;
+    CppSLHA::CppSLHA0 spectrumData;
+    // this holds the MSSM spectrum data.
+    std::string pathToGrids;
+    // this is where the lookup tables live.
+    double crossSectionUnitFactor;
+    // this is to allow for the user to specify event rates in fb, pb or nb.
+    bool usingNlo;
+    // this is to allow the user to use LO or NLO cross-sections.
+    inputHandler inputSource;
+    // this keeps const pointers to useful objects together for ease of passing
+    // around & for neater code.
+    crossSectionHandler crossSectionSource;
+    // this holds the lookup tables for LHC colored sparticle pair production
+    // cross-sections.
+    CppSLHA::EW_scale_spectrum const* particlePointers;
+    std::stringstream fullResults;
+  };  // end of lhcFaserLight class.
 
 
 
@@ -331,6 +374,49 @@ namespace LHC_FASER
   lhcFaser::setVerbosity( bool const isVerbose )
   {
     inputSource->setVerbosity( isVerbose );
+  }
+
+
+
+  inline void
+  lhcFaserLight::updateForNewSlha( std::string const slhaFileName )
+  {
+    spectrumData.read_file( slhaFileName );
+    readierObject.readyObserversForNewPoint();
+  }
+
+  inline void
+  lhcFaserLight::setVerbosity( bool const isVerbose )
+  {
+    inputSource.setVerbosity( isVerbose );
+  }
+
+  inline double
+  lhcFaserLight::operator()( int const beamEnergy,
+                             int const firstScoloredCode,
+                             int const secondScoloredCode )
+  {
+    for( std::vector< signedParticleShortcutPair* >::const_iterator
+         whichPair( inputSource.getScoloredProductionCombinations()->begin() );
+         inputSource.getScoloredProductionCombinations()->end() > whichPair;
+         ++whichPair )
+    {
+      if( ( ( firstScoloredCode == (*whichPair)->getSignedFirstCode() )
+            &&
+            ( secondScoloredCode == (*whichPair)->getSignedSecondCode() ) )
+          ||
+          ( ( secondScoloredCode == (*whichPair)->getSignedFirstCode() )
+            &&
+            ( firstScoloredCode == (*whichPair)->getSignedSecondCode() ) ) )
+      {
+        // as soon as we match the given pair to an allowed combination, we
+        // return the cross-section:
+        return crossSectionSource.getTable( beamEnergy,
+                                            *whichPair )->getValue();
+      }
+    }
+    // if the given pair matched none of the allowed combinations, we return 0:
+    return 0.0;
   }
 
 }  // end of LHC_FASER namespace.

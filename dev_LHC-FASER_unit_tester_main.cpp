@@ -264,28 +264,40 @@ int main( int argumentCount,
 
 
   /* testing adding new signals & how long it takes to load & calculate:
-   * (works) *//**/
+   * (works) *//**
   LHC_FASER::signalTimingTesting signalTimingTester( &basicStuffTester,
                                                      &inputTester );
   signalTimingTester.performTest( recalculationAmount );
-  /**/
+  **/
 
 
   /* testing the LHC-FASER Light signal:
    * (doesn't work) *//**/
   std::cout
-  << std::endl << "constructing testLhcFaserLight for SPS1a.";
-  LHC_FASER::lhcFaser testLhcFaserLight( "SPS1a_spectrum.out",
-                                         "../grids/",
-                                         "fb" );
+  << std::endl << "constructing testLhcFaserLight.";
+  LHC_FASER::lhcFaserLight testLhcFaserLight( "../grids/",
+                                              "fb" );
   testLhcFaserLight.setVerbosity( true );
-  LHC_FASER::signalHandler*
-  lhcFaserLightSignal( testLhcFaserLight.addSignal( "LHC-FASER_Light" ) );
-  testLhcFaserLight.updateForNewSlha();
-  double lhcFaserLightValue( lhcFaserLightSignal->getValue() );
   std::cout
   << std::endl
-  << "lhcFaserLightValue = " << lhcFaserLightValue;
+  << "lhcFaserLight full results for SPS1a = "
+  << std::endl
+  << "\""
+  << testLhcFaserLight.fullResultsForNewSlha( "SPS1a_spectrum.out" )
+  << "\"";
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "lhcFaserLight operator( 7, 1000021, 1000002 ) = "
+  << testLhcFaserLight( 7,
+                        1000021,
+                        1000002 );
+  std::cout
+  << std::endl
+  << "lhcFaserLight operator( 14, -2000001, 1000002 ) = "
+  << testLhcFaserLight( 14,
+                        -2000001,
+                        1000002 );
   std::cout << std::endl;
   /**/
 
