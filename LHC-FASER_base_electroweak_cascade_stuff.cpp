@@ -201,7 +201,7 @@ namespace LHC_FASER
                      numberOfNegativeMuons,
                      numberOfPositiveMuons ) )
     {
-      double returnValue;
+      double returnValue( 0.0 );
       // debugging:
       /**std::cout << std::endl << "debugging:"
       << std::endl

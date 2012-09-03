@@ -1506,14 +1506,16 @@ namespace LHC_FASER
      * matrices are strictly real. just as a quirk of the way I did my
      * workings, axialCouplingFactor needs to be +1 when the Z couples as a
      * vector to the neutralinos, & -1 when it couples as an axial vector.
+     * if both masses are given as positive or both as negative, the coupling
+     * is purely axial.
      */
-    if( ( ( 0.0 < secondParticle->get_mass() )
+    if( ( ( 0.0 > secondParticle->get_mass() )
           &&
           ( 0.0 > fourthParticle->get_mass() ) )
         ||
         ( ( 0.0 < secondParticle->get_mass() )
           &&
-          ( 0.0 > fourthParticle->get_mass() ) ) )
+          ( 0.0 < fourthParticle->get_mass() ) ) )
       // if the relative phases end up such that the product of couplings is
       // purely imaginary...
     {
@@ -1825,47 +1827,110 @@ namespace LHC_FASER
      * overall phase.  I (BOL) assume no CP violation, so the neutralino mixing
      * matrices are strictly real.
      */
-    Vv = ( NMIX->get_entry( whichNeutralino,
-                            2 ) * ( UMIX->get_entry( whichChargino,
-                                                     1 )
-                                    + VMIX->get_entry( whichChargino,
-                                                       1 ) )
-           + M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
-                                            3 )
-                           * UMIX->get_entry( whichChargino,
+    if( ( 0.0 < secondParticle->get_mass() )
+        &&
+        ( 0.0 > fourthParticle->get_mass() ) )
+      /* if the relative phases end up such that the chargino should be written
+       * with positive mass but the neutralino with negative mass to get purely
+       * real mixing matrix elements...
+       */
+    {
+      Vv = ( NMIX->get_entry( whichNeutralino,
+                              2 ) * ( VMIX->get_entry( whichChargino,
+                                                       1 )
+                                      - UMIX->get_entry( whichChargino,
+                                                         1 ) )
+             - M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
+                                              3 )
+                             * UMIX->get_entry( whichChargino,
+                                              2 )
+                             + NMIX->get_entry( whichNeutralino,
+                                                4 )
+                               * VMIX->get_entry( whichChargino,
+                                                  2 ) ) );
+      Aa = ( M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
+                                            4 )
+                           * VMIX->get_entry( whichChargino,
                                               2 )
                            - NMIX->get_entry( whichNeutralino,
-                                              4 )
-                             * VMIX->get_entry( whichChargino,
-                                                2 ) ) );
-    Aa = ( NMIX->get_entry( whichNeutralino,
-                            2 ) * ( UMIX->get_entry( whichChargino,
-                                                     1 )
-                                    - VMIX->get_entry( whichChargino,
-                                                       1 ) )
-           + M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
-                                            3 )
-                           * UMIX->get_entry( whichChargino,
+                                              3 )
+                             * UMIX->get_entry( whichChargino,
+                                                2 ) )
+             - NMIX->get_entry( whichNeutralino,
+                                2 ) * ( UMIX->get_entry( whichChargino,
+                                                         1 )
+                                        + VMIX->get_entry( whichChargino,
+                                                           1 ) ) );
+    }
+    else if( ( 0.0 > secondParticle->get_mass() )
+             &&
+             ( 0.0 < fourthParticle->get_mass() ) )
+      /* if the relative phases end up such that the chargino should be written
+       * with negative mass but the neutralino with positive mass to get purely
+       * real mixing matrix elements...
+       */
+    {
+      Vv = ( NMIX->get_entry( whichNeutralino,
+                              2 ) * ( UMIX->get_entry( whichChargino,
+                                                       1 )
+                                      - VMIX->get_entry( whichChargino,
+                                                         1 ) )
+             + M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
+                                              3 )
+                             * UMIX->get_entry( whichChargino,
                                               2 )
-                           + NMIX->get_entry( whichNeutralino,
-                                              4 )
-                             * VMIX->get_entry( whichChargino,
-                                                2 ) ) );
+                             + NMIX->get_entry( whichNeutralino,
+                                                4 )
+                               * VMIX->get_entry( whichChargino,
+                                                  2 ) ) );
+      Aa = ( NMIX->get_entry( whichNeutralino,
+                              2 ) * ( VMIX->get_entry( whichChargino,
+                                                       1 )
+                                      + UMIX->get_entry( whichChargino,
+                                                         1 ) )
+             + M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
+                                              3 )
+                             * UMIX->get_entry( whichChargino,
+                                                2 )
+                             - NMIX->get_entry( whichNeutralino,
+                                                4 )
+                               * VMIX->get_entry( whichChargino,
+                                                  2 ) ) );
+    }
+    else
+    {
+      Vv = ( NMIX->get_entry( whichNeutralino,
+                              2 ) * ( UMIX->get_entry( whichChargino,
+                                                       1 )
+                                      + VMIX->get_entry( whichChargino,
+                                                         1 ) )
+             + M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
+                                              3 )
+                             * UMIX->get_entry( whichChargino,
+                                              2 )
+                             - NMIX->get_entry( whichNeutralino,
+                                                4 )
+                               * VMIX->get_entry( whichChargino,
+                                                  2 ) ) );
+      Aa = ( NMIX->get_entry( whichNeutralino,
+                              2 ) * ( UMIX->get_entry( whichChargino,
+                                                       1 )
+                                      - VMIX->get_entry( whichChargino,
+                                                         1 ) )
+             + M_SQRT1_2 * ( NMIX->get_entry( whichNeutralino,
+                                              3 )
+                             * UMIX->get_entry( whichChargino,
+                                                2 )
+                             + NMIX->get_entry( whichNeutralino,
+                                                4 )
+                               * VMIX->get_entry( whichChargino,
+                                                  2 ) ) );
+    }
     // debugging:
     /**std::cout << std::endl << "debugging:"
     << std::endl
     << "Vv = " << Vv << ", Aa = " << Aa;
     std::cout << std::endl;**/
-    if( 0.0 > fourthParticle->get_mass() )
-      // if the relative phases end up such that the product of couplings is
-      // purely imaginary...
-    {
-      // we swap the couplings (borrowing currentLkToHkLinCoefficient for a
-      // moment):
-      currentLkToHkLinCoefficient = Vv;
-      Vv = Aa;
-      Aa = currentLkToHkLinCoefficient;
-    }
     Vvsq = ( Vv * Vv );
     Aasq = ( Aa * Aa );
     VvSqMinusAaSq = ( Vvsq - Aasq );
