@@ -791,9 +791,9 @@ namespace LHC_FASER
 
           firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
-          if( ( lhcFaserGlobal::negligibleBr
-                * 2.0 * (double)(firstCascades->size()) )
-              < firstCascadeBrToEwino )
+          if( lhcFaserGlobal::negligibleBr
+              < ( firstCascadeBrToEwino
+                  * 2.0 * (double)(firstCascades->size()) ) )
             // this should mean we never throw away more than
             // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
           {
@@ -811,9 +811,9 @@ namespace LHC_FASER
               secondCascadeBrToEwino
               = (*secondCascadeIterator)->getBrToEwino(
                                                 &excludedFinalStateParticles );
-              if( ( lhcFaserGlobal::negligibleBr
-                    * 2.0 * (double)(secondCascades->size()) )
-                  < secondCascadeBrToEwino )
+              if( lhcFaserGlobal::negligibleBr
+                  < ( secondCascadeBrToEwino
+                      * 2.0 * (double)(secondCascades->size()) ) )
                 // this should mean we never throw away more than
                 // 0.5 * lhcFaserGlobal::negligibleBr of acceptance.
               {

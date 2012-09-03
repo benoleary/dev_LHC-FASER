@@ -52,6 +52,9 @@ namespace CppSLHA
    * memory for the particle spectrum.
    */
   CppSLHA0::CppSLHA0( std::string const given_SLHA_file_name ) :
+    BLOCKs(),
+    particle_spectrum( NULL ),
+    copy_of_given_spectrum( NULL ),
     SLHA_file_name( given_SLHA_file_name ),
     did_allocate_spectrum_memory( true ),
     // note that this instance allocated memory, so needs to deallocate it
@@ -75,8 +78,12 @@ namespace CppSLHA
    */
   CppSLHA0::CppSLHA0( std::string const given_SLHA_file_name,
                       EW_scale_spectrum* const given_particle_spectrum ) :
+    BLOCKs(),
+    particle_spectrum( NULL ),
+    copy_of_given_spectrum( NULL ),
     SLHA_file_name( given_SLHA_file_name ),
-    did_allocate_spectrum_memory( false )
+    did_allocate_spectrum_memory( false ),
+    is_verbose( false )
     // note that this instance did not allocate memory, so
     // should not deallocate it with its destructor.
   {

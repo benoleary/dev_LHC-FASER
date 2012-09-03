@@ -251,7 +251,7 @@ namespace CppSLHA
 
           }
 
-        /* loop (backwards) through all the provided PDG codes, checking that
+        /* loop through all the provided PDG codes, checking that
          * each is accounted for once, removing checked PDG codes from the
          * list.
          */
