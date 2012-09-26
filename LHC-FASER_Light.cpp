@@ -77,6 +77,7 @@
 
 // includes:
 
+#include <fstream>
 #include "LHC-FASER.hpp"
 
 
@@ -85,28 +86,77 @@
 int main( int argumentCount,
           char* argumentStrings[] )
 {
-  if( 2 != argumentCount )
-    // if the input was definitely wrong...
+  LHC_FASER::lhcFaserLight onceOffLhcFaserLight( "./grids/",
+                                                 "fb",
+                                                 true );
+  std::string slhaFilename( "" );
+  std::string appendArgument( "" );
+  if( 3 == argumentCount )
+    // if the arguments should have been the SLHA filename & "--append"...
   {
-    std::cout
-    << std::endl
-    << "error! this program requires the name of the SLHA spectrum file as"
-    << " its argument!";
-    std::cout << std::endl;  // let the user know the format.
+    appendArgument.assign( argumentStrings[ 1 ] );
+    if( 0 != appendArgument.compare( "--append" ) )
+    {
+      slhaFilename.assign( appendArgument );
+      appendArgument.assign( argumentStrings[ 2 ] );
+    }
+    if( 0 != appendArgument.compare( "--append" ) )
+    {
+      std::cout
+      << std::endl
+      << "error! if 2 arguments are given, 1 of them should be the name of"
+      << " the SLHA file and the other should be --append (which tells"
+      << " LHC-FASER_Light to append its results to the SLHA file instead of"
+      << " printing to the console)!";
+      std::cout << std::endl;  // let the user know the format.
+      return EXIT_FAILURE;
+    }
   }
-  else  // otherwise, do what is supposed to be done.
+  else if( 2 == argumentCount )
+    // if the argument should have been just the SLHA filename...
   {
-    LHC_FASER::lhcFaserLight onceOffLhcFaserLight( "./grids/",
-                                                   "fb",
-                                                   true );
+    slhaFilename.assign( argumentStrings[ 1 ] );
+  }
+  else
+  {
     std::cout
     << std::endl
-    << onceOffLhcFaserLight.fullResultsForNewSlha( argumentStrings[ 1 ] );
+    << "error! at least 1 argument must be given (the name of the SLHA file"
+    << " with the spectrum)! if 2 arguments are given, 1 of them should be the"
+    << " name of the SLHA file and the other should be --append (which tells"
+    << " LHC-FASER_Light to append its results to the SLHA file instead of"
+    << " printing to the console)!";
+    std::cout << std::endl;  // let the user know the format.
+    return EXIT_FAILURE;
+  }
+
+  if( appendArgument.empty() )
+  {
+    std::cout
+    << std::endl
+    << onceOffLhcFaserLight.fullResultsForNewSlha( slhaFilename );
     std::cout
     << "# in the format [particle 1 PDG code]  [particle 2 PDG code]"
     << "   [7 TeV cross-section in fb]   [14 TeV cross-section in fb]";
     std::cout << std::endl;
     std::cout << std::endl;
+  }
+  else
+  {
+    std::string
+    resultsString( onceOffLhcFaserLight.fullResultsForNewSlha( slhaFilename,
+                                                               " " ) );
+    std::ofstream slhaFile( slhaFilename.c_str(),
+                            std::ios::app );
+    slhaFile
+    << std::endl
+    << "BLOCK LHCFASERLIGHT"
+    << std::endl
+    << "# particle 1  particle 2       7 TeV sigma/fb      14 TeV sigma/fb"
+    << std::endl
+    << resultsString
+    << std::endl;
+    slhaFile.close();
   }
 
     // this was a triumph! I'm making a note here:

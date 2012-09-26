@@ -212,6 +212,7 @@ namespace LHC_FASER
     // this keeps const pointers to useful objects together for ease of passing
     // around & for neater code.
     signalDefinitionSet* signalDefinitions;
+    ignoredCrossSectionCalculatorSet ignoredCrossSections;
     readierForNewPoint readierObject;
 
     void
@@ -238,7 +239,8 @@ namespace LHC_FASER
                 int const firstScoloredCode,
                 int const secondScoloredCode );
     std::string
-    fullResultsForNewSlha( std::string const slhaFileName );
+    fullResultsForNewSlha( std::string const slhaFileName,
+                           std::string const positiveCodePrefix = "+" );
     void
     updateForNewSlha( std::string const slhaFileName );
     void
@@ -305,6 +307,7 @@ namespace LHC_FASER
     signalPointer = new signalHandler( signalName,
                                        crossSectionUnitFactor,
                                        signalDefinitions,
+                                       &ignoredCrossSections,
                                        !returnNullsForBadSignals );
     if( !(signalPointer->isGood())
         &&

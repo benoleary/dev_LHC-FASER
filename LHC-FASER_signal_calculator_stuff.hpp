@@ -360,8 +360,8 @@ namespace LHC_FASER
     parseLeptonAcceptance( std::string& argumentString,
                            signalDefinitionSet* const signalDefinitions );
     /* this looks for strings encoding the type of lepton cuts to use. the
-     * strings are, where # stands for any string representing an integer, in the
-     * order in which they are checked:
+     * strings are, where # stands for any string representing an integer, in
+     * the order in which they are checked:
      * "_ossf" : ossfMinusOsdf
      * "_sssf" : sameSignSameFlavor
      * "_noExtraCut" : noLeptonCutNorExtraJetCut
@@ -722,6 +722,63 @@ namespace LHC_FASER
   }  // end of signalClasses namespace.
 
 
+  // this class calculates how much cross-section has been ignored by
+  // considering only 1- or 2-step electroweak decays.
+  class ignoredCrossSectionCalculator : public getsReadiedForNewPoint
+  {
+  public:
+    ignoredCrossSectionCalculator(
+                          signalDefinitionSet const* const signalDefinitions );
+    ~ignoredCrossSectionCalculator();
+
+    double
+    getIgnoredCrossSection();
+
+
+  protected:
+    inputHandler const* const inputShortcut;
+    std::vector< productionChannelPointerSet* > productionChannels;
+    double currentIgnoredCrossSection;
+    std::vector< fullCascade* >* firstCascades;
+    std::vector< fullCascade* >* secondCascades;
+    std::list< int > excludedFinalStateParticles;
+    double firstCascadeBrToEwino;
+    double secondCascadeBrToEwino;
+    CppSLHA::particle_decay_set_handler const* currentEwinoDecays;
+    std::list< int > const neutralinoOneCodeList;
+    std::list< int > soughtDecayProductList;
+    std::list< int > excludedSmParticles;
+    std::map< particlePointer, double > ignoredEwinoBrs;
+    double currentIgnoredBr;
+
+    void
+    resetIgnoredEwinoBrs();
+    double
+    ignoredBrFromEwino( fullCascade* cascadeOfEwino );
+    double
+    getEwinoToLspBrThrough( particlePointer intermediateSlepton );
+  };
+
+
+  // this class returns pointers to appropriate ignoredCrossSectionCalculator
+  // instances for the beam energy of signalDefinitions.
+  class ignoredCrossSectionCalculatorSet
+  {
+  public:
+    ignoredCrossSectionCalculatorSet();
+    ~ignoredCrossSectionCalculatorSet();
+
+    ignoredCrossSectionCalculator*
+    getIgnoredCrossSectionCalculator(
+                          signalDefinitionSet const* const signalDefinitions );
+
+
+  protected:
+    std::map< int, ignoredCrossSectionCalculator* > ignoredCrossSections;
+    std::map< int, ignoredCrossSectionCalculator* >::iterator mapIterator;
+  };
+
+
   /* this is a class to handle each individual signal to be calculated.
    * it accesses numbers common to different signals through the
    * crossSectionHandler, kinematicsHandler & cascadeHandler classes.
@@ -739,6 +796,7 @@ namespace LHC_FASER
     signalHandler( std::string const signalName,
                    double const crossSectionUnitFactor,
                    signalDefinitionSet const* const signalDefinitions,
+                   ignoredCrossSectionCalculatorSet* ignoredCrossSectionSet,
                    bool const complainAboutBadSignalNames = true );
     ~signalHandler();
 
@@ -766,6 +824,7 @@ namespace LHC_FASER
     signalCalculator* rateCalculator;
     signalShortcuts const* const inputShortcut;
     signalDefinitionSet signalPreparationDefinitions;
+    ignoredCrossSectionCalculator* ignoredCrossSection;
     double signalValue;
     double uncertaintyFactor;
     double crossSectionUnitFactor;
@@ -866,6 +925,63 @@ namespace LHC_FASER
 
 
 
+  inline double
+  ignoredCrossSectionCalculator::ignoredBrFromEwino(
+                                                  fullCascade* cascadeOfEwino )
+  {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "ignoredCrossSectionCalculator::ignoredBrFromEwino( " << cascadeOfEwino
+    << " => "
+    << *(cascadeOfEwino->getElectroweakinoAtEndOfScoloredness()->get_name())
+    << " ) returning "
+    << ignoredEwinoBrs[
+                      cascadeOfEwino->getElectroweakinoAtEndOfScoloredness() ];
+    std::cout << std::endl;**/
+
+    return
+    ignoredEwinoBrs[ cascadeOfEwino->getElectroweakinoAtEndOfScoloredness() ];
+  }
+
+  inline double
+  ignoredCrossSectionCalculator::getEwinoToLspBrThrough(
+                                          particlePointer intermediateSlepton )
+  {
+    soughtDecayProductList.front() = intermediateSlepton->get_PDG_code();
+    double returnValue( currentEwinoDecays->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                                      &excludedSmParticles ) );
+    soughtDecayProductList.front() = -soughtDecayProductList.front();
+    returnValue += currentEwinoDecays->get_branching_ratio_for_subset(
+                                                       &soughtDecayProductList,
+                                                        &excludedSmParticles );
+    return ( returnValue * intermediateSlepton->inspect_direct_decay_handler(
+                                             )->get_branching_ratio_for_subset(
+                                                        &neutralinoOneCodeList,
+                                                      &excludedSmParticles ) );
+  }
+
+
+
+  inline ignoredCrossSectionCalculator*
+  ignoredCrossSectionCalculatorSet::getIgnoredCrossSectionCalculator(
+                           signalDefinitionSet const* const signalDefinitions )
+  {
+    mapIterator
+    = ignoredCrossSections.find( signalDefinitions->getBeamEnergy() );
+    if( ignoredCrossSections.end() == mapIterator )
+    {
+      mapIterator = ignoredCrossSections.insert(
+                              std::pair< int, ignoredCrossSectionCalculator* >(
+                                            signalDefinitions->getBeamEnergy(),
+                                             new ignoredCrossSectionCalculator(
+                                                 signalDefinitions ) ) ).first;
+    }
+    return mapIterator->second;
+  }
+
+
   inline std::string const*
   signalHandler::getName()
   const
@@ -879,11 +995,14 @@ namespace LHC_FASER
     // if the signal has not been calculated for this point, update
     // signalValue before returning it:
     if( needsToPrepareForThisPoint() )
-      {
-        rateCalculator->calculateValue( &signalValue,
-                                        &uncertaintyFactor );
-        signalValue *= crossSectionUnitFactor;
-      }
+    {
+      rateCalculator->calculateValue( &signalValue,
+                                      &uncertaintyFactor );
+      uncertaintyFactor
+      *= ( 1.0
+           + ( ignoredCrossSection->getIgnoredCrossSection() / signalValue ) );
+      signalValue *= crossSectionUnitFactor;
+    }
     return signalValue;
   }
 

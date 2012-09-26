@@ -261,12 +261,18 @@ int main( int argumentCount,
                                              "Atlas3jMET_noExtraCut_14TeV" ) );
     signalSet.push_back( comparisonLhcFaser.addSignal(
                                              "Atlas4jMET_noExtraCut_14TeV" ) );
-    signalSet.push_back( comparisonLhcFaser.addSignal(
+    LHC_FASER::signalHandler*
+    fourteenTevNoLepton( comparisonLhcFaser.addSignal(
                                                   "noJetOrMETCut_0l_14TeV" ) );
-    signalSet.push_back( comparisonLhcFaser.addSignal(
+    signalSet.push_back( fourteenTevNoLepton );
+    LHC_FASER::signalHandler*
+    fourteenTevOneLepton( comparisonLhcFaser.addSignal(
                                                   "noJetOrMETCut_1l_14TeV" ) );
-    signalSet.push_back( comparisonLhcFaser.addSignal(
+    signalSet.push_back( fourteenTevOneLepton );
+    LHC_FASER::signalHandler*
+    fourteenTevTwoLeptons( comparisonLhcFaser.addSignal(
                                                   "noJetOrMETCut_2l_14TeV" ) );
+    signalSet.push_back( fourteenTevTwoLeptons );
     signalSet.push_back( comparisonLhcFaser.addSignal(
                                               "noJetOrMETCut_1lm1lp_14TeV" ) );
     signalSet.push_back( comparisonLhcFaser.addSignal(
@@ -308,9 +314,19 @@ int main( int argumentCount,
     signalSet.push_back( comparisonLhcFaser.addSignal(
                                   "noJetOrMETCut_sssf_14TeV_pTl50GeV50GeV" ) );
 
+    LHC_FASER::signalHandler*
+    noCutsForSevenTev( comparisonLhcFaser.addSignal(
+                                          "noJetOrMETCut_noExtraCut_07TeV" ) );
+    signalSet.push_back( noCutsForSevenTev );
+    LHC_FASER::signalHandler*
+    noCutsForFourteenTev( comparisonLhcFaser.addSignal(
+                                          "noJetOrMETCut_noExtraCut_14TeV" ) );
+    signalSet.push_back( noCutsForFourteenTev );
 
     comparisonLhcFaser.updateForNewSlha();
 
+    double
+    normalizationForFourteenTev( 1.0 / noCutsForFourteenTev->getValue() );
     std::ofstream outputStream( outputFilename.c_str() );
     if( outputStream.is_open() )
     {
@@ -332,6 +348,58 @@ int main( int argumentCount,
       << "\"! no output written!";
       std::cout << std::endl;
     }
+
+    std::cout
+    << std::endl
+    << "0l: { " << fourteenTevNoLepton->getLowerValue() << ", "
+    << fourteenTevNoLepton->getValue() << ", "
+    << fourteenTevNoLepton->getUpperValue() << " } => {"
+    << fourteenTevNoLepton->getLowerValue() * normalizationForFourteenTev
+    << ", " << fourteenTevNoLepton->getValue() * normalizationForFourteenTev
+    << ", "
+    << fourteenTevNoLepton->getUpperValue() * normalizationForFourteenTev
+    << " }, ( getUpperValue / getValue ) = "
+    << ( fourteenTevNoLepton->getUpperValue()
+         / fourteenTevNoLepton->getValue() );
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "1l: { " << fourteenTevOneLepton->getLowerValue() << ", "
+    << fourteenTevOneLepton->getValue() << ", "
+    << fourteenTevOneLepton->getUpperValue() << " } => {"
+    << fourteenTevOneLepton->getLowerValue() * normalizationForFourteenTev
+    << ", " << fourteenTevOneLepton->getValue() * normalizationForFourteenTev
+    << ", "
+    << fourteenTevOneLepton->getUpperValue() * normalizationForFourteenTev
+    << " }, ( getUpperValue / getValue ) = "
+    << ( fourteenTevOneLepton->getUpperValue()
+         / fourteenTevOneLepton->getValue() );
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "2l: { " << fourteenTevTwoLeptons->getLowerValue() << ", "
+    << fourteenTevTwoLeptons->getValue() << ", "
+    << fourteenTevTwoLeptons->getUpperValue() << " } => {"
+    << fourteenTevTwoLeptons->getLowerValue() * normalizationForFourteenTev
+    << ", " << fourteenTevTwoLeptons->getValue() * normalizationForFourteenTev
+    << ", "
+    << fourteenTevTwoLeptons->getUpperValue() * normalizationForFourteenTev
+    << " }, ( getUpperValue / getValue ) = "
+    << ( fourteenTevTwoLeptons->getUpperValue()
+         / fourteenTevTwoLeptons->getValue() );
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "7 TeV no cuts = { " << noCutsForSevenTev->getLowerValue() << ", "
+    << noCutsForSevenTev->getValue() << ", "
+    << noCutsForSevenTev->getUpperValue() << " }";
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "14 TeV no cuts = { " << noCutsForFourteenTev->getLowerValue() << ", "
+    << noCutsForFourteenTev->getValue() << ", "
+    << noCutsForFourteenTev->getUpperValue() << " }";
+    std::cout << std::endl;
   }
 
     // this was a triumph! I'm making a note here:

@@ -96,6 +96,7 @@ namespace LHC_FASER
     signalPointer( NULL ),
     inputShortcut( NULL ),
     signalDefinitions( NULL ),
+    ignoredCrossSections(),
     readierObject()
   {
     initialize( spectrumData,
@@ -128,6 +129,7 @@ namespace LHC_FASER
     signalPointer( NULL ),
     inputShortcut( NULL ),
     signalDefinitions( NULL ),
+    ignoredCrossSections(),
     readierObject()
   {
     initialize( new CppSLHA::CppSLHA2( slhaFileName ),
@@ -225,7 +227,7 @@ namespace LHC_FASER
     readierObject(),
     spectrumData( "" ),
     pathToGrids( pathToGrids ),
-    crossSectionUnitFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
+    crossSectionUnitFactor( 1000.0 ),
     usingNlo( true ),
     inputSource( &spectrumData,
                  spectrumData.get_particle_spectrum(),
@@ -235,7 +237,25 @@ namespace LHC_FASER
     particlePointers( inputSource.getSpectrum() ),
     fullResults( "" )
   {
-    // just an initialization list.
+    if( 0 == crossSectionUnit.compare( "pb" ) )
+    {
+      crossSectionUnitFactor = 1.0;
+    }
+    else if( 0 == crossSectionUnit.compare( "fb" ) )
+    {
+      crossSectionUnitFactor = 1000.0;
+    }
+    else if( 0 == crossSectionUnit.compare( "nb" ) )
+    {
+      crossSectionUnitFactor = 0.001;
+    }
+    else
+    {
+      std::cout
+      << "LHC-FASER::error! given_unit has to be pb/fb/nb (all lowercase"
+      << " characters). Carrying on, assuming fb.";
+      std::cout << std::endl;
+    }
   }
 
   lhcFaserLight::~lhcFaserLight()
@@ -245,7 +265,8 @@ namespace LHC_FASER
 
 
   std::string
-  lhcFaserLight::fullResultsForNewSlha( std::string const slhaFileName )
+  lhcFaserLight::fullResultsForNewSlha( std::string const slhaFileName,
+                                        std::string const positiveCodePrefix )
   {
     updateForNewSlha( slhaFileName );
     fullResults.clear();
@@ -255,33 +276,37 @@ namespace LHC_FASER
          inputSource.getScoloredProductionCombinations()->end() > whichPair;
          ++whichPair )
     {
-      fullResults << " ";
+      fullResults << "    ";
       if( (*whichPair)->firstIsNotAntiparticle() )
       {
-        fullResults << "+";
+        fullResults << positiveCodePrefix;
       }
       else
       {
         fullResults << "-";
       }
       fullResults << (*whichPair)->getFirstParticle()->get_PDG_code();
+      fullResults << "    ";
       if( (*whichPair)->secondIsNotAntiparticle() )
       {
-        fullResults << "  +";
+        fullResults << positiveCodePrefix;
       }
       else
       {
-        fullResults << "  -";
+        fullResults << "-";
       }
       fullResults
       << (*whichPair)->getSecondParticle()->get_PDG_code()
-      << "   "
-      << crossSectionSource.getTable( 7,
-                                      *whichPair )->getValue()
-      << "   "
-      << crossSectionSource.getTable( 14,
-                                      *whichPair )->getValue()
+      << "     "
+      << CppSLHA::CppSLHA_global::SLHA_double( crossSectionUnitFactor
+                                              * crossSectionSource.getTable( 7,
+                                                     *whichPair )->getValue() )
+      << "     "
+      << CppSLHA::CppSLHA_global::SLHA_double( crossSectionUnitFactor
+                                             * crossSectionSource.getTable( 14,
+                                                     *whichPair )->getValue() )
       << "\n";
+
     }
     return std::string( fullResults.str() );
   }

@@ -1184,3 +1184,11 @@ JL_test.out
 libLHC-FASER.a
 
 dev_LHC-FASER_unit_tester.exe
+
+*.d
+
+JLX.txt
+
+LHC-FASER_Light.exe
+
+JLX66.txt

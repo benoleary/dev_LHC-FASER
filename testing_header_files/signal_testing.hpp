@@ -251,6 +251,7 @@ namespace LHC_FASER
       << "reallyWrongCalculator class seems to be OK.";
       std::cout << std::endl;
 
+      ignoredCrossSectionCalculatorSet testIgnoredCrossSectionCalculatorSet;
       testSignalDefinitionSet.setExcludedStandardModelProducts(
                                            testInputHandler->getNotInJets5() );
       testSignalDefinitionSet.setJetCut( 40.0 );
@@ -259,7 +260,8 @@ namespace LHC_FASER
       signalHandler*
       testSignalHandlerPointer( new signalHandler( "sigmaBreakdownTest",
                                                    1000.0,
-                                                  &testSignalDefinitionSet ) );
+                                                  &testSignalDefinitionSet,
+                                     &testIgnoredCrossSectionCalculatorSet ) );
 
       std::cout
       << std::endl
@@ -278,7 +280,8 @@ namespace LHC_FASER
       std::cout << std::endl;
       signalHandler testAtlasFourJetMetZeroLepton( "Atlas4jMET_0l_07TeV",
                                                    1.0,
-                                                   &testSignalDefinitionSet );
+                                                   &testSignalDefinitionSet,
+                                       &testIgnoredCrossSectionCalculatorSet );
 
       std::cout
       << std::endl
@@ -293,7 +296,8 @@ namespace LHC_FASER
       signalHandler
       testAtlasFourJetMetZeroLeptonHighCut( "Atlas4jMET_0l_07TeV_pTl50.0GeV",
                                             1.0,
-                                            &testSignalDefinitionSet );
+                                            &testSignalDefinitionSet,
+                                       &testIgnoredCrossSectionCalculatorSet );
 
       std::cout
       << std::endl
@@ -307,7 +311,8 @@ namespace LHC_FASER
 
       signalHandler testAtlasThreeJetMetOneLepton( "Atlas3jMET_1l_07TeV",
                                                    1.0,
-                                                   &testSignalDefinitionSet );
+                                                   &testSignalDefinitionSet,
+                                       &testIgnoredCrossSectionCalculatorSet );
 
       std::cout
       << std::endl
@@ -322,7 +327,8 @@ namespace LHC_FASER
       signalHandler testAtlasThreeJetMetOneLeptonHighCuts(
                                        "Atlas3jMET_1l_07TeV_pTl60.8GeV18.5GeV",
                                                            1.0,
-                                                    &testSignalDefinitionSet );
+                                                    &testSignalDefinitionSet,
+                                       &testIgnoredCrossSectionCalculatorSet );
 
       std::cout
       << std::endl
@@ -336,7 +342,8 @@ namespace LHC_FASER
 
       signalHandler testSameSignDilepton( "noJetOrMETCut_sssf_07TeV",
                                           1.0,
-                                          &testSignalDefinitionSet );
+                                          &testSignalDefinitionSet,
+                                       &testIgnoredCrossSectionCalculatorSet );
 
       std::cout
       << std::endl
@@ -358,7 +365,8 @@ namespace LHC_FASER
 
       signalHandler testSigmaBreakdownTest( "sigmaBreakdownTest",
                                             1000.0,
-                                            &testSignalDefinitionSet );
+                                            &testSignalDefinitionSet,
+                                       &testIgnoredCrossSectionCalculatorSet );
       std::cout
       << std::endl
       << "SPS2: testSigmaBreakdownTest.getValue() (in *fb*) = "
@@ -430,7 +438,8 @@ namespace LHC_FASER
 
       signalHandler convolutedSigmaBreakdownTest( "sigmaBreakdownTest",
                                                   1000.0,
-                                              &convolutedSignalDefinitionSet );
+                                              &convolutedSignalDefinitionSet,
+                                       &testIgnoredCrossSectionCalculatorSet );
       basicStuff->getSlha()->read_file( "convoluted_spectrum.out" );
       basicStuff->getReadier()->readyObserversForNewPoint();
       std::cout

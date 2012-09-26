@@ -72,8 +72,8 @@
 #ifndef LHC_FASER_GLOBAL_STUFF_HPP_
 #define LHC_FASER_GLOBAL_STUFF_HPP_
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <string>
 #include <iostream>
 #include <fstream>

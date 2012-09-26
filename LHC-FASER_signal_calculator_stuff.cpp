@@ -845,8 +845,7 @@ namespace LHC_FASER
       }  // end of if the channel's cross-section was not negligible.
     }  // end of loop over productionChannels.
     // currently, we do the uncertainty very roughly:
-    *uncertaintyFactor
-    = ( *signalValue * signalDefinitions->getShortcuts()->getUncertainty() );
+    *uncertaintyFactor = signalDefinitions->getShortcuts()->getUncertainty();
     return true;
   }
 
@@ -2562,10 +2561,201 @@ namespace LHC_FASER
   }  // end of signalClasses namespace.
 
 
+  ignoredCrossSectionCalculator::ignoredCrossSectionCalculator(
+                         signalDefinitionSet const* const signalDefinitions ) :
+    getsReadiedForNewPoint(
+        signalDefinitions->getShortcuts()->getInputShortcuts()->getReadier() ),
+    inputShortcut( signalDefinitions->getShortcuts()->getInputShortcuts() ),
+    productionChannels(),
+    currentIgnoredCrossSection( CppSLHA::CppSLHA_global::really_wrong_value ),
+    firstCascades( NULL ),
+    secondCascades( NULL ),
+    excludedFinalStateParticles(),
+    firstCascadeBrToEwino( CppSLHA::CppSLHA_global::really_wrong_value ),
+    secondCascadeBrToEwino( CppSLHA::CppSLHA_global::really_wrong_value ),
+    currentEwinoDecays( NULL ),
+    neutralinoOneCodeList( 1,
+                           inputShortcut->getNeutralinoOne()->get_PDG_code() ),
+    soughtDecayProductList( neutralinoOneCodeList ),
+    excludedSmParticles( 2,
+                         inputShortcut->getTop()->get_PDG_code() ),
+    ignoredEwinoBrs(),
+    currentIgnoredBr( CppSLHA::CppSLHA_global::really_wrong_value )
+  {
+    ignoredEwinoBrs[ inputShortcut->getNeutralinoOne() ] = 0.0;
+    excludedSmParticles.front() = -excludedSmParticles.back();
+    for( std::vector< signedParticleShortcutPair* >::const_iterator
+         pairIterator(
+                 inputShortcut->getScoloredProductionCombinations()->begin() );
+         inputShortcut->getScoloredProductionCombinations()->end()
+         > pairIterator;
+         ++pairIterator )
+    {
+      productionChannels.push_back( new productionChannelPointerSet(
+                                                             signalDefinitions,
+                                                             *pairIterator ) );
+    }
+  }
+
+  ignoredCrossSectionCalculator::~ignoredCrossSectionCalculator()
+  {
+    for( std::vector< productionChannelPointerSet* >::iterator
+         deletionIterator( productionChannels.begin() );
+         productionChannels.end() > deletionIterator;
+         ++deletionIterator )
+    {
+      delete *deletionIterator;
+    }
+  }
+
+
+  double
+  ignoredCrossSectionCalculator::getIgnoredCrossSection()
+  {
+    // debugging:
+    /**std::cout << std::endl << "debugging:"
+    << std::endl
+    << "ignoredCrossSectionCalculator::getIgnoredCrossSection() called."
+    << " currentIgnoredCrossSection = " << currentIgnoredCrossSection
+    << " needsToPrepare = " << needsToPrepare;
+    std::cout << std::endl;**/
+
+    if( needsToPrepareForThisPoint() )
+    {
+      currentIgnoredCrossSection = 0.0;
+      resetIgnoredEwinoBrs();
+      for( std::vector< productionChannelPointerSet* >::iterator
+           channelIterator( productionChannels.begin() );
+           productionChannels.end() > channelIterator;
+           ++channelIterator )
+      {
+        // debugging:
+        /**std::cout << std::endl << "debugging:"
+        << std::endl
+        << "(*channelIterator)->getCrossSection() = "
+        << (*channelIterator)->getCrossSection()
+        << ", ( lhcFaserGlobal::negligibleSigma"
+        << " < (*channelIterator)->getCrossSection() ) = "
+        << ( lhcFaserGlobal::negligibleSigma
+             < (*channelIterator)->getCrossSection() );
+        std::cout << std::endl;**/
+
+        if( lhcFaserGlobal::negligibleSigma
+            < (*channelIterator)->getCrossSection() )
+          // if it's worth looking at this channel...
+        {
+          // we have to look at all the open cascade pairings:
+          firstCascades
+          = (*channelIterator)->getFirstCascadeSet()->getOpenCascades();
+          secondCascades
+          = (*channelIterator)->getSecondCascadeSet()->getOpenCascades();
+
+          for( std::vector< fullCascade* >::iterator
+               firstCascadeIterator( firstCascades->begin() );
+               firstCascades->end() > firstCascadeIterator;
+               ++firstCascadeIterator )
+          {
+            firstCascadeBrToEwino = (*firstCascadeIterator)->getBrToEwino(
+                                                &excludedFinalStateParticles );
+            // debugging:
+            /**std::cout << std::endl << "debugging:"
+            << std::endl
+            << "firstCascadeBrToEwino = " << firstCascadeBrToEwino
+            << ", ( lhcFaserGlobal::negligibleBr < ( firstCascadeBrToEwino"
+            << " * 2.0 * (double)(firstCascades->size()) ) ) = "
+            << ( lhcFaserGlobal::negligibleBr
+                < ( firstCascadeBrToEwino
+                    * 2.0 * (double)(firstCascades->size()) ) );
+            std::cout << std::endl;**/
+
+            if( lhcFaserGlobal::negligibleBr
+                < ( firstCascadeBrToEwino
+                    * 2.0 * (double)(firstCascades->size()) ) )
+            {
+              for( std::vector< fullCascade* >::iterator
+                   secondCascadeIterator( secondCascades->begin() );
+                   secondCascades->end() > secondCascadeIterator;
+                   ++secondCascadeIterator )
+              {
+                secondCascadeBrToEwino
+                = (*secondCascadeIterator)->getBrToEwino(
+                                                &excludedFinalStateParticles );
+                if( lhcFaserGlobal::negligibleBr
+                    < ( secondCascadeBrToEwino
+                        * 2.0 * (double)(secondCascades->size()) ) )
+                {
+                  currentIgnoredCrossSection
+                  += ( (*channelIterator)->getCrossSection()
+                       * firstCascadeBrToEwino
+                       * ignoredBrFromEwino( *firstCascadeIterator )
+                       * secondCascadeBrToEwino
+                       * ignoredBrFromEwino( *secondCascadeIterator ) );
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return currentIgnoredCrossSection;
+  }
+
+  void
+  ignoredCrossSectionCalculator::resetIgnoredEwinoBrs()
+  {
+    for( std::vector< particlePointer >::const_iterator
+         whichEwino( inputShortcut->getUnstableElectroweakinos()->begin() );
+         inputShortcut->getUnstableElectroweakinos()->end() > whichEwino;
+         ++whichEwino )
+    {
+      currentEwinoDecays = (*whichEwino)->inspect_direct_decay_handler();
+      currentIgnoredBr
+      = ( 1.0 - currentEwinoDecays->get_branching_ratio_for_subset(
+                                                        &neutralinoOneCodeList,
+                                                      &excludedSmParticles ) );
+      for( std::vector< particlePointer >::const_iterator
+           whichSlepton( inputShortcut->getChargedSleptons()->begin() );
+           inputShortcut->getChargedSleptons()->end() > whichSlepton;
+           ++whichSlepton )
+      {
+        currentIgnoredBr -= getEwinoToLspBrThrough( *whichSlepton );
+      }
+      for( std::vector< particlePointer >::const_iterator
+           whichSlepton( inputShortcut->getSneutrinos()->begin() );
+           inputShortcut->getSneutrinos()->end() > whichSlepton;
+           ++whichSlepton )
+      {
+        currentIgnoredBr -= getEwinoToLspBrThrough( *whichSlepton );
+      }
+      ignoredEwinoBrs[ *whichEwino ] = currentIgnoredBr;
+    }
+  }
+
+
+
+  ignoredCrossSectionCalculatorSet::ignoredCrossSectionCalculatorSet() :
+    ignoredCrossSections(),
+    mapIterator()
+  {
+    // just an initialization list.
+  }
+
+  ignoredCrossSectionCalculatorSet::~ignoredCrossSectionCalculatorSet()
+  {
+    mapIterator = ignoredCrossSections.begin();
+    while( ignoredCrossSections.end() != mapIterator )
+    {
+      delete mapIterator->second;
+      ++mapIterator;
+    }
+  }
+
+
 
   signalHandler::signalHandler( std::string const signalName,
                                 double const crossSectionUnitFactor,
                             signalDefinitionSet const* const signalDefinitions,
+                      ignoredCrossSectionCalculatorSet* ignoredCrossSectionSet,
                                 bool const complainAboutBadSignalNames ) :
     getsReadiedForNewPoint( signalDefinitions->getShortcuts(
                                         )->getInputShortcuts()->getReadier() ),
@@ -2573,6 +2763,7 @@ namespace LHC_FASER
     rateCalculator( NULL ),
     inputShortcut( signalDefinitions->getShortcuts() ),
     signalPreparationDefinitions( signalDefinitions ),
+    ignoredCrossSection( NULL ),
     signalValue( CppSLHA::CppSLHA_global::really_wrong_value ),
     uncertaintyFactor( CppSLHA::CppSLHA_global::really_wrong_value ),
     crossSectionUnitFactor( crossSectionUnitFactor ),
@@ -2641,7 +2832,11 @@ namespace LHC_FASER
 
       rateCalculator = new signalClasses::reallyWrongCalculator();
       isGoodFlag = false;
+      signalPreparationDefinitions.setBeamEnergy( 7 );
     }
+    ignoredCrossSection
+    = ignoredCrossSectionSet->getIgnoredCrossSectionCalculator(
+                                               &signalPreparationDefinitions );
     rateCalculator->setSignalName( signalName );
   }
 
