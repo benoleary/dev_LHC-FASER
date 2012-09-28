@@ -68,22 +68,21 @@
  *      found in a subdirectory included with this package.
  */
 
+
 /* this program is to print out several rates for a given input file.
- * ID: scan ID corresponding the SLHA file
- * Nevent: number of produced events
- * ACCj2: CMS 2-jet  -  huh?
- * ACCj3: Atlas 3-jet  -  huh?
- * ACCj4: Atlas 4-jet  -  huh?
- * ACCl0: 0 lepton  -  huh?
- * ACCl1: 1 lepton  -  huh?
- * ACCl2: 2 lepton  -  huh?
- * ACCos: 2 os leptons  -  huh?
- * ACCss: 2 ss leptons  -  huh?
- * ACCossfsubst 2 ossf - osdf leptons  -  huh?
- * ACC1: Atlas4jMET0l
- * ACC2: Atlas4jjMET1l
- * ...(order as in 3.3 in your note)
- * ACC12: CMSsamesigndilepton
+ * it appends the ranges of rates for the following signals as an extra SLHA
+ * block at the end of the input file.
+ * acceptance ID:
+ * 1 CMS2jalphaT_noExtraCut_07TeV / noJetOrMETCut_noExtraCut_07TeV
+ * 2 Atlas3jMET_noExtraCut_07TeV / noJetOrMETCut_noExtraCut_07TeV
+ * 3 Atlas4jMET_noExtraCut_07TeV / noJetOrMETCut_noExtraCut_07TeV
+ * 4 noJetOrMETCut_0l_07TeV / noJetOrMETCut_noExtraCut_07TeV
+ * 5 noJetOrMETCut_1l_07TeV / noJetOrMETCut_noExtraCut_07TeV
+ * 6 noJetOrMETCut_2l_07TeV / noJetOrMETCut_noExtraCut_07TeV
+ * 7 noJetOrMETCut_sssf_07TeV / noJetOrMETCut_noExtraCut_07TeV
+ * 8 noJetOrMETCut_ossf_07TeV / noJetOrMETCut_noExtraCut_07TeV
+ * or the 14 TeV version, replacing "07TeV" with "14TeV" in all the signal
+ * names above.
  */
 
 
@@ -97,28 +96,65 @@
 int main( int argumentCount,
           char* argumentStrings[] )
 {
-  if( 3 != argumentCount )
+  if( 2 != argumentCount )
     // if the input was definitely wrong...
   {
     std::cout
     << std::endl
     << "error! this program requires the name of the SLHA spectrum file as"
-    << " its 1st argument and the name of the file to write as output as its"
-    << " 2nd argument!";
+    << " its argument!";
     std::cout << std::endl;  // let the user know the format.
+    return EXIT_FAILURE;
   }
-  else  // otherwise, do what is supposed to be done.
-  {
-    std::string spectrumFilename( argumentStrings[ 1 ] );
-    std::string outputFilename( argumentStrings[ 2 ] );
 
-    LHC_FASER::lhcFaser comparisonLhcFaser( spectrumFilename,
-                                            "./grids/",
-                                            "fb",
-                                            false );
-    comparisonLhcFaser.setVerbosity( true );
-    std::vector< LHC_FASER::signalHandler* > signalSet;
+  std::string slhaFilename( argumentStrings[ 1 ] );
+  LHC_FASER::lhcFaser comparisonLhcFaser( slhaFilename,
+                                          "./grids/",
+                                          "fb",
+                                          false );
+  comparisonLhcFaser.setVerbosity( true );
+  std::vector< LHC_FASER::signalHandler* > sevenTevSignals;
+  sevenTevSignals.push_back( comparisonLhcFaser.addSignal(
+                                          "noJetOrMETCut_noExtraCut_07TeV" ) );
+  sevenTevSignals.push_back(
+                comparisonLhcFaser.addSignal( "CMSalphaT_noExtraCut_07TeV" ) );
+  sevenTevSignals.push_back(
+               comparisonLhcFaser.addSignal( "Atlas3jMET_noExtraCut_07TeV" ) );
+  sevenTevSignals.push_back(
+               comparisonLhcFaser.addSignal( "Atlas4jMET_noExtraCut_07TeV" ) );
+  sevenTevSignals.push_back(
+                    comparisonLhcFaser.addSignal( "noJetOrMETCut_0l_07TeV" ) );
+  sevenTevSignals.push_back(
+                    comparisonLhcFaser.addSignal( "noJetOrMETCut_1l_07TeV" ) );
+  sevenTevSignals.push_back(
+                    comparisonLhcFaser.addSignal( "noJetOrMETCut_2l_07TeV" ) );
+  sevenTevSignals.push_back(
+                  comparisonLhcFaser.addSignal( "noJetOrMETCut_sssf_07TeV" ) );
+  sevenTevSignals.push_back(
+                  comparisonLhcFaser.addSignal( "noJetOrMETCut_ossf_07TeV" ) );
 
+  std::vector< LHC_FASER::signalHandler* > fourteenTevSignals;
+  fourteenTevSignals.push_back( comparisonLhcFaser.addSignal(
+                                          "noJetOrMETCut_noExtraCut_14TeV" ) );
+  fourteenTevSignals.push_back(
+                comparisonLhcFaser.addSignal( "CMSalphaT_noExtraCut_14TeV" ) );
+  fourteenTevSignals.push_back(
+               comparisonLhcFaser.addSignal( "Atlas3jMET_noExtraCut_14TeV" ) );
+  fourteenTevSignals.push_back(
+               comparisonLhcFaser.addSignal( "Atlas4jMET_noExtraCut_14TeV" ) );
+  fourteenTevSignals.push_back(
+                    comparisonLhcFaser.addSignal( "noJetOrMETCut_0l_14TeV" ) );
+  fourteenTevSignals.push_back(
+                    comparisonLhcFaser.addSignal( "noJetOrMETCut_1l_14TeV" ) );
+  fourteenTevSignals.push_back(
+                    comparisonLhcFaser.addSignal( "noJetOrMETCut_2l_14TeV" ) );
+  fourteenTevSignals.push_back(
+                  comparisonLhcFaser.addSignal( "noJetOrMETCut_sssf_14TeV" ) );
+  fourteenTevSignals.push_back(
+                  comparisonLhcFaser.addSignal( "noJetOrMETCut_ossf_14TeV" ) );
+
+
+  /*
     // ACCj2
     signalSet.push_back( comparisonLhcFaser.addSignal( "ACCj2" ) );
     // not implemented, will always give NaN.
@@ -322,87 +358,84 @@ int main( int argumentCount,
     noCutsForFourteenTev( comparisonLhcFaser.addSignal(
                                           "noJetOrMETCut_noExtraCut_14TeV" ) );
     signalSet.push_back( noCutsForFourteenTev );
+*/
 
-    comparisonLhcFaser.updateForNewSlha();
 
-    double
-    normalizationForFourteenTev( 1.0 / noCutsForFourteenTev->getValue() );
-    std::ofstream outputStream( outputFilename.c_str() );
-    if( outputStream.is_open() )
-    {
-      for( std::vector< LHC_FASER::signalHandler* >::iterator
-           signalIterator( signalSet.begin() );
-           signalSet.end() > signalIterator;
-           ++signalIterator )
-      {
-        outputStream << " " << (*signalIterator)->getValue();
-      }
-      outputStream << std::endl;
-      outputStream.close();
-    }
-    else
-    {
-      std::cout
-      << std::endl
-      << "error! could not open \"" << outputFilename
-      << "\"! no output written!";
-      std::cout << std::endl;
-    }
+  comparisonLhcFaser.updateForNewSlha();
 
+  LHC_FASER::signalHandler* normalizationSignal( sevenTevSignals[ 0 ] );
+  double
+  normalizationFactor( 1.0 / normalizationSignal->getValue() );
+  LHC_FASER::signalHandler* currentSignal( NULL );
+
+  std::ofstream outputStream( slhaFilename.c_str(),
+                              std::ios::app );
+  if( !(outputStream.good()) )
+  {
     std::cout
     << std::endl
-    << "0l: { " << fourteenTevNoLepton->getLowerValue() << ", "
-    << fourteenTevNoLepton->getValue() << ", "
-    << fourteenTevNoLepton->getUpperValue() << " } => {"
-    << fourteenTevNoLepton->getLowerValue() * normalizationForFourteenTev
-    << ", " << fourteenTevNoLepton->getValue() * normalizationForFourteenTev
-    << ", "
-    << fourteenTevNoLepton->getUpperValue() * normalizationForFourteenTev
-    << " }, ( getUpperValue / getValue ) = "
-    << ( fourteenTevNoLepton->getUpperValue()
-         / fourteenTevNoLepton->getValue() );
+    << "error! could not open \"" << slhaFilename
+    << "\"! no output written!";
     std::cout << std::endl;
-    std::cout
-    << std::endl
-    << "1l: { " << fourteenTevOneLepton->getLowerValue() << ", "
-    << fourteenTevOneLepton->getValue() << ", "
-    << fourteenTevOneLepton->getUpperValue() << " } => {"
-    << fourteenTevOneLepton->getLowerValue() * normalizationForFourteenTev
-    << ", " << fourteenTevOneLepton->getValue() * normalizationForFourteenTev
-    << ", "
-    << fourteenTevOneLepton->getUpperValue() * normalizationForFourteenTev
-    << " }, ( getUpperValue / getValue ) = "
-    << ( fourteenTevOneLepton->getUpperValue()
-         / fourteenTevOneLepton->getValue() );
-    std::cout << std::endl;
-    std::cout
-    << std::endl
-    << "2l: { " << fourteenTevTwoLeptons->getLowerValue() << ", "
-    << fourteenTevTwoLeptons->getValue() << ", "
-    << fourteenTevTwoLeptons->getUpperValue() << " } => {"
-    << fourteenTevTwoLeptons->getLowerValue() * normalizationForFourteenTev
-    << ", " << fourteenTevTwoLeptons->getValue() * normalizationForFourteenTev
-    << ", "
-    << fourteenTevTwoLeptons->getUpperValue() * normalizationForFourteenTev
-    << " }, ( getUpperValue / getValue ) = "
-    << ( fourteenTevTwoLeptons->getUpperValue()
-         / fourteenTevTwoLeptons->getValue() );
-    std::cout << std::endl;
-    std::cout
-    << std::endl
-    << "7 TeV no cuts = { " << noCutsForSevenTev->getLowerValue() << ", "
-    << noCutsForSevenTev->getValue() << ", "
-    << noCutsForSevenTev->getUpperValue() << " }";
-    std::cout << std::endl;
-    std::cout
-    << std::endl
-    << "14 TeV no cuts = { " << noCutsForFourteenTev->getLowerValue() << ", "
-    << noCutsForFourteenTev->getValue() << ", "
-    << noCutsForFourteenTev->getUpperValue() << " }";
-    std::cout << std::endl;
+
+    return EXIT_FAILURE;
   }
 
-    // this was a triumph! I'm making a note here:
-  return EXIT_SUCCESS;
+  std::cout
+  << std::endl
+  << "noJetOrMETCut_noExtraCut_..."
+  << std::endl
+  << "07TeV: " << sevenTevSignals[ 0 ]->getValue()
+  << std::endl
+  << "14TeV: " << fourteenTevSignals[ 0 ]->getValue();
+  std::cout << std::endl;
 
+
+  outputStream
+  << std::endl << "BLOCK LHCFASERFORJL" << std::endl
+  << "# sqrt(s)   ID    lower value        upper value" << std::endl;
+  for( int whichSignal( 1 );
+       sevenTevSignals.size() > whichSignal;
+       ++whichSignal )
+  {
+    currentSignal = sevenTevSignals[ whichSignal ];
+    outputStream
+    << "       7     " << whichSignal << "   "
+    << CppSLHA::CppSLHA_global::SLHA_double( currentSignal->getLowerValue()
+                                             * normalizationFactor )
+    << "   "
+    << CppSLHA::CppSLHA_global::SLHA_double( currentSignal->getUpperValue()
+                                             * normalizationFactor )
+    << "   # " << *(currentSignal->getName()) << " / "
+    << *(normalizationSignal->getName())
+    << std::endl;
+  }
+  normalizationSignal = fourteenTevSignals[ 0 ];
+  normalizationFactor = ( 1.0 / normalizationSignal->getValue() );
+  for( int whichSignal( 1 );
+       fourteenTevSignals.size() > whichSignal;
+       ++whichSignal )
+  {
+    currentSignal = fourteenTevSignals[ whichSignal ];
+    outputStream
+    << "      14     " << whichSignal << "   "
+    << CppSLHA::CppSLHA_global::SLHA_double( currentSignal->getLowerValue()
+                                             * normalizationFactor )
+    << "   "
+    << CppSLHA::CppSLHA_global::SLHA_double( currentSignal->getUpperValue()
+                                             * normalizationFactor )
+    << "   # " << *(currentSignal->getName()) << " / "
+    << *(normalizationSignal->getName())
+    << std::endl;
+  }
+  outputStream << std::endl;
+  outputStream.close();
+
+  std::cout
+  << std::endl
+  << "finished!";
+  std::cout << std::endl;
+
+  // this was a triumph! I'm making a note here:
+  return EXIT_SUCCESS;
 }
